@@ -1,0 +1,509 @@
+code:
+import pandas as pd
+
+# Load the dataset
+train_df = pd.read_csv(r'E:\csv\census_income_train.csv')
+
+# Create a copy of the DataFrame for preprocessing
+train_df_copy = train_df.copy()
+
+# Display the first few rows of the DataFrame to understand its structure
+print(train_df_copy.head())
+
+# Check the data types of each column
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_cols = train_df_copy.select_dtypes(include=['object']).columns
+numerical_cols = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_cols)
+print("Numerical Columns:", numerical_cols)
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+for col in categorical_cols:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+
+# Apply scaling to numerical columns (excluding the label column if it's numerical)
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+if 'label_column' not in numerical_cols:  # Replace 'label_column' with the actual label column name
+    train_df_copy[numerical_cols] = scaler.fit_transform(train_df_copy[numerical_cols])
+else:
+    train_df_copy[numerical_cols.drop('label_column')] = scaler.fit_transform(train_df_copy[numerical_cols.drop('label_column')])
+
+# Display the preprocessed DataFrame
+print(train_df_copy.head())
+execute_result:
+age         workclass  fnlwgt  ... hours_per_week  native_country  income
+0   32           Private   50753  ...             40   United-States  <=50K.
+1   45         State-gov  144351  ...             40   United-States    >50K
+2   35         Local-gov  252217  ...             40   United-States  <=50K.
+3   64           Private   69525  ...             20   United-States   <=50K
+4   63  Self-emp-not-inc   28612  ...             70   United-States   <=50K
+
+[5 rows x 15 columns]
+age                int64
+workclass         object
+fnlwgt             int64
+education         object
+education_num      int64
+marital_status    object
+occupation        object
+relationship      object
+race              object
+sex               object
+capital_gain       int64
+capital_loss       int64
+hours_per_week     int64
+native_country    object
+income            object
+dtype: object
+Categorical Columns: Index(['workclass', 'education', 'marital_status', 'occupation',
+       'relationship', 'race', 'sex', 'native_country', 'income'],
+      dtype='object')
+Numerical Columns: Index(['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss',
+       'hours_per_week'],
+      dtype='object')
+        age  workclass    fnlwgt  ...  hours_per_week  native_country  income
+0 -0.484566          4 -1.315410  ...       -0.034087              39       1
+1  0.463621          7 -0.429090  ...       -0.034087              39       2
+2 -0.265754          2  0.592340  ...       -0.034087              39       1
+3  1.849433          4 -1.137649  ...       -1.648120              39       0
+4  1.776496          6 -1.525072  ...        2.386963              39       0
+
+[5 rows x 15 columns]
+is_success:
+True
+code:
+# Load the test dataset
+test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+test_df_copy = test_df.copy()
+
+# Handle missing values in both train and test datasets
+# For simplicity, we will fill missing values with the median for numerical columns and mode for categorical columns
+for col in numerical_cols:
+    train_df_copy[col].fillna(train_df_copy[col].median(), inplace=True)
+    test_df_copy[col].fillna(test_df_copy[col].median(), inplace=True)
+
+for col in categorical_cols:
+    train_df_copy[col].fillna(train_df_copy[col].mode()[0], inplace=True)
+    test_df_copy[col].fillna(test_df_copy[col].mode()[0], inplace=True)
+
+# Encode categorical variables
+label_encoder = LabelEncoder()
+for col in categorical_cols:
+    if col != 'income':  # Ensure the label column is not encoded
+        train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+        test_df_copy[col] = label_encoder.transform(test_df_copy[col])  # Use the same encoder for the test set
+
+# Normalize numerical features
+scaler = StandardScaler()
+if 'income' not in numerical_cols:  # Ensure the label column is not normalized
+    train_df_copy[numerical_cols] = scaler.fit_transform(train_df_copy[numerical_cols])
+    test_df_copy[numerical_cols] = scaler.transform(test_df_copy[numerical_cols])
+else:
+    train_df_copy[numerical_cols.drop('income')] = scaler.fit_transform(train_df_copy[numerical_cols.drop('income')])
+    test_df_copy[numerical_cols.drop('income')] = scaler.transform(test_df_copy[numerical_cols.drop('income')])
+
+# Display the first few rows of the preprocessed datasets
+print(train_df_copy.head())
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[3], line 2
+      1 # Load the test dataset
+----> 2 test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+      3 test_df_copy = test_df.copy()
+      5 # Handle missing values in both train and test datasets
+      6 # For simplicity, we will fill missing values with the median for numerical columns and mode for categorical columns
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'E:\\csv\\census_income_test.csv'
+is_success:
+False
+code:
+# Load the test dataset
+test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+test_df_copy = test_df.copy()
+
+# Handle missing values in both train and test datasets
+# For simplicity, we will fill missing values with the median for numerical columns and mode for categorical columns
+for col in numerical_cols:
+    train_df_copy[col].fillna(train_df_copy[col].median(), inplace=True)
+    test_df_copy[col].fillna(test_df_copy[col].median(), inplace=True)
+
+for col in categorical_cols:
+    train_df_copy[col].fillna(train_df_copy[col].mode()[0], inplace=True)
+    test_df_copy[col].fillna(test_df_copy[col].mode()[0], inplace=True)
+
+# Encode categorical variables
+label_encoder = LabelEncoder()
+for col in categorical_cols:
+    if col != 'income':  # Ensure the label column is not encoded
+        train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+        test_df_copy[col] = label_encoder.transform(test_df_copy[col])  # Use the same encoder for the test set
+
+# Normalize numerical features
+scaler = StandardScaler()
+if 'income' not in numerical_cols:  # Ensure the label column is not scaled
+    train_df_copy[numerical_cols] = scaler.fit_transform(train_df_copy[numerical_cols])
+    test_df_copy[numerical_cols] = scaler.transform(test_df_copy[numerical_cols])
+else:
+    train_df_copy[numerical_cols.drop('income')] = scaler.fit_transform(train_df_copy[numerical_cols.drop('income')])
+    test_df_copy[numerical_cols.drop('income')] = scaler.transform(test_df_copy[numerical_cols.drop('income')])
+
+# Display the first few rows of the preprocessed datasets
+print(train_df_copy.head())
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[5], line 2
+      1 # Load the test dataset
+----> 2 test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+      3 test_df_copy = test_df.copy()
+      5 # Handle missing values in both train and test datasets
+      6 # For simplicity, we will fill missing values with the median for numerical columns and mode for categorical columns
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'E:\\csv\\census_income_test.csv'
+is_success:
+False
+code:
+# Load the test dataset
+test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+test_df_copy = test_df.copy()
+
+# Handle missing values in both train and test datasets
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encode categorical variables in both train and test datasets
+for col in categorical_cols:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Normalize numerical features in both train and test datasets, excluding the label column
+if 'income' in numerical_cols:
+    numerical_cols = numerical_cols.drop('income')
+
+train_df_copy[numerical_cols] = scaler.fit_transform(train_df_copy[numerical_cols])
+test_df_copy[numerical_cols] = scaler.transform(test_df_copy[numerical_cols])
+
+# Display the first few rows of the processed datasets
+print(train_df_copy.head())
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[7], line 2
+      1 # Load the test dataset
+----> 2 test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+      3 test_df_copy = test_df.copy()
+      5 # Handle missing values in both train and test datasets
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'E:\\csv\\census_income_test.csv'
+is_success:
+False
+code:
+# Handle missing values in the training dataset
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+
+# Encode categorical variables in the training dataset
+for col in categorical_cols:
+    if col != 'income':
+        train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+
+# Normalize numerical features in the training dataset, excluding the label column
+if 'income' in numerical_cols:
+    numerical_cols = numerical_cols.drop('income')
+
+train_df_copy[numerical_cols] = scaler.fit_transform(train_df_copy[numerical_cols])
+
+# Display the first few rows of the processed training dataset
+print(train_df_copy.head())
+execute_result:
+age  workclass    fnlwgt  ...  hours_per_week  native_country  income
+0 -0.484566          4 -1.315410  ...       -0.034087              39       1
+1  0.463621          7 -0.429090  ...       -0.034087              39       2
+2 -0.265754          2  0.592340  ...       -0.034087              39       1
+3  1.849433          4 -1.137649  ...       -1.648120              39       0
+4  1.776496          6 -1.525072  ...        2.386963              39       0
+
+[5 rows x 15 columns]
+is_success:
+True
+code:
+# Copy the DataFrame to ensure we don't modify the original data
+features_copy = features.copy()
+
+# Drop any ID columns if they exist (assuming there are no ID columns in this dataset)
+# If there were ID columns, you would drop them like this:
+# features_copy = features_copy.drop(columns=['id_column_name'])
+
+# Perform feature engineering
+# Example: Create a new feature that combines capital gain and loss
+features_copy['net_capital'] = features_copy['capital_gain'] - features_copy['capital_loss']
+
+# Example: Create a new feature that represents the ratio of capital gain to total income
+features_copy['capital_gain_ratio'] = features_copy['capital_gain'] / (features_copy['capital_gain'] + features_copy['capital_loss'] + 1e-6)
+
+# Example: Create a new feature that represents the interaction between age and hours per week
+features_copy['age_hours_interaction'] = features_copy['age'] * features_copy['hours_per_week']
+
+# Display the updated features
+print(features_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[11], line 2
+      1 # Copy the DataFrame to ensure we don't modify the original data
+----> 2 features_copy = features.copy()
+      4 # Drop any ID columns if they exist (assuming there are no ID columns in this dataset)
+      5 # If there were ID columns, you would drop them like this:
+      6 # features_copy = features_copy.drop(columns=['id_column_name'])
+      7 
+      8 # Perform feature engineering
+      9 # Example: Create a new feature that combines capital gain and loss
+     10 features_copy['net_capital'] = features_copy['capital_gain'] - features_copy['capital_loss']
+
+NameError: name 'features' is not defined
+is_success:
+False
+code:
+# Selecting relevant features for the DBSCAN clustering model
+# Based on the nature of the DBSCAN algorithm, we will select both numerical and categorical features that have been transformed.
+
+# Numerical features
+selected_numerical_features = ['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss', 'hours_per_week']
+
+# Categorical features (already encoded)
+selected_categorical_features = ['workclass', 'education', 'marital_status', 'occupation', 'relationship', 'race', 'sex', 'native_country']
+
+# Combining selected features
+selected_features = selected_numerical_features + selected_categorical_features
+
+# Creating a DataFrame with only the selected features
+X_selected = train_df_copy[selected_features]
+
+# Displaying the first few rows of the selected features DataFrame
+print(X_selected.head())
+execute_result:
+age    fnlwgt  education_num  ...  race  sex  native_country
+0 -0.484566 -1.315410      -0.419335  ...     4    1              39
+1  0.463621 -0.429090       1.525474  ...     4    1              39
+2 -0.265754  0.592340      -0.808297  ...     4    1              39
+3  1.849433 -1.137649      -0.419335  ...     4    1              39
+4  1.776496 -1.525072      -0.419335  ...     4    1              39
+
+[5 rows x 14 columns]
+is_success:
+True
+code:
+from sklearn.cluster import DBSCAN
+import numpy as np
+
+# Selecting the features for clustering
+X_cluster = X_selected.values
+
+# Training the DBSCAN model
+dbscan = DBSCAN(eps=0.5, min_samples=5, metric='cosine')
+clusters = dbscan.fit_predict(X_cluster)
+
+# Adding the cluster labels to the dataframe
+train_df_copy['cluster'] = clusters
+
+# Displaying the first few rows of the dataframe with the cluster labels
+print(train_df_copy.head())
+execute_result:
+Cell execution timed out: Execution exceeded the time limit and was stopped; consider optimizing your code for better performance.
+is_success:
+False
+code:
+from sklearn.cluster import DBSCAN
+import numpy as np
+
+# Selecting the features for clustering
+X_cluster = X_selected.values
+
+# Initialize and fit the DBSCAN model
+dbscan = DBSCAN(min_samples=5, metric='cosine')
+clusters = dbscan.fit_predict(X_cluster)
+
+# Adding the cluster labels to the dataframe
+train_df_copy['cluster'] = clusters
+
+# Display the first few rows of the dataframe with the added cluster column
+print(train_df_copy.head())
+execute_result:
+Cell execution timed out: Execution exceeded the time limit and was stopped; consider optimizing your code for better performance.
+is_success:
+False

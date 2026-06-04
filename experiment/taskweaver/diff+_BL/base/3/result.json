@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 3,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "crime_category",
+        "task_description": "分析历史数据有助于把握未来趋势，旧金山所有社区的近 12 年的犯罪报告存放在 crime_category 表中。请根据这些数据训练一个分类模型。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 152.26369309425354,
+        "interact_count": 5,
+        "prompt_tokens": 18509,
+        "completion_tokens": 2562,
+        "score": 0.18525679122305816,
+        "RCR": 5
+    }
+}

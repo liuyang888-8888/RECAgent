@@ -1,0 +1,84 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\wild_blueberry_yield_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\wild_blueberry_yield_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Separate features and target
+X_train = train_df.drop('yield', axis=1)
+y_train = train_df['yield']
+X_test = test_df.drop('yield', axis=1)
+y_test = test_df['yield']
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Store the processed data
+X_train_scaled, y_train, X_test_scaled, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(array([[-1.73106534,  0.80843626,  0.30828629, ..., -0.78211231,
+         -0.66585511, -0.57735296],
+        [-1.73083919, -1.09632254, -0.38661677, ...,  0.6683618 ,
+          0.64934233,  0.53105728],
+        [-1.73038688,  0.80843626,  0.30828629, ...,  1.02755853,
+          1.27759599,  1.06078707],
+        ...,
+        [ 1.72523508, -1.09632254, -0.38661677, ...,  0.71368079,
+          0.79636886,  1.07610684],
+        [ 1.72546123, -1.09632254, -0.38661677, ..., -1.99728312,
+         -1.57962292, -1.66287526],
+        [ 1.72568739,  0.80843626,  0.30828629, ..., -1.0823704 ,
+         -0.80776878, -0.96283561]]),
+ 0        5548.12201
+ 1        6869.77760
+             ...    
+ 12229    3680.56025
+ 12230    4696.44394
+ Name: yield, Length: 12231, dtype: float64,
+ array([[-1.7312915 ,  0.80843626,  0.30828629, ..., -1.04929455,
+         -0.78729111, -0.92282816],
+        [-1.73061304, -1.09632254, -0.38661677, ...,  0.8435927 ,
+          0.84563681,  0.8093747 ],
+        [-1.72948227,  0.80843626,  0.30828629, ...,  0.39483314,
+          0.50149525, -0.00683259],
+        ...,
+        [ 1.72410431, -1.09632254, -0.38661677, ...,  0.41590711,
+          0.19948572,  0.04763418],
+        [ 1.72591354,  0.80843626,  0.30828629, ...,  0.52392219,
+         -0.3402699 ,  0.11880534],
+        [ 1.72613969,  0.80843626,  0.30828629, ..., -0.14873214,
+         -0.00492396, -0.27168393]]),
+ 0       4476.81146
+ 1       6880.77590
+            ...    
+ 3056    6772.93347
+ 3057    5867.99722
+ Name: yield, Length: 3058, dtype: float64)from sklearn.svm import SVR
+from sklearn.metrics import mean_squared_error
+
+# Fit the SVM model
+svm_model = SVR()
+svm_model.fit(X_train_scaled, y_train)
+
+# Predict on the test set
+y_pred = svm_model.predict(X_test_scaled)
+
+# Calculate MSE
+mse = mean_squared_error(y_test, y_pred)
+
+# Report the MSE
+mse, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(910155.0332789761,
+ array([5661.62330703, 6560.68740332, 6194.98711702, ..., 6331.59917672,
+        6045.83991861, 5981.92635557]))

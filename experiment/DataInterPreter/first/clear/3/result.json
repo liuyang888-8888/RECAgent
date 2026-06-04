@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 183.2068862915039,
+        "interact_count": 15,
+        "prompt_tokens": 32542,
+        "completion_tokens": 3249,
+        "RCR": 5
+    },
+    "task": {
+        "id": 3,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "crime_category",
+        "task_description": "我想根据旧金山所有社区的近 12 年的犯罪报告相关数据，构建一个逻辑回归模型，正则化方法使用岭回归Ridge（L2），并将惩罚系数C设置为1.5。你需要对该数据集的pdDistrict字段进行独热编码，然后帮我把模型保存下来。"
+    }
+}

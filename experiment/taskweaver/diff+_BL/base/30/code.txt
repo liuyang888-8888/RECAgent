@@ -1,0 +1,102 @@
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+df = pd.read_csv(file_path, parse_dates=['Date'], index_col='Date')
+
+# Prepare the data
+train_data = df['Adj Close']
+
+# Build the ARIMA model
+model = ARIMA(train_data, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Make predictions
+predictions = model_fit.predict(start=0, end=len(train_data)-1)
+
+# Calculate MSE
+mse = mean_squared_error(train_data, predictions)
+
+mse, predictions, train_data
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 7
+    df = pd.read_csv(file_path, parse_dates=['Date'], index_col='Date')
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\io\parsers\readers.py:1026 in read_csv
+    return _read(filepath_or_buffer, kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\io\parsers\readers.py:620 in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\io\parsers\readers.py:1620 in __init__
+    self._engine = self._make_engine(f, self.engine)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\io\parsers\readers.py:1898 in _make_engine
+    return mapping[engine](f, **self.options)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\io\parsers\c_parser_wrapper.py:161 in __init__
+    self._validate_parse_dates_presence(self.names)  # type: ignore[has-type]
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\io\parsers\base_parser.py:243 in _validate_parse_dates_presence
+    raise ValueError(
+
+ValueError: Missing column provided to 'parse_dates': 'Date'
+
+import pandas as pd
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+df = pd.read_csv(file_path)
+
+# Inspect the columns
+print(df.columns)
+result os execution:The execution of the generated python code above has succeeded
+
+The stdout is:
+Index(['date', 'SP500'], dtype='object')
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+df = pd.read_csv(file_path, parse_dates=['date'], index_col='date')
+
+# Prepare the data
+train_data = df['SP500']
+
+# Build the ARIMA model
+model = ARIMA(train_data, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Make predictions
+predictions = model_fit.predict(start=0, end=len(train_data)-1)
+
+# Calculate MSE
+mse = mean_squared_error(train_data, predictions)
+
+mse, predictions, train_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(1041721.0258359485,
+ date
+ 2023-01-24       0.000000
+ 2015-12-17    2735.026348
+                  ...     
+ 2019-06-25    2972.504013
+ 2017-10-02    2973.958856
+ Name: predicted_mean, Length: 2518, dtype: float64,
+ date
+ 2023-01-24    4016.95
+ 2015-12-17    2041.89
+                ...   
+ 2019-06-25    2917.38
+ 2017-10-02    2529.12
+ Name: SP500, Length: 2518, dtype: float64)

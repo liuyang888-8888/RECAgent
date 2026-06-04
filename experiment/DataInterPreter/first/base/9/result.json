@@ -1,0 +1,16 @@
+{
+    "result": {
+        "run_status": "failed",
+        "time": 0,
+        "interact_count": 16,
+        "prompt_tokens": 51968,
+        "completion_tokens": 3111
+    },
+    "task": {
+        "id": 9,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "heart_diseases",
+        "task_description": "基于 heart_diseases 数据集，构建一个分类模型，用于预测个体是否患有心脏疾病。该任务属于多分类问题，目标是根据患者的生理指标、生活习惯和医疗历史等特征，预测其是否患有心脏疾病。"
+    }
+}

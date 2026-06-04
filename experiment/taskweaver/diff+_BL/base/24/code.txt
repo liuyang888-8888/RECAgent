@@ -1,0 +1,68 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\titanic_train.csv'
+titanic_data = pd.read_csv(file_path)
+
+# Handle missing values
+# Fill missing values in 'Age' with the median age
+titanic_data['Age'].fillna(titanic_data['Age'].median(), inplace=True)
+
+# Fill missing values in 'Fare' with the median fare
+titanic_data['Fare'].fillna(titanic_data['Fare'].median(), inplace=True)
+
+# Fill missing values in 'Embarked' with the most common port
+titanic_data['Embarked'].fillna(titanic_data['Embarked'].mode()[0], inplace=True)
+
+# Encode categorical variables
+label_encoder = LabelEncoder()
+titanic_data['Sex'] = label_encoder.fit_transform(titanic_data['Sex'])
+titanic_data['Embarked'] = label_encoder.fit_transform(titanic_data['Embarked'])
+
+# Drop unnecessary columns
+titanic_data.drop(['Name', 'Ticket', 'Cabin'], axis=1, inplace=True)
+
+# Result variables
+titanic_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+     PassengerId  Survived  Pclass  Sex   Age  SibSp  Parch     Fare  Embarked
+0              1         0       3    1  22.0      1      0   7.2500         2
+1              2         1       1    0  38.0      1      0  71.2833         0
+..           ...       ...     ...  ...   ...    ...    ...      ...       ...
+889          887         0       2    1  27.0      0      0  13.0000         2
+890          890         1       1    1  26.0      0      0  30.0000         0
+
+[891 rows x 9 columns]from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Select features for clustering
+features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+X = titanic_data[features]
+
+# Build the clustering model
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X)
+
+# Assign cluster labels
+titanic_data['Cluster'] = kmeans.labels_
+
+# Calculate the silhouette score
+silhouette_avg = silhouette_score(X, kmeans.labels_)
+
+# Result variables
+silhouette_avg, titanic_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.6621415033515984,
+      PassengerId  Survived  Pclass  Sex   Age  SibSp  Parch     Fare  Embarked  Cluster
+ 0              1         0       3    1  22.0      1      0   7.2500         2        0
+ 1              2         1       1    0  38.0      1      0  71.2833         0        1
+ ..           ...       ...     ...  ...   ...    ...    ...      ...       ...      ...
+ 889          887         0       2    1  27.0      0      0  13.0000         2        0
+ 890          890         1       1    1  26.0      0      0  30.0000         0        0
+ 
+ [891 rows x 10 columns])

@@ -1,0 +1,247 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Load the datasets
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_test.csv'
+
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Preprocess the data
+# Convert the 'Sex' column to numerical values
+label_encoder = LabelEncoder()
+train_data['Sex'] = label_encoder.fit_transform(train_data['Sex'])
+test_data['Sex'] = label_encoder.transform(test_data['Sex'])
+
+# Separate features and target variable
+X_train = train_data.drop('Rings', axis=1)
+y_train = train_data['Rings']
+X_test = test_data.drop('Rings', axis=1)
+y_test = test_data['Rings']
+
+X_train, X_test, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'Sex'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[1], line 14
+    train_data['Sex'] = label_encoder.fit_transform(train_data['Sex'])
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:4102 in __getitem__
+    indexer = self.columns.get_loc(key)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'Sex'
+
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Load the datasets
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_test.csv'
+
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Check the columns of the datasets
+print('Train Data Columns:', train_data.columns)
+print('Test Data Columns:', test_data.columns)
+
+# Preprocess the data if 'Sex' column exists
+if 'Sex' in train_data.columns and 'Sex' in test_data.columns:
+    label_encoder = LabelEncoder()
+    train_data['Sex'] = label_encoder.fit_transform(train_data['Sex'])
+    test_data['Sex'] = label_encoder.transform(test_data['Sex'])
+
+# Separate features and target variable
+X_train = train_data.drop('Rings', axis=1)
+y_train = train_data['Rings']
+X_test = test_data.drop('Rings', axis=1)
+y_test = test_data['Rings']
+
+X_train, X_test, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 22
+    X_train = train_data.drop('Rings', axis=1)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:5581 in drop
+    return super().drop(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4788 in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4830 in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:7070 in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+
+KeyError: "['Rings'] not found in axis"
+
+Train Data Columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+Test Data Columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Load the datasets
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_test.csv'
+
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Check the columns of the datasets
+print('Train Data Columns:', train_data.columns)
+print('Test Data Columns:', test_data.columns)
+
+# Preprocess the data if 'sex' column exists
+if 'sex' in train_data.columns and 'sex' in test_data.columns:
+    label_encoder = LabelEncoder()
+    train_data['sex'] = label_encoder.fit_transform(train_data['sex'])
+    test_data['sex'] = label_encoder.transform(test_data['sex'])
+
+# Separate features and target variable
+X_train = train_data.drop('rings', axis=1)
+y_train = train_data['rings']
+X_test = test_data.drop('rings', axis=1)
+y_test = test_data['rings']
+
+X_train, X_test, y_train, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(          id  sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight
+ 0          0    0   0.550      0.43   0.150        0.7715         0.3285         0.1465        0.2400
+ 1          1    0   0.630      0.49   0.145        1.1300         0.4580         0.2765        0.3200
+ ...      ...  ...     ...       ...     ...           ...            ...            ...           ...
+ 72490  90612    1   0.435      0.33   0.095        0.3215         0.1510         0.0785        0.0815
+ 72491  90613    1   0.345      0.27   0.075        0.2000         0.0980         0.0490        0.0700
+ 
+ [72492 rows x 9 columns],
+           id  sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight
+ 0          8    1   0.205     0.150    0.04        0.0460         0.0145         0.0105         0.010
+ 1         34    1   0.580     0.450    0.14        0.9165         0.3875         0.1615         0.275
+ ...      ...  ...     ...       ...     ...           ...            ...            ...           ...
+ 18121  90611    2   0.555     0.425    0.15        0.8790         0.3865         0.1815         0.240
+ 18122  90614    1   0.425     0.325    0.10        0.3455         0.1525         0.0785         0.105
+ 
+ [18123 rows x 9 columns],
+ 0        11
+ 1        11
+          ..
+ 72490     6
+ 72491     6
+ Name: rings, Length: 72492, dtype: int64,
+ 0         4
+ 1        10
+          ..
+ 18121     9
+ 18122     8
+ Name: rings, Length: 18123, dtype: int64)import lightgbm as lgb
+from sklearn.metrics import mean_squared_error
+
+# Convert the data to LightGBM Dataset format
+train_dataset = lgb.Dataset(X_train, label=y_train)
+test_dataset = lgb.Dataset(X_test, label=y_test, reference=train_dataset)
+
+# Define the parameters for the LightGBM model
+params = {
+    'objective': 'regression',
+    'metric': 'mse',
+    'boosting_type': 'gbdt',
+    'num_leaves': 31,
+    'learning_rate': 0.05,
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the model
+model = lgb.train(params, train_dataset, valid_sets=[test_dataset], num_boost_round=100, early_stopping_rounds=10)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test, num_iteration=model.best_iteration)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+mse, y_pred, model
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[4], line 22
+    model = lgb.train(params, train_dataset, valid_sets=[test_dataset], num_boost_round=100, early_stopping_rounds=10)
+
+TypeError: train() got an unexpected keyword argument 'early_stopping_rounds'
+
+import lightgbm as lgb
+from sklearn.metrics import mean_squared_error
+
+# Convert the data to LightGBM Dataset format
+train_dataset = lgb.Dataset(X_train, label=y_train)
+test_dataset = lgb.Dataset(X_test, label=y_test, reference=train_dataset)
+
+# Define the parameters for the LightGBM model
+params = {
+    'objective': 'regression',
+    'metric': 'mse',
+    'boosting_type': 'gbdt',
+    'num_leaves': 31,
+    'learning_rate': 0.05,
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the model
+model = lgb.train(params, train_dataset, valid_sets=[test_dataset], num_boost_round=100)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test, num_iteration=model.best_iteration)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+mse, y_pred, model
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(3.559769415339956,
+ array([ 4.44914755, 10.57626999,  6.79115585, ..., 14.12684463,
+         9.56732529,  7.46829332]),
+ <lightgbm.basic.Booster at 0x1e19f8e1f10>)

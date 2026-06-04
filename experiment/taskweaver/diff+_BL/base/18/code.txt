@@ -1,0 +1,60 @@
+import pandas as pd
+
+# Define the file paths
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\wild_blueberry_yield_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\wild_blueberry_yield_test.csv'
+
+# Load the datasets
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Display the first few rows of each dataset
+train_data.head(), test_data.head()
+
+# Result variables
+train_data, test_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(          id  clonesize  honeybee  bumbles  andrena  osmia  MaxOfUpperTRange  MinOfUpperTRange  AverageOfUpperTRange  MaxOfLowerTRange  MinOfLowerTRange  AverageOfLowerTRange  RainingDays  AverageRainingDays  fruitset  fruitmass      seeds       yield
+ 0          1       25.0      0.50     0.25     0.50   0.50              69.7              42.1                  58.2              50.2              24.3                  41.2         24.0                0.39  0.444908   0.422051  33.858317  5548.12201
+ 1          2       12.5      0.25     0.25     0.63   0.63              86.0              52.0                  71.9              62.0              30.0                  50.8         24.0                0.39  0.552927   0.470853  38.341781  6869.77760
+ ...      ...        ...       ...      ...      ...    ...               ...               ...                   ...               ...               ...                   ...          ...                 ...       ...        ...        ...         ...
+ 12229  15285       12.5      0.25     0.25     0.25   0.50              86.0              52.0                  71.9              62.0              30.0                  50.8         34.0                0.56  0.354413   0.388145  29.467434  3680.56025
+ 12230  15286       25.0      0.50     0.25     0.38   0.75              77.4              46.8                  64.7              55.8              27.0                  45.8         34.0                0.56  0.422548   0.416786  32.299059  4696.44394
+ 
+ [12231 rows x 18 columns],
+          id  clonesize  honeybee  bumbles  andrena  osmia  MaxOfUpperTRange  MinOfUpperTRange  AverageOfUpperTRange  MaxOfLowerTRange  MinOfLowerTRange  AverageOfLowerTRange  RainingDays  AverageRainingDays  fruitset  fruitmass      seeds       yield
+ 0         0       25.0      0.50     0.25     0.75   0.50              69.7              42.1                  58.2              50.2              24.3                  41.2         24.0                0.39  0.425011   0.417545  32.460887  4476.81146
+ 1         3       12.5      0.25     0.25     0.63   0.50              77.4              46.8                  64.7              55.8              27.0                  45.8         24.0                0.39  0.565976   0.478137  39.467561  6880.77590
+ ...     ...        ...       ...      ...      ...    ...               ...               ...                   ...               ...               ...                   ...          ...                 ...       ...        ...        ...         ...
+ 3056  15287       25.0      0.50     0.25     0.63   0.63              69.7              42.1                  58.2              50.2              24.3                  41.2         24.0                0.39  0.542170   0.434133  36.674243  6772.93347
+ 3057  15288       25.0      0.50     0.25     0.63   0.50              77.4              46.8                  64.7              55.8              27.0                  45.8         16.0                0.26  0.492077   0.446576  35.094733  5867.99722
+ 
+ [3058 rows x 18 columns])from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Extracting features and target variable
+X_train = train_data.drop(columns=['id', 'yield'])
+y_train = train_data['yield']
+X_test = test_data.drop(columns=['id', 'yield'])
+y_test = test_data['yield']
+
+# Building and training the regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predicting on the test set
+y_pred = model.predict(X_test)
+
+# Calculating the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+mse, y_pred, model
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(333169.7877742224,
+ array([4831.75188179, 6983.48731597, 6228.82597015, ..., 6442.31839786,
+        6646.0624778 , 5762.76418592]),
+ LinearRegression())

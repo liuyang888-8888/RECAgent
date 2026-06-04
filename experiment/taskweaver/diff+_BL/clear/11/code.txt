@@ -1,0 +1,182 @@
+import pandas as pd
+
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\rice_cammeo_and_osmancik_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\rice_cammeo_and_osmancik_test.csv'
+
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+train_data, test_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(       Area   Perimeter  Major_Axis_Length  Minor_Axis_Length  Eccentricity  Convex_Area    Extent     Class
+ 0     12529  437.838989         174.861450          92.189262      0.849733        12840  0.766019  Osmancik
+ 1     11051  424.976013         180.871903          78.267380      0.901527        11240  0.568058  Osmancik
+ ...     ...         ...                ...                ...           ...          ...       ...       ...
+ 3046  10847  417.924011         170.366791          82.473007      0.875018        11107  0.746319  Osmancik
+ 3047  13154  451.562012         179.953598          94.313812      0.851656        13428  0.650222  Osmancik
+ 
+ [3048 rows x 8 columns],
+       Area   Perimeter  Major_Axis_Length  Minor_Axis_Length  Eccentricity  Convex_Area    Extent     Class
+ 0    12442  459.535004         187.508850          87.187302      0.885323        12941  0.587580    Cammeo
+ 1    12408  437.014008         179.741165          88.829605      0.869343        12598  0.636928  Osmancik
+ ..     ...         ...                ...                ...           ...          ...       ...       ...
+ 760  13982  479.785004         204.542389          88.279648      0.902067        14221  0.772913    Cammeo
+ 761  14321  490.424988         204.280380          90.682976      0.896069        14622  0.573873    Cammeo
+ 
+ [762 rows x 8 columns])from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Extracting features and labels
+X_train = train_data.drop(['Class'], axis=1)
+y_train = train_data['Class']
+X_test = test_data.drop(['Class'], axis=1)
+y_test = test_data['Class']
+
+# Building the RandomForestClassifier model
+rf_model = RandomForestClassifier(n_estimators=8, max_depth=5, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# Making predictions on the test set
+y_pred = rf_model.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+f1, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.9290836631602085,
+ array(['Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik', 'Osmancik',
+        'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo', 'Osmancik',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik',
+        'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo', 'Cammeo', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Cammeo', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo', 'Osmancik', 'Cammeo',
+        'Osmancik', 'Cammeo', 'Osmancik', 'Osmancik', 'Osmancik', 'Cammeo',
+        'Cammeo', 'Cammeo', 'Osmancik', 'Cammeo', 'Cammeo'], dtype=object))

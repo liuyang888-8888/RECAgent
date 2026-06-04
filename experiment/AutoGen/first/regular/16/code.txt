@@ -1,0 +1,218 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import SGDRegressor
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import mean_squared_error
+
+# 定义数据路径
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\media_campaign_cost_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\media_campaign_cost_test.csv'
+
+# 加载数据
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# 检查数据
+print("Training data shape:", train_data.shape)
+print("Testing data shape:", test_data.shape)
+
+# 检查缺失值
+print("Missing values in training data:\n", train_data.isnull().sum())
+print("Missing values in testing data:\n", test_data.isnull().sum())
+
+# 分离特征和目标变量
+X_train = train_data.drop(columns=['cost'])
+y_train = train_data['cost']
+X_test = test_data.drop(columns=['cost'])
+y_test = test_data['cost']
+
+# 定义预处理步骤
+numeric_features = X_train.select_dtypes(include=[np.number]).columns.tolist()
+categorical_features = X_train.select_dtypes(include=[np.object]).columns.tolist()
+
+numeric_transformer = StandardScaler()
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# 定义模型
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('regressor', SGDRegressor())
+])
+
+# 训练模型
+model.fit(X_train, y_train)
+
+# 预测
+y_pred = model.predict(X_test)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+print("Mean Squared Error (MSE) on test set:", mse)
+
+
+执行结果：
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_18175f69e47c1e166a0b47ba0e74a92346337a143130a66cea3b1dfde815061d.py:33: FutureWarning: In the future `np.object` will be defined as the corresponding NumPy scalar.
+  categorical_features = X_train.select_dtypes(include=[np.object]).columns.tolist()
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_18175f69e47c1e166a0b47ba0e74a92346337a143130a66cea3b1dfde815061d.py", line 33, in <module>
+    categorical_features = X_train.select_dtypes(include=[np.object]).columns.tolist()
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\numpy\__init__.py", line 410, in __getattr__
+    raise AttributeError(__former_attrs__[attr], name=None)
+AttributeError: module 'numpy' has no attribute 'object'.
+`np.object` was a deprecated alias for the builtin `object`. To avoid this error in existing code, use `object` by itself. Doing this will not modify any behavior and is safe. 
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations. Did you mean: 'object_'?
+Training data shape: (28827, 17)
+Testing data shape: (7207, 17)
+Missing values in training data:
+ id                      0
+store_sales             0
+unit_sales              0
+total_children          0
+num_children_at_home    0
+avg_cars_at_home        0
+gross_weight            0
+recyclable_package      0
+low_fat                 0
+units_per_case          0
+store_sqft              0
+coffee_bar              0
+video_store             0
+salad_bar               0
+prepared_food           0
+florist                 0
+cost                    0
+dtype: int64
+Missing values in testing data:
+ id                      0
+store_sales             0
+unit_sales              0
+total_children          0
+num_children_at_home    0
+avg_cars_at_home        0
+gross_weight            0
+recyclable_package      0
+low_fat                 0
+units_per_case          0
+store_sqft              0
+coffee_bar              0
+video_store             0
+salad_bar               0
+prepared_food           0
+florist                 0
+cost                    0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import SGDRegressor
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import mean_squared_error
+
+# 定义数据路径
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\media_campaign_cost_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\media_campaign_cost_test.csv'
+
+# 加载数据
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# 检查数据
+print("Training data shape:", train_data.shape)
+print("Testing data shape:", test_data.shape)
+
+# 检查缺失值
+print("Missing values in training data:\n", train_data.isnull().sum())
+print("Missing values in testing data:\n", test_data.isnull().sum())
+
+# 分离特征和目标变量
+X_train = train_data.drop(columns=['cost'])
+y_train = train_data['cost']
+X_test = test_data.drop(columns=['cost'])
+y_test = test_data['cost']
+
+# 定义预处理步骤
+numeric_features = X_train.select_dtypes(include=[np.number]).columns.tolist()
+categorical_features = X_train.select_dtypes(include=['object']).columns.tolist()
+
+numeric_transformer = StandardScaler()
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# 定义模型
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('regressor', SGDRegressor())
+])
+
+# 训练模型
+model.fit(X_train, y_train)
+
+# 预测
+y_pred = model.predict(X_test)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+print("Mean Squared Error (MSE) on test set:", mse)
+
+
+执行结果：
+Training data shape: (28827, 17)
+Testing data shape: (7207, 17)
+Missing values in training data:
+ id                      0
+store_sales             0
+unit_sales              0
+total_children          0
+num_children_at_home    0
+avg_cars_at_home        0
+gross_weight            0
+recyclable_package      0
+low_fat                 0
+units_per_case          0
+store_sqft              0
+coffee_bar              0
+video_store             0
+salad_bar               0
+prepared_food           0
+florist                 0
+cost                    0
+dtype: int64
+Missing values in testing data:
+ id                      0
+store_sales             0
+unit_sales              0
+total_children          0
+num_children_at_home    0
+avg_cars_at_home        0
+gross_weight            0
+recyclable_package      0
+low_fat                 0
+units_per_case          0
+store_sqft              0
+coffee_bar              0
+video_store             0
+salad_bar               0
+prepared_food           0
+florist                 0
+cost                    0
+dtype: int64
+Mean Squared Error (MSE) on test set: 903.6421135768958

@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 10,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "car_evaluation",
+        "task_description": "我需要一个用于评估车辆的可接受程度的梯度提升决策树模型。目标是根据车辆的购买价格、尺寸、安全性等特征，预测其可接受程度（如不可接受、可接受、良好、优秀）。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 72.33363175392151,
+        "interact_count": 3,
+        "prompt_tokens": 4562,
+        "completion_tokens": 1096,
+        "RCR": 5
+    }
+}

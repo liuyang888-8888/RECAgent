@@ -1,0 +1,332 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\employee_attrition_train.csv')
+test_df = pd.read_csv('E:\\csv\\employee_attrition_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Monitor data types per column
+print("Train dataset column data types:")
+print(train_df_copy.dtypes)
+print("\nTest dataset column data types:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Handle categorical data using label encoding
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Scale numerical data using MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Verify the preprocessing
+print("\nPreprocessed Train dataset head:")
+print(train_df_copy.head())
+print("\nPreprocessed Test dataset head:")
+print(test_df_copy.head())
+execute_result:
+Train dataset column data types:
+id                           int64
+age                          int64
+DailyRate                    int64
+Department                  object
+DistanceFromHome             int64
+Education                    int64
+EducationField              object
+EmployeeCount                int64
+EnvironmentSatisfaction      int64
+Gender                      object
+HourlyRate                   int64
+JobInvolvement               int64
+JobLevel                     int64
+JobRole                     object
+JobSatisfaction              int64
+MaritalStatus               object
+MonthlyIncome                int64
+MonthlyRate                  int64
+NumCompaniesWorked           int64
+Over18                      object
+OverTime                    object
+PercentSalaryHike            int64
+PerformanceRating            int64
+RelationshipSatisfaction     int64
+StandardHours                int64
+StockOptionLevel             int64
+TotalWorkingYears            int64
+TrainingTimesLastYear        int64
+WorkLifeBalance              int64
+YearsAtCompany               int64
+YearsInCurrentRole           int64
+YearsSinceLastPromotion      int64
+YearsWithCurrManager         int64
+Attrition                    int64
+dtype: object
+
+Test dataset column data types:
+id                           int64
+age                          int64
+DailyRate                    int64
+Department                  object
+DistanceFromHome             int64
+Education                    int64
+EducationField              object
+EmployeeCount                int64
+EnvironmentSatisfaction      int64
+Gender                      object
+HourlyRate                   int64
+JobInvolvement               int64
+JobLevel                     int64
+JobRole                     object
+JobSatisfaction              int64
+MaritalStatus               object
+MonthlyIncome                int64
+MonthlyRate                  int64
+NumCompaniesWorked           int64
+Over18                      object
+OverTime                    object
+PercentSalaryHike            int64
+PerformanceRating            int64
+RelationshipSatisfaction     int64
+StandardHours                int64
+StockOptionLevel             int64
+TotalWorkingYears            int64
+TrainingTimesLastYear        int64
+WorkLifeBalance              int64
+YearsAtCompany               int64
+YearsInCurrentRole           int64
+YearsSinceLastPromotion      int64
+YearsWithCurrManager         int64
+Attrition                    int64
+dtype: object
+
+Preprocessed Train dataset head:
+         id       age  ...  YearsWithCurrManager  Attrition
+0  0.000000  0.428571  ...              0.470588        0.0
+1  0.000597  0.404762  ...              0.176471        0.0
+2  0.001193  0.333333  ...              0.117647        0.0
+3  0.001790  0.476190  ...              0.117647        0.0
+4  0.002387  0.761905  ...              0.588235        1.0
+
+[5 rows x 34 columns]
+
+Preprocessed Test dataset head:
+         id       age  ...  YearsWithCurrManager  Attrition
+0  0.008950  0.500000  ...              0.588235        0.0
+1  0.013723  0.595238  ...              0.117647        0.0
+2  0.017303  0.142857  ...              0.000000        0.0
+3  0.017900  0.547619  ...              0.117647        0.0
+4  0.019093  0.404762  ...              0.411765        0.0
+
+[5 rows x 34 columns]
+is_success:
+True
+code:
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Ensure that the label column is not altered
+label_column = 'Attrition'
+if label_column in train_df_copy.columns:
+    train_labels = train_df_copy[label_column].copy()
+    train_df_copy.drop(columns=[label_column], inplace=True)
+if label_column in test_df_copy.columns:
+    test_labels = test_df_copy[label_column].copy()
+    test_df_copy.drop(columns=[label_column], inplace=True)
+
+# Encode categorical variables
+categorical_columns = ['Department', 'EducationField', 'Gender', 'JobRole', 'MaritalStatus', 'Over18', 'OverTime']
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Scale numerical features
+numerical_columns = [col for col in train_df_copy.columns if col not in categorical_columns]
+scaler = MinMaxScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Reattach the label column
+train_df_copy[label_column] = train_labels
+test_df_copy[label_column] = test_labels
+
+# Display the first few rows of the preprocessed datasets
+print("\nPreprocessed Train dataset head:")
+print(train_df_copy.head())
+print("\nPreprocessed Test dataset head:")
+print(test_df_copy.head())
+execute_result:
+Preprocessed Train dataset head:
+         id       age  ...  YearsWithCurrManager  Attrition
+0  0.000000  0.428571  ...              0.470588        0.0
+1  0.000597  0.404762  ...              0.176471        0.0
+2  0.001193  0.333333  ...              0.117647        0.0
+3  0.001790  0.476190  ...              0.117647        0.0
+4  0.002387  0.761905  ...              0.588235        1.0
+
+[5 rows x 34 columns]
+
+Preprocessed Test dataset head:
+         id       age  ...  YearsWithCurrManager  Attrition
+0  0.008950  0.500000  ...              0.588235        0.0
+1  0.013723  0.595238  ...              0.117647        0.0
+2  0.017303  0.142857  ...              0.000000        0.0
+3  0.017900  0.547619  ...              0.117647        0.0
+4  0.019093  0.404762  ...              0.411765        0.0
+
+[5 rows x 34 columns]
+is_success:
+True
+code:
+# Splitting the preprocessed training and test data into features (X) and target (y)
+X_train = train_df_copy.drop(columns=['Attrition'])
+y_train = train_df_copy['Attrition']
+
+X_test = test_df_copy.drop(columns=['Attrition'])
+y_test = test_df_copy['Attrition']
+
+print("Features of the Train dataset head:")
+print(X_train.head())
+print("\nTarget of the Train dataset head:")
+print(y_train.head())
+print("\nFeatures of the Test dataset head:")
+print(X_test.head())
+print("\nTarget of the Test dataset head:")
+print(y_test.head())
+execute_result:
+Features of the Train dataset head:
+         id       age  ...  YearsSinceLastPromotion  YearsWithCurrManager
+0  0.000000  0.428571  ...                 0.466667              0.470588
+1  0.000597  0.404762  ...                 0.000000              0.176471
+2  0.001193  0.333333  ...                 0.066667              0.117647
+3  0.001790  0.476190  ...                 0.000000              0.117647
+4  0.002387  0.761905  ...                 0.266667              0.588235
+
+[5 rows x 33 columns]
+
+Target of the Train dataset head:
+0    0.0
+1    0.0
+2    0.0
+3    0.0
+4    1.0
+Name: Attrition, dtype: float64
+
+Features of the Test dataset head:
+         id       age  ...  YearsSinceLastPromotion  YearsWithCurrManager
+0  0.008950  0.500000  ...                 0.400000              0.588235
+1  0.013723  0.595238  ...                 0.133333              0.117647
+2  0.017303  0.142857  ...                 0.000000              0.000000
+3  0.017900  0.547619  ...                 0.000000              0.117647
+4  0.019093  0.404762  ...                 0.066667              0.411765
+
+[5 rows x 33 columns]
+
+Target of the Test dataset head:
+0    0.0
+1    0.0
+2    0.0
+3    0.0
+4    0.0
+Name: Attrition, dtype: float64
+is_success:
+True
+code:
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the Decision Tree classifier with specified parameters
+dt_classifier = DecisionTreeClassifier(min_samples_leaf=3, min_samples_split=5, max_depth=50)
+
+# Train the model
+dt_classifier.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = dt_classifier.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+execute_result:
+Accuracy: 0.8273809523809523
+Classification Report:
+              precision    recall  f1-score   support
+
+         0.0       0.89      0.91      0.90       292
+         1.0       0.32      0.27      0.29        44
+
+    accuracy                           0.83       336
+   macro avg       0.60      0.59      0.60       336
+weighted avg       0.82      0.83      0.82       336
+is_success:
+True
+code:
+# Predict the target variable for the test set using the trained model
+y_pred_test = dt_classifier.predict(X_test)
+
+# Print the predictions
+print("Predictions for the Test Set:")
+print(y_pred_test)
+execute_result:
+Predictions for the Test Set:
+[0. 0. 0. 0. 0. 1. 0. 1. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 1. 1. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 1. 0. 1. 1. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 1.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.
+ 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 1. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1.
+ 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 1. 1. 0. 0. 0. 0. 0.
+ 1. 0. 0. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 1. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 1. 0. 1. 0. 0. 1. 0. 0. 0. 0. 0. 1. 0. 0. 0. 1.]
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred_test)
+
+print(f"F1 Score: {f1}")
+execute_result:
+F1 Score: 0.2926829268292683
+is_success:
+True
+code:
+import pandas as pd
+
+# Assuming y_pred_test contains the predictions from the model
+predictions_df = pd.DataFrame({
+    'id': test_df['id'],  # Using original test_df to get the 'id' column
+    'Attrition': y_pred_test
+})
+
+# Save the predictions to a CSV file
+predictions_df.to_csv('employee_attrition_predictions.csv', index=False)
+execute_result:
+
+is_success:
+True

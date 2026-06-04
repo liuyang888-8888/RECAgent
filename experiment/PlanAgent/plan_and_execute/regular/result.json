@@ -1,0 +1,3292 @@
+[
+    {
+        "task": {
+            "id": 1,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "bank_customer_churn",
+            "task_description": "请你根据欧洲银行的 10,000 名客户的账户信息，包括有关其信用评分、余额、产品以及他们是否流失的详细信息。，训练一个随机森林模型，可以根据客户的信息预测其是否会流失的概率。"
+        },
+        "result": {
+            "prompt_tokens": 6629,
+            "completion_tokens": 565,
+            "interact_number": 7,
+            "time": 20.941822290420532,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5502",
+                        "source_node_id": "7567",
+                        "target_node_id": "7568"
+                    },
+                    {
+                        "edge_id": "5503",
+                        "source_node_id": "7568",
+                        "target_node_id": "7569"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7567",
+                        "widget_name": "File",
+                        "node_name": "加载客户数据",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "adult.csv"
+                        }
+                    },
+                    {
+                        "node_id": "7568",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0,
+                                1,
+                                2
+                            ],
+                            "features": [
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12
+                            ],
+                            "targets": "13"
+                        }
+                    },
+                    {
+                        "node_id": "7569",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "use_max_features": true,
+                            "max_features": "sqrt",
+                            "use_random_state": true,
+                            "use_max_depth": true,
+                            "max_depth": 5,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 2,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "cirrhosis_patient",
+            "task_description": "请你利用 17 个临床特征和肝硬化患者的生存状态的表格数据。其中存活状态包括 0 = D （死亡）、1 = C （删失）、2 = CL （因肝移植而删除），构建一个支持向量机算法的分类模型。"
+        },
+        "result": {
+            "prompt_tokens": 7373,
+            "completion_tokens": 563,
+            "interact_number": 7,
+            "time": 27.753136157989502,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5504",
+                        "source_node_id": "7570",
+                        "target_node_id": "7571"
+                    },
+                    {
+                        "edge_id": "5505",
+                        "source_node_id": "7571",
+                        "target_node_id": "7572"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7570",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Training Data",
+                        "node_params": {
+                            "table_name": "liver_disease_dataset",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7571",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                "0"
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17
+                            ],
+                            "targets": "19"
+                        }
+                    },
+                    {
+                        "node_id": "7572",
+                        "widget_name": "SVM",
+                        "node_name": "SVM Model",
+                        "node_params": {
+                            "svm_type": 0,
+                            "C": 1,
+                            "epsilon": 0.1,
+                            "nu_C": 1,
+                            "nu": 0.5,
+                            "kernel": "rbf",
+                            "gamma": 0,
+                            "coef0": 0,
+                            "degree": 3,
+                            "tol": 0.001,
+                            "limit_iter": true,
+                            "max_iter": 100
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 3,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "crime_category",
+            "task_description": "我想根据旧金山所有社区的近 12 年的犯罪报告相关数据，构建一个可以预测犯罪类别的逻辑回归模型。"
+        },
+        "result": {
+            "prompt_tokens": 5746,
+            "completion_tokens": 496,
+            "interact_number": 7,
+            "time": 22.511821269989014,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5506",
+                        "source_node_id": "7573",
+                        "target_node_id": "7574"
+                    },
+                    {
+                        "edge_id": "5507",
+                        "source_node_id": "7574",
+                        "target_node_id": "7575"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7573",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Crime Data",
+                        "node_params": {
+                            "table_name": "sf_crime_12_years",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7574",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "targets": "4"
+                        }
+                    },
+                    {
+                        "node_id": "7575",
+                        "widget_name": "Logistic Regression",
+                        "node_name": "Logistic Regression Model",
+                        "node_params": {
+                            "penalty": "l2",
+                            "C": 1
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 4,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "employee_attrition",
+            "task_description": "通过分析影响员工流失的关键因素，识别可能离职的员工，从而帮助企业制定针对性的留任策略，降低员工流失率。请基于员工的个人相关数据，构建一个决策树模型，用于预测员工流失风险。"
+        },
+        "result": {
+            "prompt_tokens": 7736,
+            "completion_tokens": 589,
+            "interact_number": 7,
+            "time": 28.967432975769043,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5508",
+                        "source_node_id": "7576",
+                        "target_node_id": "7577"
+                    },
+                    {
+                        "edge_id": "5509",
+                        "source_node_id": "7577",
+                        "target_node_id": "7578"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7576",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Employee Data",
+                        "node_params": {
+                            "table_name": "employee_data",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7577",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19,
+                                20,
+                                21,
+                                22,
+                                23,
+                                24,
+                                25,
+                                26,
+                                27,
+                                28,
+                                29,
+                                30,
+                                31,
+                                32
+                            ],
+                            "targets": "33"
+                        }
+                    },
+                    {
+                        "node_id": "7578",
+                        "widget_name": "Tree",
+                        "node_name": "Decision Tree Model",
+                        "node_params": {
+                            "limit_min_leaf": true,
+                            "min_leaf": 2,
+                            "limit_min_internal": true,
+                            "min_internal": 5,
+                            "limit_depth": true,
+                            "max_depth": 100
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 5,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "horse_health_outcomes",
+            "task_description": "请使用数据库中的马匹了过去的医疗状况相关数据，构建一个LightGBM的分类模型，可以依据马匹的医疗状况自动判断该马匹最终存活下来的概率。"
+        },
+        "result": {
+            "prompt_tokens": 6202,
+            "completion_tokens": 551,
+            "interact_number": 7,
+            "time": 19.18213701248169,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5510",
+                        "source_node_id": "7579",
+                        "target_node_id": "7580"
+                    },
+                    {
+                        "edge_id": "5511",
+                        "source_node_id": "7580",
+                        "target_node_id": "7581"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7579",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Training Data",
+                        "node_params": {
+                            "table_name": "horse_medical_records",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7580",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                1
+                            ],
+                            "features": [
+                                0,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7
+                            ],
+                            "targets": "8"
+                        }
+                    },
+                    {
+                        "node_id": "7581",
+                        "widget_name": "LightGBM",
+                        "node_name": "LightGBM Model",
+                        "node_params": {
+                            "boosting_type": "gbdt",
+                            "n_estimators": 100,
+                            "learning_rate": 0.1,
+                            "sampling_rate": 0.1,
+                            "max_depth_check": true,
+                            "max_depth": 5,
+                            "num_leaves_check": true,
+                            "num_leaves": 31
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 6,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "kidney_stone",
+            "task_description": "我想要构建一个构建一个决策树分类模型，用于根据尿液分析（如尿液中各种成分的浓度）预测患者是否存在肾结石。该任务属于二分类问题，目标是根据输入特征预测肾结石的存在（是/否）。"
+        },
+        "result": {
+            "prompt_tokens": 6208,
+            "completion_tokens": 520,
+            "interact_number": 7,
+            "time": 19.753628730773926,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5512",
+                        "source_node_id": "7582",
+                        "target_node_id": "7583"
+                    },
+                    {
+                        "edge_id": "5513",
+                        "source_node_id": "7583",
+                        "target_node_id": "7584"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7582",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Training Data",
+                        "node_params": {
+                            "table_name": "urine_analysis_training",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7583",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6
+                            ],
+                            "targets": "7"
+                        }
+                    },
+                    {
+                        "node_id": "7584",
+                        "widget_name": "Tree",
+                        "node_name": "Decision Tree Classifier",
+                        "node_params": {
+                            "limit_min_leaf": true,
+                            "min_leaf": 2,
+                            "limit_min_internal": true,
+                            "min_internal": 5,
+                            "limit_depth": true,
+                            "max_depth": 100
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 7,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "reservation_cancellation",
+            "task_description": "对于酒店经理来说客户是否会取消预定是一个十分值得关注的问题，请使用酒店预订取消相关数据，构建一个随机森林的预测模型，用于预测酒店预订是否会被取消。"
+        },
+        "result": {
+            "prompt_tokens": 6865,
+            "completion_tokens": 573,
+            "interact_number": 7,
+            "time": 20.560988187789917,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5514",
+                        "source_node_id": "7585",
+                        "target_node_id": "7586"
+                    },
+                    {
+                        "edge_id": "5515",
+                        "source_node_id": "7586",
+                        "target_node_id": "7587"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7585",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Hotel Booking Data",
+                        "node_params": {
+                            "table_name": "hotel_bookings",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7586",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17
+                            ],
+                            "targets": "18"
+                        }
+                    },
+                    {
+                        "node_id": "7587",
+                        "widget_name": "Random Forest",
+                        "node_name": "Random Forest Model",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "use_max_features": true,
+                            "max_features": "sqrt",
+                            "use_random_state": true,
+                            "use_max_depth": true,
+                            "max_depth": 10,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 8,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "smoker_status_bio_signals",
+            "task_description": "根据生物信号等特征，构建一个决策树分类模型，用于预测一个人是否是抽烟者。该任务属于二分类问题，预测其是否是一个烟民。"
+        },
+        "result": {
+            "prompt_tokens": 7140,
+            "completion_tokens": 546,
+            "interact_number": 7,
+            "time": 27.217056274414062,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5516",
+                        "source_node_id": "7588",
+                        "target_node_id": "7589"
+                    },
+                    {
+                        "edge_id": "5517",
+                        "source_node_id": "7589",
+                        "target_node_id": "7590"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7588",
+                        "widget_name": "SQL Table",
+                        "node_name": "SQL Table",
+                        "node_params": {
+                            "table_name": "biological_signals_training_data",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7589",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                "0"
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19,
+                                20,
+                                21,
+                                22
+                            ],
+                            "targets": "23"
+                        }
+                    },
+                    {
+                        "node_id": "7590",
+                        "widget_name": "Tree",
+                        "node_name": "Decision Tree Classifier",
+                        "node_params": {
+                            "limit_min_leaf": true,
+                            "min_leaf": 2,
+                            "limit_min_internal": true,
+                            "min_internal": 5,
+                            "limit_depth": true,
+                            "max_depth": 100
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 9,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "heart_diseases",
+            "task_description": "构建一个随机森林分类模型，用于预测个体是否患有心脏疾病。目标是根据患者的生理指标、生活习惯和医疗历史等特征，预测其是否患有心脏疾病。"
+        },
+        "result": {
+            "prompt_tokens": 6402,
+            "completion_tokens": 599,
+            "interact_number": 7,
+            "time": 22.853887796401978,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5518",
+                        "source_node_id": "7591",
+                        "target_node_id": "7592"
+                    },
+                    {
+                        "edge_id": "5519",
+                        "source_node_id": "7592",
+                        "target_node_id": "7593"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7591",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Heart Disease Data",
+                        "node_params": {
+                            "table_name": "heart_disease",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7592",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12
+                            ],
+                            "targets": "13"
+                        }
+                    },
+                    {
+                        "node_id": "7593",
+                        "widget_name": "Random Forest",
+                        "node_name": "Random Forest Model",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "use_max_features": true,
+                            "max_features": "sqrt",
+                            "use_random_state": true,
+                            "use_max_depth": true,
+                            "max_depth": 10,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 10,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "car_evaluation",
+            "task_description": "我需要一个用于评估车辆的可接受程度的梯度提升决策树模型。目标是根据车辆的购买价格、尺寸、安全性等特征，预测其可接受程度（如不可接受、可接受、良好、优秀）。"
+        },
+        "result": {
+            "prompt_tokens": 11425,
+            "completion_tokens": 1177,
+            "interact_number": 12,
+            "time": 59.09100699424744,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "6016",
+                        "source_node_id": "8269",
+                        "target_node_id": "8271"
+                    },
+                    {
+                        "edge_id": "6017",
+                        "source_node_id": "8270",
+                        "target_node_id": "8272"
+                    },
+                    {
+                        "edge_id": "6018",
+                        "source_node_id": "8271",
+                        "target_node_id": "8273"
+                    },
+                    {
+                        "edge_id": "6019",
+                        "source_node_id": "8272",
+                        "target_node_id": "8274"
+                    },
+                    {
+                        "edge_id": "6020",
+                        "source_node_id": "8273",
+                        "target_node_id": "8275"
+                    },
+                    {
+                        "edge_id": "6021",
+                        "source_node_id": "8274",
+                        "target_node_id": "8276"
+                    },
+                    {
+                        "edge_id": "6022",
+                        "source_node_id": "8275",
+                        "target_node_id": "8276"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8269",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Training Data",
+                        "node_params": {
+                            "table_name": "vehicle_acceptability",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "8270",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Test Data",
+                        "node_params": {
+                            "table_name": "vehicle_acceptability_test",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "8271",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "One Hot Encoder for Training Data",
+                        "node_params": {
+                            "encode_vars": [
+                                "buying_price",
+                                "size",
+                                "safety"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "8272",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "One Hot Encoder for Test Data",
+                        "node_params": {
+                            "encode_vars": [
+                                "buying_price",
+                                "size",
+                                "safety"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "8273",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target for Training Data",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "targets": "6"
+                        }
+                    },
+                    {
+                        "node_id": "8274",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target for Test Data",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "targets": "6"
+                        }
+                    },
+                    {
+                        "node_id": "8275",
+                        "widget_name": "Gradient Boosting Decision Tree",
+                        "node_name": "GBDT Model",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "learning_rate": 0.1,
+                            "use_max_depth": true,
+                            "max_depth": 5,
+                            "use_min_samples": true,
+                            "min_samples": 2
+                        }
+                    },
+                    {
+                        "node_id": "8276",
+                        "widget_name": "Test & Score",
+                        "node_name": "Test & Score",
+                        "node_params": {}
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 11,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "rice_cammeo_and_osmancik",
+            "task_description": "我想要一个根据稻米的形态特征（如面积、周长、长度等）的表格数据用于区分两种稻米（Cammeo 和 Osmancik）的随机森林模型。目标是预测其属于 Cammeo 还是 Osmancik。"
+        },
+        "result": {
+            "prompt_tokens": 6493,
+            "completion_tokens": 550,
+            "interact_number": 7,
+            "time": 20.56028985977173,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5524",
+                        "source_node_id": "7600",
+                        "target_node_id": "7601"
+                    },
+                    {
+                        "edge_id": "5525",
+                        "source_node_id": "7601",
+                        "target_node_id": "7602"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7600",
+                        "widget_name": "File",
+                        "node_name": "文件输入",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "rice.csv"
+                        }
+                    },
+                    {
+                        "node_id": "7601",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6
+                            ],
+                            "targets": "7"
+                        }
+                    },
+                    {
+                        "node_id": "7602",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "use_max_features": true,
+                            "max_features": "sqrt",
+                            "use_random_state": true,
+                            "use_max_depth": true,
+                            "max_depth": 10,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 12,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "banknote_authentication",
+            "task_description": " 我需要一个可以根据钞票的方差（Variance）、偏度（Skewness）、峰度（Kurtosis）和熵（Entropy）的数据，预测钞票真伪的梯度决策提升树模型。"
+        },
+        "result": {
+            "prompt_tokens": 6022,
+            "completion_tokens": 520,
+            "interact_number": 7,
+            "time": 21.58542227745056,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5526",
+                        "source_node_id": "7603",
+                        "target_node_id": "7604"
+                    },
+                    {
+                        "edge_id": "5527",
+                        "source_node_id": "7604",
+                        "target_node_id": "7605"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7603",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Banknote Data",
+                        "node_params": {
+                            "table_name": "banknote",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7604",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "targets": "4"
+                        }
+                    },
+                    {
+                        "node_id": "7605",
+                        "widget_name": "Gradient Boosting Decision Tree",
+                        "node_name": "GBDT Model",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "learning_rate": 0.1,
+                            "use_max_depth": true,
+                            "max_depth": 5,
+                            "use_min_samples": true,
+                            "min_samples": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 13,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "secondary_mushroom",
+            "task_description": "我需要一个AdaBoost分类模型，可以是根据蘑菇特征（如形状、颜色、气味等）的表格数据预测蘑菇是否可食用。"
+        },
+        "result": {
+            "prompt_tokens": 7546,
+            "completion_tokens": 650,
+            "interact_number": 8,
+            "time": 23.565314769744873,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5528",
+                        "source_node_id": "7606",
+                        "target_node_id": "7607"
+                    },
+                    {
+                        "edge_id": "5529",
+                        "source_node_id": "7607",
+                        "target_node_id": "7608"
+                    },
+                    {
+                        "edge_id": "5530",
+                        "source_node_id": "7608",
+                        "target_node_id": "7609"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7606",
+                        "widget_name": "File",
+                        "node_name": "文件输入",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "mushroom.csv"
+                        }
+                    },
+                    {
+                        "node_id": "7607",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "独热编码",
+                        "node_params": {
+                            "encode_vars": [
+                                "shape",
+                                "color",
+                                "odor"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "7608",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19
+                            ],
+                            "targets": "20"
+                        }
+                    },
+                    {
+                        "node_id": "7609",
+                        "widget_name": "AdaBoost",
+                        "node_name": "AdaBoost",
+                        "node_params": {
+                            "n_estimators": 50,
+                            "learning_rate": 1,
+                            "algorithm": "SAMME.R",
+                            "loss": "linear"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 14,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "abalone",
+            "task_description": "我需要一个模型可以使用鲍鱼的物理测量值的表格数据来预估鲍鱼年龄。要求使用lightGBM模型来完成该任务。"
+        },
+        "result": {
+            "prompt_tokens": 6334,
+            "completion_tokens": 556,
+            "interact_number": 7,
+            "time": 23.74632215499878,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5531",
+                        "source_node_id": "7610",
+                        "target_node_id": "7611"
+                    },
+                    {
+                        "edge_id": "5532",
+                        "source_node_id": "7611",
+                        "target_node_id": "7612"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7610",
+                        "widget_name": "File",
+                        "node_name": "文件输入",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "abalone.csv"
+                        }
+                    },
+                    {
+                        "node_id": "7611",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
+                            "targets": "9"
+                        }
+                    },
+                    {
+                        "node_id": "7612",
+                        "widget_name": "LightGBM",
+                        "node_name": "LightGBM",
+                        "node_params": {
+                            "boosting_type": "gbdt",
+                            "n_estimators": 100,
+                            "learning_rate": 0.1,
+                            "sampling_rate": 0.1,
+                            "max_depth_check": false,
+                            "max_depth": 3,
+                            "num_leaves_check": false,
+                            "num_leaves": 31
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 15,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "crab_age",
+            "task_description": "请使用包含了螃蟹的性别、重量，直径，高度和外壳及内脏重量还有年龄的数据，构建一个决策树模型预测螃蟹年龄。"
+        },
+        "result": {
+            "prompt_tokens": 6363,
+            "completion_tokens": 505,
+            "interact_number": 7,
+            "time": 19.195875644683838,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5533",
+                        "source_node_id": "7613",
+                        "target_node_id": "7614"
+                    },
+                    {
+                        "edge_id": "5534",
+                        "source_node_id": "7614",
+                        "target_node_id": "7615"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7613",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Crab Data",
+                        "node_params": {
+                            "table_name": "crab_data",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7614",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1,
+                                5,
+                                3,
+                                4,
+                                6,
+                                7,
+                                8
+                            ],
+                            "targets": "9"
+                        }
+                    },
+                    {
+                        "node_id": "7615",
+                        "widget_name": "Tree",
+                        "node_name": "Decision Tree Model",
+                        "node_params": {
+                            "limit_min_leaf": true,
+                            "min_leaf": 2,
+                            "limit_min_internal": true,
+                            "min_internal": 5,
+                            "limit_depth": true,
+                            "max_depth": 100
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 16,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "media_campaign_cost",
+            "task_description": "我需要一个可以用于预测 Food Mart 媒体活动的成本的随机梯度下降模型。目标是根据输入特征（如广告渠道、活动时长、目标受众等）预测媒体活动的成本。"
+        },
+        "result": {
+            "prompt_tokens": 7215,
+            "completion_tokens": 546,
+            "interact_number": 7,
+            "time": 20.452491760253906,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5535",
+                        "source_node_id": "7616",
+                        "target_node_id": "7617"
+                    },
+                    {
+                        "edge_id": "5536",
+                        "source_node_id": "7617",
+                        "target_node_id": "7618"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7616",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Food Mart Media Data",
+                        "node_params": {
+                            "table_name": "food_mart_media_activities",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7617",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15
+                            ],
+                            "targets": "16"
+                        }
+                    },
+                    {
+                        "node_id": "7618",
+                        "widget_name": "Stochastic Gradient Descent",
+                        "node_name": "SGD Model",
+                        "node_params": {
+                            "classification_loss": "hinge",
+                            "classification_epsilon": 0.1,
+                            "regression_loss": "squared_loss",
+                            "regression_epsilon": 0.1,
+                            "penalty": "l2",
+                            "alpha": 0.0001,
+                            "l1_ratio": 0.15,
+                            "learning_rate": "constant",
+                            "eta0": 0.01,
+                            "power_t": 0.25,
+                            "max_iter": 1000,
+                            "shuffle": true,
+                            "use_random_state": false
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 17,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "mohs_hardness",
+            "task_description": "请基于 mohs_hardness 数据集，构建一个K最近邻（KNN）模型，用于预测矿物的硬度（莫氏硬度）。目标是根据矿物的成分特征（如原子描述符）预测其硬度。"
+        },
+        "result": {
+            "prompt_tokens": 6782,
+            "completion_tokens": 480,
+            "interact_number": 7,
+            "time": 20.530198097229004,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5537",
+                        "source_node_id": "7619",
+                        "target_node_id": "7620"
+                    },
+                    {
+                        "edge_id": "5538",
+                        "source_node_id": "7620",
+                        "target_node_id": "7621"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7619",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Mohs Hardness Data",
+                        "node_params": {
+                            "table_name": "mohs_hardness",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7620",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "targets": "11"
+                        }
+                    },
+                    {
+                        "node_id": "7621",
+                        "widget_name": "KNN",
+                        "node_name": "KNN Model",
+                        "node_params": {
+                            "n_neighbors": 5,
+                            "metric": "euclidean",
+                            "weights": "uniform"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 18,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "wild_blueberry_yield",
+            "task_description": "请你构建一个用于预测野生蓝莓的产量的支持向量机（SVM）模型。目标是根据植物空间性状、蜜蜂物种组成、天气条件等特征，预测蓝莓的产量。通过模拟实验生成的数据集，研究人员可以验证机器学习算法在作物产量预测中的潜力。"
+        },
+        "result": {
+            "prompt_tokens": 7546,
+            "completion_tokens": 649,
+            "interact_number": 7,
+            "time": 29.22482132911682,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5539",
+                        "source_node_id": "7622",
+                        "target_node_id": "7623"
+                    },
+                    {
+                        "edge_id": "5540",
+                        "source_node_id": "7623",
+                        "target_node_id": "7624"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7622",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Training Data",
+                        "node_params": {
+                            "table_name": "blueberry_yield_training",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7623",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16
+                            ],
+                            "targets": "17"
+                        }
+                    },
+                    {
+                        "node_id": "7624",
+                        "widget_name": "SVM",
+                        "node_name": "SVM Model",
+                        "node_params": {
+                            "svm_type": 0,
+                            "C": 1,
+                            "epsilon": 0.1,
+                            "nu_C": 1,
+                            "nu": 0.5,
+                            "kernel": "rbf",
+                            "gamma": 0.1,
+                            "coef0": 0,
+                            "degree": 3,
+                            "tol": 0.001,
+                            "limit_iter": true,
+                            "max_iter": 1000
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 19,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "student_performance",
+            "task_description": "基于学生在校表现相关的数据集，构建一个自适应提升算法（AdaBoost）的回归模型，用于预测学生在数学（mat）或葡萄牙语（por）科目中的最终成绩（G3）。该任务属于回归问题，目标是根据学生的成绩、人口统计、社会和学校相关特征，预测其最终成绩（G3）。"
+        },
+        "result": {
+            "prompt_tokens": 7570,
+            "completion_tokens": 513,
+            "interact_number": 7,
+            "time": 22.73271346092224,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5541",
+                        "source_node_id": "7625",
+                        "target_node_id": "7626"
+                    },
+                    {
+                        "edge_id": "5542",
+                        "source_node_id": "7626",
+                        "target_node_id": "7627"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7625",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Student Performance Data",
+                        "node_params": {
+                            "table_name": "student_performance",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7626",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19,
+                                20,
+                                21,
+                                22,
+                                23,
+                                24,
+                                25,
+                                26,
+                                27,
+                                28,
+                                29,
+                                30,
+                                31
+                            ],
+                            "targets": "32"
+                        }
+                    },
+                    {
+                        "node_id": "7627",
+                        "widget_name": "AdaBoost",
+                        "node_name": "AdaBoost Regression Model",
+                        "node_params": {
+                            "n_estimators": 50,
+                            "learning_rate": 1,
+                            "algorithm": "SAMME.R",
+                            "loss": "linear"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 20,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "bike_sharing",
+            "task_description": "我需要你帮我构建一个回归模型，用于预测 Capital 共享单车系统中每小时或每天的租赁自行车数量。目标是根据天气、季节、时间等特征，预测未来的租赁数量，要求使用梯度提升决策树算法."
+        },
+        "result": {
+            "prompt_tokens": 12341,
+            "completion_tokens": 1271,
+            "interact_number": 12,
+            "time": 85.96984958648682,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "6023",
+                        "source_node_id": "8277",
+                        "target_node_id": "8279"
+                    },
+                    {
+                        "edge_id": "6024",
+                        "source_node_id": "8278",
+                        "target_node_id": "8280"
+                    },
+                    {
+                        "edge_id": "6025",
+                        "source_node_id": "8279",
+                        "target_node_id": "8281"
+                    },
+                    {
+                        "edge_id": "6026",
+                        "source_node_id": "8280",
+                        "target_node_id": "8282"
+                    },
+                    {
+                        "edge_id": "6027",
+                        "source_node_id": "8281",
+                        "target_node_id": "8283"
+                    },
+                    {
+                        "edge_id": "6028",
+                        "source_node_id": "8282",
+                        "target_node_id": "8284"
+                    },
+                    {
+                        "edge_id": "6029",
+                        "source_node_id": "8283",
+                        "target_node_id": "8284"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8277",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Training Data",
+                        "node_params": {
+                            "table_name": "bike_rental_data",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "8278",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Test Data",
+                        "node_params": {
+                            "table_name": "bike_rental_test_data",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "8279",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "OneHotEncoder_Train",
+                        "node_params": {
+                            "encode_vars": [
+                                "season",
+                                "weather",
+                                "time"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "8280",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "OneHotEncoder_Test",
+                        "node_params": {
+                            "encode_vars": [
+                                "season",
+                                "weather",
+                                "time"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "8281",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12
+                            ],
+                            "targets": "13"
+                        }
+                    },
+                    {
+                        "node_id": "8282",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Test Columns",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12
+                            ],
+                            "targets": "13"
+                        }
+                    },
+                    {
+                        "node_id": "8283",
+                        "widget_name": "Gradient Boosting Decision Tree",
+                        "node_name": "GBDT Model",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "learning_rate": 0.1,
+                            "use_max_depth": true,
+                            "max_depth": 5,
+                            "use_min_samples": false,
+                            "min_samples": 2
+                        }
+                    },
+                    {
+                        "node_id": "8284",
+                        "widget_name": "Test & Score",
+                        "node_name": "Test & Score",
+                        "node_params": {}
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 21,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "forest_fires",
+            "task_description": "我需要你帮我葡萄牙东北部地区森林火灾的燃烧面积数据，我想使用梯度决策提升树算法。目标是根据气象数据（如温度、湿度、风速等）和其他相关特征，预测火灾的燃烧面积（单位：公顷）。"
+        },
+        "result": {
+            "prompt_tokens": 6529,
+            "completion_tokens": 584,
+            "interact_number": 7,
+            "time": 25.19063091278076,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5549",
+                        "source_node_id": "7636",
+                        "target_node_id": "7637"
+                    },
+                    {
+                        "edge_id": "5550",
+                        "source_node_id": "7637",
+                        "target_node_id": "7638"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7636",
+                        "widget_name": "File",
+                        "node_name": "加载森林火灾数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "forestfires.csv"
+                        }
+                    },
+                    {
+                        "node_id": "7637",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11
+                            ],
+                            "targets": "12"
+                        }
+                    },
+                    {
+                        "node_id": "7638",
+                        "widget_name": "Gradient Boosting Decision Tree",
+                        "node_name": "GBDT Model",
+                        "node_params": {
+                            "n_estimators": 100,
+                            "learning_rate": 0.1,
+                            "use_max_depth": true,
+                            "max_depth": 5,
+                            "use_min_samples": true,
+                            "min_samples": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 22,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "monster",
+            "task_description": "帮我训练一个BIRCH的聚类模型，用于根据怪物的骨骼特征、毛发特征、颜色特征等属性，对怪物进行自动聚类。"
+        },
+        "result": {
+            "prompt_tokens": 5815,
+            "completion_tokens": 544,
+            "interact_number": 7,
+            "time": 21.92139959335327,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5551",
+                        "source_node_id": "7639",
+                        "target_node_id": "7640"
+                    },
+                    {
+                        "edge_id": "5552",
+                        "source_node_id": "7640",
+                        "target_node_id": "7641"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7639",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Monster Features",
+                        "node_params": {
+                            "table_name": "monster_features",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7640",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1,
+                                3,
+                                4
+                            ],
+                            "targets": ""
+                        }
+                    },
+                    {
+                        "node_id": "7641",
+                        "widget_name": "BIRCH",
+                        "node_name": "BIRCH Clustering",
+                        "node_params": {
+                            "branching_factor": 50,
+                            "n_clusters": 3,
+                            "threshold": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 23,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "obesity_cvd_risk",
+            "task_description": "肥胖对健康有着很大的影响，我有一个表格数据中包含了许多个体的饮食习惯、身体活动、生活方式等日常生活习惯，还有，还有每一个个体的肥胖等级（如体重不足、正常体重、超重、肥胖等）。我想要你根据这些数据，帮我训练一个Mean Shift聚类模型，实现对他们生活行为的分析。"
+        },
+        "result": {
+            "prompt_tokens": 7981,
+            "completion_tokens": 684,
+            "interact_number": 8,
+            "time": 31.63034749031067,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5553",
+                        "source_node_id": "7642",
+                        "target_node_id": "7643"
+                    },
+                    {
+                        "edge_id": "5554",
+                        "source_node_id": "7643",
+                        "target_node_id": "7644"
+                    },
+                    {
+                        "edge_id": "5555",
+                        "source_node_id": "7644",
+                        "target_node_id": "7645"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7642",
+                        "widget_name": "File",
+                        "node_name": "加载CSV文件",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "adult.csv"
+                        }
+                    },
+                    {
+                        "node_id": "7643",
+                        "widget_name": "Unique",
+                        "node_name": "去重处理",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "7644",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列",
+                        "node_params": {
+                            "ignores": [
+                                0,
+                                17
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16
+                            ],
+                            "targets": ""
+                        }
+                    },
+                    {
+                        "node_id": "7645",
+                        "widget_name": "Mean Shift",
+                        "node_name": "Mean Shift Clustering",
+                        "node_params": {
+                            "quantile": 0.3,
+                            "n_samples": 150,
+                            "interact_type": 0,
+                            "max_iter": 300
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 24,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "titanic",
+            "task_description": "构建一个 k-Means 聚类算法模型，用于分析泰坦尼克号上的人员组成。目标是根据乘客的特征（如年龄、性别、舱位等级、票价等）将乘客划分为不同的群组，从而揭示潜在的人员结构和群体特征。"
+        },
+        "result": {
+            "prompt_tokens": 8274,
+            "completion_tokens": 787,
+            "interact_number": 9,
+            "time": 34.50531244277954,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5556",
+                        "source_node_id": "7646",
+                        "target_node_id": "7647"
+                    },
+                    {
+                        "edge_id": "5557",
+                        "source_node_id": "7647",
+                        "target_node_id": "7648"
+                    },
+                    {
+                        "edge_id": "5558",
+                        "source_node_id": "7648",
+                        "target_node_id": "7649"
+                    },
+                    {
+                        "edge_id": "5559",
+                        "source_node_id": "7649",
+                        "target_node_id": "7650"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7646",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Titanic Data",
+                        "node_params": {
+                            "table_name": "titanic_passengers",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7647",
+                        "widget_name": "Unique",
+                        "node_name": "Remove Duplicates",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "7648",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "One Hot Encode Gender",
+                        "node_params": {
+                            "encode_vars": [
+                                "Sex"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "7649",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features",
+                        "node_params": {
+                            "ignores": [
+                                0,
+                                1,
+                                3,
+                                6,
+                                7,
+                                8,
+                                10,
+                                11
+                            ],
+                            "features": [
+                                2,
+                                5,
+                                9
+                            ],
+                            "targets": ""
+                        }
+                    },
+                    {
+                        "node_id": "7650",
+                        "widget_name": "k-Means",
+                        "node_name": "k-Means Clustering",
+                        "node_params": {
+                            "k": [
+                                3
+                            ],
+                            "selected_k": 3,
+                            "init_method": "k-means++",
+                            "re_runs": 10,
+                            "max_iter": 200
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 25,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "census_income",
+            "task_description": "基于 census_income 数据集，构建一个 DBSCAN 聚类模型，分析人群收入和其他因素潜在的层次关系。"
+        },
+        "result": {
+            "prompt_tokens": 7115,
+            "completion_tokens": 643,
+            "interact_number": 8,
+            "time": 42.6284236907959,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5560",
+                        "source_node_id": "7651",
+                        "target_node_id": "7652"
+                    },
+                    {
+                        "edge_id": "5561",
+                        "source_node_id": "7652",
+                        "target_node_id": "7653"
+                    },
+                    {
+                        "edge_id": "5562",
+                        "source_node_id": "7653",
+                        "target_node_id": "7654"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7651",
+                        "widget_name": "SQL Table",
+                        "node_name": "Load Census Income Data",
+                        "node_params": {
+                            "table_name": "census_income",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "7652",
+                        "widget_name": "Unique",
+                        "node_name": "Data Deduplication",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "7653",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13
+                            ],
+                            "targets": "14"
+                        }
+                    },
+                    {
+                        "node_id": "7654",
+                        "widget_name": "DBSCAN",
+                        "node_name": "DBSCAN Clustering",
+                        "node_params": {
+                            "dis_metric_idx": "0",
+                            "min_samples": 4,
+                            "eps": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 26,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "atmospheric_carbon_dioxide",
+            "task_description": "大气二氧化碳 （CO2） 的直接测量和连续记录可以追溯到 1958 年。在冰芯中捕获的古代空气样本中也测量了 CO2，这些记录可以追溯到数十万年前。我想使用最近几十年的每个月的 CO2 数据，训练一个ARIMA时序模型。"
+        },
+        "result": {
+            "prompt_tokens": 5635,
+            "completion_tokens": 477,
+            "interact_number": 7,
+            "time": 23.75272011756897,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5878",
+                        "source_node_id": "8094",
+                        "target_node_id": "8095"
+                    },
+                    {
+                        "edge_id": "5879",
+                        "source_node_id": "8095",
+                        "target_node_id": "8096"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8094",
+                        "widget_name": "File",
+                        "node_name": "加载CO2数据",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "airpassengers"
+                        }
+                    },
+                    {
+                        "node_id": "8095",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择时间戳和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0
+                            ],
+                            "targets": "1"
+                        }
+                    },
+                    {
+                        "node_id": "8096",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "ARIMA时序预测模型",
+                        "node_params": {
+                            "forecast_steps": 12,
+                            "order": [
+                                1,
+                                1,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 27,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "bitcoin_price",
+            "task_description": "基于过去10年比特币价格的时序数据，构建一个向量自回归模型（Vector Autoregression Model, VAR），用于分析和预测比特币接下来的几天最高价值。"
+        },
+        "result": {
+            "prompt_tokens": 6609,
+            "completion_tokens": 607,
+            "interact_number": 8,
+            "time": 28.277165174484253,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5880",
+                        "source_node_id": "8097",
+                        "target_node_id": "8098"
+                    },
+                    {
+                        "edge_id": "5881",
+                        "source_node_id": "8098",
+                        "target_node_id": "8099"
+                    },
+                    {
+                        "edge_id": "5882",
+                        "source_node_id": "8099",
+                        "target_node_id": "8100"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8097",
+                        "widget_name": "File",
+                        "node_name": "加载比特币价格数据",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "airpassengers"
+                        }
+                    },
+                    {
+                        "node_id": "8098",
+                        "widget_name": "Interpolate",
+                        "node_name": "插值处理",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8099",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "targets": "3"
+                        }
+                    },
+                    {
+                        "node_id": "8100",
+                        "widget_name": "VAR Model",
+                        "node_name": "构建VAR模型",
+                        "node_params": {
+                            "forecast_steps": 3
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 28,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "electricity_sales",
+            "task_description": "ARIMA模型适用于时间序列数据，能够捕捉数据的趋势和季节性成分。根据过去24年每个月的电子商务的销量数据，使用ARIMA算法训练一个模型。"
+        },
+        "result": {
+            "prompt_tokens": 6300,
+            "completion_tokens": 561,
+            "interact_number": 8,
+            "time": 30.063490390777588,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5883",
+                        "source_node_id": "8101",
+                        "target_node_id": "8102"
+                    },
+                    {
+                        "edge_id": "5884",
+                        "source_node_id": "8102",
+                        "target_node_id": "8103"
+                    },
+                    {
+                        "edge_id": "5885",
+                        "source_node_id": "8103",
+                        "target_node_id": "8104"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8101",
+                        "widget_name": "File",
+                        "node_name": "文件输入",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "airpassengers"
+                        }
+                    },
+                    {
+                        "node_id": "8102",
+                        "widget_name": "Interpolate",
+                        "node_name": "插值处理",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8103",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0
+                            ],
+                            "targets": "1"
+                        }
+                    },
+                    {
+                        "node_id": "8104",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "ARIMA Model",
+                        "node_params": {
+                            "forecast_steps": 24,
+                            "order": [
+                                1,
+                                1,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 29,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "nvidia_share_price",
+            "task_description": "我想使用英伟达截止到2024年之前的市值时序数据，构建一个ARIMA的时间序列模型，用于分析和预测英伟达（NVIDIA）股价的最高市值的变化趋势。"
+        },
+        "result": {
+            "prompt_tokens": 6639,
+            "completion_tokens": 634,
+            "interact_number": 8,
+            "time": 37.72882699966431,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5886",
+                        "source_node_id": "8105",
+                        "target_node_id": "8106"
+                    },
+                    {
+                        "edge_id": "5887",
+                        "source_node_id": "8106",
+                        "target_node_id": "8107"
+                    },
+                    {
+                        "edge_id": "5888",
+                        "source_node_id": "8107",
+                        "target_node_id": "8108"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8105",
+                        "widget_name": "File",
+                        "node_name": "NVIDIA Market Value Data",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "airpassengers"
+                        }
+                    },
+                    {
+                        "node_id": "8106",
+                        "widget_name": "Interpolate",
+                        "node_name": "Interpolate Missing Values",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8107",
+                        "widget_name": "Select Columns",
+                        "node_name": "Select Features and Target",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0
+                            ],
+                            "targets": "3"
+                        }
+                    },
+                    {
+                        "node_id": "8108",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "ARIMA Model",
+                        "node_params": {
+                            "forecast_steps": 12,
+                            "order": [
+                                1,
+                                1,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 30,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "sp500",
+            "task_description": "帮我构建一个ARIMA时间序列模型，用于分析和预测标准普尔 500 指数的未来走势。"
+        },
+        "result": {
+            "prompt_tokens": 6281,
+            "completion_tokens": 598,
+            "interact_number": 8,
+            "time": 28.69506001472473,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5889",
+                        "source_node_id": "8109",
+                        "target_node_id": "8110"
+                    },
+                    {
+                        "edge_id": "5890",
+                        "source_node_id": "8110",
+                        "target_node_id": "8111"
+                    },
+                    {
+                        "edge_id": "5891",
+                        "source_node_id": "8111",
+                        "target_node_id": "8112"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8109",
+                        "widget_name": "File",
+                        "node_name": "加载S&P 500数据",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "airpassengers"
+                        }
+                    },
+                    {
+                        "node_id": "8110",
+                        "widget_name": "Interpolate",
+                        "node_name": "插值处理",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8111",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0
+                            ],
+                            "targets": "1"
+                        }
+                    },
+                    {
+                        "node_id": "8112",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "ARIMA模型",
+                        "node_params": {
+                            "forecast_steps": 12,
+                            "order": [
+                                1,
+                                1,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 31,
+            "task_type": "deep learning",
+            "deep_learning_type": "text",
+            "task_description": "我想要一个可以根据文本内容，自动生成文本摘要的模型，你帮我构建一个工作流，用于训练一个文本自动摘要模型,计算框架PyTorch,模型使用Seq2Sea。"
+        },
+        "result": {
+            "prompt_tokens": 2810,
+            "completion_tokens": 293,
+            "interact_number": 5,
+            "time": 11.986305236816406,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5573",
+                        "source_node_id": "7675",
+                        "target_node_id": "7676"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7675",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7676",
+                        "widget_name": "Summarization",
+                        "node_name": "文本自动摘要模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "Seq2Seq",
+                            "epoch": 3,
+                            "learning_rate": 0.01,
+                            "batch_size": 4
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 32,
+            "task_type": "deep learning",
+            "deep_learning_type": "text",
+            "task_description": "为了解全国各地麦当劳店的顾客体验和意见，我需要你帮我训练一个文本分类模型，用于根据用户提交的网上评论进行自动文本分类的模型，来了解舆论的大致方向，迭代5轮，学习率设置为0.0005。"
+        },
+        "result": {
+            "prompt_tokens": 2895,
+            "completion_tokens": 323,
+            "interact_number": 5,
+            "time": 16.835643768310547,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5574",
+                        "source_node_id": "7677",
+                        "target_node_id": "7678"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7677",
+                        "widget_name": "Text",
+                        "node_name": "加载麦当劳评论数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7678",
+                        "widget_name": "Text Classification",
+                        "node_name": "训练文本分类模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "BERT",
+                            "epoch": 5,
+                            "learning_rate": 0.0005,
+                            "batch_size": 4
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 33,
+            "task_type": "deep learning",
+            "deep_learning_type": "text",
+            "task_description": "帮我根据我的文本数据集训练一个能够将英语翻译为法语的翻译器模型，迭代5轮，学习率设置为0.001。"
+        },
+        "result": {
+            "prompt_tokens": 2766,
+            "completion_tokens": 326,
+            "interact_number": 5,
+            "time": 13.429222106933594,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5575",
+                        "source_node_id": "7679",
+                        "target_node_id": "7680"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7679",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7680",
+                        "widget_name": "Translation",
+                        "node_name": "English to French Translation",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "Seq2Seq",
+                            "epoch": 5,
+                            "learning_rate": 0.001,
+                            "batch_size": 4
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 34,
+            "task_type": "deep learning",
+            "deep_learning_type": "image",
+            "task_description": "根据一个多分类的图像数据集，帮我构建一个工作流，可以实现训练一个可以对图像进行分类的模型，使用ResNet34的网络结构，迭代300次。"
+        },
+        "result": {
+            "prompt_tokens": 2896,
+            "completion_tokens": 293,
+            "interact_number": 5,
+            "time": 13.711646556854248,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5576",
+                        "source_node_id": "7681",
+                        "target_node_id": "7682"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7681",
+                        "widget_name": "Image",
+                        "node_name": "加载图像数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7682",
+                        "widget_name": "Image Classification",
+                        "node_name": "图像分类",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "ResNet34",
+                            "epoch": 300,
+                            "learning_rate": 0.01,
+                            "batch_size": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 35,
+            "task_type": "deep learning",
+            "deep_learning_type": "image",
+            "task_description": "我有一个车辆的图像数据集，我想根据这个数据集训练一个能够识别车辆的目标检测模型，请帮我构建一个工作流，基础模型使用yolov3。"
+        },
+        "result": {
+            "prompt_tokens": 2887,
+            "completion_tokens": 275,
+            "interact_number": 5,
+            "time": 11.775264024734497,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5577",
+                        "source_node_id": "7683",
+                        "target_node_id": "7684"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7683",
+                        "widget_name": "Image",
+                        "node_name": "加载车辆图像数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7684",
+                        "widget_name": "Object Detection",
+                        "node_name": "目标检测模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "yolov3",
+                            "backbone": "DarkNet53",
+                            "epoch": 3,
+                            "learning_rate": 0.01,
+                            "batch_size": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 36,
+            "task_type": "deep learning",
+            "deep_learning_type": "image",
+            "task_description": "我需要你进行路面分割。你的目标是训练一个分割模型,基础分割算法使用SegFormer-B5f，它能够对图像中的每一个像素进行分类，类别包括：路面、汽车、路标、标线和背景,帮我构建一个工作流。"
+        },
+        "result": {
+            "prompt_tokens": 2952,
+            "completion_tokens": 337,
+            "interact_number": 5,
+            "time": 12.455755949020386,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5578",
+                        "source_node_id": "7685",
+                        "target_node_id": "7686"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7685",
+                        "widget_name": "Image",
+                        "node_name": "加载图像数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7686",
+                        "widget_name": "Segmentation",
+                        "node_name": "路面分割模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "SegFormer-B5",
+                            "epoch": 3,
+                            "learning_rate": 0.02,
+                            "batch_size": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 37,
+            "task_type": "deep learning",
+            "deep_learning_type": "audio",
+            "task_description": "我需要对音频进行一个分类，目标是训练一个音频分类模型，可以识别猫、狗、人、汽车等不同类别的声音，分类的算法使用ResNetSE，迭代30次。"
+        },
+        "result": {
+            "prompt_tokens": 2778,
+            "completion_tokens": 290,
+            "interact_number": 5,
+            "time": 13.333118200302124,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5579",
+                        "source_node_id": "7687",
+                        "target_node_id": "7688"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7687",
+                        "widget_name": "Audio",
+                        "node_name": "加载音频数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7688",
+                        "widget_name": "Audio Classification",
+                        "node_name": "音频分类",
+                        "node_params": {
+                            "select_model": "ResNetSE",
+                            "lr": 1e-07,
+                            "epoch": 30,
+                            "optimizer": "Adam",
+                            "use_gpu": true,
+                            "weight_decay": 1e-05
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 38,
+            "task_type": "deep learning",
+            "deep_learning_type": "graph",
+            "task_description": "我有一个包含多个节点和边的网络图，帮我构建一个工作流训练一个聚类模型，实现对该网络的聚类分析，分析算法使用标签传播聚类 (Leung et al., 2009)这个算法。"
+        },
+        "result": {
+            "prompt_tokens": 2728,
+            "completion_tokens": 306,
+            "interact_number": 5,
+            "time": 12.292023420333862,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5580",
+                        "source_node_id": "7689",
+                        "target_node_id": "7690"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7689",
+                        "widget_name": "Network File",
+                        "node_name": "加载网络数据",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7690",
+                        "widget_name": "Network Clustering",
+                        "node_name": "网络聚类",
+                        "node_params": {
+                            "iterations": 1000,
+                            "hop": 0.1,
+                            "method": "0",
+                            "use_random_state": false
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 39,
+            "task_type": "deep learning",
+            "deep_learning_type": "video",
+            "task_description": "我想要训练一个可以根据车流视频完成车辆追踪定位的任务的模型，训练时的预训练模型使用yolov8n，帮我构建一个这样的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 2645,
+            "completion_tokens": 314,
+            "interact_number": 5,
+            "time": 17.72594380378723,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5581",
+                        "source_node_id": "7691",
+                        "target_node_id": "7692"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7691",
+                        "widget_name": "Video",
+                        "node_name": "加载视频数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7692",
+                        "widget_name": "Video Object Detect",
+                        "node_name": "车辆追踪定位",
+                        "node_params": {
+                            "pretrained_model": "yolov8n",
+                            "epoch": 60
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 40,
+            "task_type": "deep learning",
+            "deep_learning_type": "video",
+            "task_description": "我有许多个人物活动视频，我想根据这些视频训练一个动作分类模型，迭代次数设置为200，请帮我构建一个可以完成该任务的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 2555,
+            "completion_tokens": 289,
+            "interact_number": 5,
+            "time": 11.361963510513306,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5582",
+                        "source_node_id": "7693",
+                        "target_node_id": "7694"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7693",
+                        "widget_name": "Video",
+                        "node_name": "加载视频数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7694",
+                        "widget_name": "Video Action Classification",
+                        "node_name": "动作分类模型",
+                        "node_params": {
+                            "epoch": 200
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 41,
+            "task_type": "deep learning",
+            "deep_learning_type": "video",
+            "task_description": "我需要一个可以完成根据视频内容进行问答的工作流，问答组件中的问题设置为：“请帮我描述一下视频内容”。请帮我构建一个这样的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 2137,
+            "completion_tokens": 274,
+            "interact_number": 4,
+            "time": 10.566604614257812,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5583",
+                        "source_node_id": "7695",
+                        "target_node_id": "7696"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7695",
+                        "widget_name": "Video",
+                        "node_name": "加载视频",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7696",
+                        "widget_name": "Video QA",
+                        "node_name": "Video_QA",
+                        "node_params": {
+                            "question": "请帮我描述一下视频内容"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 42,
+            "task_type": "pretrained modeling application",
+            "task_description": "我想要把音频提取翻译成文本，请帮我构建一个可以完成该任务的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 2171,
+            "completion_tokens": 255,
+            "interact_number": 4,
+            "time": 9.1631920337677,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5584",
+                        "source_node_id": "7697",
+                        "target_node_id": "7698"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7697",
+                        "widget_name": "Audio",
+                        "node_name": "加载音频数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7698",
+                        "widget_name": "Audio Extraction",
+                        "node_name": "音频提取翻译",
+                        "node_params": {
+                            "language": "en",
+                            "model_scale": "turbo",
+                            "task_type": "提取翻译"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 43,
+            "task_type": "pretrained modeling application",
+            "task_description": "我需要一个根据文本合成音频的工作流，声音的性别设置为女性，请帮我构建一个这样的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 2136,
+            "completion_tokens": 238,
+            "interact_number": 4,
+            "time": 8.848618984222412,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5585",
+                        "source_node_id": "7699",
+                        "target_node_id": "7700"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7699",
+                        "widget_name": "Text",
+                        "node_name": "文本输入",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7700",
+                        "widget_name": "Audio Synthesis",
+                        "node_name": "音频合成",
+                        "node_params": {
+                            "accent": "US",
+                            "sex": "female"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 44,
+            "task_type": "pretrained modeling application",
+            "task_description": "我有一个包含多个节点和边的网络图，帮我构建一个工作流实现对该图的信息的查看，我主要想查看这个网络的节点数，边数量和直径。"
+        },
+        "result": {
+            "prompt_tokens": 2327,
+            "completion_tokens": 275,
+            "interact_number": 4,
+            "time": 10.726633787155151,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5586",
+                        "source_node_id": "7701",
+                        "target_node_id": "7702"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7701",
+                        "widget_name": "Network File",
+                        "node_name": "加载网络文件",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7702",
+                        "widget_name": "Network Analysis",
+                        "node_name": "网络分析",
+                        "node_params": {
+                            "graph_method_indices": [
+                                0,
+                                1,
+                                8
+                            ],
+                            "node_method_indices": []
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 45,
+            "task_type": "pretrained modeling application",
+            "task_description": "我需要一个可以实现简繁体转换的工作流，我需要的是繁体转简体。"
+        },
+        "result": {
+            "prompt_tokens": 2102,
+            "completion_tokens": 248,
+            "interact_number": 4,
+            "time": 9.778952836990356,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5587",
+                        "source_node_id": "7703",
+                        "target_node_id": "7704"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "7703",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "7704",
+                        "widget_name": "Chinese Conversion",
+                        "node_name": "繁体转简体",
+                        "node_params": {
+                            "conversion_type": "1"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+]

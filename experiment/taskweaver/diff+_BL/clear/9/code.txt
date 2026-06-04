@@ -1,0 +1,95 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_train.csv')
+test_data = pd.read_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_test.csv')
+
+# Handle missing values
+imputer = SimpleImputer(strategy='mean')
+train_data_imputed = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_imputed = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Separate features and target
+X_train = train_data_imputed.drop(columns=['target'])
+y_train = train_data_imputed['target']
+X_test = test_data_imputed.drop(columns=['target'])
+y_test = test_data_imputed['target']
+
+# Build the Random Forest Classifier
+rf_classifier = RandomForestClassifier(n_estimators=10, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the model
+f1 = f1_score(y_test, y_pred)
+f1
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 29
+    f1 = f1_score(y_test, y_pred)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:216 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1324 in f1_score
+    return fbeta_score(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:189 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1517 in fbeta_score
+    _, _, f, _ = precision_recall_fscore_support(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:189 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1830 in precision_recall_fscore_support
+    labels = _check_set_wise_labels(y_true, y_pred, average, labels, pos_label)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1613 in _check_set_wise_labels
+    raise ValueError(
+
+ValueError: Target is multiclass but average='binary'. Please choose another average setting, one of [None, 'micro', 'macro', 'weighted'].
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_train.csv')
+test_data = pd.read_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_test.csv')
+
+# Handle missing values
+imputer = SimpleImputer(strategy='mean')
+train_data_imputed = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_imputed = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Separate features and target
+X_train = train_data_imputed.drop(columns=['target'])
+y_train = train_data_imputed['target']
+X_test = test_data_imputed.drop(columns=['target'])
+y_test = test_data_imputed['target']
+
+# Build the Random Forest Classifier
+rf_classifier = RandomForestClassifier(n_estimators=10, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the model
+f1 = f1_score(y_test, y_pred, average='weighted')
+f1
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+0.44822787221406724

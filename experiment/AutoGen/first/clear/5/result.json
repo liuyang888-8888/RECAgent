@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 5,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "horse_health_outcomes",
+        "task_description": "请使用数据库中的马匹了过去的医疗状况相关数据，我需要你先加载数据，然后对数据中的 ['peripheral_pulse','mucous_membrane','capillary_refill_time'] 进行独热编码，接着构建一个LightGBM的分类模型，可以依据马匹的医疗状况自动判断该马匹最终存活下来的概率，要求将该算法参数中的树的数量设置为10，学习率设置为0.1。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 138.57779216766357,
+        "interact_count": 4,
+        "prompt_tokens": 8454,
+        "completion_tokens": 1974,
+        "RCR": 5
+    }
+}

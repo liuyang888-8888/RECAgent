@@ -1,0 +1,174 @@
+code:
+import pandas as pd
+
+# Load the training data
+train_data_path = 'E:\\csv\\atmospheric_carbon_dioxide_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows of the DataFrame to understand its structure
+print(train_df_copy.head())
+
+# Check the data types of each column
+print(train_df_copy.dtypes)
+
+# Perform data preprocessing steps as needed
+# For example, if there are date columns, convert them to datetime objects
+# If there are categorical columns, consider label encoding or other methods
+# Note: Do not modify the label column
+
+# Example of converting a date column to datetime (if applicable)
+# train_df_copy['date_column'] = pd.to_datetime(train_df_copy['date_column'])
+
+# Example of label encoding a categorical column (if applicable)
+# from sklearn.preprocessing import LabelEncoder
+# le = LabelEncoder()
+# train_df_copy['categorical_column'] = le.fit_transform(train_df_copy['categorical_column'])
+
+# Ensure the same preprocessing is applied to the test data when available
+# test_df_copy = test_df.copy()
+# test_df_copy['date_column'] = pd.to_datetime(test_df_copy['date_column'])
+# test_df_copy['categorical_column'] = le.transform(test_df_copy['categorical_column'])
+
+# Display the preprocessed DataFrame
+print(train_df_copy.head())
+execute_result:
+date  Average
+0  2019-07-01   408.88
+1  1985-02-01   345.80
+2  2008-02-01   385.74
+3  1986-03-01   347.71
+4  2017-02-01   405.91
+date        object
+Average    float64
+dtype: object
+         date  Average
+0  2019-07-01   408.88
+1  1985-02-01   345.80
+2  2008-02-01   385.74
+3  1986-03-01   347.71
+4  2017-02-01   405.91
+is_success:
+True
+code:
+# Preprocess the data
+train_df_preprocessed = train_df_copy.copy()
+
+# Convert 'date' column to datetime type
+train_df_preprocessed['date'] = pd.to_datetime(train_df_preprocessed['date'])
+
+# Set 'date' as the index
+train_df_preprocessed.set_index('date', inplace=True)
+
+# Check for missing values and handle them
+if train_df_preprocessed.isnull().values.any():
+    # Fill missing values with forward fill method
+    train_df_preprocessed.fillna(method='ffill', inplace=True)
+else:
+    print("No missing values found.")
+
+# Display the first few rows of the preprocessed DataFrame
+print(train_df_preprocessed.head())
+execute_result:
+No missing values found.
+            Average
+date               
+2019-07-01   408.88
+1985-02-01   345.80
+2008-02-01   385.74
+1986-03-01   347.71
+2017-02-01   405.91
+is_success:
+True
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import matplotlib.pyplot as plt
+
+# Fit the ARIMA model
+model = ARIMA(train_df_preprocessed['Average'], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Summary of the model
+print(model_fit.summary())
+
+# Plotting the residuals
+residuals = pd.DataFrame(model_fit.resid)
+residuals.plot(kind='kde')
+plt.title('Residuals Density Plot')
+plt.show()
+
+# Predicting the next 10 periods
+forecast = model_fit.forecast(steps=10)
+print(forecast)
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[5], line 2
+      1 from statsmodels.tsa.arima.model import ARIMA
+----> 2 import matplotlib.pyplot as plt
+      4 # Fit the ARIMA model
+      5 model = ARIMA(train_df_preprocessed['Average'], order=(5, 1, 0))
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+from statsmodels.tsa.arima.model import ARIMA
+
+# Fit the ARIMA model
+model = ARIMA(train_df_preprocessed['Average'], order=(5,1,0))
+model_fit = model.fit()
+
+# Summary of the model
+print(model_fit.summary())
+execute_result:
+SARIMAX Results                                
+==============================================================================
+Dep. Variable:                Average   No. Observations:                  539
+Model:                 ARIMA(5, 1, 0)   Log Likelihood               -2506.572
+Date:                Sun, 27 Apr 2025   AIC                           5025.143
+Time:                        21:52:38   BIC                           5050.870
+Sample:                             0   HQIC                          5035.207
+                                - 539                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1         -0.9424      0.045    -21.141      0.000      -1.030      -0.855
+ar.L2         -0.7195      0.060    -11.985      0.000      -0.837      -0.602
+ar.L3         -0.5170      0.062     -8.297      0.000      -0.639      -0.395
+ar.L4         -0.4128      0.056     -7.356      0.000      -0.523      -0.303
+ar.L5         -0.2089      0.043     -4.878      0.000      -0.293      -0.125
+sigma2       650.6657     51.768     12.569      0.000     549.202     752.129
+===================================================================================
+Ljung-Box (L1) (Q):                   0.04   Jarque-Bera (JB):                20.21
+Prob(Q):                              0.85   Prob(JB):                         0.00
+Heteroskedasticity (H):               0.96   Skew:                             0.27
+Prob(H) (two-sided):                  0.79   Kurtosis:                         2.22
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+is_success:
+True
+code:
+# Calculate the Mean Squared Error (MSE) of the fitted values on the training set
+from sklearn.metrics import mean_squared_error
+
+# Get the fitted values from the model
+fitted_values = model_fit.fittedvalues
+
+# Calculate MSE
+mse = mean_squared_error(train_df_preprocessed['Average'], fitted_values)
+print(f"Mean Squared Error (MSE): {mse}")
+execute_result:
+Mean Squared Error (MSE): 963.6853513995842
+is_success:
+True

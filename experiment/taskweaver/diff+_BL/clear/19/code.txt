@@ -1,0 +1,122 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\student_performance_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\student_performance_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Preprocess the data
+# Convert categorical variables to dummy variables
+train_df = pd.get_dummies(train_df)
+test_df = pd.get_dummies(test_df)
+
+# Ensure that both datasets have the same columns
+missing_cols = set(train_df.columns) - set(test_df.columns)
+for c in missing_cols:
+    test_df[c] = 0
+
+# Reorder the columns in the test set to match the training set
+test_df = test_df[train_df.columns]
+
+# Separate features and target variable
+X_train = train_df.drop('G3', axis=1)
+y_train = train_df['G3']
+X_test = test_df.drop('G3', axis=1)
+y_test = test_df['G3']
+
+# Standardize the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+X_train_scaled, X_test_scaled, y_train, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(array([[ 0.98793212, -0.43741772, -0.25633653, ...,  0.56919205,
+          0.75993921, -0.75993921],
+        [-0.62953403,  1.35013974,  1.59142265, ...,  0.56919205,
+         -1.31589473,  1.31589473],
+        [ 0.98793212,  0.45636101, -0.25633653, ..., -1.75687625,
+          0.75993921, -0.75993921],
+        ...,
+        [-0.62953403,  1.35013974,  1.59142265, ...,  0.56919205,
+          0.75993921, -0.75993921],
+        [-1.4382671 , -1.33119645, -1.18021613, ...,  0.56919205,
+          0.75993921, -0.75993921],
+        [-1.4382671 ,  1.35013974,  1.59142265, ...,  0.56919205,
+          0.75993921, -0.75993921]]),
+ array([[ 0.98793212,  1.35013974,  1.59142265, ...,  0.56919205,
+          0.75993921, -0.75993921],
+        [-0.62953403,  0.45636101, -1.18021613, ...,  0.56919205,
+          0.75993921, -0.75993921],
+        [ 0.98793212,  1.35013974,  1.59142265, ...,  0.56919205,
+          0.75993921, -0.75993921],
+        ...,
+        [-0.62953403,  0.45636101,  1.59142265, ..., -1.75687625,
+          0.75993921, -0.75993921],
+        [ 0.17919904,  1.35013974,  0.66754306, ...,  0.56919205,
+         -1.31589473,  1.31589473],
+        [ 0.98793212, -0.43741772, -0.25633653, ...,  0.56919205,
+         -1.31589473,  1.31589473]]),
+ 0      18
+ 1      12
+        ..
+ 517    10
+ 518    12
+ Name: G3, Length: 519, dtype: int64,
+ 0      19
+ 1      12
+        ..
+ 128    12
+ 129    10
+ Name: G3, Length: 130, dtype: int64)from sklearn.ensemble import AdaBoostRegressor
+from sklearn.metrics import mean_squared_error
+
+# Initialize the AdaBoost regressor
+ada_regressor = AdaBoostRegressor(random_state=42)
+
+# Train the model
+ada_regressor.fit(X_train_scaled, y_train)
+
+# Make predictions on the test set
+y_pred = ada_regressor.predict(X_test_scaled)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+mse, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(1.840804311856034,
+ array([16.41666667, 11.92380952, 16.53333333, 11.46428571, 11.92380952,
+        15.71111111, 16.53333333,  9.87878788, 11.02222222, 11.34408602,
+        16.53333333, 12.04395604, 12.94852941, 10.86666667, 11.88888889,
+        12.61764706, 11.92380952,  6.91935484, 15.53658537, 14.46666667,
+        15.29850746, 12.94852941, 12.95698925, 12.28395062, 15.35      ,
+        12.28395062,  8.30555556, 11.89781022, 11.34408602, 15.35      ,
+        15.71111111, 12.62162162,  7.72727273,  6.41      , 16.53333333,
+        15.35      , 14.46511628, 14.51020408, 12.94852941, 10.46031746,
+        12.62162162, 11.58064516,  7.26436782, 11.92380952, 12.28395062,
+        12.74025974, 16.53333333, 11.825     , 11.95172414, 11.46428571,
+        10.54054054, 11.32307692, 14.70833333, 10.67032967, 11.825     ,
+        16.53333333,  9.44059406, 11.32307692, 10.47540984, 10.25641026,
+         9.95348837, 11.74468085, 15.625     , 11.95172414, 15.44186047,
+        15.53658537,  9.44059406,  9.87878788,  9.95348837, 10.46031746,
+        15.53658537, 14.96629213, 12.74025974, 15.72727273, 13.02702703,
+        12.94852941, 12.62162162, 14.76086957, 12.62162162, 12.94852941,
+        10.69387755, 11.89781022, 16.16216216,  7.42035398, 11.92380952,
+        16.41666667, 11.92380952,  8.59259259, 14.72916667, 12.43157895,
+        15.53658537,  9.35211268, 11.825     , 16.53333333,  9.2       ,
+        14.70833333, 15.55      ,  9.03703704, 12.43157895, 10.86458333,
+        11.92380952, 11.825     , 11.46428571, 10.80952381, 12.04395604,
+        11.34408602, 11.15217391, 12.28395062, 10.25      , 12.1011236 ,
+        12.62162162,  8.58730159, 11.92380952, 10.96330275,  7.45833333,
+        10.46031746, 11.34408602, 15.72727273, 11.1627907 ,  9.2       ,
+        13.02702703,  1.92763158, 15.55      , 13.00757576, 11.89781022,
+         7.26436782, 16.8125    , 10.86458333, 12.94852941,  7.45054945]))

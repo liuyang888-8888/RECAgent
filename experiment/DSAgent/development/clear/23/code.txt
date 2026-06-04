@@ -1,0 +1,150 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import MeanShift, estimate_bandwidth
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    silhouette_avg = silhouette_score(X, labels)
+    return silhouette_avg
+
+def train_model(X_train):
+    # Estimate the bandwidth for the Mean Shift algorithm
+    bandwidth = estimate_bandwidth(X_train, quantile=0.2)
+    
+    # Define and train the Mean Shift model
+    model = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+    model.fit(X_train)
+    
+    return model
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final silhouette_avg on trained set:  0.4500196413284071
+final silhouette_avg on trained set:  0.4500196413284071
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.cluster import MeanShift, estimate_bandwidth
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    silhouette_avg = silhouette_score(X, labels)
+    return silhouette_avg
+
+def train_model(X_train):
+    # Estimate the bandwidth for the Mean Shift algorithm
+    bandwidth = estimate_bandwidth(X_train, quantile=0.2)
+    
+    # Define and train the Mean Shift model
+    model = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+    model.fit(X_train)
+    
+    return model
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 标准化数值特征
+    scaler = StandardScaler()
+    X = scaler.fit_transform(data_df)
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final silhouette_avg on trained set:  0.27530476959025735
+final silhouette_avg on trained set:  -0.16607778141603585
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

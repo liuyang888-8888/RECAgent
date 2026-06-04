@@ -1,0 +1,3426 @@
+[
+    {
+        "task": {
+            "id": 1,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "bank_customer_churn",
+            "task_description": "请你使用 bank_customer_churn 表格数据，训练一个分类模型，可以根据客户的信息预测其是否可能会流失。"
+        },
+        "result": {
+            "prompt_tokens": 33672,
+            "completion_tokens": 2788,
+            "interact_number": 22,
+            "time": 214.03249526023865,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3964",
+                        "source_node_id": "5261",
+                        "target_node_id": "5262"
+                    },
+                    {
+                        "edge_id": "3965",
+                        "source_node_id": "5262",
+                        "target_node_id": "5263"
+                    },
+                    {
+                        "edge_id": "3966",
+                        "source_node_id": "5263",
+                        "target_node_id": "5264"
+                    },
+                    {
+                        "edge_id": "3967",
+                        "source_node_id": "5264",
+                        "target_node_id": "5265"
+                    },
+                    {
+                        "edge_id": "3968",
+                        "source_node_id": "5265",
+                        "target_node_id": "5266"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5261",
+                        "widget_name": "File",
+                        "node_name": "加载银行客户流失数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "bank_customer_churn.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5262",
+                        "widget_name": "Unique",
+                        "node_name": "数据去重",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Drop"
+                        }
+                    },
+                    {
+                        "node_id": "5263",
+                        "widget_name": "Impute",
+                        "node_name": "处理缺失值",
+                        "node_params": {
+                            "method": 2
+                        }
+                    },
+                    {
+                        "node_id": "5264",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "对非目标特征进行独热编码",
+                        "node_params": {
+                            "encode_vars": [
+                                "Geography",
+                                "Gender"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "5265",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0,
+                                1,
+                                2
+                            ],
+                            "features": [
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12
+                            ],
+                            "targets": "13"
+                        }
+                    },
+                    {
+                        "node_id": "5266",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 2,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "cirrhosis_patient",
+            "task_description": "请使用 cirrhosis_patient 数据，利用 17 个临床特征预测肝硬化患者的生存状态。存活状态包括 0 = D （死亡）、1 = C （删失）、2 = CL （因肝移植而删除），构建一个分类模型。"
+        },
+        "result": {
+            "prompt_tokens": 19419,
+            "completion_tokens": 1530,
+            "interact_number": 13,
+            "time": 117.2408664226532,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3969",
+                        "source_node_id": "5267",
+                        "target_node_id": "5268"
+                    },
+                    {
+                        "edge_id": "3970",
+                        "source_node_id": "5268",
+                        "target_node_id": "5269"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5267",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载cirrhosis_patient数据",
+                        "node_params": {
+                            "table_name": "cirrhosis_patient",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5268",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18
+                            ],
+                            "targets": "19"
+                        }
+                    },
+                    {
+                        "node_id": "5269",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 3,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "crime_category",
+            "task_description": "分析历史数据有助于把握未来趋势，旧金山所有社区的近 12 年的犯罪报告存放在 crime_category 表中。请根据这些数据训练一个分类模型。"
+        },
+        "result": {
+            "prompt_tokens": 16794,
+            "completion_tokens": 1469,
+            "interact_number": 13,
+            "time": 111.65328812599182,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3971",
+                        "source_node_id": "5270",
+                        "target_node_id": "5271"
+                    },
+                    {
+                        "edge_id": "3972",
+                        "source_node_id": "5271",
+                        "target_node_id": "5272"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5270",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载犯罪报告数据",
+                        "node_params": {
+                            "table_name": "crime_category",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5271",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "targets": "4"
+                        }
+                    },
+                    {
+                        "node_id": "5272",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 4,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "employee_attrition",
+            "task_description": "我想使用雇员流失训练数据，训练一个分类模型可以根据员工的个人相关信息，来找出公司中哪些员工可能要流失。"
+        },
+        "result": {
+            "prompt_tokens": 21045,
+            "completion_tokens": 1538,
+            "interact_number": 13,
+            "time": 118.7075264453888,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3973",
+                        "source_node_id": "5273",
+                        "target_node_id": "5274"
+                    },
+                    {
+                        "edge_id": "3974",
+                        "source_node_id": "5274",
+                        "target_node_id": "5275"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5273",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载雇员流失数据",
+                        "node_params": {
+                            "table_name": "employee_churn_training_data",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5274",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0,
+                                7,
+                                19,
+                                24
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                20,
+                                21,
+                                22,
+                                23,
+                                25,
+                                26,
+                                27,
+                                28,
+                                29,
+                                30,
+                                31,
+                                32
+                            ],
+                            "targets": "33"
+                        }
+                    },
+                    {
+                        "node_id": "5275",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 5,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "horse_health_outcomes",
+            "task_description": "horse_health_outcomes 的数据保存马匹了过去的医疗状况，我需要一个分类模型，可以依据马匹的医疗状况自动判断该马匹最终存活下来的概率。"
+        },
+        "result": {
+            "prompt_tokens": 17861,
+            "completion_tokens": 1381,
+            "interact_number": 13,
+            "time": 105.8744158744812,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3975",
+                        "source_node_id": "5276",
+                        "target_node_id": "5277"
+                    },
+                    {
+                        "edge_id": "3976",
+                        "source_node_id": "5277",
+                        "target_node_id": "5278"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5276",
+                        "widget_name": "File",
+                        "node_name": "加载马匹医疗数据",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "horse_health_outcomes.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5277",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征和目标列",
+                        "node_params": {
+                            "ignores": [
+                                1
+                            ],
+                            "features": [
+                                0,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7
+                            ],
+                            "targets": "8"
+                        }
+                    },
+                    {
+                        "node_id": "5278",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 6,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "kidney_stone",
+            "task_description": "基于 kidney_stone 数据集，构建一个分类模型，用于根据尿液分析（如尿液中各种成分的浓度）预测患者是否存在肾结石。该任务属于二分类问题，目标是根据输入特征预测肾结石的存在（是/否）。"
+        },
+        "result": {
+            "prompt_tokens": 17790,
+            "completion_tokens": 1365,
+            "interact_number": 13,
+            "time": 106.17815279960632,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3977",
+                        "source_node_id": "5279",
+                        "target_node_id": "5280"
+                    },
+                    {
+                        "edge_id": "3978",
+                        "source_node_id": "5280",
+                        "target_node_id": "5281"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5279",
+                        "widget_name": "File",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "kidney_stone.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5280",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6
+                            ],
+                            "targets": "7"
+                        }
+                    },
+                    {
+                        "node_id": "5281",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 7,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "reservation_cancellation",
+            "task_description": "对于酒店经理来说客户是否会取消预定是一个十分值得关注的问题，请基于 reservation_cancellation 数据集，构建一个分类模型，用于预测酒店预订是否会被取消。"
+        },
+        "result": {
+            "prompt_tokens": 35081,
+            "completion_tokens": 2865,
+            "interact_number": 22,
+            "time": 217.30419516563416,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3979",
+                        "source_node_id": "5282",
+                        "target_node_id": "5283"
+                    },
+                    {
+                        "edge_id": "3980",
+                        "source_node_id": "5283",
+                        "target_node_id": "5284"
+                    },
+                    {
+                        "edge_id": "3981",
+                        "source_node_id": "5284",
+                        "target_node_id": "5285"
+                    },
+                    {
+                        "edge_id": "3982",
+                        "source_node_id": "5285",
+                        "target_node_id": "5286"
+                    },
+                    {
+                        "edge_id": "3983",
+                        "source_node_id": "5286",
+                        "target_node_id": "5287"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5282",
+                        "widget_name": "File",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "reservation_cancellation.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5283",
+                        "widget_name": "Unique",
+                        "node_name": "数据去重",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "5284",
+                        "widget_name": "Impute",
+                        "node_name": "缺失值处理",
+                        "node_params": {
+                            "method": 2
+                        }
+                    },
+                    {
+                        "node_id": "5285",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "独热编码",
+                        "node_params": {
+                            "encode_vars": [
+                                "hotel",
+                                "meal",
+                                "country",
+                                "market_segment",
+                                "distribution_channel",
+                                "reserved_room_type",
+                                "assigned_room_type",
+                                "deposit_type",
+                                "customer_type"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "5286",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17
+                            ],
+                            "targets": 18
+                        }
+                    },
+                    {
+                        "node_id": "5287",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 8,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "smoker_status_bio_signals",
+            "task_description": "基于 smoker_status_bio_signals 数据集，构建一个分类模型，用于预测一个人是否是抽烟者。该任务属于二分类问题，目标是根据生物信号等特征，预测其是否是一个烟民。"
+        },
+        "result": {
+            "prompt_tokens": 19766,
+            "completion_tokens": 1382,
+            "interact_number": 13,
+            "time": 109.08777713775635,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3984",
+                        "source_node_id": "5288",
+                        "target_node_id": "5289"
+                    },
+                    {
+                        "edge_id": "3985",
+                        "source_node_id": "5289",
+                        "target_node_id": "5290"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5288",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载smoker_status_bio_signals数据集",
+                        "node_params": {
+                            "table_name": "smoker_status_bio_signals",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5289",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19,
+                                20,
+                                21,
+                                22
+                            ],
+                            "targets": "23"
+                        }
+                    },
+                    {
+                        "node_id": "5290",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 9,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "heart_diseases",
+            "task_description": "基于 heart_diseases 数据集，构建一个分类模型，用于预测个体是否患有心脏疾病。该任务属于多分类问题，目标是根据患者的生理指标、生活习惯和医疗历史等特征，预测其是否患有心脏疾病。"
+        },
+        "result": {
+            "prompt_tokens": 28753,
+            "completion_tokens": 2386,
+            "interact_number": 19,
+            "time": 181.8037235736847,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3986",
+                        "source_node_id": "5291",
+                        "target_node_id": "5292"
+                    },
+                    {
+                        "edge_id": "3987",
+                        "source_node_id": "5292",
+                        "target_node_id": "5293"
+                    },
+                    {
+                        "edge_id": "3988",
+                        "source_node_id": "5293",
+                        "target_node_id": "5294"
+                    },
+                    {
+                        "edge_id": "3989",
+                        "source_node_id": "5294",
+                        "target_node_id": "5295"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5291",
+                        "widget_name": "File",
+                        "node_name": "加载heart_diseases数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "heart_diseases.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5292",
+                        "widget_name": "Unique",
+                        "node_name": "对数据进行去重",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "5293",
+                        "widget_name": "Impute",
+                        "node_name": "缺失值处理",
+                        "node_params": {
+                            "method": 2
+                        }
+                    },
+                    {
+                        "node_id": "5294",
+                        "widget_name": "Select Columns",
+                        "node_name": "指定特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12
+                            ],
+                            "targets": "13"
+                        }
+                    },
+                    {
+                        "node_id": "5295",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 10,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "car_evaluation",
+            "task_description": "基于 car_evaluation 数据集，构建一个分类模型，用于评估车辆的可接受程度。该任务属于多分类问题，目标是根据车辆的购买价格、尺寸、安全性等特征，预测其可接受程度（如不可接受、可接受、良好、优秀）。"
+        },
+        "result": {
+            "prompt_tokens": 22285,
+            "completion_tokens": 1783,
+            "interact_number": 16,
+            "time": 137.58042740821838,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3990",
+                        "source_node_id": "5296",
+                        "target_node_id": "5297"
+                    },
+                    {
+                        "edge_id": "3991",
+                        "source_node_id": "5297",
+                        "target_node_id": "5298"
+                    },
+                    {
+                        "edge_id": "3992",
+                        "source_node_id": "5298",
+                        "target_node_id": "5299"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5296",
+                        "widget_name": "File",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "car.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5297",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "独热编码",
+                        "node_params": {
+                            "encode_vars": [
+                                "buying",
+                                "maint",
+                                "doors",
+                                "persons",
+                                "lug_boot",
+                                "safety"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "5298",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "targets": "6"
+                        }
+                    },
+                    {
+                        "node_id": "5299",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 11,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "rice_cammeo_and_osmancik",
+            "task_description": "基于 rice_cammeo_and_osmancik 数据集，构建一个分类模型，用于区分两种稻米（Cammeo 和 Osmancik）。目标是根据稻米的形态特征（如面积、周长、长度等）的表格数据，预测其属于 Cammeo 还是 Osmancik。"
+        },
+        "result": {
+            "prompt_tokens": 18343,
+            "completion_tokens": 1408,
+            "interact_number": 13,
+            "time": 108.43415355682373,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3993",
+                        "source_node_id": "5300",
+                        "target_node_id": "5301"
+                    },
+                    {
+                        "edge_id": "3994",
+                        "source_node_id": "5301",
+                        "target_node_id": "5302"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5300",
+                        "widget_name": "File",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "rice_cammeo_and_osmancik.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5301",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6
+                            ],
+                            "targets": "7"
+                        }
+                    },
+                    {
+                        "node_id": "5302",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 12,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "banknote_authentication",
+            "task_description": "基于 banknote_authentication 表格数据集，该数据包含了方差（Variance）、偏度（Skewness）、峰度（Kurtosis）和熵（Entropy）的数据，根据这些构建一个分类模型，用于预测钞票的真伪。目标是根据这些特征，预测钞票是真钞还是伪钞。"
+        },
+        "result": {
+            "prompt_tokens": 17738,
+            "completion_tokens": 1435,
+            "interact_number": 13,
+            "time": 109.7990128993988,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3995",
+                        "source_node_id": "5303",
+                        "target_node_id": "5304"
+                    },
+                    {
+                        "edge_id": "3996",
+                        "source_node_id": "5304",
+                        "target_node_id": "5305"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5303",
+                        "widget_name": "File",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "banknote_authentication.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5304",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "targets": "4"
+                        }
+                    },
+                    {
+                        "node_id": "5305",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 13,
+            "task_type": "machine learning",
+            "machine_learning_type": "classification",
+            "data_source": "secondary_mushroom",
+            "task_description": "基于蘑菇外形特征的数据集，构建一个分类模型，用于判断蘑菇是否可食用。"
+        },
+        "result": {
+            "prompt_tokens": 24528,
+            "completion_tokens": 1992,
+            "interact_number": 16,
+            "time": 151.00513410568237,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "3997",
+                        "source_node_id": "5306",
+                        "target_node_id": "5307"
+                    },
+                    {
+                        "edge_id": "3998",
+                        "source_node_id": "5307",
+                        "target_node_id": "5308"
+                    },
+                    {
+                        "edge_id": "3999",
+                        "source_node_id": "5308",
+                        "target_node_id": "5309"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5306",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载蘑菇数据集",
+                        "node_params": {
+                            "table_name": "mushroom_features",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5307",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "独热编码处理",
+                        "node_params": {
+                            "encode_vars": [
+                                "cap_shape",
+                                "cap_surface",
+                                "cap_color",
+                                "bruises",
+                                "odor",
+                                "gill_attachment",
+                                "gill_spacing",
+                                "gill_size",
+                                "gill_color",
+                                "stalk_shape",
+                                "stalk_root",
+                                "stalk_surface_above_ring",
+                                "stalk_surface_below_ring",
+                                "stalk_color_above_ring",
+                                "stalk_color_below_ring",
+                                "veil_type",
+                                "veil_color",
+                                "ring_number",
+                                "ring_type",
+                                "spore_print_color",
+                                "population",
+                                "habitat"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "5308",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19
+                            ],
+                            "targets": "20"
+                        }
+                    },
+                    {
+                        "node_id": "5309",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 14,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "abalone",
+            "task_description": "我需要一个模型可以使用鲍鱼外形来预估鲍鱼年龄。"
+        },
+        "result": {
+            "prompt_tokens": 18201,
+            "completion_tokens": 1473,
+            "interact_number": 14,
+            "time": 113.79369616508484,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4000",
+                        "source_node_id": "5310",
+                        "target_node_id": "5311"
+                    },
+                    {
+                        "edge_id": "4001",
+                        "source_node_id": "5311",
+                        "target_node_id": "5312"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5310",
+                        "widget_name": "File",
+                        "node_name": "加载鲍鱼外形数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "abalone.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5311",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
+                            "targets": "9"
+                        }
+                    },
+                    {
+                        "node_id": "5312",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 15,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "crab_age",
+            "task_description": "我想使用 crab_age 的表格数据，其中包含了螃蟹的性别、重量，直径，高度和外壳及内脏重量还有年龄，请根据这些数据训练一个回归模型预测螃蟹年龄。"
+        },
+        "result": {
+            "prompt_tokens": 18133,
+            "completion_tokens": 1400,
+            "interact_number": 13,
+            "time": 109.06091380119324,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4002",
+                        "source_node_id": "5313",
+                        "target_node_id": "5314"
+                    },
+                    {
+                        "edge_id": "4003",
+                        "source_node_id": "5314",
+                        "target_node_id": "5315"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5313",
+                        "widget_name": "File",
+                        "node_name": "加载crab_age数据",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "crab_age.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5314",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                5,
+                                6,
+                                7,
+                                8
+                            ],
+                            "targets": "9"
+                        }
+                    },
+                    {
+                        "node_id": "5315",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林回归模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 16,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "media_campaign_cost",
+            "task_description": "基于 media_campaign_cost 数据集，构建一个回归模型，用于预测 Food Mart 媒体活动的成本。该任务属于回归问题，目标是根据输入特征（如广告渠道、活动时长、目标受众等）预测媒体活动的成本。"
+        },
+        "result": {
+            "prompt_tokens": 18450,
+            "completion_tokens": 1510,
+            "interact_number": 13,
+            "time": 115.88016080856323,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4004",
+                        "source_node_id": "5316",
+                        "target_node_id": "5317"
+                    },
+                    {
+                        "edge_id": "4005",
+                        "source_node_id": "5317",
+                        "target_node_id": "5318"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5316",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "table_name": "media_campaign_cost",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5317",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15
+                            ],
+                            "targets": "16"
+                        }
+                    },
+                    {
+                        "node_id": "5318",
+                        "widget_name": "Linear Regression",
+                        "node_name": "构建线性回归模型",
+                        "node_params": {
+                            "regression_type": "0",
+                            "strengthValue": 0.5,
+                            "mixingValue": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 17,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "mohs_hardness",
+            "task_description": "请基于矿物质莫氏硬度数据集，构建一个回归模型，用于预测矿物的硬度（莫氏硬度）。目标是根据矿物的成分特征（如原子描述符）预测其硬度。"
+        },
+        "result": {
+            "prompt_tokens": 17972,
+            "completion_tokens": 1433,
+            "interact_number": 13,
+            "time": 110.4041473865509,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4006",
+                        "source_node_id": "5319",
+                        "target_node_id": "5320"
+                    },
+                    {
+                        "edge_id": "4007",
+                        "source_node_id": "5320",
+                        "target_node_id": "5321"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5319",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载莫氏硬度数据集",
+                        "node_params": {
+                            "table_name": "MohsHardnessData",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5320",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10
+                            ],
+                            "targets": "11"
+                        }
+                    },
+                    {
+                        "node_id": "5321",
+                        "widget_name": "Linear Regression",
+                        "node_name": "构建线性回归模型",
+                        "node_params": {
+                            "regression_type": "0",
+                            "strengthValue": 0.5,
+                            "mixingValue": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 18,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "wild_blueberry_yield",
+            "task_description": "使用野生蓝莓产量数据集，构建一个回归模型，用于预测野生蓝莓的产量。该任务属于回归问题，目标是根据植物空间性状、蜜蜂物种组成、天气条件等特征，预测蓝莓的产量。通过模拟实验生成的数据集，研究人员可以验证机器学习算法在作物产量预测中的潜力。"
+        },
+        "result": {
+            "prompt_tokens": 19673,
+            "completion_tokens": 1523,
+            "interact_number": 13,
+            "time": 117.83750462532043,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4008",
+                        "source_node_id": "5322",
+                        "target_node_id": "5323"
+                    },
+                    {
+                        "edge_id": "4009",
+                        "source_node_id": "5323",
+                        "target_node_id": "5324"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5322",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载蓝莓产量数据",
+                        "node_params": {
+                            "table_name": "wild_blueberry_yield",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5323",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16
+                            ],
+                            "targets": "17"
+                        }
+                    },
+                    {
+                        "node_id": "5324",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林回归模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 19,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "student_performance",
+            "task_description": "基于学生在校成绩的数据集，构建一个回归模型，用于预测学生在数学（mat）或葡萄牙语（por）科目中的最终成绩（G3）。该任务属于回归问题，目标是根据学生的成绩、人口统计、社会和学校相关特征，预测其最终成绩（G3）。"
+        },
+        "result": {
+            "prompt_tokens": 20855,
+            "completion_tokens": 1496,
+            "interact_number": 13,
+            "time": 115.54561281204224,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4010",
+                        "source_node_id": "5325",
+                        "target_node_id": "5326"
+                    },
+                    {
+                        "edge_id": "4011",
+                        "source_node_id": "5326",
+                        "target_node_id": "5327"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5325",
+                        "widget_name": "SQL Table",
+                        "node_name": "数据加载",
+                        "node_params": {
+                            "table_name": "student_scores",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5326",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17,
+                                18,
+                                19,
+                                20,
+                                21,
+                                22,
+                                23,
+                                24,
+                                25,
+                                26,
+                                27,
+                                28,
+                                29,
+                                30,
+                                31
+                            ],
+                            "targets": "32"
+                        }
+                    },
+                    {
+                        "node_id": "5327",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 20,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "bike_sharing",
+            "task_description": "我需要你帮我基于 bike_sharing 数据集，构建一个回归模型，用于预测 Capital 共享单车系统中每小时或每天的租赁自行车数量。目标是根据天气、季节、时间等特征，预测未来的租赁数量。"
+        },
+        "result": {
+            "prompt_tokens": 18425,
+            "completion_tokens": 1587,
+            "interact_number": 13,
+            "time": 120.29864931106567,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4012",
+                        "source_node_id": "5328",
+                        "target_node_id": "5329"
+                    },
+                    {
+                        "edge_id": "4013",
+                        "source_node_id": "5329",
+                        "target_node_id": "5330"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5328",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载bike_sharing数据集",
+                        "node_params": {
+                            "table_name": "bike_sharing",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5329",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12
+                            ],
+                            "targets": "13"
+                        }
+                    },
+                    {
+                        "node_id": "5330",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 21,
+            "task_type": "machine learning",
+            "machine_learning_type": "regression",
+            "data_source": "forest_fires",
+            "task_description": "我需要你帮我基于森林火灾数据集，构建一个回归模型，用于预测葡萄牙东北部地区森林火灾的燃烧面积。该任务属于回归问题，目标是根据气象数据（如温度、湿度、风速等）和其他相关特征，预测火灾的燃烧面积（单位：公顷）。"
+        },
+        "result": {
+            "prompt_tokens": 18588,
+            "completion_tokens": 1410,
+            "interact_number": 13,
+            "time": 109.06545972824097,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4014",
+                        "source_node_id": "5331",
+                        "target_node_id": "5332"
+                    },
+                    {
+                        "edge_id": "4015",
+                        "source_node_id": "5332",
+                        "target_node_id": "5333"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5331",
+                        "widget_name": "File",
+                        "node_name": "加载森林火灾数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "forestfires.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5332",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11
+                            ],
+                            "targets": "12"
+                        }
+                    },
+                    {
+                        "node_id": "5333",
+                        "widget_name": "Random Forest",
+                        "node_name": "随机森林模型",
+                        "node_params": {
+                            "n_estimators": 10,
+                            "use_max_features": false,
+                            "max_features": "auto",
+                            "use_random_state": false,
+                            "use_max_depth": false,
+                            "max_depth": 3,
+                            "use_min_samples_split": true,
+                            "min_samples_split": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 22,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "monster",
+            "task_description": "基于 monster 的数据集，用于根据怪物的骨骼特征、毛发特征、颜色特征等属性，对怪物进行聚类分析。"
+        },
+        "result": {
+            "prompt_tokens": 26090,
+            "completion_tokens": 2356,
+            "interact_number": 19,
+            "time": 179.08015751838684,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4016",
+                        "source_node_id": "5334",
+                        "target_node_id": "5335"
+                    },
+                    {
+                        "edge_id": "4017",
+                        "source_node_id": "5335",
+                        "target_node_id": "5336"
+                    },
+                    {
+                        "edge_id": "4018",
+                        "source_node_id": "5336",
+                        "target_node_id": "5337"
+                    },
+                    {
+                        "edge_id": "4019",
+                        "source_node_id": "5337",
+                        "target_node_id": "5338"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5334",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载怪物数据集",
+                        "node_params": {
+                            "table_name": "monster",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5335",
+                        "widget_name": "Unique",
+                        "node_name": "去除重复数据",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Drop"
+                        }
+                    },
+                    {
+                        "node_id": "5336",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "独热编码非数值特征",
+                        "node_params": {
+                            "encode_vars": [
+                                "骨骼特征",
+                                "毛发特征",
+                                "颜色特征"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "5337",
+                        "widget_name": "Select Columns",
+                        "node_name": "指定特征列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "targets": "5"
+                        }
+                    },
+                    {
+                        "node_id": "5338",
+                        "widget_name": "DBSCAN",
+                        "node_name": "使用DBSCAN进行聚类",
+                        "node_params": {
+                            "dis_metric_idx": "0",
+                            "min_samples": 4,
+                            "eps": 0.5,
+                            "branching_factor": 50,
+                            "n_clusters": 3,
+                            "threshold": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 23,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "obesity_cvd_risk",
+            "task_description": "肥胖对健康有着很大的影响，obesity_cvd_risk 数据中包含了许多个体的饮食习惯、身体活动、生活方式等日常生活习惯，还有，还有每一个个体的肥胖等级（如体重不足、正常体重、超重、肥胖等）。我想要你根据这些数据，帮我训练一个聚类模型，实现对他们生活行为的分析。"
+        },
+        "result": {
+            "prompt_tokens": 29194,
+            "completion_tokens": 2393,
+            "interact_number": 19,
+            "time": 182.89554500579834,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4020",
+                        "source_node_id": "5339",
+                        "target_node_id": "5340"
+                    },
+                    {
+                        "edge_id": "4021",
+                        "source_node_id": "5340",
+                        "target_node_id": "5341"
+                    },
+                    {
+                        "edge_id": "4022",
+                        "source_node_id": "5341",
+                        "target_node_id": "5342"
+                    },
+                    {
+                        "edge_id": "4023",
+                        "source_node_id": "5342",
+                        "target_node_id": "5343"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5339",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载obesity_cvd_risk数据集",
+                        "node_params": {
+                            "table_name": "obesity_cvd_risk",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5340",
+                        "widget_name": "Unique",
+                        "node_name": "数据去重",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "5341",
+                        "widget_name": "Impute",
+                        "node_name": "处理缺失值",
+                        "node_params": {
+                            "method": 2
+                        }
+                    },
+                    {
+                        "node_id": "5342",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17
+                            ],
+                            "targets": ""
+                        }
+                    },
+                    {
+                        "node_id": "5343",
+                        "widget_name": "k-Means",
+                        "node_name": "使用k-Means进行聚类",
+                        "node_params": {
+                            "k": [
+                                4
+                            ],
+                            "selected_k": 4,
+                            "init_method": "k-means++",
+                            "re_runs": 10,
+                            "max_iter": 200
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 24,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "titanic",
+            "task_description": "基于 titanic 数据集，构建一个聚类模型，用于分析泰坦尼克号上的人员组成。目标是根据乘客的特征（如年龄、性别、舱位等级、票价等）将乘客划分为不同的群组，从而揭示潜在的人员结构和群体特征。"
+        },
+        "result": {
+            "prompt_tokens": 34044,
+            "completion_tokens": 2940,
+            "interact_number": 22,
+            "time": 222.02255392074585,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4024",
+                        "source_node_id": "5344",
+                        "target_node_id": "5345"
+                    },
+                    {
+                        "edge_id": "4025",
+                        "source_node_id": "5345",
+                        "target_node_id": "5346"
+                    },
+                    {
+                        "edge_id": "4026",
+                        "source_node_id": "5346",
+                        "target_node_id": "5347"
+                    },
+                    {
+                        "edge_id": "4027",
+                        "source_node_id": "5347",
+                        "target_node_id": "5348"
+                    },
+                    {
+                        "edge_id": "4028",
+                        "source_node_id": "5348",
+                        "target_node_id": "5349"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5344",
+                        "widget_name": "File",
+                        "node_name": "加载titanic数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "titanic.csv"
+                        }
+                    },
+                    {
+                        "node_id": "5345",
+                        "widget_name": "Unique",
+                        "node_name": "去重",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "5346",
+                        "widget_name": "Impute",
+                        "node_name": "缺失值填充",
+                        "node_params": {
+                            "method": 2
+                        }
+                    },
+                    {
+                        "node_id": "5347",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "独热编码",
+                        "node_params": {
+                            "encode_vars": [
+                                "Sex",
+                                "Embarked",
+                                "Pclass"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "5348",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择聚类特征列",
+                        "node_params": {
+                            "ignores": [
+                                0,
+                                1
+                            ],
+                            "features": [
+                                2,
+                                5,
+                                6,
+                                7,
+                                9,
+                                4,
+                                11,
+                                12,
+                                13,
+                                14,
+                                15,
+                                16,
+                                17
+                            ],
+                            "targets": ""
+                        }
+                    },
+                    {
+                        "node_id": "5349",
+                        "widget_name": "k-Means",
+                        "node_name": "构建k-Means聚类模型",
+                        "node_params": {
+                            "k": [
+                                3
+                            ],
+                            "selected_k": 3,
+                            "init_method": "k-means++",
+                            "re_runs": 10,
+                            "max_iter": 200
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 25,
+            "task_type": "machine learning",
+            "machine_learning_type": "clustering",
+            "data_source": "census_income",
+            "task_description": "基于 census_income 数据集，构建一个聚类模型，分析人群收入和其他因素潜在的层次关系。"
+        },
+        "result": {
+            "prompt_tokens": 27443,
+            "completion_tokens": 2302,
+            "interact_number": 19,
+            "time": 176.17960929870605,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4029",
+                        "source_node_id": "5350",
+                        "target_node_id": "5351"
+                    },
+                    {
+                        "edge_id": "4030",
+                        "source_node_id": "5351",
+                        "target_node_id": "5352"
+                    },
+                    {
+                        "edge_id": "4031",
+                        "source_node_id": "5352",
+                        "target_node_id": "5353"
+                    },
+                    {
+                        "edge_id": "4032",
+                        "source_node_id": "5353",
+                        "target_node_id": "5354"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5350",
+                        "widget_name": "SQL Table",
+                        "node_name": "加载census_income数据集",
+                        "node_params": {
+                            "table_name": "census_income",
+                            "target_column": null
+                        }
+                    },
+                    {
+                        "node_id": "5351",
+                        "widget_name": "Unique",
+                        "node_name": "去除重复数据",
+                        "node_params": {
+                            "selGroupByVariables": [],
+                            "configure": "Last instance"
+                        }
+                    },
+                    {
+                        "node_id": "5352",
+                        "widget_name": "One Hot Encoder",
+                        "node_name": "独热编码处理",
+                        "node_params": {
+                            "encode_vars": [
+                                "workclass",
+                                "education",
+                                "marital_status",
+                                "occupation",
+                                "relationship",
+                                "race",
+                                "sex",
+                                "native_country"
+                            ]
+                        }
+                    },
+                    {
+                        "node_id": "5353",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9,
+                                10,
+                                11,
+                                12,
+                                13
+                            ],
+                            "targets": "14"
+                        }
+                    },
+                    {
+                        "node_id": "5354",
+                        "widget_name": "DBSCAN",
+                        "node_name": "构建BIRCH聚类模型",
+                        "node_params": {
+                            "dis_metric_idx": "0",
+                            "min_samples": 4,
+                            "eps": 0.5,
+                            "branching_factor": 50,
+                            "n_clusters": 3,
+                            "threshold": 0.5
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 26,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "atmospheric_carbon_dioxide",
+            "task_description": "我想使用 atmospheric_carbon_dioxide 数据，训练一个时序预测模型。"
+        },
+        "result": {
+            "prompt_tokens": 22428,
+            "completion_tokens": 1738,
+            "interact_number": 17,
+            "time": 82.77153778076172,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5830",
+                        "source_node_id": "8029",
+                        "target_node_id": "8030"
+                    },
+                    {
+                        "edge_id": "5831",
+                        "source_node_id": "8030",
+                        "target_node_id": "8031"
+                    },
+                    {
+                        "edge_id": "5832",
+                        "source_node_id": "8031",
+                        "target_node_id": "8032"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8029",
+                        "widget_name": "File",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "atmospheric_carbon_dioxide.csv"
+                        }
+                    },
+                    {
+                        "node_id": "8030",
+                        "widget_name": "Interpolate",
+                        "node_name": "插值处理",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8031",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1
+                            ],
+                            "targets": "0"
+                        }
+                    },
+                    {
+                        "node_id": "8032",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "构建ARIMA时序预测模型",
+                        "node_params": {
+                            "forecast_steps": 3,
+                            "order": [
+                                1,
+                                0,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 27,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "bitcoin_price",
+            "task_description": "我想使用 bitcoin_price 的时序数据，根据过去10年比特币的价格浮动的表格数据，训练一个时序模型,预测接下来的几天最高价值。"
+        },
+        "result": {
+            "prompt_tokens": 26093,
+            "completion_tokens": 1954,
+            "interact_number": 18,
+            "time": 84.32642316818237,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5833",
+                        "source_node_id": "8033",
+                        "target_node_id": "8034"
+                    },
+                    {
+                        "edge_id": "5834",
+                        "source_node_id": "8034",
+                        "target_node_id": "8035"
+                    },
+                    {
+                        "edge_id": "5835",
+                        "source_node_id": "8035",
+                        "target_node_id": "8036"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8033",
+                        "widget_name": "File",
+                        "node_name": "加载比特币价格数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "bitcoin_price.csv"
+                        }
+                    },
+                    {
+                        "node_id": "8034",
+                        "widget_name": "Interpolate",
+                        "node_name": "处理缺失值",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8035",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征和目标列",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [
+                                1,
+                                2,
+                                3,
+                                4
+                            ],
+                            "targets": "2"
+                        }
+                    },
+                    {
+                        "node_id": "8036",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "ARIMA模型",
+                        "node_params": {
+                            "forecast_steps": 7,
+                            "order": [
+                                1,
+                                0,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 28,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "electricity_sales",
+            "task_description": "我想使用 electricity_sales 的时序数据，根据过去一年每天的电商销量数据，训练一个时序模型以预测几天销量的情况。"
+        },
+        "result": {
+            "prompt_tokens": 25270,
+            "completion_tokens": 1868,
+            "interact_number": 18,
+            "time": 84.6393871307373,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5836",
+                        "source_node_id": "8037",
+                        "target_node_id": "8038"
+                    },
+                    {
+                        "edge_id": "5837",
+                        "source_node_id": "8038",
+                        "target_node_id": "8039"
+                    },
+                    {
+                        "edge_id": "5838",
+                        "source_node_id": "8039",
+                        "target_node_id": "8040"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8037",
+                        "widget_name": "File",
+                        "node_name": "加载数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "electricity_sales.csv"
+                        }
+                    },
+                    {
+                        "node_id": "8038",
+                        "widget_name": "Interpolate",
+                        "node_name": "插值处理",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8039",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列和目标列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                0
+                            ],
+                            "targets": "1"
+                        }
+                    },
+                    {
+                        "node_id": "8040",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "构建ARIMA时序预测模型",
+                        "node_params": {
+                            "forecast_steps": 30,
+                            "order": [
+                                1,
+                                0,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 29,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "nvidia_share_price",
+            "task_description": "我想使用 nvidia_share_price 的时序数据，构建一个时间序列模型，用于分析和预测英伟达（NVIDIA）股价的每日最高的变化趋势。该任务属于时间序列预测问题，目标是根据历史股价数据预测未来股价。"
+        },
+        "result": {
+            "prompt_tokens": 23807,
+            "completion_tokens": 1925,
+            "interact_number": 17,
+            "time": 76.40485191345215,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5839",
+                        "source_node_id": "8041",
+                        "target_node_id": "8042"
+                    },
+                    {
+                        "edge_id": "5840",
+                        "source_node_id": "8042",
+                        "target_node_id": "8043"
+                    },
+                    {
+                        "edge_id": "5841",
+                        "source_node_id": "8043",
+                        "target_node_id": "8044"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8041",
+                        "widget_name": "File",
+                        "node_name": "加载nvidia_share_price数据",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "nvidia_share_price.csv"
+                        }
+                    },
+                    {
+                        "node_id": "8042",
+                        "widget_name": "Interpolate",
+                        "node_name": "处理缺失值",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8043",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择日期和最高价",
+                        "node_params": {
+                            "ignores": [
+                                0
+                            ],
+                            "features": [],
+                            "targets": "3"
+                        }
+                    },
+                    {
+                        "node_id": "8044",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "构建ARIMA模型",
+                        "node_params": {
+                            "forecast_steps": 3,
+                            "order": [
+                                1,
+                                0,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 30,
+            "task_type": "machine learning",
+            "machine_learning_type": "timeseries",
+            "data_source": "sp500",
+            "task_description": "基于 sp500 数据集，构建一个时间序列模型，用于分析和预测标准普尔 500 指数的未来走势。该任务属于时间序列预测问题，目标是根据历史月度数据（如调整后的收盘价）预测未来标准普尔 500 指数的值。"
+        },
+        "result": {
+            "prompt_tokens": 26242,
+            "completion_tokens": 2018,
+            "interact_number": 18,
+            "time": 72.69903302192688,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "5842",
+                        "source_node_id": "8045",
+                        "target_node_id": "8046"
+                    },
+                    {
+                        "edge_id": "5843",
+                        "source_node_id": "8046",
+                        "target_node_id": "8047"
+                    },
+                    {
+                        "edge_id": "5844",
+                        "source_node_id": "8047",
+                        "target_node_id": "8048"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "8045",
+                        "widget_name": "File",
+                        "node_name": "加载SP500数据集",
+                        "node_params": {
+                            "type": "sample",
+                            "filename": "sp500.csv"
+                        }
+                    },
+                    {
+                        "node_id": "8046",
+                        "widget_name": "Interpolate",
+                        "node_name": "插值处理",
+                        "node_params": {
+                            "interpolation_method": "linear",
+                            "multi_variate": false
+                        }
+                    },
+                    {
+                        "node_id": "8047",
+                        "widget_name": "Select Columns",
+                        "node_name": "选择特征列",
+                        "node_params": {
+                            "ignores": [],
+                            "features": [
+                                1
+                            ],
+                            "targets": ""
+                        }
+                    },
+                    {
+                        "node_id": "8048",
+                        "widget_name": "ARIMA Model",
+                        "node_name": "构建ARIMA时序预测模型",
+                        "node_params": {
+                            "forecast_steps": 12,
+                            "order": [
+                                1,
+                                0,
+                                0
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 31,
+            "task_type": "deep learning",
+            "deep_learning_type": "text",
+            "task_description": "我想要一个可以根据文本内容，自动生成文本摘要的模型，你帮我构建一个工作流，用于训练一个文本自动摘要模型。"
+        },
+        "result": {
+            "prompt_tokens": 8905,
+            "completion_tokens": 1009,
+            "interact_number": 9,
+            "time": 42.28469729423523,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4693",
+                        "source_node_id": "6378",
+                        "target_node_id": "6379"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "6378",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "6379",
+                        "widget_name": "Summarization",
+                        "node_name": "构建文本自动摘要模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "Seq2Seq",
+                            "epoch": 3,
+                            "learning_rate": 0.01,
+                            "batch_size": 4
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 32,
+            "task_type": "deep learning",
+            "deep_learning_type": "text",
+            "task_description": "为了解全国各地麦当劳店的顾客体验和意见，我需要你帮我训练一个文本分类模型，用于根据用户提交的网上评论进行自动文本分类的模型，来了解舆论的大致方向。"
+        },
+        "result": {
+            "prompt_tokens": 8893,
+            "completion_tokens": 981,
+            "interact_number": 9,
+            "time": 73.8010401725769,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4044",
+                        "source_node_id": "5375",
+                        "target_node_id": "5376"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5375",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5376",
+                        "widget_name": "Text Classification",
+                        "node_name": "构建文本分类模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "BERT",
+                            "epoch": 3,
+                            "learning_rate": 0.01,
+                            "batch_size": 4
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 33,
+            "task_type": "deep learning",
+            "deep_learning_type": "text",
+            "task_description": "帮我根据我的文本数据集训练一个能够将汉语翻译为英文的翻译器模型。"
+        },
+        "result": {
+            "prompt_tokens": 8634,
+            "completion_tokens": 933,
+            "interact_number": 9,
+            "time": 69.82383489608765,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4045",
+                        "source_node_id": "5377",
+                        "target_node_id": "5378"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5377",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5378",
+                        "widget_name": "Translation",
+                        "node_name": "构建翻译模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "BERT",
+                            "epoch": 3,
+                            "learning_rate": 0.01,
+                            "batch_size": 4
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 34,
+            "task_type": "deep learning",
+            "deep_learning_type": "image",
+            "task_description": "根据一个多分类的图像数据集，帮我构建一个工作流，可以实现训练一个可以对图像进行分类的模型。"
+        },
+        "result": {
+            "prompt_tokens": 9304,
+            "completion_tokens": 881,
+            "interact_number": 9,
+            "time": 67.28273344039917,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4046",
+                        "source_node_id": "5379",
+                        "target_node_id": "5380"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5379",
+                        "widget_name": "Image",
+                        "node_name": "加载图像数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5380",
+                        "widget_name": "Image Classification",
+                        "node_name": "图像分类",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "ResNet50",
+                            "epoch": 3,
+                            "learning_rate": 0.01,
+                            "batch_size": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 35,
+            "task_type": "deep learning",
+            "deep_learning_type": "image",
+            "task_description": "我有一个车辆的图像数据集，我想根据这个数据集训练一个能够识别车辆的目标检测模型，请帮我构建一个工作流。"
+        },
+        "result": {
+            "prompt_tokens": 9577,
+            "completion_tokens": 982,
+            "interact_number": 9,
+            "time": 73.10164713859558,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4047",
+                        "source_node_id": "5381",
+                        "target_node_id": "5382"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5381",
+                        "widget_name": "Image",
+                        "node_name": "加载车辆图像数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5382",
+                        "widget_name": "Object Detection",
+                        "node_name": "构建车辆识别模型",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "yolov3",
+                            "backbone": "DarkNet53",
+                            "epoch": 3,
+                            "learning_rate": 0.01,
+                            "batch_size": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 36,
+            "task_type": "deep learning",
+            "deep_learning_type": "image",
+            "task_description": "我需要你进行路面分割。你的目标是训练一个分割模型，它能够对图像中的每一个像素进行分类，类别包括：路面、汽车、路标、标线和背景。"
+        },
+        "result": {
+            "prompt_tokens": 9267,
+            "completion_tokens": 945,
+            "interact_number": 9,
+            "time": 71.27576923370361,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4048",
+                        "source_node_id": "5383",
+                        "target_node_id": "5384"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5383",
+                        "widget_name": "Image",
+                        "node_name": "图像数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5384",
+                        "widget_name": "Segmentation",
+                        "node_name": "分割",
+                        "node_params": {
+                            "frame": "pytorch",
+                            "select_model": "SegFormer-B0",
+                            "epoch": 3,
+                            "learning_rate": 0.02,
+                            "batch_size": 2
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 37,
+            "task_type": "deep learning",
+            "deep_learning_type": "audio",
+            "task_description": "我需要对音频进行一个分类，目标是训练一个音频分类模型，可以识别猫、狗、人、汽车等不同类别的声音。"
+        },
+        "result": {
+            "prompt_tokens": 8864,
+            "completion_tokens": 892,
+            "interact_number": 9,
+            "time": 67.338050365448,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4049",
+                        "source_node_id": "5385",
+                        "target_node_id": "5386"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5385",
+                        "widget_name": "Audio",
+                        "node_name": "加载音频数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5386",
+                        "widget_name": "Audio Classification",
+                        "node_name": "音频分类",
+                        "node_params": {
+                            "select_model": "CAMPPlus",
+                            "lr": 1e-07,
+                            "epoch": 60,
+                            "optimizer": "Adam",
+                            "use_gpu": true,
+                            "weight_decay": 1e-05
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 38,
+            "task_type": "deep learning",
+            "deep_learning_type": "graph",
+            "task_description": "我有一个包含多个节点和边的网络图，帮我构建一个工作流训练一个聚类模型，实现对该网络的聚类分析。"
+        },
+        "result": {
+            "prompt_tokens": 8366,
+            "completion_tokens": 968,
+            "interact_number": 9,
+            "time": 71.82632517814636,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4050",
+                        "source_node_id": "5387",
+                        "target_node_id": "5388"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5387",
+                        "widget_name": "Network File",
+                        "node_name": "加载网络数据",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5388",
+                        "widget_name": "Network Clustering",
+                        "node_name": "网络聚类",
+                        "node_params": {
+                            "iterations": 1000,
+                            "hop": 0.1,
+                            "method": "0",
+                            "use_random_state": false
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 39,
+            "task_type": "deep learning",
+            "deep_learning_type": "video",
+            "task_description": "我想要一个可以根据车流视频完成车辆追踪定位的任务的模型，帮我构建一个这样的工作流训练模型。"
+        },
+        "result": {
+            "prompt_tokens": 8111,
+            "completion_tokens": 986,
+            "interact_number": 9,
+            "time": 72.52662301063538,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4051",
+                        "source_node_id": "5389",
+                        "target_node_id": "5390"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5389",
+                        "widget_name": "Video",
+                        "node_name": "加载视频数据",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5390",
+                        "widget_name": "Video Object Detect",
+                        "node_name": "车辆追踪定位",
+                        "node_params": {
+                            "pretrained_model": "yolov8l",
+                            "epoch": 60
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 40,
+            "task_type": "deep learning",
+            "deep_learning_type": "video",
+            "task_description": "我有许多个人物活动视频，我想根据这些视频训练一个动作分类模型，请帮我构建一个可以完成该任务的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 7616,
+            "completion_tokens": 969,
+            "interact_number": 9,
+            "time": 71.38373804092407,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4052",
+                        "source_node_id": "5391",
+                        "target_node_id": "5392"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5391",
+                        "widget_name": "Video",
+                        "node_name": "加载视频数据",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5392",
+                        "widget_name": "Video Action Classification",
+                        "node_name": "训练人物动作分类模型",
+                        "node_params": {
+                            "epoch": 60
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 41,
+            "task_type": "pretrained modeling application",
+            "deep_learning_type": "video",
+            "task_description": "我需要一个可以完成根据视频内容进行问答的工作流，请帮我构建一个这样的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 7571,
+            "completion_tokens": 994,
+            "interact_number": 9,
+            "time": 73.9133369922638,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4056",
+                        "source_node_id": "5399",
+                        "target_node_id": "5400"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5399",
+                        "widget_name": "Video",
+                        "node_name": "加载视频数据",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5400",
+                        "widget_name": "Video QA",
+                        "node_name": "视频问答",
+                        "node_params": {
+                            "question": "What is happening in the video?"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 42,
+            "task_type": "pretrained modeling application",
+            "task_description": "我想要把音频提取成文字，请帮我构建一个可以完成该任务的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 7804,
+            "completion_tokens": 1121,
+            "interact_number": 8,
+            "time": 81.49749636650085,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4057",
+                        "source_node_id": "5401",
+                        "target_node_id": "5402"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5401",
+                        "widget_name": "Audio",
+                        "node_name": "加载音频数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5402",
+                        "widget_name": "Audio Classification",
+                        "node_name": "音频转文字",
+                        "node_params": {
+                            "select_model": "CAMPPlus",
+                            "lr": 1e-07,
+                            "epoch": 60,
+                            "optimizer": "Adam",
+                            "use_gpu": true,
+                            "weight_decay": 1e-05
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 43,
+            "task_type": "pretrained modeling application",
+            "task_description": "我需要一个根据文本合成音频的工作流，请帮我构建一个这样的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 7751,
+            "completion_tokens": 907,
+            "interact_number": 9,
+            "time": 67.61530256271362,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4058",
+                        "source_node_id": "5403",
+                        "target_node_id": "5404"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5403",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5404",
+                        "widget_name": "Audio Synthesis",
+                        "node_name": "音频合成",
+                        "node_params": {
+                            "accent": "US",
+                            "sex": "female"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 44,
+            "task_type": "pretrained modeling application",
+            "task_description": "我有一个包含多个节点和边的网络图，帮我构建一个工作流实现对该图的信息的查看。"
+        },
+        "result": {
+            "prompt_tokens": 8139,
+            "completion_tokens": 905,
+            "interact_number": 8,
+            "time": 68.12903356552124,
+            "success": true,
+            "RCR": 5,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4059",
+                        "source_node_id": "5405",
+                        "target_node_id": "5406"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5405",
+                        "widget_name": "Network File",
+                        "node_name": "加载网络文件",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5406",
+                        "widget_name": "Network Analysis",
+                        "node_name": "网络分析",
+                        "node_params": {
+                            "graph_method_indices": [
+                                0,
+                                1,
+                                5
+                            ],
+                            "node_method_indices": []
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "task": {
+            "id": 45,
+            "task_type": "pretrained modeling application",
+            "task_description": "我需要一个可以实现简体转繁体的工作流。"
+        },
+        "result": {
+            "prompt_tokens": 7359,
+            "completion_tokens": 931,
+            "interact_number": 8,
+            "time": 70.16320729255676,
+            "success": true,
+            "RCR": 4,
+            "workflow": {
+                "edges": [
+                    {
+                        "edge_id": "4060",
+                        "source_node_id": "5407",
+                        "target_node_id": "5409"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "node_id": "5407",
+                        "widget_name": "Text",
+                        "node_name": "加载文本数据集",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5408",
+                        "widget_name": "Text",
+                        "node_name": "简体转繁体",
+                        "node_params": {}
+                    },
+                    {
+                        "node_id": "5409",
+                        "widget_name": "Chinese Conversion",
+                        "node_name": "简体转繁体",
+                        "node_params": {
+                            "conversion_type": "0"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+]

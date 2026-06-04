@@ -1,0 +1,92 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.cluster import Birch
+from sklearn.metrics import silhouette_score
+
+# Step 1: 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\monster_train.csv'
+data = pd.read_csv(data_path)
+
+# Step 2: 数据预处理
+# 检查缺失值
+if data.isnull().sum().sum() > 0:
+    # 填充缺失值，这里选择用中位数填充
+    data.fillna(data.median(), inplace=True)
+
+# 选择特征列
+features = data.columns.tolist()
+
+# Step 3: 训练 BIRCH 聚类模型
+# 初始化 BIRCH 模型
+birch = Birch()
+
+# 训练模型
+birch.fit(data[features])
+
+# 预测聚类标签
+labels = birch.predict(data[features])
+
+# Step 4: 计算轮廓系数
+silhouette_avg = silhouette_score(data[features], labels)
+print(f'训练集上的轮廓系数: {silhouette_avg}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_62cf9c1d0380c7aa1128eff7735debc9ed4eeae9a70bfb6fadcc5362f5b95e81.py", line 23, in <module>
+    birch.fit(data[features])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\cluster\_birch.py", line 529, in fit
+    return self._fit(X, partial=False)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\cluster\_birch.py", line 543, in _fit
+    X = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2944, in validate_data
+    out = check_array(X, input_name="X", **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1055, in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_array_api.py", line 839, in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 2153, in __array__
+    arr = np.asarray(values, dtype=dtype)
+ValueError: could not convert string to float: 'clear'
+
+生成的代码：
+import pandas as pd
+from sklearn.cluster import Birch
+from sklearn.metrics import silhouette_score
+
+# Step 1: 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\monster_train.csv'
+data = pd.read_csv(data_path)
+
+# Step 2: 数据预处理
+# 检查缺失值
+if data.isnull().sum().sum() > 0:
+    # 填充缺失值，这里选择用中位数填充
+    data.fillna(data.median(), inplace=True)
+
+# 将分类特征转换为独热编码
+data = pd.get_dummies(data)
+
+# 选择特征列
+features = data.columns.tolist()
+
+# Step 3: 训练 BIRCH 聚类模型
+# 初始化 BIRCH 模型
+birch = Birch()
+
+# 训练模型
+birch.fit(data[features])
+
+# 预测聚类标签
+labels = birch.predict(data[features])
+
+# Step 4: 计算轮廓系数
+silhouette_avg = silhouette_score(data[features], labels)
+print(f'训练集上的轮廓系数: {silhouette_avg}')
+
+
+执行结果：
+训练集上的轮廓系数: 0.5874220027529713

@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 14,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "abalone",
+        "task_description": "我需要一个模型可以使用鲍鱼外形来预估鲍鱼年龄。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 182.5821566581726,
+        "interact_count": 8,
+        "prompt_tokens": 39241,
+        "completion_tokens": 3385,
+        "score": 4.095322631071487,
+        "RCR": 5
+    }
+}

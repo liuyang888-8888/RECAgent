@@ -1,0 +1,107 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.metrics import silhouette_score
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\titanic_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 处理缺失值
+df['Age'].fillna(df['Age'].mean(), inplace=True)
+df['Fare'].fillna(df['Fare'].mean(), inplace=True)
+df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+
+# 将分类变量进行编码
+label_encoder = LabelEncoder()
+df['Sex'] = label_encoder.fit_transform(df['Sex'])
+df['Embarked'] = label_encoder.fit_transform(df['Embarked'])
+
+# 选择特征列
+features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+X = df[features]
+
+# 标准化特征
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 3. 构建 k-Means 模型
+k = 5
+kmeans = KMeans(n_clusters=k, random_state=42)
+kmeans.fit(X_scaled)
+
+# 4. 计算轮廓系数
+silhouette_avg = silhouette_score(X_scaled, kmeans.labels_)
+print(f'Silhouette Coefficient: {silhouette_avg}')
+
+
+执行结果：
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_1eb53886c610f1776b58d3e8d895eb2a3f1c199f6c66ae02e4d02dc7d7bf5dd8.py:13: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['Age'].fillna(df['Age'].mean(), inplace=True)
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_1eb53886c610f1776b58d3e8d895eb2a3f1c199f6c66ae02e4d02dc7d7bf5dd8.py:14: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['Fare'].fillna(df['Fare'].mean(), inplace=True)
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_1eb53886c610f1776b58d3e8d895eb2a3f1c199f6c66ae02e4d02dc7d7bf5dd8.py:15: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+Silhouette Coefficient: 0.28364271327305846
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.metrics import silhouette_score
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\titanic_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 处理缺失值
+df['Age'] = df['Age'].fillna(df['Age'].mean())
+df['Fare'] = df['Fare'].fillna(df['Fare'].mean())
+df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
+
+# 将分类变量进行编码
+label_encoder = LabelEncoder()
+df['Sex'] = label_encoder.fit_transform(df['Sex'])
+df['Embarked'] = label_encoder.fit_transform(df['Embarked'])
+
+# 选择特征列
+features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+X = df[features]
+
+# 标准化特征
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 3. 构建 k-Means 模型
+k = 5
+kmeans = KMeans(n_clusters=k, random_state=42)
+kmeans.fit(X_scaled)
+
+# 4. 计算轮廓系数
+silhouette_avg = silhouette_score(X_scaled, kmeans.labels_)
+print(f'Silhouette Coefficient: {silhouette_avg}')
+
+
+执行结果：
+Silhouette Coefficient: 0.28364271327305846

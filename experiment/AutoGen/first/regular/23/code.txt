@@ -1,0 +1,240 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.cluster import MeanShift
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\obesity_cvd_risk_train.csv'
+data = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", data.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要进行处理
+# data.fillna(data.mean(), inplace=True)  # 用均值填充缺失值
+
+# 将分类变量进行编码
+# 假设 'Obesity' 列是分类变量
+data['Obesity'] = data['Obesity'].astype('category').cat.codes
+
+# 选择特征列
+features = data.drop(columns=['Obesity'])
+
+# 标准化特征
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(features)
+
+# 3. 训练 Mean Shift 聚类模型
+mean_shift = MeanShift()
+clusters = mean_shift.fit_predict(features_scaled)
+
+# 4. 计算轮廓系数
+silhouette_avg = silhouette_score(features_scaled, clusters)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3805, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'Obesity'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_92ea3466d8b8926027d4a5b6d9e98a7a14e40e4a4884b4b8332eb32d39476659.py", line 20, in <module>
+    data['Obesity'] = data['Obesity'].astype('category').cat.codes
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 4102, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    raise KeyError(key) from err
+KeyError: 'Obesity'
+Missing values:
+ id                                0
+Gender                            0
+Age                               0
+Height                            0
+Weight                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+NObeyesdad                        0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.cluster import MeanShift
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\obesity_cvd_risk_train.csv'
+data = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", data.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要进行处理
+# data.fillna(data.mean(), inplace=True)  # 用均值填充缺失值
+
+# 将分类变量进行编码
+# 假设 'NObeyesdad' 列是分类变量
+data['NObeyesdad'] = data['NObeyesdad'].astype('category').cat.codes
+
+# 选择特征列
+features = data.drop(columns=['NObeyesdad'])
+
+# 标准化特征
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(features)
+
+# 3. 训练 Mean Shift 聚类模型
+mean_shift = MeanShift()
+clusters = mean_shift.fit_predict(features_scaled)
+
+# 4. 计算轮廓系数
+silhouette_avg = silhouette_score(features_scaled, clusters)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_9af2a23e496fdc01f32f9c785b60b390c37e5782d2abb58ecc6826c40842bee5.py", line 27, in <module>
+    features_scaled = scaler.fit_transform(features)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 918, in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\preprocessing\_data.py", line 894, in fit
+    return self.partial_fit(X, y, sample_weight)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\preprocessing\_data.py", line 930, in partial_fit
+    X = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2944, in validate_data
+    out = check_array(X, input_name="X", **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1055, in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_array_api.py", line 839, in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 2153, in __array__
+    arr = np.asarray(values, dtype=dtype)
+ValueError: could not convert string to float: 'Male'
+Missing values:
+ id                                0
+Gender                            0
+Age                               0
+Height                            0
+Weight                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+NObeyesdad                        0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.cluster import MeanShift
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\obesity_cvd_risk_train.csv'
+data = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", data.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要进行处理
+# data.fillna(data.mean(), inplace=True)  # 用均值填充缺失值
+
+# 将分类变量进行编码
+# 假设 'NObeyesdad' 列是分类变量
+data['NObeyesdad'] = data['NObeyesdad'].astype('category').cat.codes
+
+# 选择特征列
+features = data.drop(columns=['NObeyesdad'])
+
+# 确定分类变量和数值变量
+categorical_features = ['Gender', 'family_history_with_overweight', 'FAVC', 'CAEC', 'SMOKE', 'SCC', 'CALC', 'MTRANS']
+numerical_features = [col for col in features.columns if col not in categorical_features]
+
+# 创建预处理管道
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numerical_features),
+        ('cat', OneHotEncoder(), categorical_features)
+    ])
+
+# 3. 训练 Mean Shift 聚类模型
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('mean_shift', MeanShift())
+])
+
+# 拟合模型
+pipeline.fit(features)
+
+# 获取聚类结果
+clusters = pipeline.named_steps['mean_shift'].labels_
+
+# 4. 计算轮廓系数
+features_transformed = preprocessor.transform(features)
+silhouette_avg = silhouette_score(features_transformed, clusters)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+Missing values:
+ id                                0
+Gender                            0
+Age                               0
+Height                            0
+Weight                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+NObeyesdad                        0
+dtype: int64
+Silhouette Coefficient:  0.34407365333405165

@@ -1,0 +1,337 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\smoker_status_bio_signals_train.csv')
+test_df = pd.read_csv('E:\\csv\\smoker_status_bio_signals_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    unique_values = train_df_copy[col].unique()
+    value_map = {value: idx for idx, value in enumerate(unique_values)}
+    train_df_copy[col] = train_df_copy[col].map(value_map)
+    test_df_copy[col] = test_df_copy[col].map(value_map)
+
+# Apply appropriate preprocessing for numerical columns
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+for col in numerical_columns:
+    if col != 'label':  # Ensure we do not scale the label column
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Display the preprocessed data
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   1   70     165      65   89.0  ...   27   23   37              1        0
+1   2   20     170      75   81.0  ...   27   31   53              0        1
+2   3   35     180      95  105.0  ...   20   27   30              1        0
+3   5   50     170      55   51.0  ...   24   42  119              1        1
+4   6   45     160      55   69.0  ...   17   12   16              0        0
+
+[5 rows x 24 columns]
+
+Test DataFrame:
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   0   55     165      60   81.0  ...   22   25   27              0        1
+1   4   30     165      60   80.5  ...   19   13   17              0        1
+2  12   40     155      55   80.0  ...   21   15    9              1        0
+3  20   20     175      60   71.5  ...   18   15   16              0        1
+4  24   60     170      65   85.0  ...   29   18   24              0        1
+
+[5 rows x 24 columns]
+
+Data types in Train DataFrame:
+id                       int64
+age                      int64
+height                   int64
+weight                   int64
+waist                  float64
+eyesight_left          float64
+eyesight_right         float64
+hearing_left             int64
+hearing_right            int64
+systolic                 int64
+relaxation               int64
+fasting_blood_sugar      int64
+Cholesterol              int64
+triglyceride             int64
+HDL                      int64
+LDL                      int64
+hemoglobin             float64
+Urine_protein            int64
+serum_creatinine       float64
+AST                      int64
+ALT                      int64
+Gtp                      int64
+dental_caries            int64
+smoking                  int64
+dtype: object
+
+Data types in Test DataFrame:
+id                       int64
+age                      int64
+height                   int64
+weight                   int64
+waist                  float64
+eyesight_left          float64
+eyesight_right         float64
+hearing_left             int64
+hearing_right            int64
+systolic                 int64
+relaxation               int64
+fasting_blood_sugar      int64
+Cholesterol              int64
+triglyceride             int64
+HDL                      int64
+LDL                      int64
+hemoglobin             float64
+Urine_protein            int64
+serum_creatinine       float64
+AST                      int64
+ALT                      int64
+Gtp                      int64
+dental_caries            int64
+smoking                  int64
+dtype: object
+
+Categorical Columns:
+Index([], dtype='object')
+
+Numerical Columns:
+Index(['id', 'age', 'height', 'weight', 'waist', 'eyesight_left',
+       'eyesight_right', 'hearing_left', 'hearing_right', 'systolic',
+       'relaxation', 'fasting_blood_sugar', 'Cholesterol', 'triglyceride',
+       'HDL', 'LDL', 'hemoglobin', 'Urine_protein', 'serum_creatinine', 'AST',
+       'ALT', 'Gtp', 'dental_caries', 'smoking'],
+      dtype='object')
+
+Preprocessed Train DataFrame:
+         id       age    height  ...       Gtp  dental_caries   smoking
+0 -1.727387  2.172987 -0.029558  ...  0.026757       2.010351 -0.879736
+1 -1.727365 -2.054932  0.537155  ...  0.539877      -0.497426  1.136705
+2 -1.727343 -0.786556  1.670580  ... -0.197733       2.010351 -0.879736
+3 -1.727300  0.481820  0.537155  ...  2.656495       2.010351  1.136705
+4 -1.727278  0.059028 -0.596270  ... -0.646712      -0.497426 -0.879736
+
+[5 rows x 24 columns]
+
+Preprocessed Test DataFrame:
+         id       age    height  ...       Gtp  dental_caries   smoking
+0 -1.727409  0.904612 -0.029558  ... -0.293942      -0.497426  1.136705
+1 -1.727322 -1.209348 -0.029558  ... -0.614642      -0.497426  1.136705
+2 -1.727148 -0.363764 -1.162983  ... -0.871202       2.010351 -0.879736
+3 -1.726974 -2.054932  1.103867  ... -0.646712      -0.497426  1.136705
+4 -1.726887  1.327404  0.537155  ... -0.390152      -0.497426  1.136705
+
+[5 rows x 24 columns]
+is_success:
+True
+code:
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Descriptive statistics for numerical columns
+numerical_summary = train_df_copy[numerical_columns].describe()
+print("Descriptive Statistics for Numerical Columns:\n", numerical_summary)
+
+# Correlation matrix for numerical columns
+correlation_matrix = train_df_copy[numerical_columns].corr()
+plt.figure(figsize=(12, 8))
+sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap='coolwarm')
+plt.title('Correlation Matrix for Numerical Columns')
+plt.show()
+
+# Distribution plots for numerical columns
+train_df_copy[numerical_columns].hist(bins=30, figsize=(20, 15))
+plt.suptitle('Distribution of Numerical Features')
+plt.show()
+
+# Box plots for numerical columns to identify outliers
+plt.figure(figsize=(20, 15))
+train_df_copy[numerical_columns].boxplot()
+plt.title('Box Plots for Numerical Features')
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[2], line 2
+      1 import numpy as np
+----> 2 import matplotlib.pyplot as plt
+      3 import seaborn as sns
+      5 # Descriptive statistics for numerical columns
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Exploratory Data Analysis (EDA)
+
+# Check for missing values
+print("Missing values in Train DataFrame:")
+print(train_df_copy.isnull().sum())
+print("\nMissing values in Test DataFrame:")
+print(test_df_copy.isnull().sum())
+
+# Summary statistics
+print("\nSummary statistics for Train DataFrame:")
+print(train_df_copy.describe())
+print("\nSummary statistics for Test DataFrame:")
+print(test_df_copy.describe())
+
+# Distribution of the target variable
+plt.figure(figsize=(8, 6))
+sns.countplot(x='smoking', data=train_df_copy)
+plt.title('Distribution of Smoking Status')
+plt.show()
+
+# Correlation matrix
+plt.figure(figsize=(12, 10))
+correlation_matrix = train_df_copy.corr()
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+plt.title('Correlation Matrix')
+plt.show()
+
+# Pairplot for a subset of features
+sns.pairplot(train_df_copy[['age', 'weight', 'waist', 'smoking']])
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[3], line 1
+----> 1 import matplotlib.pyplot as plt
+      2 import seaborn as sns
+      4 # Exploratory Data Analysis (EDA)
+      5 
+      6 # Check for missing values
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+import matplotlib.pyplot as plt
+import seaborn as sns
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[4], line 1
+----> 1 import matplotlib.pyplot as plt
+      2 import seaborn as sns
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Check if the libraries are installed
+try:
+    import matplotlib
+    import seaborn
+    print("Matplotlib and Seaborn are already installed.")
+except ImportError:
+    !pip install matplotlib seaborn
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    print("Matplotlib and Seaborn have been installed.")
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[5], line 1
+----> 1 import matplotlib.pyplot as plt
+      2 import seaborn as sns
+      4 # Check if the libraries are installed
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+import matplotlib.pyplot as plt
+import seaborn as sns
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[6], line 1
+----> 1 import matplotlib.pyplot as plt
+      2 import seaborn as sns
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+import matplotlib.pyplot as plt
+import seaborn as sns
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[7], line 1
+----> 1 import matplotlib.pyplot as plt
+      2 import seaborn as sns
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+import matplotlib.pyplot as plt
+import seaborn as sns
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[8], line 1
+----> 1 import matplotlib.pyplot as plt
+      2 import seaborn as sns
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+import matplotlib.pyplot as plt
+import seaborn as sns
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[9], line 1
+----> 1 import matplotlib.pyplot as plt
+      2 import seaborn as sns
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False

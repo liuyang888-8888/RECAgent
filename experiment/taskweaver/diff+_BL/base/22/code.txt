@@ -1,0 +1,92 @@
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\monster_train.csv'
+monster_data = pd.read_csv(file_path)
+
+# Perform clustering analysis
+kmeans = KMeans(n_clusters=3, random_state=42)
+clusters = kmeans.fit_predict(monster_data)
+
+# Calculate silhouette score
+silhouette_avg = silhouette_score(monster_data, clusters)
+
+# Report the silhouette score
+silhouette_avg, clusters
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 11
+    clusters = kmeans.fit_predict(monster_data)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\cluster\_kmeans.py:1064 in fit_predict
+    return self.fit(X, sample_weight=sample_weight).labels_
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\cluster\_kmeans.py:1454 in fit
+    X = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2944 in validate_data
+    out = check_array(X, input_name="X", **check_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1055 in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_array_api.py:839 in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:2153 in __array__
+    arr = np.asarray(values, dtype=dtype)
+
+ValueError: could not convert string to float: 'clear'
+
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import LabelEncoder
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\monster_train.csv'
+monster_data = pd.read_csv(file_path)
+
+# Preprocess the data to handle non-numeric values
+label_encoder = LabelEncoder()
+for column in monster_data.select_dtypes(include=['object']).columns:
+    monster_data[column] = label_encoder.fit_transform(monster_data[column])
+
+# Perform clustering analysis
+kmeans = KMeans(n_clusters=3, random_state=42)
+clusters = kmeans.fit_predict(monster_data)
+
+# Calculate silhouette score
+silhouette_avg = silhouette_score(monster_data, clusters)
+
+# Report the silhouette score
+silhouette_avg, clusters
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.5842811384343969,
+ array([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))

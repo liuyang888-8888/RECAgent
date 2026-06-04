@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 28,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "electricity_sales",
+        "task_description": "ARIMA模型适用于时间序列数据，能够捕捉数据的趋势和季节性成分。根据过去24年每个月的电子商务的销量数据，使用ARIMA算法训练一个模型。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 75.70367884635925,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 4,
+        "prompt_tokens": 6542,
+        "completion_tokens": 768
+    }
+}

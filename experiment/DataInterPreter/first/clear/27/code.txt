@@ -1,0 +1,392 @@
+code:
+import pandas as pd
+
+# Load the training data
+train_data_path = r'E:\csv\bitcoin_price_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows of the training data to understand its structure
+print(train_df_copy.head())
+
+# Check the data types of each column
+print(train_df_copy.dtypes)
+
+# Example preprocessing steps (these should be adjusted based on the actual data):
+# Convert date column to datetime type if it's not already
+if train_df_copy['Date'].dtype == 'O':
+    train_df_copy['Date'] = pd.to_datetime(train_df_copy['Date'])
+
+# Extract features from the date column (e.g., year, month, day)
+train_df_copy['Year'] = train_df_copy['Date'].dt.year
+train_df_copy['Month'] = train_df_copy['Date'].dt.month
+train_df_copy['Day'] = train_df_copy['Date'].dt.day
+
+# Display the updated DataFrame
+print(train_df_copy.head())
+execute_result:
+Date          Open         Close          High           Low
+0  2024-04-21  64992.816406  64926.644531  65723.242188  64277.722656
+1  2024-04-20  63851.101562  64994.441406  65442.457031  63172.402344
+2  2024-04-19  63510.750000  63843.570312  65481.597656  59651.390625
+3  2024-04-18  61275.316406  63512.753906  64125.687500  60833.480469
+4  2024-04-17  63831.847656  61276.691406  64486.363281  59768.585938
+Date      object
+Open     float64
+Close    float64
+High     float64
+Low      float64
+dtype: object
+        Date          Open         Close  ...  Year  Month  Day
+0 2024-04-21  64992.816406  64926.644531  ...  2024      4   21
+1 2024-04-20  63851.101562  64994.441406  ...  2024      4   20
+2 2024-04-19  63510.750000  63843.570312  ...  2024      4   19
+3 2024-04-18  61275.316406  63512.753906  ...  2024      4   18
+4 2024-04-17  63831.847656  61276.691406  ...  2024      4   17
+
+[5 rows x 8 columns]
+is_success:
+True
+code:
+# Preprocess the data to ensure it is suitable for time series analysis
+# Handle missing values and ensure dates are in datetime format
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_preprocessed = train_df_copy.copy()
+
+# Check for missing values and handle them appropriately
+# For simplicity, we will fill missing values with the forward fill method
+train_df_preprocessed.fillna(method='ffill', inplace=True)
+
+# Ensure the 'Date' column is in datetime format
+if train_df_preprocessed['Date'].dtype != 'datetime64[ns]':
+    train_df_preprocessed['Date'] = pd.to_datetime(train_df_preprocessed['Date'])
+
+# Display the first few rows of the preprocessed DataFrame
+print(train_df_preprocessed.head())
+execute_result:
+Date          Open         Close  ...  Year  Month  Day
+0 2024-04-21  64992.816406  64926.644531  ...  2024      4   21
+1 2024-04-20  63851.101562  64994.441406  ...  2024      4   20
+2 2024-04-19  63510.750000  63843.570312  ...  2024      4   19
+3 2024-04-18  61275.316406  63512.753906  ...  2024      4   18
+4 2024-04-17  63831.847656  61276.691406  ...  2024      4   17
+
+[5 rows x 8 columns]
+is_success:
+True
+code:
+# Select the 'High' column for modeling the highest value of Bitcoin
+train_high = train_df_preprocessed[['High']].copy()
+
+# Display the first few rows of the selected column
+print(train_high.head())
+execute_result:
+High
+0  65723.242188
+1  65442.457031
+2  65481.597656
+3  64125.687500
+4  64486.363281
+is_success:
+True
+code:
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
+from statsmodels.tsa.vector_ar.var_model import VAR
+import numpy as np
+
+# Selecting the 'High' column for the VAR model
+data_for_var = train_high
+
+# Check for stationarity and perform differencing if necessary
+def check_stationarity(data):
+    result = coint_johansen(data, det_order=0, k_ar_diff=1)
+    return result.lr1[0] > result.cvt[0][1]
+
+# Differencing the data if it is not stationary
+if not check_stationarity(data_for_var):
+    data_for_var = data_for_var.diff().dropna()
+
+# Fit the VAR model
+model = VAR(data_for_var)
+results = model.fit(ic='bic')  # Using BIC for optimal lag selection
+
+# Print the summary of the model
+print(results.summary())
+execute_result:
+---------------------------------------------------------------------------
+LinAlgError                               Traceback (most recent call last)
+Cell In[7], line 14
+     11     return result.lr1[0] > result.cvt[0][1]
+     13 # Differencing the data if it is not stationary
+---> 14 if not check_stationarity(data_for_var):
+     15     data_for_var = data_for_var.diff().dropna()
+     17 # Fit the VAR model
+
+Cell In[7], line 10, in check_stationarity(data)
+      9 def check_stationarity(data):
+---> 10     result = coint_johansen(data, det_order=0, k_ar_diff=1)
+     11     return result.lr1[0] > result.cvt[0][1]
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\vector_ar\vecm.py:693, in coint_johansen(endog, det_order, k_ar_diff)
+    690 dx = dx[k_ar_diff:]
+    692 dx = detrend(dx, f)
+--> 693 r0t = resid(dx, z)
+    694 # GH 5731, [:-0] does not work, need [:t-0]
+    695 lx = endog[: (endog.shape[0] - k_ar_diff)]
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\vector_ar\vecm.py:672, in coint_johansen.<locals>.resid(y, x)
+    670 if x.size == 0:
+    671     return y
+--> 672 r = y - np.dot(x, np.dot(np.linalg.pinv(x), y))
+    673 return r
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\numpy\linalg\linalg.py:2022, in pinv(a, rcond, hermitian)
+   2020     return wrap(res)
+   2021 a = a.conjugate()
+-> 2022 u, s, vt = svd(a, full_matrices=False, hermitian=hermitian)
+   2024 # discard small singular values
+   2025 cutoff = rcond[..., newaxis] * amax(s, axis=-1, keepdims=True)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\numpy\linalg\linalg.py:1662, in svd(a, full_matrices, compute_uv, hermitian)
+   1659         s = abs(s)
+   1660         return sort(s)[..., ::-1]
+-> 1662 _assert_stacked_2d(a)
+   1663 t, result_t = _commonType(a)
+   1665 extobj = get_linalg_error_extobj(_raise_linalgerror_svd_nonconvergence)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\numpy\linalg\linalg.py:206, in _assert_stacked_2d(*arrays)
+    204 for a in arrays:
+    205     if a.ndim < 2:
+--> 206         raise LinAlgError('%d-dimensional array given. Array must be '
+    207                 'at least two-dimensional' % a.ndim)
+
+LinAlgError: 1-dimensional array given. Array must be at least two-dimensional
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Selecting the order of the VAR model using BIC
+model = VAR(train_high)
+results = model.fit(maxlags=10, ic='bic')
+print(f"Optimal lag order based on BIC: {results.k_ar}")
+
+# Fitting the VAR model with the optimal lag order
+var_model = model.fit(results.k_ar)
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[8], line 5
+      2 from statsmodels.tsa.vector_ar.var_model import VAR
+      4 # Selecting the order of the VAR model using BIC
+----> 5 model = VAR(train_high)
+      6 results = model.fit(maxlags=10, ic='bic')
+      7 print(f"Optimal lag order based on BIC: {results.k_ar}")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\vector_ar\var_model.py:552, in VAR.__init__(self, endog, exog, dates, freq, missing)
+    550 super().__init__(endog, exog, dates, freq, missing=missing)
+    551 if self.endog.ndim == 1:
+--> 552     raise ValueError("Only gave one variable to VAR")
+    553 self.neqs = self.endog.shape[1]
+    554 self.n_totobs = len(endog)
+
+ValueError: Only gave one variable to VAR
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Select the relevant columns for the VAR model
+var_data = train_df_preprocessed[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model and optimize the AR scheme with BIC
+model = VAR(var_data)
+selected_lag = select_order(var_data, maxlags=10, ic='bic')
+print(f"Optimal lag order based on BIC: {selected_lag.bic}")
+
+# Fit the model with the optimal lag
+var_model = model.fit(maxlags=selected_lag.bic)
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[9], line 9
+      7 # Fit the VAR model and optimize the AR scheme with BIC
+      8 model = VAR(var_data)
+----> 9 selected_lag = select_order(var_data, maxlags=10, ic='bic')
+     10 print(f"Optimal lag order based on BIC: {selected_lag.bic}")
+     12 # Fit the model with the optimal lag
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Select the relevant columns for the VAR model
+var_data = train_df_preprocessed[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model and optimize the AR scheme with BIC
+model = VAR(var_data)
+selected_lag = select_order(var_data, maxlags=10, ic='bic')
+var_model = model.fit(maxlags=selected_lag.bic)
+
+# Print the summary of the VAR model
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[10], line 9
+      7 # Fit the VAR model and optimize the AR scheme with BIC
+      8 model = VAR(var_data)
+----> 9 selected_lag = select_order(var_data, maxlags=10, ic='bic')
+     10 var_model = model.fit(maxlags=selected_lag.bic)
+     12 # Print the summary of the VAR model
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Select the relevant columns for the VAR model
+var_data = train_df_preprocessed[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model and optimize the AR scheme with BIC
+model = VAR(var_data)
+selected_lag = select_order(var_data, maxlags=10, ic='bic')
+var_model = model.fit(maxlags=selected_lag.bic)
+
+# Print the summary of the VAR model
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[11], line 9
+      7 # Fit the VAR model and optimize the AR scheme with BIC
+      8 model = VAR(var_data)
+----> 9 selected_lag = select_order(var_data, maxlags=10, ic='bic')
+     10 var_model = model.fit(maxlags=selected_lag.bic)
+     12 # Print the summary of the VAR model
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Select the relevant columns for the VAR model
+var_data = train_df_preprocessed[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model and optimize the AR scheme with BIC
+model = VAR(var_data)
+selected_lag = select_order(var_data, maxlags=10, ic='bic')
+print(f"Optimal lag order based on BIC: {selected_lag.bic}")
+
+# Fit the model with the optimal lag order
+var_model = model.fit(maxlags=selected_lag.bic)
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[12], line 9
+      7 # Fit the VAR model and optimize the AR scheme with BIC
+      8 model = VAR(var_data)
+----> 9 selected_lag = select_order(var_data, maxlags=10, ic='bic')
+     10 print(f"Optimal lag order based on BIC: {selected_lag.bic}")
+     12 # Fit the model with the optimal lag order
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Select the relevant columns for the VAR model
+var_data = train_df_preprocessed[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model and optimize the AR scheme with BIC
+model = VAR(var_data)
+selected_lag = select_order(var_data, maxlags=10, ic='bic')
+var_model = model.fit(maxlags=selected_lag.bic)
+
+# Print the summary of the VAR model
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[13], line 9
+      7 # Fit the VAR model and optimize the AR scheme with BIC
+      8 model = VAR(var_data)
+----> 9 selected_lag = select_order(var_data, maxlags=10, ic='bic')
+     10 var_model = model.fit(maxlags=selected_lag.bic)
+     12 # Print the summary of the VAR model
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Select the relevant columns for the VAR model
+var_data = train_df_preprocessed[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model and optimize the AR scheme with BIC
+model = VAR(var_data)
+selected_lag = select_order(var_data, maxlags=10, ic='bic')
+var_model = model.fit(maxlags=selected_lag.bic)
+
+# Print the summary of the VAR model
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[14], line 9
+      7 # Fit the VAR model and optimize the AR scheme with BIC
+      8 model = VAR(var_data)
+----> 9 selected_lag = select_order(var_data, maxlags=10, ic='bic')
+     10 var_model = model.fit(maxlags=selected_lag.bic)
+     12 # Print the summary of the VAR model
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+is_success:
+False
+code:
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+# Select the relevant columns for the VAR model
+var_data = train_df_preprocessed[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model and optimize the AR scheme with BIC
+model = VAR(var_data)
+selected_lag = select_order(model, maxlags=10, ic='bic')
+print(f"Optimal lag order based on BIC: {selected_lag.bic_min_order}")
+
+# Fit the VAR model with the optimal lag order
+var_model = model.fit(maxlags=selected_lag.bic_min_order, ic='bic')
+print(var_model.summary())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[15], line 9
+      7 # Fit the VAR model and optimize the AR scheme with BIC
+      8 model = VAR(var_data)
+----> 9 selected_lag = select_order(model, maxlags=10, ic='bic')
+     10 print(f"Optimal lag order based on BIC: {selected_lag.bic_min_order}")
+     12 # Fit the VAR model with the optimal lag order
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+is_success:
+False

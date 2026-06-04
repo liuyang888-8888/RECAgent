@@ -1,0 +1,166 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\census_income_train.csv'
+census_income_df = pd.read_csv(file_path)
+
+# Preprocess the data
+# Convert categorical columns to numerical values
+for column in census_income_df.select_dtypes(include=['object']).columns:
+    census_income_df[column] = census_income_df[column].astype('category').cat.codes
+
+# Standardize the features
+scaler = StandardScaler()
+standardized_features = scaler.fit_transform(census_income_df)
+
+# Store the preprocessed data
+preprocessed_data = standardized_features
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+array([[-0.48456647,  0.09809228, -1.31540967, ..., -0.03408696,
+         0.28918592,  0.19336431],
+       [ 0.46362095,  2.06943642, -0.42908969, ..., -0.03408696,
+         0.28918592,  1.22137122],
+       [-0.26575399, -1.21613714,  0.59234016, ..., -0.03408696,
+         0.28918592,  0.19336431],
+       ...,
+       [-0.04694151,  0.09809228,  0.04393689, ...,  1.1764381 ,
+         0.28918592, -0.83464261],
+       [ 0.53655844,  1.41232171,  0.53085514, ...,  0.77292975,
+         0.28918592, -0.83464261],
+       [ 0.31774596,  0.09809228, -0.06540665, ..., -0.03408696,
+         0.28918592,  1.22137122]])from sklearn.cluster import DBSCAN
+from sklearn.metrics import silhouette_score
+
+# Build DBSCAN model
+model = DBSCAN(min_samples=5, metric='cosine')
+labels = model.fit_predict(preprocessed_data)
+
+# Calculate silhouette score
+silhouette_score_value = silhouette_score(preprocessed_data, labels)
+
+silhouette_score_value
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 9
+    silhouette_score_value = silhouette_score(preprocessed_data, labels)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:216 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\cluster\_unsupervised.py:139 in silhouette_score
+    return np.mean(silhouette_samples(X, labels, metric=metric, **kwds))
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:189 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\cluster\_unsupervised.py:297 in silhouette_samples
+    check_number_of_labels(len(le.classes_), n_samples)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\cluster\_unsupervised.py:36 in check_number_of_labels
+    raise ValueError(
+
+ValueError: Number of labels is 1. Valid values are 2 to n_samples - 1 (inclusive)
+
+from sklearn.cluster import DBSCAN
+from sklearn.metrics import silhouette_score
+
+# Adjust DBSCAN parameters and rebuild the model
+model = DBSCAN(min_samples=5, metric='euclidean')
+labels = model.fit_predict(preprocessed_data)
+
+# Check if there are at least two unique labels
+if len(set(labels)) > 1:
+    # Calculate silhouette score
+    silhouette_score_value = silhouette_score(preprocessed_data, labels)
+else:
+    silhouette_score_value = None
+
+silhouette_score_value
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+-0.4538480736139485import pandas as pd
+
+# Load the original dataset to get the column names
+census_income_df = pd.read_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\census_income_train.csv')
+
+# Add the cluster labels to the original dataframe
+census_income_df['Cluster_Label'] = labels
+
+# Analyze the relationship between income and other factors
+grouped = census_income_df.groupby('Cluster_Label').mean()
+
+# Report the silhouette score and analysis
+analysis_result = f'Silhouette Score: {silhouette_score_value}\n\nCluster Analysis:\n{grouped}'
+
+analysis_result
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\groupby\groupby.py:1942 in _agg_py_fallback
+    res_values = self._grouper.agg_series(ser, alt, preserve_dtype=True)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\groupby\ops.py:864 in agg_series
+    result = self._aggregate_series_pure_python(obj, func)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\groupby\ops.py:885 in _aggregate_series_pure_python
+    res = func(group)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\groupby\groupby.py:2454 in <lambda>
+    alt=lambda x: Series(x, copy=False).mean(numeric_only=numeric_only),
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\series.py:6549 in mean
+    return NDFrame.mean(self, axis, skipna, numeric_only, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12420 in mean
+    return self._stat_function(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12377 in _stat_function
+    return self._reduce(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\series.py:6457 in _reduce
+    return op(delegate, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:147 in f
+    result = alt(values, axis=axis, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:404 
+import pandas as pd
+
+# Load the original dataset to get the column names
+census_income_df = pd.read_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\census_income_train.csv')
+
+# Add the cluster labels to the original dataframe
+census_income_df['Cluster_Label'] = labels
+
+# Filter out non-numeric columns
+numeric_columns = census_income_df.select_dtypes(include=[int, float]).columns
+
+# Analyze the relationship between income and other factors
+grouped = census_income_df.groupby('Cluster_Label')[numeric_columns].mean()
+
+# Report the silhouette score and analysis
+analysis_result = f'Silhouette Score: {silhouette_score_value}\n\nCluster Analysis:\n{grouped}'
+
+analysis_result, grouped
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+('Silhouette Score: -0.4538480736139485\n\nCluster Analysis:\n                     age         fnlwgt  education_num  capital_gain  capital_loss  hours_per_week  Cluster_Label\nCluster_Label                                                                                                    \n-1             39.918934  194634.901206      10.112734   1337.298006    108.192563       40.719568           -1.0\n 0             38.512974  166401.373253       9.000000     75.916168      0.000000       41.359281            0.0\n...                  ...            ...            ...           ...           ...             ...            ...\n 328           45.833333  116885.333333       9.000000      0.000000      0.000000       39.166667          328.0\n 329           49.600000  115748.400000      10.000000      0.000000      0.000000       41.200000          329.0\n\n[331 rows x 7 columns]',
+                      age         fnlwgt  education_num  capital_gain  capital_loss  hours_per_week  Cluster_Label
+ Cluster_Label                                                                                                    
+ -1             39.918934  194634.901206      10.112734   1337.298006    108.192563       40.719568           -1.0
+  0             38.512974  166401.373253       9.000000     75.916168      0.000000       41.359281            0.0
+ ...                  ...            ...            ...           ...           ...             ...            ...
+  328           45.833333  116885.333333       9.000000      0.000000      0.000000       39.166667          328.0
+  329           49.600000  115748.400000      10.000000      0.000000      0.000000       41.200000          329.0
+ 
+ [331 rows x 7 columns])

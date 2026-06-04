@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 16,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "media_campaign_cost",
+        "task_description": "我需要一个可以用于预测 Food Mart 媒体活动的成本的随机梯度下降模型。目标是根据输入特征（如广告渠道、活动时长、目标受众等）预测媒体活动的成本。在测试集上进行模型性能的评估。最后使用保存数据组件把评估结果保存下来。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 320.4750225543976,
+        "interact_count": 7,
+        "prompt_tokens": 40000,
+        "completion_tokens": 5110,
+        "RCR": 5
+    }
+}

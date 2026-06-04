@@ -1,0 +1,186 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Split the training set into training and validation sets
+train_sample, val_sample = train_test_split(train_df, test_size=0.2, random_state=42)
+
+# Preprocess the data
+# Assuming the target variable is the last column
+X_train = train_sample.drop(train_sample.columns[-1], axis=1)
+y_train = train_sample[train_sample.columns[-1]]
+X_val = val_sample.drop(val_sample.columns[-1], axis=1)
+y_val = val_sample[val_sample.columns[-1]]
+X_test = test_df.drop(test_df.columns[-1], axis=1)
+y_test = test_df[test_df.columns[-1]]
+
+# Output the processed data
+X_train, y_train, X_val, y_val, X_test, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(          id sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight
+ 30516  38154   F   0.700     0.545   0.190        1.5015         0.5670         0.3055        0.4700
+ 9019   11236   I   0.560     0.440   0.145        0.8740         0.3525         0.2195        0.2845
+ ...      ...  ..     ...       ...     ...           ...            ...            ...           ...
+ 860     1079   M   0.655     0.510   0.220        1.2695         0.5690         0.2975        0.3975
+ 15795  19682   F   0.640     0.500   0.180        1.1795         0.4765         0.3140        0.4450
+ 
+ [57993 rows x 9 columns],
+ 30516    16
+ 9019     10
+          ..
+ 860      13
+ 15795    13
+ Name: rings, Length: 57993, dtype: int64,
+           id sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight
+ 57968  72630   F   0.575     0.460    0.15        0.8765         0.4530         0.2070         0.259
+ 22693  28259   I   0.415     0.325    0.10        0.3685         0.1635         0.0930         0.100
+ ...      ...  ..     ...       ...     ...           ...            ...            ...           ...
+ 60918  76302   F   0.575     0.465    0.16        1.0410         0.5095         0.1855         0.265
+ 53724  67287   I   0.235     0.150    0.05        0.0465         0.0170         0.0120         0.015
+ 
+ [14499 rows x 9 columns],
+ 57968    9
+ 22693    7
+         ..
+ 60918    8
+ 53724    4
+ Name: rings, Length: 14499, dtype: int64,
+           id sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight
+ 0          8   I   0.205     0.150    0.04        0.0460         0.0145         0.0105         0.010
+ 1         34   I   0.580     0.450    0.14        0.9165         0.3875         0.1615         0.275
+ ...      ...  ..     ...       ...     ...           ...            ...            ...           ...
+ 18121  90611   M   0.555     0.425    0.15        0.8790         0.3865         0.1815         0.240
+ 18122  90614   I   0.425     0.325    0.10        0.3455         0.1525         0.0785         0.105
+ 
+ [18123 rows x 9 columns],
+ 0         4
+ 1        10
+          ..
+ 18121     9
+ 18122     8
+ Name: rings, Length: 18123, dtype: int64)import lightgbm as lgb
+from sklearn.metrics import mean_squared_error
+
+# Prepare the data for training
+train_data = lgb.Dataset(X_train, label=y_train)
+val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
+
+# Define the parameters for the LightGBM model
+params = {
+    'boosting_type': 'rf',
+    'num_trees': 20,
+    'objective': 'regression',
+    'metric': 'mse',
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the model
+model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=20)
+
+# Predict on the test set
+y_pred = model.predict(X_test, num_iteration=model.best_iteration)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+# Save the predictions
+predictions = pd.DataFrame({'id': test_df['id'], 'predicted_rings': y_pred})
+predictions.to_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_predictions.csv', index=False)
+
+# Output the MSE and the predictions
+mse, predictions
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 21
+    model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=20)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\engine.py:297 in train
+    booster = Booster(params=params, train_set=train_set)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:3656 in __init__
+    train_set.construct()
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2590 in construct
+    self._lazy_init(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2123 in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:868 in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:814 in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:805 in _check_for_bad_pandas_dtypes
+    raise ValueError(
+
+ValueError: pandas dtypes must be int, float or bool.
+Fields with bad pandas dtypes: sex: object
+
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Convert 'sex' column to numerical values
+label_encoder = LabelEncoder()
+X_train['sex'] = label_encoder.fit_transform(X_train['sex'])
+X_val['sex'] = label_encoder.transform(X_val['sex'])
+X_test['sex'] = label_encoder.transform(X_test['sex'])
+
+# Prepare the data for training
+train_data = lgb.Dataset(X_train, label=y_train)
+val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
+
+# Define the parameters for the LightGBM model
+params = {
+    'boosting_type': 'rf',
+    'num_trees': 20,
+    'objective': 'regression',
+    'metric': 'mse',
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the model
+model = lgb.train(params, train_data, valid_sets=[val_data], num_boost_round=20)
+
+# Predict on the test set
+y_pred = model.predict(X_test, num_iteration=model.best_iteration)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+# Save the predictions
+predictions = pd.DataFrame({'id': test_df['id'], 'predicted_rings': y_pred})
+predictions.to_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\abalone_predictions.csv', index=False)
+
+# Output the MSE and the predictions
+mse, predictions
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(3.954997905879789,
+           id  predicted_rings
+ 0          8         4.681933
+ 1         34        11.068622
+ ...      ...              ...
+ 18121  90611         9.600267
+ 18122  90614         7.391905
+ 
+ [18123 rows x 2 columns])

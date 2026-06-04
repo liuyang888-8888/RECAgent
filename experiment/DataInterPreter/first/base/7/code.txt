@@ -1,0 +1,319 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\reservation_cancellation_train.csv')
+test_df = pd.read_csv('E:\\csv\\reservation_cancellation_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Preprocessing steps
+# Example: Convert date columns to datetime if they are not already
+date_columns = ['reservation_date', 'checkin_date', 'checkout_date']  # Adjust these column names based on your dataset
+
+for col in date_columns:
+    if col in train_df_copy.columns and col in test_df_copy.columns:
+        train_df_copy[col] = pd.to_datetime(train_df_copy[col], errors='coerce')
+        test_df_copy[col] = pd.to_datetime(test_df_copy[col], errors='coerce')
+
+# Example: Fill missing values with appropriate strategies
+# For numerical columns, you can fill with median or mean
+numerical_columns = train_df_copy.select_dtypes(include=['number']).columns.tolist()
+for col in numerical_columns:
+    if col != 'label':  # Assuming 'label' is the name of the label column
+        median_value = train_df_copy[col].median()
+        train_df_copy[col].fillna(median_value, inplace=True)
+        test_df_copy[col].fillna(median_value, inplace=True)
+
+# For categorical columns, you can fill with the most frequent value or a placeholder
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns.tolist()
+for col in categorical_columns:
+    if col != 'label':  # Assuming 'label' is the name of the label column
+        most_frequent_value = train_df_copy[col].mode()[0]
+        train_df_copy[col].fillna(most_frequent_value, inplace=True)
+        test_df_copy[col].fillna(most_frequent_value, inplace=True)
+
+# Example: Encode categorical variables using label encoding
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    if col != 'label':  # Assuming 'label' is the name of the label column
+        train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+        test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Display the preprocessed datasets
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   0           2.0  ...                       0               0
+1   2           2.0  ...                       0               0
+2   3           1.0  ...                       0               0
+3   5           0.0  ...                       0               1
+4   6           2.0  ...                       1               1
+
+[5 rows x 19 columns]
+
+Test DataFrame:
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   1           2.0  ...                       0               0
+1   4           2.0  ...                       0               1
+2   7           2.0  ...                       0               0
+3  13           2.0  ...                       0               1
+4  23           1.0  ...                       0               1
+
+[5 rows x 19 columns]
+
+Data types in Train DataFrame:
+id                                        int64
+no_of_adults                            float64
+no_of_children                            int64
+no_of_weekend_nights                      int64
+no_of_week_nights                         int64
+type_of_meal_plan                         int64
+required_car_parking_space                int64
+room_type_reserved                        int64
+lead_time                                 int64
+arrival_year                              int64
+arrival_month                             int64
+arrival_date                              int64
+market_segment_type                       int64
+repeated_guest                            int64
+no_of_previous_cancellations              int64
+no_of_previous_bookings_not_canceled      int64
+avg_price_per_room                      float64
+no_of_special_requests                    int64
+booking_status                            int64
+dtype: object
+
+Data types in Test DataFrame:
+id                                        int64
+no_of_adults                            float64
+no_of_children                            int64
+no_of_weekend_nights                      int64
+no_of_week_nights                         int64
+type_of_meal_plan                         int64
+required_car_parking_space                int64
+room_type_reserved                        int64
+lead_time                                 int64
+arrival_year                              int64
+arrival_month                             int64
+arrival_date                              int64
+market_segment_type                       int64
+repeated_guest                            int64
+no_of_previous_cancellations              int64
+no_of_previous_bookings_not_canceled      int64
+avg_price_per_room                      float64
+no_of_special_requests                    int64
+booking_status                            int64
+dtype: object
+
+Preprocessed Train DataFrame:
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   0           2.0  ...                       0               0
+1   2           2.0  ...                       0               0
+2   3           1.0  ...                       0               0
+3   5           0.0  ...                       0               1
+4   6           2.0  ...                       1               1
+
+[5 rows x 19 columns]
+
+Preprocessed Test DataFrame:
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   1           2.0  ...                       0               0
+1   4           2.0  ...                       0               1
+2   7           2.0  ...                       0               0
+3  13           2.0  ...                       0               1
+4  23           1.0  ...                       0               1
+
+[5 rows x 19 columns]
+is_success:
+True
+code:
+from sklearn.preprocessing import StandardScaler
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_processed = train_df_copy.copy()
+test_df_processed = test_df_copy.copy()
+
+# Identify numerical columns for scaling
+numerical_columns = train_df_processed.select_dtypes(include=['number']).columns.tolist()
+numerical_columns.remove('booking_status')  # Exclude the label column
+
+# Initialize the scaler
+scaler = StandardScaler()
+
+# Scale numerical features
+train_df_processed[numerical_columns] = scaler.fit_transform(train_df_processed[numerical_columns])
+test_df_processed[numerical_columns] = scaler.transform(test_df_processed[numerical_columns])
+
+# Display the preprocessed DataFrames
+print("\nScaled Train DataFrame:")
+print(train_df_processed.head())
+print("\nScaled Test DataFrame:")
+print(test_df_processed.head())
+execute_result:
+Scaled Train DataFrame:
+         id  no_of_adults  ...  no_of_special_requests  booking_status
+0 -1.738799      0.152959  ...               -0.737810               0
+1 -1.738634      0.152959  ...               -0.737810               0
+2 -1.738552     -1.744183  ...               -0.737810               0
+3 -1.738387     -3.641326  ...               -0.737810               1
+4 -1.738304      0.152959  ...                0.550564               1
+
+[5 rows x 19 columns]
+
+Scaled Test DataFrame:
+         id  no_of_adults  ...  no_of_special_requests  booking_status
+0 -1.738717      0.152959  ...                -0.73781               0
+1 -1.738469      0.152959  ...                -0.73781               1
+2 -1.738222      0.152959  ...                -0.73781               0
+3 -1.737727      0.152959  ...                -0.73781               1
+4 -1.736902     -1.744183  ...                -0.73781               1
+
+[5 rows x 19 columns]
+is_success:
+True
+code:
+# Split the preprocessed data into features (X) and target (y)
+X_train = train_df_processed.drop(columns=['booking_status'])
+y_train = train_df_processed['booking_status']
+
+X_test = test_df_processed.drop(columns=['booking_status'])
+y_test = test_df_processed['booking_status']
+
+# Display the first few rows of the split datasets
+print("X_train:")
+print(X_train.head())
+print("\ny_train:")
+print(y_train.head())
+print("\nX_test:")
+print(X_test.head())
+print("\ny_test:")
+print(y_test.head())
+execute_result:
+X_train:
+         id  no_of_adults  ...  avg_price_per_room  no_of_special_requests
+0 -1.738799      0.152959  ...           -1.001113               -0.737810
+1 -1.738634      0.152959  ...           -1.419065               -0.737810
+2 -1.738552     -1.744183  ...           -1.311206               -0.737810
+3 -1.738387     -3.641326  ...            2.896888               -0.737810
+4 -1.738304      0.152959  ...            0.279705                0.550564
+
+[5 rows x 18 columns]
+
+y_train:
+0    0
+1    0
+2    0
+3    1
+4    1
+Name: booking_status, dtype: int64
+
+X_test:
+         id  no_of_adults  ...  avg_price_per_room  no_of_special_requests
+0 -1.738717      0.152959  ...           -0.873032                -0.73781
+1 -1.738469      0.152959  ...           -0.124764                -0.73781
+2 -1.738222      0.152959  ...           -0.475304                -0.73781
+3 -1.737727      0.152959  ...           -1.102231                -0.73781
+4 -1.736902     -1.744183  ...           -0.804272                -0.73781
+
+[5 rows x 18 columns]
+
+y_test:
+0    0
+1    1
+2    0
+3    1
+4    1
+Name: booking_status, dtype: int64
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+# Initialize the XGBoost classifier with optimized hyperparameters
+xgb_model = XGBClassifier(
+    n_estimators=1000,
+    max_depth=7,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    gamma=0.1,
+    reg_alpha=0.1,
+    reg_lambda=1.0,
+    random_state=42
+)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Predict on the training set
+y_train_pred = xgb_model.predict(X_train)
+# Predict on the test set
+y_test_pred = xgb_model.predict(X_test)
+
+# Evaluate the model
+train_accuracy = accuracy_score(y_train, y_train_pred)
+test_accuracy = accuracy_score(y_test, y_test_pred)
+train_precision = precision_score(y_train, y_train_pred)
+test_precision = precision_score(y_test, y_test_pred)
+train_recall = recall_score(y_train, y_train_pred)
+test_recall = recall_score(y_test, y_test_pred)
+train_f1 = f1_score(y_train, y_train_pred)
+test_f1 = f1_score(y_test, y_test_pred)
+
+print(f"Training Accuracy: {train_accuracy:.4f}")
+print(f"Test Accuracy: {test_accuracy:.4f}")
+print(f"Training Precision: {train_precision:.4f}")
+print(f"Test Precision: {test_precision:.4f}")
+print(f"Training Recall: {train_recall:.4f}")
+print(f"Test Recall: {test_recall:.4f}")
+print(f"Training F1 Score: {train_f1:.4f}")
+print(f"Test F1 Score: {test_f1:.4f}")
+execute_result:
+Training Accuracy: 0.9343
+Test Accuracy: 0.8196
+Training Precision: 0.9199
+Test Precision: 0.7775
+Training Recall: 0.9121
+Test Recall: 0.7502
+Training F1 Score: 0.9160
+Test F1 Score: 0.7636
+is_success:
+True
+code:
+# Since the model has already been trained and the data is preprocessed,
+# we can directly evaluate the model on the test data.
+
+# Evaluate the model on the test data
+y_test_pred = xgb_model.predict(X_test)
+
+# Calculate the F1 score
+test_f1 = f1_score(y_test, y_test_pred)
+
+# Print the F1 score
+print(f"Test F1 Score: {test_f1:.4f}")
+execute_result:
+Test F1 Score: 0.7636
+is_success:
+True

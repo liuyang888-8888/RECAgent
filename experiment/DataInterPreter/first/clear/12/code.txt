@@ -1,0 +1,280 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\banknote_train.csv')
+test_df = pd.read_csv('E:\\csv\\banknote_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check data types for each column
+print("Train dataset data types:")
+print(train_df_copy.dtypes)
+print("\nTest dataset data types:")
+print(test_df_copy.dtypes)
+
+# Assuming there are no categorical features, we will only perform scaling on numerical features
+from sklearn.preprocessing import StandardScaler
+
+# Initialize the scaler
+scaler = StandardScaler()
+
+# List of numerical columns to be scaled (excluding the label column)
+numerical_columns = [col for col in train_df_copy.columns if col != 'label']
+
+# Fit the scaler on the training data and transform both training and test data
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Verify the preprocessing
+print("\nPreprocessed Train dataset head:")
+print(train_df_copy.head())
+print("\nPreprocessed Test dataset head:")
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[1], line 4
+      1 import pandas as pd
+      3 # Load the datasets
+----> 4 train_df = pd.read_csv('E:\\csv\\banknote_train.csv')
+      5 test_df = pd.read_csv('E:\\csv\\banknote_test.csv')
+      7 # Copy the DataFrames to ensure we don't modify the original data
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'E:\\csv\\banknote_train.csv'
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the training dataset
+train_df = pd.read_csv('E:\\csv\\banknote_authentication_train.csv')
+
+# Load the test dataset
+test_df = pd.read_csv('E:\\csv\\banknote_authentication_test.csv')
+
+# Display the first few rows of the training dataset to verify loading
+train_df.head()
+execute_result:
+variance  skewness  curtosis   entropy  class
+0  -1.38850   12.5026   0.69118 -7.548700      0
+1   2.77440    6.8576  -1.06710  0.075416      0
+2  -4.28870   -7.8633  11.83870 -1.897800      1
+3   5.35860    3.7557  -1.73450  1.078900      0
+4   0.75736    3.0294   2.91640 -0.068117      0
+is_success:
+True
+code:
+# Copy the datasets to avoid modifying the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check for missing values in both training and test datasets
+print("Missing values in training dataset:")
+print(train_df_copy.isnull().sum())
+print("\nMissing values in test dataset:")
+print(test_df_copy.isnull().sum())
+
+# Ensure data types are correct
+# Since all columns are numeric, we will convert them to float where necessary
+numeric_columns = ['variance', 'skewness', 'curtosis', 'entropy', 'class']
+
+for col in numeric_columns:
+    train_df_copy[col] = train_df_copy[col].astype(float)
+    test_df_copy[col] = test_df_copy[col].astype(float)
+
+# Display the first few rows of the processed datasets to verify
+print("\nFirst few rows of the processed training dataset:")
+print(train_df_copy.head())
+print("\nFirst few rows of the processed test dataset:")
+print(test_df_copy.head())
+execute_result:
+Missing values in training dataset:
+variance    0
+skewness    0
+curtosis    0
+entropy     0
+class       0
+dtype: int64
+
+Missing values in test dataset:
+variance    0
+skewness    0
+curtosis    0
+entropy     0
+class       0
+dtype: int64
+
+First few rows of the processed training dataset:
+   variance  skewness  curtosis   entropy  class
+0  -1.38850   12.5026   0.69118 -7.548700    0.0
+1   2.77440    6.8576  -1.06710  0.075416    0.0
+2  -4.28870   -7.8633  11.83870 -1.897800    1.0
+3   5.35860    3.7557  -1.73450  1.078900    0.0
+4   0.75736    3.0294   2.91640 -0.068117    0.0
+
+First few rows of the processed test dataset:
+   variance  skewness  curtosis  entropy  class
+0  1.569100    6.3465   -0.1828  -2.4099    0.0
+1 -0.278020    8.1881   -3.1338  -2.5276    0.0
+2  0.051979    7.0521   -2.0541  -3.1508    0.0
+3 -1.755900   11.9459    3.0946  -4.8978    0.0
+4  2.428700    9.3821   -3.2477  -1.4543    0.0
+is_success:
+True
+code:
+# Splitting the data into features and target
+X_train = train_df_copy[['variance', 'skewness', 'curtosis', 'entropy']]
+y_train = train_df_copy['class']
+
+X_test = test_df_copy[['variance', 'skewness', 'curtosis', 'entropy']]
+y_test = test_df_copy['class']
+
+# Displaying the first few rows of the features and target for both training and test sets
+print("First few rows of the training features:")
+print(X_train.head())
+print("\nFirst few rows of the training target:")
+print(y_train.head())
+print("\nFirst few rows of the test features:")
+print(X_test.head())
+print("\nFirst few rows of the test target:")
+print(y_test.head())
+execute_result:
+First few rows of the training features:
+   variance  skewness  curtosis   entropy
+0  -1.38850   12.5026   0.69118 -7.548700
+1   2.77440    6.8576  -1.06710  0.075416
+2  -4.28870   -7.8633  11.83870 -1.897800
+3   5.35860    3.7557  -1.73450  1.078900
+4   0.75736    3.0294   2.91640 -0.068117
+
+First few rows of the training target:
+0    0.0
+1    0.0
+2    1.0
+3    0.0
+4    0.0
+Name: class, dtype: float64
+
+First few rows of the test features:
+   variance  skewness  curtosis  entropy
+0  1.569100    6.3465   -0.1828  -2.4099
+1 -0.278020    8.1881   -3.1338  -2.5276
+2  0.051979    7.0521   -2.0541  -3.1508
+3 -1.755900   11.9459    3.0946  -4.8978
+4  2.428700    9.3821   -3.2477  -1.4543
+
+First few rows of the test target:
+0    0.0
+1    0.0
+2    0.0
+3    0.0
+4    0.0
+Name: class, dtype: float64
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the XGBoost classifier with specified parameters
+xgb_model = XGBClassifier(n_estimators=20, learning_rate=0.01, use_label_encoder=False, eval_metric='logloss')
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = xgb_model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Model Accuracy: {accuracy}")
+print("Classification Report:\n", report)
+execute_result:
+Model Accuracy: 0.9418181818181818
+Classification Report:
+               precision    recall  f1-score   support
+
+         0.0       0.92      0.97      0.95       148
+         1.0       0.97      0.91      0.93       127
+
+    accuracy                           0.94       275
+   macro avg       0.94      0.94      0.94       275
+weighted avg       0.94      0.94      0.94       275,Parameters: { "use_label_encoder" } are not used.
+
+  warnings.warn(smsg, UserWarning)
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting on the test set using the trained model
+y_pred = xgb_model.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print(f"F1 Score: {f1}")
+execute_result:
+F1 Score: 0.9416376862333217
+is_success:
+True

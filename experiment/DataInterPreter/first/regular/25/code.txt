@@ -1,0 +1,169 @@
+code:
+import pandas as pd
+
+# Load the dataset
+train_df = pd.read_csv(r'E:\csv\census_income_train.csv')
+
+# Create a copy of the DataFrame for preprocessing
+train_df_copy = train_df.copy()
+
+# Display the first few rows of the DataFrame to understand its structure
+print(train_df_copy.head())
+
+# Check the data types of each column
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+
+# Apply scaling to numerical columns (excluding the label column if it's numerical)
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+if 'label_column' in numerical_columns:  # Replace 'label_column' with the actual label column name
+    numerical_columns = numerical_columns.drop('label_column')
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+
+# Display the preprocessed DataFrame
+print(train_df_copy.head())
+execute_result:
+age         workclass  fnlwgt  ... hours_per_week  native_country  income
+0   32           Private   50753  ...             40   United-States  <=50K.
+1   45         State-gov  144351  ...             40   United-States    >50K
+2   35         Local-gov  252217  ...             40   United-States  <=50K.
+3   64           Private   69525  ...             20   United-States   <=50K
+4   63  Self-emp-not-inc   28612  ...             70   United-States   <=50K
+
+[5 rows x 15 columns]
+age                int64
+workclass         object
+fnlwgt             int64
+education         object
+education_num      int64
+marital_status    object
+occupation        object
+relationship      object
+race              object
+sex               object
+capital_gain       int64
+capital_loss       int64
+hours_per_week     int64
+native_country    object
+income            object
+dtype: object
+Categorical Columns: Index(['workclass', 'education', 'marital_status', 'occupation',
+       'relationship', 'race', 'sex', 'native_country', 'income'],
+      dtype='object')
+Numerical Columns: Index(['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss',
+       'hours_per_week'],
+      dtype='object')
+        age  workclass    fnlwgt  ...  hours_per_week  native_country  income
+0 -0.484566          4 -1.315410  ...       -0.034087              39       1
+1  0.463621          7 -0.429090  ...       -0.034087              39       2
+2 -0.265754          2  0.592340  ...       -0.034087              39       1
+3  1.849433          4 -1.137649  ...       -1.648120              39       0
+4  1.776496          6 -1.525072  ...        2.386963              39       0
+
+[5 rows x 15 columns]
+is_success:
+True
+code:
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)  # Fill numerical missing values with median
+train_df_copy.fillna(train_df_copy.mode().iloc[0], inplace=True)  # Fill categorical missing values with mode
+
+# Encoding categorical variables
+from sklearn.preprocessing import OrdinalEncoder
+ordinal_encoder = OrdinalEncoder()
+for col in categorical_columns:
+    if col != 'income':  # Exclude the label column from encoding
+        train_df_copy[col] = ordinal_encoder.fit_transform(train_df_copy[[col]]).astype(int)
+
+# Scaling numerical features
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+if 'income' in numerical_columns:
+    numerical_columns = numerical_columns.drop('income')  # Exclude the label column from scaling
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+
+# Display the first few rows of the processed DataFrame
+print(train_df_copy.head())
+execute_result:
+age  workclass    fnlwgt  ...  hours_per_week  native_country  income
+0  0.205479          4  0.026025  ...        0.397959              39       1
+1  0.383562          7  0.089348  ...        0.397959              39       2
+2  0.246575          2  0.162323  ...        0.397959              39       1
+3  0.643836          4  0.038725  ...        0.193878              39       0
+4  0.630137          6  0.011046  ...        0.704082              39       0
+
+[5 rows x 15 columns]
+is_success:
+True
+code:
+from sklearn.cluster import DBSCAN
+import numpy as np
+
+# Since 'income' is the target column, we exclude it from the features for clustering
+features_for_clustering = train_df_copy.drop(columns=['income'])
+
+# Apply DBSCAN clustering
+dbscan = DBSCAN(eps=0.3, min_samples=10)  # Adjust eps and min_samples based on your dataset
+clusters = dbscan.fit_predict(features_for_clustering)
+
+# Add the cluster labels back to the DataFrame
+train_df_copy['cluster'] = clusters
+
+# Display the first few rows of the DataFrame with the cluster labels
+print(train_df_copy.head())
+execute_result:
+age  workclass    fnlwgt  ...  native_country  income  cluster
+0  0.205479          4  0.026025  ...              39       1        0
+1  0.383562          7  0.089348  ...              39       2        1
+2  0.246575          2  0.162323  ...              39       1       -1
+3  0.643836          4  0.038725  ...              39       0      410
+4  0.630137          6  0.011046  ...              39       0       -1
+
+[5 rows x 16 columns]
+is_success:
+True
+code:
+from sklearn.metrics import silhouette_score
+
+# Using the features_for_clustering and clusters from the previous task
+silhouette_avg = silhouette_score(features_for_clustering, clusters)
+print(f"Silhouette Score: {silhouette_avg}")
+execute_result:
+Silhouette Score: 0.0989357324992191
+is_success:
+True
+code:
+# Since the clustering has already been performed and the silhouette score calculated,
+# we can directly report the silhouette score and provide insights based on the results.
+
+# Reporting the silhouette score
+print(f"The Silhouette Score for the DBSCAN clustering is: {silhouette_avg}")
+
+# Providing insights
+if silhouette_avg > 0.7:
+    print("The clustering is highly effective, with a clear separation between clusters.")
+elif silhouette_avg > 0.5:
+    print("The clustering is moderately effective, with reasonable separation between clusters.")
+elif silhouette_avg > 0.25:
+    print("The clustering is somewhat effective, but there may be overlapping clusters.")
+else:
+    print("The clustering is not very effective, with significant overlap between clusters.")
+execute_result:
+The Silhouette Score for the DBSCAN clustering is: 0.0989357324992191
+The clustering is not very effective, with significant overlap between clusters.
+is_success:
+True

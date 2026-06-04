@@ -1,0 +1,16 @@
+{
+    "task": {
+        "id": 8,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "smoker_status_bio_signals",
+        "task_description": "根据生物信号等特征，构建一个决策树分类模型，用于预测一个人是否是抽烟者。该任务属于二分类问题，预测其是否是一个烟民。"
+    },
+    "result": {
+        "run_status": "fail",
+        "time": 267.36212396621704,
+        "interact_count": 9,
+        "prompt_tokens": 45294,
+        "completion_tokens": 4734
+    }
+}

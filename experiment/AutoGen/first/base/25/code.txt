@@ -1,0 +1,292 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\census_income_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", df.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要处理
+# df.fillna(df.mean(), inplace=True)  # 用均值填充数值型特征
+# df.fillna(df.mode().iloc[0], inplace=True)  # 用众数填充分类特征
+
+# 3. 特征选择
+# 选择数值型和分类型特征
+numeric_features = df.select_dtypes(include=[np.number]).columns.tolist()
+categorical_features = df.select_dtypes(include=[np.object]).columns.tolist()
+
+# 4. 标准化和编码
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(), categorical_features)
+    ])
+
+# 5. 构建聚类模型
+# 创建管道
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('kmeans', KMeans(n_clusters=5, random_state=42))  # 假设选择5个聚类
+])
+
+# 拟合模型
+pipeline.fit(df)
+
+# 6. 计算轮廓系数
+labels = pipeline.named_steps['kmeans'].labels_
+silhouette_avg = silhouette_score(df, labels)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_729f0dbaf0c9157f2dcf6fd6729d91c8949f419fe0a97f0c1dccc15a94ad1aec.py:24: FutureWarning: In the future `np.object` will be defined as the corresponding NumPy scalar.
+  categorical_features = df.select_dtypes(include=[np.object]).columns.tolist()
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_729f0dbaf0c9157f2dcf6fd6729d91c8949f419fe0a97f0c1dccc15a94ad1aec.py", line 24, in <module>
+    categorical_features = df.select_dtypes(include=[np.object]).columns.tolist()
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\numpy\__init__.py", line 410, in __getattr__
+    raise AttributeError(__former_attrs__[attr], name=None)
+AttributeError: module 'numpy' has no attribute 'object'.
+`np.object` was a deprecated alias for the builtin `object`. To avoid this error in existing code, use `object` by itself. Doing this will not modify any behavior and is safe. 
+The aliases was originally deprecated in NumPy 1.20; for more details and guidance see the original release note at:
+    https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations. Did you mean: 'object_'?
+Missing values:
+ age                 0
+workclass         963
+fnlwgt              0
+education           0
+education_num       0
+marital_status      0
+occupation        966
+relationship        0
+race                0
+sex                 0
+capital_gain        0
+capital_loss        0
+hours_per_week      0
+native_country    274
+income              0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\census_income_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", df.isnull().sum())
+
+# 处理缺失值
+df.fillna(df.mode().iloc[0], inplace=True)  # 用众数填充分类特征
+
+# 3. 特征选择
+# 选择数值型和分类型特征
+numeric_features = df.select_dtypes(include=[np.number]).columns.tolist()
+categorical_features = df.select_dtypes(include=['object']).columns.tolist()
+
+# 4. 标准化和编码
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(), categorical_features)
+    ])
+
+# 5. 构建聚类模型
+# 创建管道
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('kmeans', KMeans(n_clusters=5, random_state=42))  # 假设选择5个聚类
+])
+
+# 拟合模型
+pipeline.fit(df)
+
+# 6. 计算轮廓系数
+labels = pipeline.named_steps['kmeans'].labels_
+silhouette_avg = silhouette_score(df, labels)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_fffeac00297a8eb2398b5e550e80c06fc7cdc56d833e654defde09a7d1003fdf.py", line 44, in <module>
+    silhouette_avg = silhouette_score(df, labels)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\metrics\cluster\_unsupervised.py", line 139, in silhouette_score
+    return np.mean(silhouette_samples(X, labels, metric=metric, **kwds))
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_param_validation.py", line 189, in wrapper
+    return func(*args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\metrics\cluster\_unsupervised.py", line 277, in silhouette_samples
+    X, labels = check_X_y(X, labels, accept_sparse=["csr"])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1370, in check_X_y
+    X = check_array(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1055, in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_array_api.py", line 839, in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 2153, in __array__
+    arr = np.asarray(values, dtype=dtype)
+ValueError: could not convert string to float: 'Private'
+Missing values:
+ age                 0
+workclass         963
+fnlwgt              0
+education           0
+education_num       0
+marital_status      0
+occupation        966
+relationship        0
+race                0
+sex                 0
+capital_gain        0
+capital_loss        0
+hours_per_week      0
+native_country    274
+income              0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\census_income_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", df.isnull().sum())
+
+# 处理缺失值
+df.fillna(df.mode().iloc[0], inplace=True)  # 用众数填充分类特征
+
+# 3. 特征选择
+# 选择数值型和分类型特征
+numeric_features = df.select_dtypes(include=[np.number]).columns.tolist()
+categorical_features = df.select_dtypes(include=['object']).columns.tolist()
+
+# 4. 标准化和编码
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(), categorical_features)
+    ])
+
+# 5. 构建聚类模型
+# 创建管道
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('kmeans', KMeans(n_clusters=5, random_state=42))  # 假设选择5个聚类
+])
+
+# 拟合模型
+pipeline.fit(df)
+
+# 6. 计算轮廓系数
+# 获取预处理后的数据
+X_transformed = pipeline.named_steps['preprocessor'].transform(df)
+labels = pipeline.named_steps['kmeans'].labels_
+silhouette_avg = silhouette_score(X_transformed, labels)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+
+Timeout
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\census_income_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", df.isnull().sum())
+
+# 处理缺失值
+df.fillna(df.mode().iloc[0], inplace=True)  # 用众数填充分类特征
+
+# 3. 特征选择
+# 选择数值型和分类型特征
+numeric_features = ['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss', 'hours_per_week']
+categorical_features = ['workclass', 'education', 'marital_status', 'occupation', 'relationship', 'race', 'sex', 'native_country']
+
+# 4. 标准化和编码
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(), categorical_features)
+    ])
+
+# 5. 构建聚类模型
+# 创建管道
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('kmeans', KMeans(n_clusters=5, random_state=42))  # 假设选择5个聚类
+])
+
+# 6. 减少数据量
+df_sample = df.sample(frac=0.1, random_state=42)  # 使用10%的数据
+
+# 拟合模型
+pipeline.fit(df_sample)
+
+# 7. 计算轮廓系数
+# 获取预处理后的数据
+X_transformed = pipeline.named_steps['preprocessor'].transform(df_sample)
+labels = pipeline.named_steps['kmeans'].labels_
+silhouette_avg = silhouette_score(X_transformed, labels)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+Missing values:
+ age                 0
+workclass         963
+fnlwgt              0
+education           0
+education_num       0
+marital_status      0
+occupation        966
+relationship        0
+race                0
+sex                 0
+capital_gain        0
+capital_loss        0
+hours_per_week      0
+native_country    274
+income              0
+dtype: int64
+Silhouette Coefficient:  0.10071519002111536

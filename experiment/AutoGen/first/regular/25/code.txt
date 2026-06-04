@@ -1,0 +1,39 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.cluster import DBSCAN
+from sklearn.metrics import silhouette_score
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\census_income_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 将分类变量进行编码
+label_encoders = {}
+for column in df.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    df[column] = le.fit_transform(df[column])
+    label_encoders[column] = le
+
+# 标准化数值变量
+scaler = StandardScaler()
+df_scaled = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+
+# 3. 构建 DBSCAN 模型
+dbscan = DBSCAN()
+dbscan.fit(df_scaled)
+
+# 4. 计算轮廓系数
+labels = dbscan.labels_
+if len(set(labels)) > 1:  # 确保有多个簇
+    silhouette_avg = silhouette_score(df_scaled, labels)
+    print(f'Silhouette Coefficient: {silhouette_avg}')
+else:
+    print('No clusters found or only one cluster found, cannot compute silhouette score.')
+
+
+执行结果：
+Silhouette Coefficient: -0.4533996451706497

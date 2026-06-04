@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 12,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "banknote_authentication",
+        "task_description": " 我需要一个可以根据钞票的方差（Variance）、偏度（Skewness）、峰度（Kurtosis）和熵（Entropy）的数据，预测钞票真伪的梯度决策提升树模型。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 50.97950744628906,
+        "interact_count": 3,
+        "prompt_tokens": 4851,
+        "completion_tokens": 735,
+        "RCR": 5
+    }
+}

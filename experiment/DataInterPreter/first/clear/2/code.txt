@@ -1,0 +1,463 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv(r'E:\csv\train_cirrhosis.csv')
+test_df = pd.read_csv(r'E:\csv\test_cirrhosis.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    label_encoder = train_df_copy[col].astype('category').cat.codes
+    train_df_copy[col] = label_encoder
+    test_df_copy[col] = test_df_copy[col].map(train_df_copy[col].astype('category').cat.categories).fillna(-1).astype(int)
+
+# Apply appropriate preprocessing for numerical columns
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+for col in numerical_columns:
+    if col != 'label':  # Ensure the label column is not scaled
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Verify the preprocessing results
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[1], line 4
+      1 import pandas as pd
+      3 # Load the datasets
+----> 4 train_df = pd.read_csv(r'E:\csv\train_cirrhosis.csv')
+      5 test_df = pd.read_csv(r'E:\csv\test_cirrhosis.csv')
+      7 # Copy the DataFrames to ensure we don't modify the original data
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'E:\\csv\\train_cirrhosis.csv'
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\cirrhosis_patient_train.csv')
+test_df = pd.read_csv('E:\\csv\\cirrhosis_patient_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Training Data:")
+print(train_df_copy.head())
+print("\nTesting Data:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData Types in Training Set:")
+print(train_df_copy.dtypes)
+print("\nData Types in Testing Set:")
+print(test_df_copy.dtypes)
+execute_result:
+Training Data:
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   1    2574          Placebo  19237  ...     361.0        11.0   3.0      C
+1   2    3428          Placebo  13727  ...     199.0        11.7   4.0      D
+2   3    2576          Placebo  18460  ...     269.0        10.7   3.0      C
+3   4     788          Placebo  16658  ...     298.0        10.6   4.0      C
+4   5     703  D-penicillamine  19270  ...     213.0        11.5   3.0      D
+
+[5 rows x 20 columns]
+
+Testing Data:
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   0     999  D-penicillamine  21532  ...     394.0         9.7   3.0      D
+1   8    2050  D-penicillamine  20684  ...     269.0         9.8   2.0      C
+2  14     904  D-penicillamine  22388  ...     156.0        10.0   3.0      D
+3  17    1592  D-penicillamine  14872  ...     328.0        11.2   2.0      C
+4  19    3358          Placebo  17031  ...     153.0        11.0   3.0      C
+
+[5 rows x 20 columns]
+
+Data Types in Training Set:
+id                 int64
+N_Days             int64
+Drug              object
+Age                int64
+Sex               object
+Ascites           object
+Hepatomegaly      object
+Spiders           object
+Edema             object
+Bilirubin        float64
+Cholesterol      float64
+Albumin          float64
+Copper           float64
+Alk_Phos         float64
+SGOT             float64
+Tryglicerides    float64
+Platelets        float64
+Prothrombin      float64
+Stage            float64
+Status            object
+dtype: object
+
+Data Types in Testing Set:
+id                 int64
+N_Days             int64
+Drug              object
+Age                int64
+Sex               object
+Ascites           object
+Hepatomegaly      object
+Spiders           object
+Edema             object
+Bilirubin        float64
+Cholesterol      float64
+Albumin          float64
+Copper           float64
+Alk_Phos         float64
+SGOT             float64
+Tryglicerides    float64
+Platelets        float64
+Prothrombin      float64
+Stage            float64
+Status            object
+dtype: object
+is_success:
+True
+code:
+# Preprocessing the data
+from sklearn.preprocessing import LabelEncoder
+
+# Handling missing values
+def handle_missing_values(df):
+    # Fill missing numeric values with median
+    numeric_cols = df.select_dtypes(include=['number']).columns
+    df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].median())
+    
+    # Fill missing categorical values with mode
+    categorical_cols = df.select_dtypes(include=['object']).columns
+    df[categorical_cols] = df[categorical_cols].fillna(df[categorical_cols].mode().iloc[0])
+    return df
+
+# Encoding categorical variables
+def encode_categorical_variables(df):
+    le = LabelEncoder()
+    categorical_cols = df.select_dtypes(include=['object']).columns
+    for col in categorical_cols:
+        if col != 'Status':  # Exclude the label column from encoding
+            df[col] = le.fit_transform(df[col])
+    return df
+
+# Apply preprocessing to both training and testing datasets
+train_df_processed = handle_missing_values(train_df_copy.copy())
+train_df_processed = encode_categorical_variables(train_df_processed)
+
+test_df_processed = handle_missing_values(test_df_copy.copy())
+test_df_processed = encode_categorical_variables(test_df_processed)
+
+# Display the first few rows of the processed datasets
+print("Processed Training Data:")
+print(train_df_processed.head())
+print("\nProcessed Testing Data:")
+print(test_df_processed.head())
+execute_result:
+Processed Training Data:
+   id  N_Days  Drug    Age  ...  Platelets  Prothrombin  Stage  Status
+0   1    2574     1  19237  ...      361.0         11.0    3.0       C
+1   2    3428     1  13727  ...      199.0         11.7    4.0       D
+2   3    2576     1  18460  ...      269.0         10.7    3.0       C
+3   4     788     1  16658  ...      298.0         10.6    4.0       C
+4   5     703     0  19270  ...      213.0         11.5    3.0       D
+
+[5 rows x 20 columns]
+
+Processed Testing Data:
+   id  N_Days  Drug    Age  ...  Platelets  Prothrombin  Stage  Status
+0   0     999     0  21532  ...      394.0          9.7    3.0       D
+1   8    2050     0  20684  ...      269.0          9.8    2.0       C
+2  14     904     0  22388  ...      156.0         10.0    3.0       D
+3  17    1592     0  14872  ...      328.0         11.2    2.0       C
+4  19    3358     1  17031  ...      153.0         11.0    3.0       C
+
+[5 rows x 20 columns]
+is_success:
+True
+code:
+# Split the preprocessed data into features (X) and target (y)
+def split_features_target(df):
+    # Copy the DataFrame to avoid modifying the original
+    df_copy = df.copy()
+    
+    # Define the target variable
+    y = df_copy['Status']
+    
+    # Drop the target variable from the DataFrame to get the features
+    X = df_copy.drop(columns=['Status'])
+    
+    return X, y
+
+# Apply the function to both training and testing datasets
+X_train, y_train = split_features_target(train_df_processed)
+X_test, y_test = split_features_target(test_df_processed)
+
+# Display the first few rows of the split data
+print("Training Features:")
+print(X_train.head())
+print("\nTraining Target:")
+print(y_train.head())
+print("\nTesting Features:")
+print(X_test.head())
+print("\nTesting Target:")
+print(y_test.head())
+execute_result:
+Training Features:
+   id  N_Days  Drug    Age  ...  Tryglicerides  Platelets  Prothrombin  Stage
+0   1    2574     1  19237  ...           88.0      361.0         11.0    3.0
+1   2    3428     1  13727  ...           50.0      199.0         11.7    4.0
+2   3    2576     1  18460  ...           96.0      269.0         10.7    3.0
+3   4     788     1  16658  ...           96.0      298.0         10.6    4.0
+4   5     703     0  19270  ...           68.0      213.0         11.5    3.0
+
+[5 rows x 19 columns]
+
+Training Target:
+0    C
+1    D
+2    C
+3    C
+4    D
+Name: Status, dtype: object
+
+Testing Features:
+   id  N_Days  Drug    Age  ...  Tryglicerides  Platelets  Prothrombin  Stage
+0   0     999     0  21532  ...           63.0      394.0          9.7    3.0
+1   8    2050     0  20684  ...          154.0      269.0          9.8    2.0
+2  14     904     0  22388  ...          169.0      156.0         10.0    3.0
+3  17    1592     0  14872  ...          133.0      328.0         11.2    2.0
+4  19    3358     1  17031  ...          214.0      153.0         11.0    3.0
+
+[5 rows x 19 columns]
+
+Testing Target:
+0    D
+1    C
+2    D
+3    C
+4    C
+Name: Status, dtype: object
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the XGBoost classifier with suitable hyperparameters
+xgb_model = XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1, objective='binary:logistic')
+
+# Train the model on the processed training data
+xgb_model.fit(X_train, y_train)
+
+# Predict the target values for the training set
+y_train_pred = xgb_model.predict(X_train)
+
+# Predict the target values for the testing set
+y_test_pred = xgb_model.predict(X_test)
+
+# Evaluate the model's performance on the training set
+train_accuracy = accuracy_score(y_train, y_train_pred)
+print(f"Training Accuracy: {train_accuracy:.4f}")
+
+# Evaluate the model's performance on the testing set
+test_accuracy = accuracy_score(y_test, y_test_pred)
+print(f"Testing Accuracy: {test_accuracy:.4f}")
+
+# Print detailed classification report
+print("\nClassification Report:")
+print(classification_report(y_test, y_test_pred))
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[8], line 8
+      5 xgb_model = XGBClassifier(n_estimators=100, max_depth=6, learning_rate=0.1, objective='binary:logistic')
+      7 # Train the model on the processed training data
+----> 8 xgb_model.fit(X_train, y_train)
+     10 # Predict the target values for the training set
+     11 y_train_pred = xgb_model.predict(X_train)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:726, in require_keyword_args.<locals>.throw_if.<locals>.inner_f(*args, **kwargs)
+    724 for k, arg in zip(sig.parameters, args):
+    725     kwargs[k] = arg
+--> 726 return func(**kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\sklearn.py:1559, in XGBClassifier.fit(self, X, y, sample_weight, base_margin, eval_set, verbose, xgb_model, sample_weight_eval_set, base_margin_eval_set, feature_weights)
+   1554     expected_classes = self.classes_
+   1555 if (
+   1556     classes.shape != expected_classes.shape
+   1557     or not (classes == expected_classes).all()
+   1558 ):
+-> 1559     raise ValueError(
+   1560         f"Invalid classes inferred from unique values of `y`.  "
+   1561         f"Expected: {expected_classes}, got {classes}"
+   1562     )
+   1564 params = self.get_xgb_params()
+   1566 if callable(self.objective):
+
+ValueError: Invalid classes inferred from unique values of `y`.  Expected: [0 1 2], got ['C' 'CL' 'D']
+is_success:
+False
+code:
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score
+
+# Initialize the SVM classifier with a linear kernel and max iterations set to 200
+svm_classifier = SVC(kernel='linear', max_iter=200)
+
+# Train the SVM classifier
+svm_classifier.fit(X_train, y_train)
+
+# Predict the target for the test set
+y_pred = svm_classifier.predict(X_test)
+
+# Calculate the accuracy of the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy of the SVM classifier: {accuracy:.2f}")
+execute_result:
+Accuracy of the SVM classifier: 0.47,warnings.warn(
+is_success:
+True
+code:
+# Predict the survival status on the test set using the trained SVM model
+y_pred_test = svm_classifier.predict(X_test)
+print("Predicted Survival Status on Test Set:")
+print(y_pred_test)
+execute_result:
+Predicted Survival Status on Test Set:
+['C' 'C' 'C' ... 'C' 'C' 'CL']
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predictions from the SVM classifier on the test set
+y_pred_test = svm_classifier.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred_test, average='weighted')
+print(f"F1 Score of the SVM classifier: {f1:.2f}")
+execute_result:
+F1 Score of the SVM classifier: 0.46
+is_success:
+True
+code:
+import pandas as pd
+
+# Assuming y_pred_test contains the predictions from the SVM model
+# Convert the predictions to a DataFrame
+predictions_df = pd.DataFrame(y_pred_test, columns=['Predicted_Status'])
+
+# Add the original test set IDs to the predictions DataFrame
+predictions_df['id'] = test_df['id']
+
+# Reorder the columns to have 'id' first
+predictions_df = predictions_df[['id', 'Predicted_Status']]
+
+# Save the predictions to a CSV file
+predictions_df.to_csv('svm_predictions.csv', index=False)
+
+# Display the first few rows of the predictions DataFrame
+print(predictions_df.head())
+execute_result:
+id Predicted_Status
+0   0                C
+1   8                C
+2  14                C
+3  17                C
+4  19                C
+is_success:
+True

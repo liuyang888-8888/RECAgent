@@ -1,0 +1,506 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\crime_category_train.csv')
+test_df = pd.read_csv('E:\\csv\\crime_category_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    label_encoder = train_df_copy[col].astype('category').cat.codes
+    train_df_copy[col] = label_encoder
+    test_df_copy[col] = test_df_copy[col].map(train_df_copy[col].astype('category').cat.categories).fillna(-1).astype(int)
+
+# Ensure the label column remains unchanged
+if 'label' in train_df_copy.columns:
+    train_df_copy['label'] = train_df['label']
+if 'label' in test_df_copy.columns:
+    test_df_copy['label'] = test_df['label']
+
+# Display the preprocessed datasets
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   dayOfWeek pdDistrict       pos_x      pos_y       category
+0  Wednesday   SOUTHERN -122.388380  37.783310  LARCENY/THEFT
+1   Saturday   SOUTHERN -122.403405  37.775421   NON-CRIMINAL
+2  Wednesday   NORTHERN -122.419581  37.789214  LARCENY/THEFT
+3     Friday    BAYVIEW -122.389744  37.757909  VEHICLE THEFT
+4     Friday    TARAVAL -122.478377  37.742877        ASSAULT
+
+Test DataFrame:
+   dayOfWeek  pdDistrict       pos_x      pos_y        category
+0     Sunday    SOUTHERN -122.409893  37.780113   VEHICLE THEFT
+1     Monday    NORTHERN -122.424442  37.788227        BURGLARY
+2  Wednesday     BAYVIEW -122.395635  37.753565  OTHER OFFENSES
+3    Tuesday        PARK -122.444802  37.754171        BURGLARY
+4   Saturday  TENDERLOIN -122.412971  37.785788    NON-CRIMINAL
+
+Data types in Train DataFrame:
+dayOfWeek      object
+pdDistrict     object
+pos_x         float64
+pos_y         float64
+category       object
+dtype: object
+
+Data types in Test DataFrame:
+dayOfWeek      object
+pdDistrict     object
+pos_x         float64
+pos_y         float64
+category       object
+dtype: object
+
+Categorical Columns:
+Index(['dayOfWeek', 'pdDistrict', 'category'], dtype='object')
+
+Numerical Columns:
+Index(['pos_x', 'pos_y'], dtype='object'),---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[1], line 38
+     36     label_encoder = train_df_copy[col].astype('category').cat.codes
+     37     train_df_copy[col] = label_encoder
+---> 38     test_df_copy[col] = test_df_copy[col].map(train_df_copy[col].astype('category').cat.categories).fillna(-1).astype(int)
+     40 # Ensure the label column remains unchanged
+     41 if 'label' in train_df_copy.columns:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\series.py:4540, in Series.map(self, arg, na_action)
+   4460 def map(
+   4461     self,
+   4462     arg: Callable | Mapping | Series,
+   4463     na_action: Literal["ignore"] | None = None,
+   4464 ) -> Series:
+   4465     """
+   4466     Map values of Series according to an input mapping or function.
+   4467 
+   (...)
+   4538     dtype: object
+   4539     """
+-> 4540     new_values = self._map_values(arg, na_action=na_action)
+   4541     return self._constructor(new_values, index=self.index, copy=False).__finalize__(
+   4542         self, method="map"
+   4543     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\base.py:921, in IndexOpsMixin._map_values(self, mapper, na_action, convert)
+    918 if isinstance(arr, ExtensionArray):
+    919     return arr.map(mapper, na_action=na_action)
+--> 921 return algorithms.map_array(arr, mapper, na_action=na_action, convert=convert)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\algorithms.py:1814, in map_array(arr, mapper, na_action, convert)
+   1812 values = arr.astype(object, copy=False)
+   1813 if na_action is None:
+-> 1814     return lib.map_infer(values, mapper, convert=convert)
+   1815 else:
+   1816     return lib.map_infer_mask(
+   1817         values, mapper, mask=isna(values).view(np.uint8), convert=convert
+   1818     )
+
+File lib.pyx:2917, in pandas._libs.lib.map_infer()
+
+TypeError: 'Index' object is not callable
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\crime_category_train.csv')
+test_df = pd.read_csv('E:\\csv\\crime_category_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Display the first few rows of the preprocessed datasets
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   dayOfWeek pdDistrict       pos_x      pos_y       category
+0  Wednesday   SOUTHERN -122.388380  37.783310  LARCENY/THEFT
+1   Saturday   SOUTHERN -122.403405  37.775421   NON-CRIMINAL
+2  Wednesday   NORTHERN -122.419581  37.789214  LARCENY/THEFT
+3     Friday    BAYVIEW -122.389744  37.757909  VEHICLE THEFT
+4     Friday    TARAVAL -122.478377  37.742877        ASSAULT
+
+Test DataFrame:
+   dayOfWeek  pdDistrict       pos_x      pos_y        category
+0     Sunday    SOUTHERN -122.409893  37.780113   VEHICLE THEFT
+1     Monday    NORTHERN -122.424442  37.788227        BURGLARY
+2  Wednesday     BAYVIEW -122.395635  37.753565  OTHER OFFENSES
+3    Tuesday        PARK -122.444802  37.754171        BURGLARY
+4   Saturday  TENDERLOIN -122.412971  37.785788    NON-CRIMINAL
+
+Data types in Train DataFrame:
+dayOfWeek      object
+pdDistrict     object
+pos_x         float64
+pos_y         float64
+category       object
+dtype: object
+
+Data types in Test DataFrame:
+dayOfWeek      object
+pdDistrict     object
+pos_x         float64
+pos_y         float64
+category       object
+dtype: object
+
+Categorical Columns:
+Index(['dayOfWeek', 'pdDistrict', 'category'], dtype='object')
+
+Numerical Columns:
+Index(['pos_x', 'pos_y'], dtype='object')
+
+Preprocessed Train DataFrame:
+   dayOfWeek  pdDistrict       pos_x      pos_y  category
+0          6           7 -122.388380  37.783310        16
+1          2           7 -122.403405  37.775421        20
+2          6           4 -122.419581  37.789214        16
+3          0           0 -122.389744  37.757909        34
+4          0           8 -122.478377  37.742877         1
+
+Preprocessed Test DataFrame:
+   dayOfWeek  pdDistrict       pos_x      pos_y  category
+0          3           7 -122.409893  37.780113        34
+1          1           4 -122.424442  37.788227         4
+2          6           0 -122.395635  37.753565        21
+3          5           5 -122.444802  37.754171         4
+4          2           9 -122.412971  37.785788        20
+is_success:
+True
+code:
+# Perform one-hot encoding on the pdDistrict field in both the training and testing datasets
+train_df_encoded = pd.get_dummies(train_df_copy, columns=['pdDistrict'])
+test_df_encoded = pd.get_dummies(test_df_copy, columns=['pdDistrict'])
+
+# Display the first few rows of the encoded DataFrames
+print("\nEncoded Train DataFrame:")
+print(train_df_encoded.head())
+print("\nEncoded Test DataFrame:")
+print(test_df_encoded.head())
+execute_result:
+Encoded Train DataFrame:
+   dayOfWeek       pos_x      pos_y  ...  pdDistrict_7  pdDistrict_8  pdDistrict_9
+0          6 -122.388380  37.783310  ...          True         False         False
+1          2 -122.403405  37.775421  ...          True         False         False
+2          6 -122.419581  37.789214  ...         False         False         False
+3          0 -122.389744  37.757909  ...         False         False         False
+4          0 -122.478377  37.742877  ...         False          True         False
+
+[5 rows x 14 columns]
+
+Encoded Test DataFrame:
+   dayOfWeek       pos_x      pos_y  ...  pdDistrict_7  pdDistrict_8  pdDistrict_9
+0          3 -122.409893  37.780113  ...          True         False         False
+1          1 -122.424442  37.788227  ...         False         False         False
+2          6 -122.395635  37.753565  ...         False         False         False
+3          5 -122.444802  37.754171  ...         False         False         False
+4          2 -122.412971  37.785788  ...         False         False          True
+
+[5 rows x 14 columns]
+is_success:
+True
+code:
+# Splitting the datasets into features (X) and target variable (y)
+train_df_encoded_copy = train_df_encoded.copy()
+test_df_encoded_copy = test_df_encoded.copy()
+
+# Features and target for training set
+X_train = train_df_encoded_copy.drop(columns=['category'])
+y_train = train_df_encoded_copy['category']
+
+# Features and target for testing set
+X_test = test_df_encoded_copy.drop(columns=['category'])
+y_test = test_df_encoded_copy['category']
+
+# Displaying the first few rows of X_train and y_train
+print("X_train:")
+print(X_train.head())
+print("\ny_train:")
+print(y_train.head())
+
+# Displaying the first few rows of X_test and y_test
+print("\nX_test:")
+print(X_test.head())
+print("\ny_test:")
+print(y_test.head())
+execute_result:
+X_train:
+   dayOfWeek       pos_x      pos_y  ...  pdDistrict_7  pdDistrict_8  pdDistrict_9
+0          6 -122.388380  37.783310  ...          True         False         False
+1          2 -122.403405  37.775421  ...          True         False         False
+2          6 -122.419581  37.789214  ...         False         False         False
+3          0 -122.389744  37.757909  ...         False         False         False
+4          0 -122.478377  37.742877  ...         False          True         False
+
+[5 rows x 13 columns]
+
+y_train:
+0    16
+1    20
+2    16
+3    34
+4     1
+Name: category, dtype: int32
+
+X_test:
+   dayOfWeek       pos_x      pos_y  ...  pdDistrict_7  pdDistrict_8  pdDistrict_9
+0          3 -122.409893  37.780113  ...          True         False         False
+1          1 -122.424442  37.788227  ...         False         False         False
+2          6 -122.395635  37.753565  ...         False         False         False
+3          5 -122.444802  37.754171  ...         False         False         False
+4          2 -122.412971  37.785788  ...         False         False          True
+
+[5 rows x 13 columns]
+
+y_test:
+0    34
+1     4
+2    21
+3     4
+4    20
+Name: category, dtype: int32
+is_success:
+True
+code:
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the Logistic Regression model with L2 regularization and C=1.5
+log_reg = LogisticRegression(penalty='l2', C=1.5, solver='lbfgs', max_iter=1000)
+
+# Train the model
+log_reg.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = log_reg.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print("Classification Report:\n", report)
+execute_result:
+Accuracy: 0.22249430523917996
+Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.00      0.00      0.00        30
+           1       0.00      0.00      0.00      1476
+           2       0.00      0.00      0.00         5
+           3       0.00      0.00      0.00         6
+           4       0.00      0.00      0.00       738
+           5       0.00      0.00      0.00        84
+           6       0.00      0.00      0.00        39
+           7       0.20      0.30      0.24      1057
+           8       0.00      0.00      0.00        82
+           9       0.00      0.00      0.00        15
+          10       0.00      0.00      0.00         6
+          11       0.00      0.00      0.00         9
+          12       0.00      0.00      0.00       209
+          13       0.00      0.00      0.00       346
+          14       0.00      0.00      0.00         2
+          15       0.00      0.00      0.00        48
+          16       0.25      0.75      0.37      3504
+          17       0.00      0.00      0.00        44
+          18       0.00      0.00      0.00        22
+          19       0.00      0.00      0.00       499
+          20       0.00      0.00      0.00      1875
+          21       0.18      0.38      0.24      2485
+          22       0.00      0.00      0.00       148
+          23       0.00      0.00      0.00        72
+          24       0.00      0.00      0.00       479
+          25       0.00      0.00      0.00        43
+          26       0.00      0.00      0.00       210
+          27       0.00      0.00      0.00       113
+          28       0.00      0.00      0.00         1
+          29       0.00      0.00      0.00        86
+          30       0.00      0.00      0.00        11
+          31       0.00      0.00      0.00       647
+          32       0.00      0.00      0.00       152
+          33       0.00      0.00      0.00       917
+          34       0.00      0.00      0.00      1080
+          35       0.00      0.00      0.00       836
+          36       0.00      0.00      0.00       184
+
+    accuracy                           0.22     17560
+   macro avg       0.02      0.04      0.02     17560
+weighted avg       0.09      0.22      0.12     17560,STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(
+  _warn_prf(average, modifier, msg_start, len(result))
+  _warn_prf(average, modifier, msg_start, len(result))
+  _warn_prf(average, modifier, msg_start, len(result))
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting the categories for the test set
+y_pred = log_reg.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# Printing the F1 score
+print(f"F1 Score: {f1}")
+execute_result:
+F1 Score: 0.12338894238743438
+is_success:
+True
+code:
+from sklearn.ensemble import RandomForestClassifier
+from joblib import dump
+
+# Initialize the RandomForestClassifier with optimized parameters
+rf_classifier = RandomForestClassifier(n_estimators=100, max_depth=None, min_samples_split=2, min_samples_leaf=1, max_features='auto', random_state=42)
+
+# Fit the model on the training data
+rf_classifier.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred_rf = rf_classifier.predict(X_test)
+
+# Calculate the accuracy and F1 score
+accuracy_rf = accuracy_score(y_test, y_pred_rf)
+f1_rf = f1_score(y_test, y_pred_rf, average='weighted')
+
+# Print the results
+print(f"Random Forest Accuracy: {accuracy_rf}")
+print(f"Random Forest F1 Score: {f1_rf}")
+
+# Save the trained model to disk
+dump(rf_classifier, 'random_forest_model.joblib')
+execute_result:
+---------------------------------------------------------------------------
+InvalidParameterError                     Traceback (most recent call last)
+Cell In[11], line 8
+      5 rf_classifier = RandomForestClassifier(n_estimators=100, max_depth=None, min_samples_split=2, min_samples_leaf=1, max_features='auto', random_state=42)
+      7 # Fit the model on the training data
+----> 8 rf_classifier.fit(X_train, y_train)
+     10 # Predict on the test set
+     11 y_pred_rf = rf_classifier.predict(X_test)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\base.py:1145, in _fit_context.<locals>.decorator.<locals>.wrapper(estimator, *args, **kwargs)
+   1140 partial_fit_and_fitted = (
+   1141     fit_method.__name__ == "partial_fit" and _is_fitted(estimator)
+   1142 )
+   1144 if not global_skip_validation and not partial_fit_and_fitted:
+-> 1145     estimator._validate_params()
+   1147 with config_context(
+   1148     skip_parameter_validation=(
+   1149         prefer_skip_nested_validation or global_skip_validation
+   1150     )
+   1151 ):
+   1152     return fit_method(estimator, *args, **kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\base.py:638, in BaseEstimator._validate_params(self)
+    630 def _validate_params(self):
+    631     """Validate types and values of constructor parameters
+    632 
+    633     The expected type and values must be defined in the `_parameter_constraints`
+   (...)
+    636     accepted constraints.
+    637     """
+--> 638     validate_parameter_constraints(
+    639         self._parameter_constraints,
+    640         self.get_params(deep=False),
+    641         caller_name=self.__class__.__name__,
+    642     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:96, in validate_parameter_constraints(parameter_constraints, params, caller_name)
+     90 else:
+     91     constraints_str = (
+     92         f"{', '.join([str(c) for c in constraints[:-1]])} or"
+     93         f" {constraints[-1]}"
+     94     )
+---> 96 raise InvalidParameterError(
+     97     f"The {param_name!r} parameter of {caller_name} must be"
+     98     f" {constraints_str}. Got {param_val!r} instead."
+     99 )
+
+InvalidParameterError: The 'max_features' parameter of RandomForestClassifier must be an int in the range [1, inf), a float in the range (0.0, 1.0], a str among {'sqrt', 'log2'} or None. Got 'auto' instead.
+is_success:
+False
+code:
+import joblib
+
+# Save the trained logistic regression model to disk
+model_path = 'logistic_regression_model.pkl'
+joblib.dump(log_reg, model_path)
+print(f"Model saved to {model_path}")
+execute_result:
+Model saved to logistic_regression_model.pkl
+is_success:
+True

@@ -1,0 +1,3336 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define and train the LightGBM model with default hyperparameters
+    train_data = lgb.Dataset(X_train, label=y_train)
+    valid_data = lgb.Dataset(X_valid, label=y_valid, reference=train_data)
+    
+    params = {
+        'objective': 'regression',
+        'metric': 'rmse',
+        'boosting_type': 'gbdt',
+        'verbose': 0,
+        'seed': SEED
+    }
+    
+    model = lgb.train(params, train_data, valid_sets=[valid_data], early_stopping_rounds=10, verbose_eval=False)
+    return model
+
+
+def predict(model, X):
+    # Generate predictions using the trained LightGBM model
+    y_pred = model.predict(X, num_iteration=model.best_iteration)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['area'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # Process data and store in numpy arrays
+    X = data_df.drop(['area'], axis=1)
+    y = data_df['area'].to_numpy()
+
+    # Create train and validation set split
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # Define and train the model
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # Evaluate the model on the validation set and print the result
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("Final RMSE on validation set: ", rmse)
+
+    # Submit predictions for the test set
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['area'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['area'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/lightgbm/engine.py:181: UserWarning: 'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. Pass 'early_stopping()' callback via 'callbacks' argument instead.
+  _log_warning("'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. "
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/lightgbm/engine.py:239: UserWarning: 'verbose_eval' argument is deprecated and will be removed in a future release of LightGBM. Pass 'log_evaluation()' callback via 'callbacks' argument instead.
+  _log_warning("'verbose_eval' argument is deprecated and will be removed in a future release of LightGBM. "
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/forest_fires/train.py", line 76, in <module>
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/forest_fires/train.py", line 27, in compute_metrics_for_regression
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 194, in wrapper
+    params = func_sig.bind(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3177, in bind
+    return self._bind(args, kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3166, in _bind
+    raise TypeError(
+TypeError: got an unexpected keyword argument 'squared'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define and train the LightGBM model with default hyperparameters
+    train_data = lgb.Dataset(X_train, label=y_train)
+    valid_data = lgb.Dataset(X_valid, label=y_valid, reference=train_data)
+    
+    params = {
+        'objective': 'regression',
+        'metric': 'rmse',
+        'boosting_type': 'gbdt',
+        'verbose': 0,
+        'seed': SEED
+    }
+    
+    model = lgb.train(params, train_data, valid_sets=[valid_data], early_stopping_rounds=10, verbose_eval=False)
+    return model
+
+
+def predict(model, X):
+    # Generate predictions using the trained LightGBM model
+    y_pred = model.predict(X, num_iteration=model.best_iteration)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['area'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # Process data and store in numpy arrays
+    X = data_df.drop(['area'], axis=1)
+    y = data_df['area'].to_numpy()
+
+    # Create train and validation set split
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # Define and train the model
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # Evaluate the model on the validation set and print the result
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("Final RMSE on validation set: ", rmse)
+
+    # Submit predictions for the test set
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['area'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['area'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+[LightGBM] [Warning] Auto-choosing row-wise multi-threading, the overhead of testing was 0.000281 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+Final RMSE on validation set:  27.083190698940772
+final MSE on test set:  11765.353800687164
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+from hyperopt import fmin, tpe, hp, Trials, STATUS_OK
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid, params):
+    # Define and train the LightGBM model with specified hyperparameters
+    train_data = lgb.Dataset(X_train, label=y_train)
+    valid_data = lgb.Dataset(X_valid, label=y_valid, reference=train_data)
+    
+    model = lgb.train(params, train_data, valid_sets=[valid_data], early_stopping_rounds=10, verbose_eval=False)
+    return model
+
+
+def predict(model, X):
+    # Generate predictions using the trained LightGBM model
+    y_pred = model.predict(X, num_iteration=model.best_iteration)
+    return y_pred
+
+
+def objective(params, X_train, y_train, X_valid, y_valid):
+    params = {
+        'objective': 'regression',
+        'metric': 'rmse',
+        'boosting_type': 'gbdt',
+        'verbose': 0,
+        'seed': SEED,
+        'learning_rate': params['learning_rate'],
+        'n_estimators': int(params['n_estimators'])
+    }
+    
+    model = train_model(X_train, y_train, X_valid, y_valid, params)
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    return {'loss': rmse, 'status': STATUS_OK}
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['area'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # Process data and store in numpy arrays
+    X = data_df.drop(['area'], axis=1)
+    y = data_df['area'].to_numpy()
+
+    # Create train and validation set split
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # Define the search space for hyperparameters
+    space = {
+        'learning_rate': hp.loguniform('learning_rate', -5, 0),
+        'n_estimators': hp.quniform('n_estimators', 50, 500, 1)
+    }
+
+    # Perform hyperparameter tuning
+    trials = Trials()
+    best = fmin(fn=lambda params: objective(params, X_train, y_train, X_valid, y_valid),
+                space=space,
+                algo=tpe.suggest,
+                max_evals=50,
+                trials=trials)
+
+    # Print the best hyperparameters found
+    print("Best hyperparameters found: ", best)
+
+    # Train the model with the best hyperparameters
+    best_params = {
+        'objective': 'regression',
+        'metric': 'rmse',
+        'boosting_type': 'gbdt',
+        'verbose': 0,
+        'seed': SEED,
+        'learning_rate': best['learning_rate'],
+        'n_estimators': int(best['n_estimators'])
+    }
+    model = train_model(X_train, y_train, X_valid, y_valid, best_params)
+
+    # Evaluate the model on the validation set and print the result
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("Final RMSE on validation set after tuning: ", rmse)
+
+    # Submit predictions for the test set
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['area'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['area'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.001288 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  0%|                                   | 0/50 [00:00<?, ?trial/s, best loss=?]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000373 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+  2%|▏        | 1/50 [00:00<00:02, 16.65trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 15.98trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 15.67trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 15.44trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 15.22trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 15.01trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 14.80trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 14.62trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 14.42trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 14.23trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 14.03trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  2%|▏        | 1/50 [00:00<00:03, 13.85trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000251 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+  4%|▎        | 2/50 [00:00<00:01, 25.91trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:01, 25.34trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:01, 25.04trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:01, 24.75trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:01, 24.46trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:01, 24.20trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:02, 23.93trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:02, 23.66trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:02, 23.39trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:02, 23.14trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:02, 22.89trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:02, 22.65trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  4%|▎        | 2/50 [00:00<00:02, 22.43trial/s, best loss: 27.109808235259074]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000258 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+  6%|▌        | 3/50 [00:00<00:01, 32.01trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 31.42trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 31.11trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 30.81trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 30.51trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 30.22trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 29.93trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 29.67trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 29.41trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 29.14trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 28.91trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  6%|▌        | 3/50 [00:00<00:01, 28.65trial/s, best loss: 27.095549262274414]
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000254 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+  8%|▋        | 4/50 [00:00<00:01, 37.55trial/s, best loss: 27.095549262274414]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000259 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 10%|█         | 5/50 [00:00<00:01, 37.55trial/s, best loss: 27.08497658571478]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000258 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 12%|█▏        | 6/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000258 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 14%|█▍        | 7/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000263 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 16%|█▌        | 8/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000264 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 18%|█▊        | 9/50 [00:00<00:01, 37.55trial/s, best loss: 25.03599307545928]
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000275 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 20%|█▊       | 10/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000263 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 22%|█▉       | 11/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000266 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 24%|██▏      | 12/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000281 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 26%|██▎      | 13/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000265 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 28%|██▌      | 14/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000252 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 30%|██▋      | 15/50 [00:00<00:00, 45.75trial/s, best loss: 25.03599307545928]
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000256 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 32%|██▉      | 16/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000259 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 34%|███      | 17/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000251 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 36%|███▏     | 18/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000254 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 38%|███▍     | 19/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000258 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 40%|███▌     | 20/50 [00:00<00:00, 49.44trial/s, best loss: 25.03599307545928]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000249 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 42%|███▎    | 21/50 [00:00<00:00, 49.44trial/s, best loss: 24.940221068342733]
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000252 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 44%|███▌    | 22/50 [00:00<00:00, 51.57trial/s, best loss: 24.940221068342733]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000254 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 46%|███▋    | 23/50 [00:00<00:00, 51.57trial/s, best loss: 24.921027980043018]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000253 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 48%|████▎    | 24/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000245 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 50%|████▌    | 25/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000302 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 52%|████▋    | 26/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000251 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 54%|████▊    | 27/50 [00:00<00:00, 51.57trial/s, best loss: 24.90000316974037]
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000255 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 56%|█████    | 28/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000246 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 58%|█████▏   | 29/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000251 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 60%|█████▍   | 30/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000247 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 62%|█████▌   | 31/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000247 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 64%|█████▊   | 32/50 [00:00<00:00, 48.84trial/s, best loss: 24.90000316974037]
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000245 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 66%|█████▉   | 33/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000248 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 68%|██████   | 34/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000246 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 70%|██████▎  | 35/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000253 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 72%|██████▍  | 36/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000249 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 74%|██████▋  | 37/50 [00:00<00:00, 48.71trial/s, best loss: 24.90000316974037]
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000257 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 76%|██████▊  | 38/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000253 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 78%|███████  | 39/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000257 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 80%|███████▏ | 40/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000251 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 82%|███████▍ | 41/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000323 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 84%|███████▌ | 42/50 [00:00<00:00, 48.91trial/s, best loss: 24.90000316974037]
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000242 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 86%|███████▋ | 43/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000266 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 88%|███████▉ | 44/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000254 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 90%|████████ | 45/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000240 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 92%|████████▎| 46/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000241 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 94%|████████▍| 47/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:00<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 94%|████████▍| 47/50 [00:01<00:00, 48.63trial/s, best loss: 24.90000316974037]
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000244 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 96%|████████▋| 48/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000245 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+                                                                               
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+
+ 98%|████████▊| 49/50 [00:01<00:00, 46.13trial/s, best loss: 24.90000316974037]
+100%|█████████| 50/50 [00:01<00:00, 47.59trial/s, best loss: 24.90000316974037]
+Best hyperparameters found:  {'learning_rate': np.float64(0.9681104862302654), 'n_estimators': np.float64(498.0)}
+[LightGBM] [Warning] Auto-choosing col-wise multi-threading, the overhead of testing was 0.000243 seconds.
+You can set `force_col_wise=true` to remove the overhead.
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+[LightGBM] [Warning] No further splits with positive gain, best gain: -inf
+Final RMSE on validation set after tuning:  24.90000316974037
+final MSE on test set:  11979.666319858981
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 14,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "abalone",
+        "task_description": "我需要一个模型可以使用鲍鱼的物理测量值的表格数据来预估鲍鱼年龄。要求使用lightGBM模型来完成该任务。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 160.66812825202942,
+        "interact_count": 8,
+        "prompt_tokens": 37191,
+        "completion_tokens": 3890,
+        "RCR": 5
+    }
+}

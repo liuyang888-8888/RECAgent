@@ -1,0 +1,241 @@
+
+生成的代码：
+import pandas as pd
+
+# 加载训练集和测试集
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\horse_health_outcomes_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\horse_health_outcomes_test.csv')
+
+# 对指定的列进行独热编码
+columns_to_encode = ['peripheral_pulse', 'mucous_membrane', 'capillary_refill_time']
+
+# 对训练集进行独热编码
+train_data_encoded = pd.get_dummies(train_data, columns=columns_to_encode)
+
+# 对测试集进行独热编码
+test_data_encoded = pd.get_dummies(test_data, columns=columns_to_encode)
+
+# 确保训练集和测试集的列一致
+train_columns = train_data_encoded.columns
+test_columns = test_data_encoded.columns
+
+# 如果测试集中有训练集中没有的列，删除这些列
+for col in test_columns:
+    if col not in train_columns:
+        test_data_encoded.drop(columns=[col], inplace=True)
+
+# 如果训练集中有测试集中没有的列，添加这些列并填充为0
+for col in train_columns:
+    if col not in test_columns:
+        test_data_encoded[col] = 0
+
+# 重新排序测试集的列以匹配训练集
+test_data_encoded = test_data_encoded[train_columns]
+
+# 分离特征和标签
+X_train = train_data_encoded.drop(columns=['outcome'])
+y_train = train_data_encoded['outcome']
+
+X_test = test_data_encoded.drop(columns=['outcome'])
+y_test = test_data_encoded['outcome']
+
+import lightgbm as lgb
+from sklearn.metrics import f1_score
+
+# 定义 LightGBM 模型
+params = {
+    'boosting_type': 'gbdt',
+    'objective': 'multiclass',
+    'num_class': len(y_train.unique()),  # 假设 outcome 是多分类标签
+    'num_leaves': 31,
+    'learning_rate': 0.1,
+    'n_estimators': 10
+}
+
+# 训练模型
+model = lgb.LGBMClassifier(**params)
+model.fit(X_train, y_train)
+
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_9244d44ec7a3e49967d2a20bd63753d57401eddf6ef6873f80a59c26de0c1d4c.py", line 5, in <module>
+    train_data_encoded = pd.get_dummies(train_data, columns=columns_to_encode)
+NameError: name 'pd' is not defined. Did you mean: 'id'?
+
+生成的代码：
+import pandas as pd
+import lightgbm as lgb
+from sklearn.metrics import f1_score
+
+# 加载训练集和测试集
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\horse_health_outcomes_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\horse_health_outcomes_test.csv')
+
+# 对指定的列进行独热编码
+columns_to_encode = ['peripheral_pulse', 'mucous_membrane', 'capillary_refill_time']
+
+# 对训练集进行独热编码
+train_data_encoded = pd.get_dummies(train_data, columns=columns_to_encode)
+
+# 对测试集进行独热编码
+test_data_encoded = pd.get_dummies(test_data, columns=columns_to_encode)
+
+# 确保训练集和测试集的列一致
+train_columns = train_data_encoded.columns
+test_columns = test_data_encoded.columns
+
+# 如果测试集中有训练集中没有的列，删除这些列
+for col in test_columns:
+    if col not in train_columns:
+        test_data_encoded.drop(columns=[col], inplace=True)
+
+# 如果训练集中有测试集中没有的列，添加这些列并填充为0
+for col in train_columns:
+    if col not in test_columns:
+        test_data_encoded[col] = 0
+
+# 重新排序测试集的列以匹配训练集
+test_data_encoded = test_data_encoded[train_columns]
+
+# 分离特征和标签
+X_train = train_data_encoded.drop(columns=['outcome'])
+y_train = train_data_encoded['outcome']
+
+X_test = test_data_encoded.drop(columns=['outcome'])
+y_test = test_data_encoded['outcome']
+
+# 定义 LightGBM 模型
+params = {
+    'boosting_type': 'gbdt',
+    'objective': 'multiclass',
+    'num_class': len(y_train.unique()),  # 假设 outcome 是多分类标签
+    'num_leaves': 31,
+    'learning_rate': 0.1,
+    'n_estimators': 10
+}
+
+# 训练模型
+model = lgb.LGBMClassifier(**params)
+model.fit(X_train, y_train)
+
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_cf4fe75de682ca414f28f92a8e41f099c8451d294987906b9ad90d7af49e8266.py", line 54, in <module>
+    model.fit(X_train, y_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\sklearn.py", line 1560, in fit
+    super().fit(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\sklearn.py", line 1049, in fit
+    self._Booster = train(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\engine.py", line 297, in train
+    booster = Booster(params=params, train_set=train_set)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 3656, in __init__
+    train_set.construct()
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 2590, in construct
+    self._lazy_init(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 2123, in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 868, in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 814, in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 805, in _check_for_bad_pandas_dtypes
+    raise ValueError(
+ValueError: pandas dtypes must be int, float or bool.
+Fields with bad pandas dtypes: surgery: object
+
+生成的代码：
+import pandas as pd
+import lightgbm as lgb
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 加载训练集和测试集
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\horse_health_outcomes_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\horse_health_outcomes_test.csv')
+
+# 对指定的列进行独热编码
+columns_to_encode = ['peripheral_pulse', 'mucous_membrane', 'capillary_refill_time']
+
+# 对训练集进行独热编码
+train_data_encoded = pd.get_dummies(train_data, columns=columns_to_encode)
+
+# 对测试集进行独热编码
+test_data_encoded = pd.get_dummies(test_data, columns=columns_to_encode)
+
+# 确保训练集和测试集的列一致
+train_columns = train_data_encoded.columns
+test_columns = test_data_encoded.columns
+
+# 如果测试集中有训练集中没有的列，删除这些列
+for col in test_columns:
+    if col not in train_columns:
+        test_data_encoded.drop(columns=[col], inplace=True)
+
+# 如果训练集中有测试集中没有的列，添加这些列并填充为0
+for col in train_columns:
+    if col not in test_columns:
+        test_data_encoded[col] = 0
+
+# 重新排序测试集的列以匹配训练集
+test_data_encoded = test_data_encoded[train_columns]
+
+# 对 'surgery' 列进行标签编码
+label_encoder = LabelEncoder()
+train_data_encoded['surgery'] = label_encoder.fit_transform(train_data_encoded['surgery'])
+test_data_encoded['surgery'] = label_encoder.transform(test_data_encoded['surgery'])
+
+# 分离特征和标签
+X_train = train_data_encoded.drop(columns=['outcome'])
+y_train = train_data_encoded['outcome']
+
+X_test = test_data_encoded.drop(columns=['outcome'])
+y_test = test_data_encoded['outcome']
+
+# 定义 LightGBM 模型
+params = {
+    'boosting_type': 'gbdt',
+    'objective': 'multiclass',
+    'num_class': len(y_train.unique()),  # 假设 outcome 是多分类标签
+    'num_leaves': 31,
+    'learning_rate': 0.1,
+    'n_estimators': 10
+}
+
+# 训练模型
+model = lgb.LGBMClassifier(**params)
+model.fit(X_train, y_train)
+
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score: {f1}')
+
+
+执行结果：
+[LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.000072 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 286
+[LightGBM] [Info] Number of data points in the train set: 986, number of used features: 15
+[LightGBM] [Info] Start training from score -1.070610
+[LightGBM] [Info] Start training from score -1.615542
+[LightGBM] [Info] Start training from score -0.779974
+F1 Score: 0.649539317762176

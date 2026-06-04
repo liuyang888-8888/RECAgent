@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 42.58401560783386,
+        "interact_count": 7,
+        "prompt_tokens": 7761,
+        "completion_tokens": 1121,
+        "RCR": 4
+    },
+    "task": {
+        "id": 13,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "secondary_mushroom",
+        "task_description": "我需要一个AdaBoost分类模型，可以是根据蘑菇特征（如形状、颜色、气味等）的表格数据预测蘑菇是否可食用。"
+    }
+}

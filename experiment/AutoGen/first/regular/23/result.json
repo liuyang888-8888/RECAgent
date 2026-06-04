@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 23,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "obesity_cvd_risk",
+        "task_description": "肥胖对健康有着很大的影响，我有一个表格数据中包含了许多个体的饮食习惯、身体活动、生活方式等日常生活习惯，还有，还有每一个个体的肥胖等级（如体重不足、正常体重、超重、肥胖等）。我想要你根据这些数据，帮我训练一个Mean Shift聚类模型，实现对他们生活行为的分析。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 111.84389042854309,
+        "interact_count": 4,
+        "prompt_tokens": 8615,
+        "completion_tokens": 1490,
+        "RCR": 5
+    }
+}

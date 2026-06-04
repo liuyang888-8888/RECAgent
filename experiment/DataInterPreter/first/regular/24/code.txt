@@ -1,0 +1,184 @@
+code:
+import pandas as pd
+
+# Load the Titanic dataset
+train_df = pd.read_csv('E:\\csv\\titanic_train.csv')
+
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows of the DataFrame to understand its structure
+print(train_df_copy.head())
+
+# Check the data types of each column
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Display the identified columns
+print("Categorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+execute_result:
+PassengerId  Survived  Pclass  ...     Fare Cabin  Embarked
+0            1         0       3  ...   7.2500   NaN         S
+1            2         1       1  ...  71.2833   C85         C
+2            3         1       3  ...   7.9250   NaN         S
+3            4         1       1  ...  53.1000  C123         S
+4            5         0       3  ...   8.0500   NaN         S
+
+[5 rows x 12 columns]
+PassengerId      int64
+Survived         int64
+Pclass           int64
+Name            object
+Sex             object
+Age            float64
+SibSp            int64
+Parch            int64
+Ticket          object
+Fare           float64
+Cabin           object
+Embarked        object
+dtype: object
+Categorical Columns: Index(['Name', 'Sex', 'Ticket', 'Cabin', 'Embarked'], dtype='object')
+Numerical Columns: Index(['PassengerId', 'Survived', 'Pclass', 'Age', 'SibSp', 'Parch', 'Fare'], dtype='object')
+is_success:
+True
+code:
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+import numpy as np
+
+# Copy the DataFrame
+train_df_processed = train_df_copy.copy()
+
+# Handling missing values
+# For numerical columns, fill with median
+for col in numerical_columns:
+    if train_df_processed[col].isnull().sum() > 0:
+        train_df_processed[col].fillna(train_df_processed[col].median(), inplace=True)
+
+# For categorical columns, fill with mode
+for col in categorical_columns:
+    if train_df_processed[col].isnull().sum() > 0:
+        train_df_processed[col].fillna(train_df_processed[col].mode()[0], inplace=True)
+
+# Encoding categorical variables
+label_encoders = {}
+for col in categorical_columns:
+    le = LabelEncoder()
+    train_df_processed[col] = le.fit_transform(train_df_processed[col])
+    label_encoders[col] = le
+
+# Scaling numerical features
+scalers = {}
+for col in numerical_columns:
+    if col not in ['PassengerId', 'Survived']:
+        scaler = StandardScaler()
+        train_df_processed[col] = scaler.fit_transform(train_df_processed[[col]])
+        scalers[col] = scaler
+
+# Display the first few rows of the processed DataFrame
+print(train_df_processed.head())
+execute_result:
+PassengerId  Survived    Pclass  Name  ...  Ticket      Fare  Cabin  Embarked
+0            1         0  0.827377   108  ...     523 -0.502445     47         2
+1            2         1 -1.566107   190  ...     596  0.786845     81         0
+2            3         1  0.827377   353  ...     669 -0.488854     47         2
+3            4         1 -1.566107   272  ...      49  0.420730     55         2
+4            5         0  0.827377    15  ...     472 -0.486337     47         2
+
+[5 rows x 12 columns]
+is_success:
+True
+code:
+# Selecting relevant features for clustering
+selected_features = ['Age', 'Sex', 'Pclass', 'Fare']
+
+# Copy the processed DataFrame to avoid modifying the original
+train_df_cluster = train_df_processed[selected_features].copy()
+
+# Display the first few rows of the selected features
+print(train_df_cluster.head())
+execute_result:
+Age  Sex    Pclass      Fare
+0 -0.566464    1  0.827377 -0.502445
+1  0.662872    0 -1.566107  0.786845
+2 -0.259130    0  0.827377 -0.488854
+3  0.432372    0 -1.566107  0.420730
+4  0.432372    1  0.827377 -0.486337
+is_success:
+True
+code:
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+# Define the number of clusters
+n_clusters = 3
+
+# Initialize the KMeans model
+kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+
+# Fit the model to the selected features
+kmeans.fit(train_df_cluster)
+
+# Add the cluster labels to the original dataframe
+train_df_cluster['Cluster'] = kmeans.labels_
+
+# Visualize the clusters
+plt.figure(figsize=(10, 6))
+plt.scatter(train_df_cluster['Age'], train_df_cluster['Fare'], c=train_df_cluster['Cluster'], cmap='viridis', marker='o')
+plt.title('K-Means Clustering of Titanic Dataset')
+plt.xlabel('Age')
+plt.ylabel('Fare')
+plt.colorbar(label='Cluster')
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[7], line 2
+      1 from sklearn.cluster import KMeans
+----> 2 import matplotlib.pyplot as plt
+      4 # Define the number of clusters
+      5 n_clusters = 3
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+from sklearn.cluster import KMeans
+
+# Define the number of clusters
+n_clusters = 3
+
+# Initialize the KMeans model
+kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+
+# Fit the model to the selected features
+kmeans.fit(train_df_cluster)
+
+# Add the cluster labels to the original dataframe
+train_df_cluster['Cluster'] = kmeans.labels_
+
+# Display the first few rows of the dataframe with the cluster labels
+print(train_df_cluster.head())
+execute_result:
+Age  Sex    Pclass      Fare  Cluster
+0 -0.566464    1  0.827377 -0.502445        0
+1  0.662872    0 -1.566107  0.786845        2
+2 -0.259130    0  0.827377 -0.488854        0
+3  0.432372    0 -1.566107  0.420730        2
+4  0.432372    1  0.827377 -0.486337        0
+is_success:
+True
+code:
+from sklearn.metrics import silhouette_score
+
+# Calculate the silhouette score
+silhouette_avg = silhouette_score(train_df_cluster.drop(columns=['Cluster']), train_df_cluster['Cluster'])
+print(f"Silhouette Score: {silhouette_avg}")
+execute_result:
+Silhouette Score: 0.43289170127578236
+is_success:
+True

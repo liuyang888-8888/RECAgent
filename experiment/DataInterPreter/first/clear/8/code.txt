@@ -1,0 +1,546 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\smoker_status_bio_signals_train.csv')
+test_df = pd.read_csv('E:\\csv\\smoker_status_bio_signals_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical and numerical columns
+# For categorical columns, use label encoding instead of one-hot encoding
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# For numerical columns, apply standard scaling
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+
+for col in numerical_columns:
+    if col != 'label':  # Ensure the label column is not scaled
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Verify the preprocessing
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   1   70     165      65   89.0  ...   27   23   37              1        0
+1   2   20     170      75   81.0  ...   27   31   53              0        1
+2   3   35     180      95  105.0  ...   20   27   30              1        0
+3   5   50     170      55   51.0  ...   24   42  119              1        1
+4   6   45     160      55   69.0  ...   17   12   16              0        0
+
+[5 rows x 24 columns]
+
+Test DataFrame:
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   0   55     165      60   81.0  ...   22   25   27              0        1
+1   4   30     165      60   80.5  ...   19   13   17              0        1
+2  12   40     155      55   80.0  ...   21   15    9              1        0
+3  20   20     175      60   71.5  ...   18   15   16              0        1
+4  24   60     170      65   85.0  ...   29   18   24              0        1
+
+[5 rows x 24 columns]
+
+Data types in Train DataFrame:
+id                       int64
+age                      int64
+height                   int64
+weight                   int64
+waist                  float64
+eyesight_left          float64
+eyesight_right         float64
+hearing_left             int64
+hearing_right            int64
+systolic                 int64
+relaxation               int64
+fasting_blood_sugar      int64
+Cholesterol              int64
+triglyceride             int64
+HDL                      int64
+LDL                      int64
+hemoglobin             float64
+Urine_protein            int64
+serum_creatinine       float64
+AST                      int64
+ALT                      int64
+Gtp                      int64
+dental_caries            int64
+smoking                  int64
+dtype: object
+
+Data types in Test DataFrame:
+id                       int64
+age                      int64
+height                   int64
+weight                   int64
+waist                  float64
+eyesight_left          float64
+eyesight_right         float64
+hearing_left             int64
+hearing_right            int64
+systolic                 int64
+relaxation               int64
+fasting_blood_sugar      int64
+Cholesterol              int64
+triglyceride             int64
+HDL                      int64
+LDL                      int64
+hemoglobin             float64
+Urine_protein            int64
+serum_creatinine       float64
+AST                      int64
+ALT                      int64
+Gtp                      int64
+dental_caries            int64
+smoking                  int64
+dtype: object
+
+Categorical Columns:
+Index([], dtype='object')
+
+Numerical Columns:
+Index(['id', 'age', 'height', 'weight', 'waist', 'eyesight_left',
+       'eyesight_right', 'hearing_left', 'hearing_right', 'systolic',
+       'relaxation', 'fasting_blood_sugar', 'Cholesterol', 'triglyceride',
+       'HDL', 'LDL', 'hemoglobin', 'Urine_protein', 'serum_creatinine', 'AST',
+       'ALT', 'Gtp', 'dental_caries', 'smoking'],
+      dtype='object')
+
+Preprocessed Train DataFrame:
+         id       age    height  ...       Gtp  dental_caries   smoking
+0 -1.727387  2.172987 -0.029558  ...  0.026757       2.010351 -0.879736
+1 -1.727365 -2.054932  0.537155  ...  0.539877      -0.497426  1.136705
+2 -1.727343 -0.786556  1.670580  ... -0.197733       2.010351 -0.879736
+3 -1.727300  0.481820  0.537155  ...  2.656495       2.010351  1.136705
+4 -1.727278  0.059028 -0.596270  ... -0.646712      -0.497426 -0.879736
+
+[5 rows x 24 columns]
+
+Preprocessed Test DataFrame:
+         id       age    height  ...       Gtp  dental_caries   smoking
+0 -1.727409  0.904612 -0.029558  ... -0.293942      -0.497426  1.136705
+1 -1.727322 -1.209348 -0.029558  ... -0.614642      -0.497426  1.136705
+2 -1.727148 -0.363764 -1.162983  ... -0.871202       2.010351 -0.879736
+3 -1.726974 -2.054932  1.103867  ... -0.646712      -0.497426  1.136705
+4 -1.726887  1.327404  0.537155  ... -0.390152      -0.497426  1.136705
+
+[5 rows x 24 columns]
+is_success:
+True
+code:
+# Handling missing values and encoding categorical variables if necessary
+
+# Copy the DataFrames to ensure we don't modify the original ones
+train_df_processed = train_df_copy.copy()
+test_df_processed = test_df_copy.copy()
+
+# Check for missing values in the training and test datasets
+print("Missing values in Train DataFrame:")
+print(train_df_processed.isnull().sum())
+print("\nMissing values in Test DataFrame:")
+print(test_df_processed.isnull().sum())
+
+# Handle missing values
+# For simplicity, we will fill missing values with the median for numerical columns
+# and mode for categorical columns (if any). However, since there are no categorical
+# columns, we will only handle numerical columns.
+
+# Fill missing values in numerical columns with the median
+for col in numerical_columns:
+    if col != 'label':
+        median_value = train_df_processed[col].median()
+        train_df_processed[col].fillna(median_value, inplace=True)
+        test_df_processed[col].fillna(median_value, inplace=True)
+
+# Verify that there are no missing values left
+print("\nAfter handling missing values:")
+print("Missing values in Train DataFrame:")
+print(train_df_processed.isnull().sum())
+print("\nMissing values in Test DataFrame:")
+print(test_df_processed.isnull().sum())
+
+# Since there are no categorical columns, no further encoding is needed.
+# If there were categorical columns, we would use LabelEncoder or other methods to encode them.
+
+# Display the first few rows of the processed DataFrames
+print("\nProcessed Train DataFrame:")
+print(train_df_processed.head())
+print("\nProcessed Test DataFrame:")
+print(test_df_processed.head())
+execute_result:
+Missing values in Train DataFrame:
+id                     0
+age                    0
+height                 0
+weight                 0
+waist                  0
+eyesight_left          0
+eyesight_right         0
+hearing_left           0
+hearing_right          0
+systolic               0
+relaxation             0
+fasting_blood_sugar    0
+Cholesterol            0
+triglyceride           0
+HDL                    0
+LDL                    0
+hemoglobin             0
+Urine_protein          0
+serum_creatinine       0
+AST                    0
+ALT                    0
+Gtp                    0
+dental_caries          0
+smoking                0
+dtype: int64
+
+Missing values in Test DataFrame:
+id                     0
+age                    0
+height                 0
+weight                 0
+waist                  0
+eyesight_left          0
+eyesight_right         0
+hearing_left           0
+hearing_right          0
+systolic               0
+relaxation             0
+fasting_blood_sugar    0
+Cholesterol            0
+triglyceride           0
+HDL                    0
+LDL                    0
+hemoglobin             0
+Urine_protein          0
+serum_creatinine       0
+AST                    0
+ALT                    0
+Gtp                    0
+dental_caries          0
+smoking                0
+dtype: int64
+
+After handling missing values:
+Missing values in Train DataFrame:
+id                     0
+age                    0
+height                 0
+weight                 0
+waist                  0
+eyesight_left          0
+eyesight_right         0
+hearing_left           0
+hearing_right          0
+systolic               0
+relaxation             0
+fasting_blood_sugar    0
+Cholesterol            0
+triglyceride           0
+HDL                    0
+LDL                    0
+hemoglobin             0
+Urine_protein          0
+serum_creatinine       0
+AST                    0
+ALT                    0
+Gtp                    0
+dental_caries          0
+smoking                0
+dtype: int64
+
+Missing values in Test DataFrame:
+id                     0
+age                    0
+height                 0
+weight                 0
+waist                  0
+eyesight_left          0
+eyesight_right         0
+hearing_left           0
+hearing_right          0
+systolic               0
+relaxation             0
+fasting_blood_sugar    0
+Cholesterol            0
+triglyceride           0
+HDL                    0
+LDL                    0
+hemoglobin             0
+Urine_protein          0
+serum_creatinine       0
+AST                    0
+ALT                    0
+Gtp                    0
+dental_caries          0
+smoking                0
+dtype: int64
+
+Processed Train DataFrame:
+         id       age    height  ...       Gtp  dental_caries   smoking
+0 -1.727387  2.172987 -0.029558  ...  0.026757       2.010351 -0.879736
+1 -1.727365 -2.054932  0.537155  ...  0.539877      -0.497426  1.136705
+2 -1.727343 -0.786556  1.670580  ... -0.197733       2.010351 -0.879736
+3 -1.727300  0.481820  0.537155  ...  2.656495       2.010351  1.136705
+4 -1.727278  0.059028 -0.596270  ... -0.646712      -0.497426 -0.879736
+
+[5 rows x 24 columns]
+
+Processed Test DataFrame:
+         id       age    height  ...       Gtp  dental_caries   smoking
+0 -1.727409  0.904612 -0.029558  ... -0.293942      -0.497426  1.136705
+1 -1.727322 -1.209348 -0.029558  ... -0.614642      -0.497426  1.136705
+2 -1.727148 -0.363764 -1.162983  ... -0.871202       2.010351 -0.879736
+3 -1.726974 -2.054932  1.103867  ... -0.646712      -0.497426  1.136705
+4 -1.726887  1.327404  0.537155  ... -0.390152      -0.497426  1.136705
+
+[5 rows x 24 columns]
+is_success:
+True
+code:
+# Splitting the preprocessed data into features (X) and target variable (y)
+X_train = train_df_processed.drop(columns=['smoking'])
+y_train = train_df_processed['smoking']
+X_test = test_df_processed.drop(columns=['smoking'])
+y_test = test_df_processed['smoking']
+
+# Displaying the shapes of the split datasets
+print("Shape of X_train:", X_train.shape)
+print("Shape of y_train:", y_train.shape)
+print("Shape of X_test:", X_test.shape)
+print("Shape of y_test:", y_test.shape)
+execute_result:
+Shape of X_train: (127404, 23)
+Shape of y_train: (127404,)
+Shape of X_test: (31852, 23)
+Shape of y_test: (31852,)
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the XGBoost classifier with optimized hyperparameters
+xgb_model = XGBClassifier(
+    n_estimators=1000,
+    max_depth=7,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    gamma=0.1,
+    reg_alpha=0.1,
+    reg_lambda=1.0,
+    random_state=42
+)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = xgb_model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print(report)
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[7], line 18
+      5 xgb_model = XGBClassifier(
+      6     n_estimators=1000,
+      7     max_depth=7,
+   (...)
+     14     random_state=42
+     15 )
+     17 # Train the model
+---> 18 xgb_model.fit(X_train, y_train)
+     20 # Predict on the test set
+     21 y_pred = xgb_model.predict(X_test)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:726, in require_keyword_args.<locals>.throw_if.<locals>.inner_f(*args, **kwargs)
+    724 for k, arg in zip(sig.parameters, args):
+    725     kwargs[k] = arg
+--> 726 return func(**kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\sklearn.py:1559, in XGBClassifier.fit(self, X, y, sample_weight, base_margin, eval_set, verbose, xgb_model, sample_weight_eval_set, base_margin_eval_set, feature_weights)
+   1554     expected_classes = self.classes_
+   1555 if (
+   1556     classes.shape != expected_classes.shape
+   1557     or not (classes == expected_classes).all()
+   1558 ):
+-> 1559     raise ValueError(
+   1560         f"Invalid classes inferred from unique values of `y`.  "
+   1561         f"Expected: {expected_classes}, got {classes}"
+   1562     )
+   1564 params = self.get_xgb_params()
+   1566 if callable(self.objective):
+
+ValueError: Invalid classes inferred from unique values of `y`.  Expected: [0 1], got [-0.87973566  1.13670508]
+is_success:
+False
+code:
+from sklearn.tree import DecisionTreeClassifier
+
+# Initialize the Decision Tree Classifier
+clf = DecisionTreeClassifier(random_state=42)
+
+# Train the model using the training sets
+clf.fit(X_train, y_train)
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[8], line 7
+      4 clf = DecisionTreeClassifier(random_state=42)
+      6 # Train the model using the training sets
+----> 7 clf.fit(X_train, y_train)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\base.py:1152, in _fit_context.<locals>.decorator.<locals>.wrapper(estimator, *args, **kwargs)
+   1145     estimator._validate_params()
+   1147 with config_context(
+   1148     skip_parameter_validation=(
+   1149         prefer_skip_nested_validation or global_skip_validation
+   1150     )
+   1151 ):
+-> 1152     return fit_method(estimator, *args, **kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\tree\_classes.py:959, in DecisionTreeClassifier.fit(self, X, y, sample_weight, check_input)
+    928 @_fit_context(prefer_skip_nested_validation=True)
+    929 def fit(self, X, y, sample_weight=None, check_input=True):
+    930     """Build a decision tree classifier from the training set (X, y).
+    931 
+    932     Parameters
+   (...)
+    956         Fitted estimator.
+    957     """
+--> 959     super()._fit(
+    960         X,
+    961         y,
+    962         sample_weight=sample_weight,
+    963         check_input=check_input,
+    964     )
+    965     return self
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\tree\_classes.py:284, in BaseDecisionTree._fit(self, X, y, sample_weight, check_input, missing_values_in_feature_mask)
+    281 self.n_outputs_ = y.shape[1]
+    283 if is_classification:
+--> 284     check_classification_targets(y)
+    285     y = np.copy(y)
+    287     self.classes_ = []
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\multiclass.py:216, in check_classification_targets(y)
+    208 y_type = type_of_target(y, input_name="y")
+    209 if y_type not in [
+    210     "binary",
+    211     "multiclass",
+   (...)
+    214     "multilabel-sequences",
+    215 ]:
+--> 216     raise ValueError(
+    217         f"Unknown label type: {y_type}. Maybe you are trying to fit a "
+    218         "classifier, which expects discrete classes on a "
+    219         "regression target with continuous values."
+    220     )
+
+ValueError: Unknown label type: continuous. Maybe you are trying to fit a classifier, which expects discrete classes on a regression target with continuous values.
+is_success:
+False
+code:
+from sklearn.tree import DecisionTreeClassifier
+
+# Ensure the target variable is properly formatted as integers
+y_train = y_train.astype(int)
+y_test = y_test.astype(int)
+
+# Initialize the Decision Tree Classifier
+clf = DecisionTreeClassifier(random_state=42)
+
+# Train the model
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Evaluate the model
+from sklearn.metrics import accuracy_score, classification_report
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+execute_result:
+Accuracy: 0.6928921260831346
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.72      0.73      0.73     17783
+           1       0.65      0.65      0.65     14069
+
+    accuracy                           0.69     31852
+   macro avg       0.69      0.69      0.69     31852
+weighted avg       0.69      0.69      0.69     31852
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting the labels for the test set
+y_pred = clf.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print(f"F1 Score: {f1}")
+execute_result:
+F1 Score: 0.692736178304523
+is_success:
+True
+code:
+# Save the evaluation results including the F1 score to a file
+with open('evaluation_results.txt', 'w') as file:
+    file.write(f"Accuracy: {accuracy}\n")
+    file.write(f"Classification Report:\n{report}")
+    file.write(f"\nF1 Score: {f1}")
+execute_result:
+
+is_success:
+True

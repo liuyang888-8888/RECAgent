@@ -1,0 +1,127 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# 读取训练集和测试集
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\smoker_status_bio_signals_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\smoker_status_bio_signals_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 查看数据集的前几行
+print(train_df.head())
+print(test_df.head())
+
+# 分离特征和标签
+X_train = train_df.drop(columns=['smoker'])
+y_train = train_df['smoker']
+
+X_test = test_df.drop(columns=['smoker'])
+y_test = test_df['smoker']
+
+# 构建决策树分类器
+clf = DecisionTreeClassifier()
+
+# 训练模型
+clf.fit(X_train, y_train)
+
+# 预测测试集
+y_pred = clf.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 输出 F1 分数
+print(f'F1 Score: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_69a04fe29ecdea85bf6471da7b8ffee56d776b88ef5dff5ee301b0aebb3ccb37.py", line 17, in <module>
+    X_train = train_df.drop(columns=['smoker'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['smoker'] not found in axis"
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   1   70     165      65   89.0  ...   27   23   37              1        0
+1   2   20     170      75   81.0  ...   27   31   53              0        1
+2   3   35     180      95  105.0  ...   20   27   30              1        0
+3   5   50     170      55   51.0  ...   24   42  119              1        1
+4   6   45     160      55   69.0  ...   17   12   16              0        0
+
+[5 rows x 24 columns]
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   0   55     165      60   81.0  ...   22   25   27              0        1
+1   4   30     165      60   80.5  ...   19   13   17              0        1
+2  12   40     155      55   80.0  ...   21   15    9              1        0
+3  20   20     175      60   71.5  ...   18   15   16              0        1
+4  24   60     170      65   85.0  ...   29   18   24              0        1
+
+[5 rows x 24 columns]
+
+生成的代码：
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# 读取训练集和测试集
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\smoker_status_bio_signals_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\smoker_status_bio_signals_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 查看数据集的前几行
+print(train_df.head())
+print(test_df.head())
+
+# 分离特征和标签
+X_train = train_df.drop(columns=['smoking'])
+y_train = train_df['smoking']
+
+X_test = test_df.drop(columns=['smoking'])
+y_test = test_df['smoking']
+
+# 构建决策树分类器
+clf = DecisionTreeClassifier()
+
+# 训练模型
+clf.fit(X_train, y_train)
+
+# 预测测试集
+y_pred = clf.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 输出 F1 分数
+print(f'F1 Score: {f1}')
+
+
+执行结果：
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   1   70     165      65   89.0  ...   27   23   37              1        0
+1   2   20     170      75   81.0  ...   27   31   53              0        1
+2   3   35     180      95  105.0  ...   20   27   30              1        0
+3   5   50     170      55   51.0  ...   24   42  119              1        1
+4   6   45     160      55   69.0  ...   17   12   16              0        0
+
+[5 rows x 24 columns]
+   id  age  height  weight  waist  ...  AST  ALT  Gtp  dental_caries  smoking
+0   0   55     165      60   81.0  ...   22   25   27              0        1
+1   4   30     165      60   80.5  ...   19   13   17              0        1
+2  12   40     155      55   80.0  ...   21   15    9              1        0
+3  20   20     175      60   71.5  ...   18   15   16              0        1
+4  24   60     170      65   85.0  ...   29   18   24              0        1
+
+[5 rows x 24 columns]
+F1 Score: 0.694968948557575

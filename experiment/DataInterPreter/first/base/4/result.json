@@ -1,0 +1,18 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 109.01809048652649,
+        "interact_count": 15,
+        "prompt_tokens": 27091,
+        "completion_tokens": 2591,
+        "metrics": 0.8332350596739498,
+        "RCR": 5
+    },
+    "task": {
+        "id": 4,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "employee_attrition",
+        "task_description": "我想使用雇员流失训练数据，训练一个分类模型可以根据员工的个人相关信息，来找出公司中哪些员工可能要流失。"
+    }
+}

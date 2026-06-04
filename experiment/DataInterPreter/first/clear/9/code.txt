@@ -1,0 +1,343 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv(r'E:\csv\heart_diseases_train.csv')
+test_df = pd.read_csv(r'E:\csv\heart_diseases_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object', 'category']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    label_encoder = LabelEncoder()
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Apply appropriate preprocessing for numerical columns
+for col in numerical_columns:
+    if col != 'label':  # Assuming 'label' is the target column
+        # Use MinMaxScaler for numerical columns
+        scaler = MinMaxScaler()
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Display the preprocessed datasets
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   age  sex  cp  trestbps  chol  fbs  ...  exang  oldpeak  slope   ca  thal  target
+0   29    1   2       130   204    0  ...      0      0.0      1  0.0   3.0       0
+1   57    1   3       150   126    1  ...      0      0.2      1  1.0   7.0       0
+2   69    1   1       160   234    1  ...      0      0.1      2  1.0   3.0       0
+3   65    0   3       160   360    0  ...      0      0.8      1  0.0   3.0       0
+4   52    1   4       108   233    1  ...      0      0.1      1  3.0   7.0       0
+
+[5 rows x 14 columns]
+
+Test DataFrame:
+   age  sex  cp  trestbps  chol  fbs  ...  exang  oldpeak  slope   ca  thal  target
+0   53    1   3       130   246    1  ...      0      0.0      1  3.0   3.0       0
+1   54    1   4       110   206    0  ...      1      0.0      2  1.0   3.0       3
+2   56    1   4       125   249    1  ...      1      1.2      2  1.0   3.0       1
+3   58    1   4       100   234    0  ...      0      0.1      1  1.0   7.0       2
+4   51    0   4       130   305    0  ...      1      1.2      2  0.0   7.0       2
+
+[5 rows x 14 columns]
+
+Data types in Train DataFrame:
+age           int64
+sex           int64
+cp            int64
+trestbps      int64
+chol          int64
+fbs           int64
+restecg       int64
+thalach       int64
+exang         int64
+oldpeak     float64
+slope         int64
+ca          float64
+thal        float64
+target        int64
+dtype: object
+
+Data types in Test DataFrame:
+age           int64
+sex           int64
+cp            int64
+trestbps      int64
+chol          int64
+fbs           int64
+restecg       int64
+thalach       int64
+exang         int64
+oldpeak     float64
+slope         int64
+ca          float64
+thal        float64
+target        int64
+dtype: object
+
+Categorical Columns:
+Index([], dtype='object')
+
+Numerical Columns:
+Index(['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach',
+       'exang', 'oldpeak', 'slope', 'ca', 'thal', 'target'],
+      dtype='object'),---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[1], line 44
+     41 for col in numerical_columns:
+     42     if col != 'label':  # Assuming 'label' is the target column
+     43         # Use MinMaxScaler for numerical columns
+---> 44         scaler = MinMaxScaler()
+     45         train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+     46         test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+NameError: name 'MinMaxScaler' is not defined
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the heart diseases training dataset
+train_data_path = r'E:\csv\heart_disease_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Load the heart diseases testing dataset
+test_data_path = r'E:\csv\heart_disease_test.csv'
+test_df = pd.read_csv(test_data_path)
+
+# Display the first few rows of the training and testing datasets
+print("Training Data:")
+display(train_df.head())
+print("Testing Data:")
+display(test_df.head())
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[2], line 5
+      3 # Load the heart diseases training dataset
+      4 train_data_path = r'E:\csv\heart_disease_train.csv'
+----> 5 train_df = pd.read_csv(train_data_path)
+      7 # Load the heart diseases testing dataset
+      8 test_data_path = r'E:\csv\heart_disease_test.csv'
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'E:\\csv\\heart_disease_train.csv'
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the heart diseases training dataset
+train_data = pd.read_csv('E:\\csv\\heart_diseases_train.csv')
+
+# Load the heart diseases testing dataset
+test_data = pd.read_csv('E:\\csv\\heart_diseases_test.csv')
+execute_result:
+
+is_success:
+True
+code:
+# Copy the datasets to avoid modifying the original data
+train_data_copy = train_data.copy()
+test_data_copy = test_data.copy()
+
+# Fill missing values with the mean of each column for numeric data
+for column in train_data_copy.select_dtypes(include=['float64', 'int64']).columns:
+    if column != 'target':  # Ensure not to modify the target column
+        mean_value = train_data_copy[column].mean()
+        train_data_copy[column].fillna(mean_value, inplace=True)
+        test_data_copy[column].fillna(test_data_copy[column].mean(), inplace=True)
+
+# Verify the changes
+train_data_copy.info()
+test_data_copy.info()
+execute_result:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 242 entries, 0 to 241
+Data columns (total 14 columns):
+ #   Column    Non-Null Count  Dtype  
+---  ------    --------------  -----  
+ 0   age       242 non-null    int64  
+ 1   sex       242 non-null    int64  
+ 2   cp        242 non-null    int64  
+ 3   trestbps  242 non-null    int64  
+ 4   chol      242 non-null    int64  
+ 5   fbs       242 non-null    int64  
+ 6   restecg   242 non-null    int64  
+ 7   thalach   242 non-null    int64  
+ 8   exang     242 non-null    int64  
+ 9   oldpeak   242 non-null    float64
+ 10  slope     242 non-null    int64  
+ 11  ca        242 non-null    float64
+ 12  thal      242 non-null    float64
+ 13  target    242 non-null    int64  
+dtypes: float64(3), int64(11)
+memory usage: 26.6 KB
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 61 entries, 0 to 60
+Data columns (total 14 columns):
+ #   Column    Non-Null Count  Dtype  
+---  ------    --------------  -----  
+ 0   age       61 non-null     int64  
+ 1   sex       61 non-null     int64  
+ 2   cp        61 non-null     int64  
+ 3   trestbps  61 non-null     int64  
+ 4   chol      61 non-null     int64  
+ 5   fbs       61 non-null     int64  
+ 6   restecg   61 non-null     int64  
+ 7   thalach   61 non-null     int64  
+ 8   exang     61 non-null     int64  
+ 9   oldpeak   61 non-null     float64
+ 10  slope     61 non-null     int64  
+ 11  ca        61 non-null     float64
+ 12  thal      61 non-null     float64
+ 13  target    61 non-null     int64  
+dtypes: float64(3), int64(11)
+memory usage: 6.8 KB
+is_success:
+True
+code:
+# Splitting the datasets into features (X) and target (y)
+X_train = train_data_copy.drop(columns=['target'])
+y_train = train_data_copy['target']
+
+X_test = test_data_copy.drop(columns=['target'])
+y_test = test_data_copy['target']
+execute_result:
+
+is_success:
+True
+code:
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the Random Forest Classifier with 10 trees
+rf_classifier = RandomForestClassifier(n_estimators=10, random_state=42)
+
+# Train the model using the training sets
+rf_classifier.fit(X_train, y_train)
+
+# Predict the response for the test dataset
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
+execute_result:
+Accuracy: 0.51
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.63      0.90      0.74        29
+           1       0.29      0.17      0.21        12
+           2       0.22      0.22      0.22         9
+           3       0.25      0.14      0.18         7
+           4       0.00      0.00      0.00         4
+
+    accuracy                           0.51        61
+   macro avg       0.28      0.29      0.27        61
+weighted avg       0.42      0.51      0.45        61,_warn_prf(average, modifier, msg_start, len(result))
+  _warn_prf(average, modifier, msg_start, len(result))
+  _warn_prf(average, modifier, msg_start, len(result))
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting on the test set
+y_pred = rf_classifier.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"F1 Score: {f1:.2f}")
+execute_result:
+F1 Score: 0.45
+is_success:
+True

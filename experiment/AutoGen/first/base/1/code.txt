@@ -1,0 +1,92 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+
+# 1. 导入数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("训练集缺失值情况：", train_df.isnull().sum())
+print("测试集缺失值情况：", test_df.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要进行处理
+
+# 分离特征和目标变量
+X_train = train_df.drop(columns=['Exited'])
+y_train = train_df['Exited']
+
+X_test = test_df.drop(columns=['Exited'])
+y_test = test_df['Exited']
+
+# 3. 特征工程
+# 确定数值特征和分类特征
+numeric_features = ['CreditScore', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'EstimatedSalary']
+categorical_features = ['Geography', 'Gender', 'HasCrCard', 'IsActiveMember']
+
+# 创建预处理管道
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(), categorical_features)
+    ])
+
+# 4. 创建模型管道
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', LogisticRegression())
+])
+
+# 5. 训练模型
+model.fit(X_train, y_train)
+
+# 6. 预测
+y_pred = model.predict(X_test)
+
+# 7. 评估模型
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"测试集上的加权平均 F1 分数: {f1}")
+
+
+执行结果：
+训练集缺失值情况： id                 0
+CustomerId         0
+Surname            0
+CreditScore        0
+Geography          0
+Gender             0
+Age                0
+Tenure             0
+Balance            0
+NumOfProducts      0
+HasCrCard          0
+IsActiveMember     0
+EstimatedSalary    0
+Exited             0
+dtype: int64
+测试集缺失值情况： id                 0
+CustomerId         0
+Surname            0
+CreditScore        0
+Geography          0
+Gender             0
+Age                0
+Tenure             0
+Balance            0
+NumOfProducts      0
+HasCrCard          0
+IsActiveMember     0
+EstimatedSalary    0
+Exited             0
+dtype: int64
+测试集上的加权平均 F1 分数: 0.8167207483510966

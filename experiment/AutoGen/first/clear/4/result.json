@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 4,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "employee_attrition",
+        "task_description": "根据员工的个人相关数据并使用一个决策树算法，叶子节点中的最小实例数设置为3，分割子集不小于5，树的最大深度为50，目的是来找出哪些员工可能要流失，最后对测试集进行预测，然后保存预测结果。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 88.96065545082092,
+        "interact_count": 3,
+        "prompt_tokens": 6828,
+        "completion_tokens": 1382,
+        "RCR": 5
+    }
+}

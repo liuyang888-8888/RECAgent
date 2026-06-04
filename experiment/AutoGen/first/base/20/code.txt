@@ -1,0 +1,75 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bike_sharing_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bike_sharing_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("训练集缺失值情况：")
+print(train_df.isnull().sum())
+print("测试集缺失值情况：")
+print(test_df.isnull().sum())
+
+# 假设没有缺失值，直接选择特征和目标变量
+# 特征选择
+features = ['season', 'yr', 'mnth', 'hr', 'holiday', 'weekday', 'workingday', 'weathersit', 'temp', 'atemp', 'hum', 'windspeed']
+target = 'cnt'
+
+X_train = train_df[features]
+y_train = train_df[target]
+
+X_test = test_df[features]
+y_test = test_df[target]
+
+# 3. 构建模型
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# 4. 评估模型
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+print(f"测试集上的均方误差（MSE）: {mse}")
+
+
+执行结果：
+训练集缺失值情况：
+id            0
+season        0
+yr            0
+mnth          0
+hr            0
+holiday       0
+weekday       0
+workingday    0
+weathersit    0
+temp          0
+atemp         0
+hum           0
+windspeed     0
+cnt           0
+dtype: int64
+测试集缺失值情况：
+id            0
+season        0
+yr            0
+mnth          0
+hr            0
+holiday       0
+weekday       0
+workingday    0
+weathersit    0
+temp          0
+atemp         0
+hum           0
+windspeed     0
+cnt           0
+dtype: int64
+测试集上的均方误差（MSE）: 19379.828367651728

@@ -1,0 +1,187 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\kidney_stone_train.csv')
+test_df = pd.read_csv('E:\\csv\\kidney_stone_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to inspect the data
+print("Training Data:")
+print(train_df_copy.head())
+print("\nTesting Data:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData Types in Training Set:")
+print(train_df_copy.dtypes)
+print("\nData Types in Testing Set:")
+print(test_df_copy.dtypes)
+execute_result:
+Training Data:
+   id  gravity    ph  osmo  cond  urea  calc  target
+0   1    1.025  5.40   703  23.6   394  4.18       0
+1   2    1.009  6.13   371  24.5   159  9.04       0
+2   3    1.021  4.91   442  20.8   398  6.63       1
+3   4    1.021  5.53   874  17.8   385  2.21       1
+4   5    1.025  6.90   947  28.4   395  2.64       1
+
+Testing Data:
+   id  gravity    ph  osmo  cond  urea  calc  target
+0   0    1.013  6.19   443  14.8   124  1.45       0
+1   9    1.017  6.61   527  20.0    75  4.49       1
+2  15    1.011  6.81   251   9.8   141  0.17       1
+3  17    1.012  7.38   760  25.7   199  1.05       0
+4  22    1.021  5.94   956  27.6   473  4.45       1
+
+Data Types in Training Set:
+id           int64
+gravity    float64
+ph         float64
+osmo         int64
+cond       float64
+urea         int64
+calc       float64
+target       int64
+dtype: object
+
+Data Types in Testing Set:
+id           int64
+gravity    float64
+ph         float64
+osmo         int64
+cond       float64
+urea         int64
+calc       float64
+target       int64
+dtype: object
+is_success:
+True
+code:
+# Copy the datasets to ensure we don't modify the original data
+train_df_processed = train_df_copy.copy()
+test_df_processed = test_df_copy.copy()
+
+# Check for missing values in both training and testing sets
+print("Missing values in Training Set:")
+print(train_df_processed.isnull().sum())
+print("\nMissing values in Testing Set:")
+print(test_df_processed.isnull().sum())
+
+# Handle missing values if any (for this example, we will fill with median for numeric columns)
+if train_df_processed.isnull().values.any() or test_df_processed.isnull().values.any():
+    numeric_columns = ['gravity', 'ph', 'osmo', 'cond', 'urea', 'calc']
+    
+    # Fill missing values with the median of each column
+    for col in numeric_columns:
+        median_value = train_df_processed[col].median()
+        train_df_processed[col].fillna(median_value, inplace=True)
+        test_df_processed[col].fillna(median_value, inplace=True)
+
+# Verify that there are no missing values left
+print("\nAfter handling missing values:")
+print("Missing values in Training Set:")
+print(train_df_processed.isnull().sum())
+print("\nMissing values in Testing Set:")
+print(test_df_processed.isnull().sum())
+execute_result:
+Missing values in Training Set:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+
+Missing values in Testing Set:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+
+After handling missing values:
+Missing values in Training Set:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+
+Missing values in Testing Set:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+is_success:
+True
+code:
+# Splitting the preprocessed data into features (X) and target (y)
+train_X = train_df_processed.drop(columns=['target'])
+train_y = train_df_processed['target']
+
+test_X = test_df_processed.drop(columns=['target'])
+test_y = test_df_processed['target']
+
+# Displaying the first few rows of the split datasets
+print("Training Features:")
+print(train_X.head())
+print("\nTraining Target:")
+print(train_y.head())
+print("\nTesting Features:")
+print(test_X.head())
+print("\nTesting Target:")
+print(test_y.head())
+execute_result:
+Training Features:
+   id  gravity    ph  osmo  cond  urea  calc
+0   1    1.025  5.40   703  23.6   394  4.18
+1   2    1.009  6.13   371  24.5   159  9.04
+2   3    1.021  4.91   442  20.8   398  6.63
+3   4    1.021  5.53   874  17.8   385  2.21
+4   5    1.025  6.90   947  28.4   395  2.64
+
+Training Target:
+0    0
+1    0
+2    1
+3    1
+4    1
+Name: target, dtype: int64
+
+Testing Features:
+   id  gravity    ph  osmo  cond  urea  calc
+0   0    1.013  6.19   443  14.8   124  1.45
+1   9    1.017  6.61   527  20.0    75  4.49
+2  15    1.011  6.81   251   9.8   141  0.17
+3  17    1.012  7.38   760  25.7   199  1.05
+4  22    1.021  5.94   956  27.6   473  4.45
+
+Testing Target:
+0    0
+1    1
+2    1
+3    0
+4    1
+Name: target, dtype: int64
+is_success:
+True

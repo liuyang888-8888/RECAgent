@@ -1,0 +1,115 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+# Load the datasets
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crab_age_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crab_age_test.csv'
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Split the training data into training and validation sets
+train_df, val_df = train_test_split(train_df, test_size=0.3, random_state=42)
+
+train_df, val_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(          id Sex  Length  Diameter  Height     Weight  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 33112  41346   I  0.5500    0.4000  0.1375   1.545048        0.609514        0.340194      0.566990    5
+ 21907  27285   M  1.1875    0.9125  0.3125  15.733973        7.810287        3.302717      4.110678    9
+ ...      ...  ..     ...       ...     ...        ...             ...             ...           ...  ...
+ 15795  19666   M  1.4750    1.1750  0.3750  28.207753       13.196692        6.775531      6.378637    9
+ 56422  70526   I  0.8500    0.6500  0.1875   5.443104        2.976698        1.488349      1.644271    6
+ 
+ [41468 rows x 10 columns],
+           id Sex  Length  Diameter  Height     Weight  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 26164  32626   I  0.8250    0.6000  0.1875   4.620969        2.112038        0.836310      1.360776    6
+ 32999  41211   I  0.6875    0.4375  0.1500   1.800193        0.893009        0.524466      0.637864    5
+ ...      ...  ..     ...       ...     ...        ...             ...             ...           ...  ...
+ 40431  50492   F  1.5625    1.2250  0.4000  35.507749       14.543294        8.646598      9.355335   10
+ 45027  56313   I  0.9875    0.7375  0.2500   8.533200        3.416115        1.899417      2.267960    7
+ 
+ [17772 rows x 10 columns],
+           id Sex  Length  Diameter  Height     Weight  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 0          4   I   1.250    1.0125  0.3375  23.289114       11.977664        4.507570      5.953395    8
+ 1          6   M   1.575    1.1375  0.3500  30.022120       11.935140        7.342521      8.646598   11
+ ...      ...  ..     ...       ...     ...        ...             ...             ...           ...  ...
+ 14809  74038   F   1.425    1.1125  0.3750  22.537852       10.801160        4.890289      6.236890    9
+ 14810  74041   I   1.325    1.0375  0.3250  21.006979        9.100190        4.606794      5.669900    8
+ 
+ [14811 rows x 10 columns])from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_squared_error
+
+# Define the features and target variable
+features = ['Sex', 'Length', 'Diameter', 'Height', 'Weight', 'Shucked_Weight', 'Viscera_Weight', 'Shell_Weight']
+target = 'Age'
+
+# Convert categorical variable 'Sex' to numerical using one-hot encoding
+train_df_encoded = pd.get_dummies(train_df, columns=['Sex'])
+val_df_encoded = pd.get_dummies(val_df, columns=['Sex'])
+test_df_encoded = pd.get_dummies(test_df, columns=['Sex'])
+
+# Train the decision tree regressor
+model = DecisionTreeRegressor(min_samples_leaf=2, min_samples_split=5, max_depth=50)
+model.fit(train_df_encoded[features + ['Sex_F', 'Sex_I', 'Sex_M']], train_df_encoded[target])
+
+# Predict on the validation and test sets
+val_predictions = model.predict(val_df_encoded[features + ['Sex_F', 'Sex_I', 'Sex_M']])
+test_predictions = model.predict(test_df_encoded[features + ['Sex_F', 'Sex_I', 'Sex_M']])
+
+# Calculate the MSE on the validation and test sets
+val_mse = mean_squared_error(val_df_encoded[target], val_predictions)
+test_mse = mean_squared_error(test_df_encoded[target], test_predictions)
+
+val_mse, test_mse
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 15
+    model.fit(train_df_encoded[features + ['Sex_F', 'Sex_I', 'Sex_M']], train_df_encoded[target])
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:4108 in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:6200 in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:6252 in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+
+KeyError: "['Sex'] not in index"
+
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_squared_error
+
+# Define the features and target variable
+features = ['Length', 'Diameter', 'Height', 'Weight', 'Shucked_Weight', 'Viscera_Weight', 'Shell_Weight']
+target = 'Age'
+
+# Convert categorical variable 'Sex' to numerical using one-hot encoding
+train_df_encoded = pd.get_dummies(train_df, columns=['Sex'], drop_first=True)
+val_df_encoded = pd.get_dummies(val_df, columns=['Sex'], drop_first=True)
+test_df_encoded = pd.get_dummies(test_df, columns=['Sex'], drop_first=True)
+
+# Update the feature list to include the one-hot encoded columns
+features += [col for col in train_df_encoded.columns if col.startswith('Sex_')]
+
+# Train the decision tree regressor
+model = DecisionTreeRegressor(min_samples_leaf=2, min_samples_split=5, max_depth=50)
+model.fit(train_df_encoded[features], train_df_encoded[target])
+
+# Predict on the validation and test sets
+val_predictions = model.predict(val_df_encoded[features])
+test_predictions = model.predict(test_df_encoded[features])
+
+# Calculate the MSE on the validation and test sets
+val_mse = mean_squared_error(val_df_encoded[target], val_predictions)
+test_mse = mean_squared_error(test_df_encoded[target], test_predictions)
+
+val_mse, test_mse
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(7.518926072848675, 7.514644239641709)

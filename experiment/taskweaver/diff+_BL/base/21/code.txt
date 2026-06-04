@@ -1,0 +1,134 @@
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\forest_fires_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\forest_fires_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Check for missing values
+if train_df.isnull().sum().sum() > 0:
+    print('There are missing values in the training dataset.')
+else:
+    print('No missing values in the training dataset.')
+
+if test_df.isnull().sum().sum() > 0:
+    print('There are missing values in the test dataset.')
+else:
+    print('No missing values in the test dataset.')
+
+# Normalize the numerical features
+scaler = StandardScaler()
+numerical_features = train_df.select_dtypes(include=[float, int]).columns
+
+train_df[numerical_features] = scaler.fit_transform(train_df[numerical_features])
+test_df[numerical_features] = scaler.transform(test_df[numerical_features])
+
+# Result variables
+train_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(            X         Y month  day      FFMC       DMC        DC       ISI      temp        RH      wind      rain      area
+ 0   -0.288472 -1.094859   sep  sat  0.280286 -0.150282  0.810272 -0.095838  0.797602 -1.059419  0.001631 -0.067817 -0.171087
+ 1   -0.288472 -0.266696   sep  mon  0.061652  0.217866  0.549136 -0.455434 -0.205272 -0.335215 -1.008923 -0.067817 -0.176789
+ ..        ...       ...   ...  ...       ...       ...       ...       ...       ...       ...       ...       ...       ...
+ 411 -1.161285  0.561466   jul  sat  0.044834 -0.418026 -0.695879 -0.815030  0.849475  0.388990 -1.233490 -0.067817 -0.244108
+ 412 -1.161285 -0.266696   aug  tue  0.717552 -0.059006  0.390848  2.113108  0.209710 -0.274865  0.001631 -0.067817 -0.244108
+ 
+ [413 rows x 13 columns],
+             X         Y month  day      FFMC       DMC        DC       ISI      temp        RH      wind      rain      area
+ 0    0.584341  0.561466   may  sat -0.913789 -1.280589 -1.751671 -1.354424 -1.311893  2.984055  0.506908 -0.067817 -0.244108
+ 1    1.020747  0.561466   aug  tue  0.936186  1.048482  0.487669  1.419602  0.469074  1.233895  0.506908  2.421824 -0.244108
+ ..        ...       ...   ...  ...       ...       ...       ...       ...       ...       ...       ...       ...       ...
+ 102 -1.161285 -0.266696   aug  sun -1.502417 -0.843983  0.465171 -1.765391  0.520947  1.595997  1.012185 -0.067817  0.946377
+ 103  0.584341 -1.094859   sep  thu  0.381193  0.103771  0.938831 -0.327007  0.002219 -0.636967  1.798171 -0.067817  0.509347
+ 
+ [104 rows x 13 columns])from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Define the target variable and features
+X_train = train_df.drop(['area'], axis=1)
+y_train = train_df['area']
+X_test = test_df.drop(['area'], axis=1)
+y_test = test_df['area']
+
+# Train the linear regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+# Report the MSE
+mse, model
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 12
+    model.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\linear_model\_base.py:601 in fit
+    X, y = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2961 in validate_data
+    X, y = check_X_y(X, y, **check_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1370 in check_X_y
+    X = check_array(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1055 in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_array_api.py:839 in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:2153 in __array__
+    arr = np.asarray(values, dtype=dtype)
+
+ValueError: could not convert string to float: 'sep'
+
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# One-hot encode categorical variables
+encoder = OneHotEncoder()
+
+X_train_encoded = pd.get_dummies(X_train, columns=['month', 'day'])
+X_test_encoded = pd.get_dummies(X_test, columns=['month', 'day'])
+
+# Ensure the same columns in both training and testing sets
+missing_cols = set(X_train_encoded.columns) - set(X_test_encoded.columns)
+for c in missing_cols:
+    X_test_encoded[c] = 0
+
+X_test_encoded = X_test_encoded[X_train_encoded.columns]
+
+# Train the linear regression model
+model = LinearRegression()
+model.fit(X_train_encoded, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test_encoded)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+# Report the MSE
+mse, model
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(5.584422834550912, LinearRegression())

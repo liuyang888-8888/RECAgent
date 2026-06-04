@@ -1,0 +1,16 @@
+{
+    "result": {
+        "run_status": "failed",
+        "time": 0,
+        "interact_count": 24,
+        "prompt_tokens": 53432,
+        "completion_tokens": 6882
+    },
+    "task": {
+        "id": 29,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "nvidia_share_price",
+        "task_description": "我想使用英伟达截止到2024年之前的市值时序数据，构建一个ARIMA的时间序列模型，用于分析和预测英伟达（NVIDIA）股价的最高市值的变化趋势。"
+    }
+}

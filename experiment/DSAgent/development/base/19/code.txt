@@ -1,0 +1,605 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+    return rmse
+
+
+class SimpleNN(nn.Module):
+    def __init__(self, input_dim):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 128)
+        self.bn1 = nn.BatchNorm1d(128)
+        self.fc2 = nn.Linear(128, 64)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.fc3 = nn.Linear(64, 32)
+        self.bn3 = nn.BatchNorm1d(32)
+        self.fc4 = nn.Linear(32, 1)
+        self.dropout = nn.Dropout(0.5)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.relu(self.bn1(self.fc1(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn2(self.fc2(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn3(self.fc3(x)))
+        x = self.dropout(x)
+        x = self.fc4(x)
+        return x
+
+
+def train_model(X_train, y_train, X_valid, y_valid, epochs=100, batch_size=32, lr=0.001):
+    input_dim = X_train.shape[1]
+    model = SimpleNN(input_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+
+    X_train = torch.tensor(X_train.values, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train.values, dtype=torch.float32).view(-1, 1).to(device)
+    X_valid = torch.tensor(X_valid.values, dtype=torch.float32).to(device)
+    y_valid = torch.tensor(y_valid.values, dtype=torch.float32).view(-1, 1).to(device)
+
+    for epoch in range(epochs):
+        model.train()
+        optimizer.zero_grad()
+        outputs = model(X_train)
+        loss = criterion(outputs, y_train)
+        loss.backward()
+        optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            model.eval()
+            with torch.no_grad():
+                valid_outputs = model(X_valid)
+                valid_loss = criterion(valid_outputs, y_valid)
+                print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Valid Loss: {valid_loss.item():.4f}')
+
+    return model
+
+
+def predict(model, X):
+    model.eval()
+    X = torch.tensor(X.values, dtype=torch.float32).to(device)
+    with torch.no_grad():
+        y_pred = model(X).cpu().numpy().flatten()
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/student_performance/train.py", line 110, in <module>
+    model = train_model(X_train, y_train, X_valid, y_valid)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/student_performance/train.py", line 62, in train_model
+    y_train = torch.tensor(y_train.values, dtype=torch.float32).view(-1, 1).to(device)
+AttributeError: 'numpy.ndarray' object has no attribute 'values'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+    return rmse
+
+
+class SimpleNN(nn.Module):
+    def __init__(self, input_dim):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 128)
+        self.bn1 = nn.BatchNorm1d(128)
+        self.fc2 = nn.Linear(128, 64)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.fc3 = nn.Linear(64, 32)
+        self.bn3 = nn.BatchNorm1d(32)
+        self.fc4 = nn.Linear(32, 1)
+        self.dropout = nn.Dropout(0.5)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.relu(self.bn1(self.fc1(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn2(self.fc2(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn3(self.fc3(x)))
+        x = self.dropout(x)
+        x = self.fc4(x)
+        return x
+
+
+def train_model(X_train, y_train, X_valid, y_valid, epochs=100, batch_size=32, lr=0.001):
+    input_dim = X_train.shape[1]
+    model = SimpleNN(input_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+
+    X_train = torch.tensor(X_train.values, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).view(-1, 1).to(device)
+    X_valid = torch.tensor(X_valid.values, dtype=torch.float32).to(device)
+    y_valid = torch.tensor(y_valid, dtype=torch.float32).view(-1, 1).to(device)
+
+    for epoch in range(epochs):
+        model.train()
+        optimizer.zero_grad()
+        outputs = model(X_train)
+        loss = criterion(outputs, y_train)
+        loss.backward()
+        optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            model.eval()
+            with torch.no_grad():
+                valid_outputs = model(X_valid)
+                valid_loss = criterion(valid_outputs, y_valid)
+                print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Valid Loss: {valid_loss.item():.4f}')
+
+    return model
+
+
+def predict(model, X):
+    model.eval()
+    X = torch.tensor(X.values, dtype=torch.float32).to(device)
+    with torch.no_grad():
+        y_pred = model(X).cpu().numpy().flatten()
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/student_performance/train.py", line 114, in <module>
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/student_performance/train.py", line 27, in compute_metrics_for_regression
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 194, in wrapper
+    params = func_sig.bind(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3177, in bind
+    return self._bind(args, kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3166, in _bind
+    raise TypeError(
+TypeError: got an unexpected keyword argument 'squared'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+class SimpleNN(nn.Module):
+    def __init__(self, input_dim):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 128)
+        self.bn1 = nn.BatchNorm1d(128)
+        self.fc2 = nn.Linear(128, 64)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.fc3 = nn.Linear(64, 32)
+        self.bn3 = nn.BatchNorm1d(32)
+        self.fc4 = nn.Linear(32, 1)
+        self.dropout = nn.Dropout(0.5)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.relu(self.bn1(self.fc1(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn2(self.fc2(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn3(self.fc3(x)))
+        x = self.dropout(x)
+        x = self.fc4(x)
+        return x
+
+
+def train_model(X_train, y_train, X_valid, y_valid, epochs=100, batch_size=32, lr=0.001):
+    input_dim = X_train.shape[1]
+    model = SimpleNN(input_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+
+    X_train = torch.tensor(X_train.values, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).view(-1, 1).to(device)
+    X_valid = torch.tensor(X_valid.values, dtype=torch.float32).to(device)
+    y_valid = torch.tensor(y_valid, dtype=torch.float32).view(-1, 1).to(device)
+
+    for epoch in range(epochs):
+        model.train()
+        optimizer.zero_grad()
+        outputs = model(X_train)
+        loss = criterion(outputs, y_train)
+        loss.backward()
+        optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            model.eval()
+            with torch.no_grad():
+                valid_outputs = model(X_valid)
+                valid_loss = criterion(valid_outputs, y_valid)
+                print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Valid Loss: {valid_loss.item():.4f}')
+
+    return model
+
+
+def predict(model, X):
+    model.eval()
+    X = torch.tensor(X.values, dtype=torch.float32).to(device)
+    with torch.no_grad():
+        y_pred = model(X).cpu().numpy().flatten()
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Epoch [10/100], Loss: 153.7599, Valid Loss: 136.9110
+Epoch [20/100], Loss: 146.7731, Valid Loss: 132.8675
+Epoch [30/100], Loss: 143.1743, Valid Loss: 131.5002
+Epoch [40/100], Loss: 138.9141, Valid Loss: 128.9494
+Epoch [50/100], Loss: 135.2639, Valid Loss: 125.0531
+Epoch [60/100], Loss: 131.7366, Valid Loss: 121.4836
+Epoch [70/100], Loss: 127.0708, Valid Loss: 118.5779
+Epoch [80/100], Loss: 122.6030, Valid Loss: 115.6515
+Epoch [90/100], Loss: 120.7610, Valid Loss: 112.7559
+Epoch [100/100], Loss: 116.2754, Valid Loss: 108.7617
+final RMSE on validation set:  10.428889029009492
+final MSE on test set:  116.912109375
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+class SimpleNN(nn.Module):
+    def __init__(self, input_dim):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(input_dim, 128)
+        self.bn1 = nn.BatchNorm1d(128)
+        self.fc2 = nn.Linear(128, 64)
+        self.bn2 = nn.BatchNorm1d(64)
+        self.fc3 = nn.Linear(64, 32)
+        self.bn3 = nn.BatchNorm1d(32)
+        self.fc4 = nn.Linear(32, 1)
+        self.dropout = nn.Dropout(0.5)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.relu(self.bn1(self.fc1(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn2(self.fc2(x)))
+        x = self.dropout(x)
+        x = self.relu(self.bn3(self.fc3(x)))
+        x = self.dropout(x)
+        x = self.fc4(x)
+        return x
+
+
+def train_model(X_train, y_train, X_valid, y_valid, epochs=100, batch_size=32, lr=0.001, patience=10, scheduler_patience=5, scheduler_factor=0.1):
+    input_dim = X_train.shape[1]
+    model = SimpleNN(input_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=scheduler_factor, patience=scheduler_patience, verbose=True)
+    
+    X_train = torch.tensor(X_train.values, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).view(-1, 1).to(device)
+    X_valid = torch.tensor(X_valid.values, dtype=torch.float32).to(device)
+    y_valid = torch.tensor(y_valid, dtype=torch.float32).view(-1, 1).to(device)
+
+    best_valid_loss = float('inf')
+    epochs_without_improvement = 0
+
+    for epoch in range(epochs):
+        model.train()
+        optimizer.zero_grad()
+        outputs = model(X_train)
+        loss = criterion(outputs, y_train)
+        loss.backward()
+        optimizer.step()
+
+        model.eval()
+        with torch.no_grad():
+            valid_outputs = model(X_valid)
+            valid_loss = criterion(valid_outputs, y_valid)
+            scheduler.step(valid_loss)
+
+        if valid_loss < best_valid_loss:
+            best_valid_loss = valid_loss
+            epochs_without_improvement = 0
+        else:
+            epochs_without_improvement += 1
+
+        if epochs_without_improvement >= patience:
+            print(f'Early stopping at epoch {epoch+1}')
+            break
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}, Valid Loss: {valid_loss.item():.4f}')
+
+    return model
+
+
+def predict(model, X):
+    model.eval()
+    X = torch.tensor(X.values, dtype=torch.float32).to(device)
+    with torch.no_grad():
+        y_pred = model(X).cpu().numpy().flatten()
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Epoch [10/100], Loss: 153.7599, Valid Loss: 136.9110
+Epoch [20/100], Loss: 146.7731, Valid Loss: 132.8675
+Epoch [30/100], Loss: 143.1743, Valid Loss: 131.5002
+Epoch [40/100], Loss: 138.9141, Valid Loss: 128.9494
+Epoch [50/100], Loss: 135.2639, Valid Loss: 125.0531
+Epoch [60/100], Loss: 131.7366, Valid Loss: 121.4836
+Epoch [70/100], Loss: 127.0708, Valid Loss: 118.5779
+Epoch [80/100], Loss: 122.6030, Valid Loss: 115.6515
+Epoch [90/100], Loss: 120.7610, Valid Loss: 112.7559
+Epoch [100/100], Loss: 116.2754, Valid Loss: 108.7617
+final RMSE on validation set:  10.428889029009492
+final MSE on test set:  116.912109375
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

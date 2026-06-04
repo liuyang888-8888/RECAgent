@@ -1,0 +1,196 @@
+code:
+import pandas as pd
+
+# Load the data
+train_data_path = r'E:\csv\obesity_cvd_risk_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows to understand the data
+print(train_df_copy.head())
+
+# Check data types of each column
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Example: Label encoding for categorical columns
+    train_df_copy[col] = train_df_copy[col].astype('category').cat.codes
+
+# Ensure the label column remains unchanged
+label_column = 'label'  # Replace 'label' with the actual label column name if different
+if label_column in train_df_copy.columns:
+    train_df_copy[label_column] = train_df[label_column]
+
+# Display the preprocessed data
+print(train_df_copy.head())
+execute_result:
+id  Gender        Age  ...       CALC                 MTRANS           NObeyesdad
+0   0    Male  24.443011  ...  Sometimes  Public_Transportation  Overweight_Level_II
+1   1  Female  18.000000  ...         no             Automobile        Normal_Weight
+2   2  Female  18.000000  ...         no  Public_Transportation  Insufficient_Weight
+3   3  Female  20.952737  ...  Sometimes  Public_Transportation     Obesity_Type_III
+4   4    Male  31.641081  ...  Sometimes  Public_Transportation  Overweight_Level_II
+
+[5 rows x 18 columns]
+id                                  int64
+Gender                             object
+Age                               float64
+Height                            float64
+Weight                            float64
+family_history_with_overweight     object
+FAVC                               object
+FCVC                              float64
+NCP                               float64
+CAEC                               object
+SMOKE                              object
+CH2O                              float64
+SCC                                object
+FAF                               float64
+TUE                               float64
+CALC                               object
+MTRANS                             object
+NObeyesdad                         object
+dtype: object
+Categorical Columns: Index(['Gender', 'family_history_with_overweight', 'FAVC', 'CAEC', 'SMOKE',
+       'SCC', 'CALC', 'MTRANS', 'NObeyesdad'],
+      dtype='object')
+Numerical Columns: Index(['id', 'Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE'], dtype='object')
+   id  Gender        Age    Height  ...       TUE  CALC  MTRANS  NObeyesdad
+0   0       1  24.443011  1.699998  ...  0.976473     1       3           6
+1   1       0  18.000000  1.560000  ...  1.000000     2       0           1
+2   2       0  18.000000  1.711460  ...  1.673584     2       3           0
+3   3       0  20.952737  1.710730  ...  0.780199     1       3           4
+4   4       1  31.641081  1.914186  ...  0.931721     1       3           6
+
+[5 rows x 18 columns]
+is_success:
+True
+code:
+import numpy as np
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_preprocessed = train_df_copy.copy()
+
+# Handling missing values
+# For numerical columns, fill with the mean
+for col in numerical_columns:
+    train_df_preprocessed[col].fillna(train_df_preprocessed[col].mean(), inplace=True)
+
+# For categorical columns, fill with the most frequent value
+for col in categorical_columns:
+    train_df_preprocessed[col].fillna(train_df_preprocessed[col].mode()[0], inplace=True)
+
+# Encoding categorical variables
+ordinal_encoder = OrdinalEncoder()
+train_df_preprocessed[categorical_columns] = ordinal_encoder.fit_transform(train_df_preprocessed[categorical_columns])
+
+# Normalizing numerical features
+scaler = StandardScaler()
+train_df_preprocessed[numerical_columns] = scaler.fit_transform(train_df_preprocessed[numerical_columns])
+
+# Ensure the label column remains unchanged
+if label_column in train_df_preprocessed.columns:
+    train_df_preprocessed[label_column] = train_df[label_column]
+
+# Display the first few rows of the preprocessed DataFrame
+print(train_df_preprocessed.head())
+execute_result:
+id  Gender       Age    Height  ...       TUE  CALC  MTRANS  NObeyesdad
+0 -1.728590     1.0  0.091052  0.039812  ...  0.589667   1.0     3.0         6.0
+1 -1.721662     0.0 -1.049687 -1.539481  ...  0.629436   2.0     0.0         1.0
+2 -1.714734     0.0 -1.049687  0.169113  ...  1.768039   2.0     3.0         0.0
+3 -1.707806     0.0 -0.526903  0.160878  ...  0.257892   1.0     3.0         4.0
+4 -1.700877     1.0  1.365475  2.456030  ...  0.514020   1.0     3.0         6.0
+
+[5 rows x 18 columns]
+is_success:
+True
+code:
+# Copy the preprocessed DataFrame to avoid modifying the original data
+train_df_features = train_df_preprocessed.copy()
+
+# Remove the ID column as it is not useful for clustering
+train_df_features.drop(columns=['id'], inplace=True)
+
+# Select relevant features for clustering based on domain knowledge
+# For example, we might consider age, weight, height, and lifestyle factors like smoking and physical activity
+selected_features = [
+    'Age', 'Height', 'Weight', 'FAVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'CALC', 'MTRANS'
+]
+
+# Create a new DataFrame with only the selected features
+train_df_selected = train_df_features[selected_features]
+
+# Display the first few rows of the selected features DataFrame
+print(train_df_selected.head())
+execute_result:
+Age    Height    Weight  FAVC  ...       FAF       TUE  CALC  MTRANS
+0  0.091052  0.039812 -0.246281   1.0  ... -1.162422  0.589667   1.0     3.0
+1 -1.049687 -1.539481 -1.191245   1.0  ...  0.058514  0.629436   2.0     0.0
+2 -1.049687  0.169113 -1.453026   1.0  ... -0.105036  1.768039   2.0     3.0
+3 -0.526903  0.160878  1.653799   1.0  ...  0.629745  0.257892   1.0     3.0
+4  1.365475  2.456030  0.218278   1.0  ...  1.240348  0.514020   1.0     3.0
+
+[5 rows x 10 columns]
+is_success:
+True
+code:
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Selecting the features for clustering
+X = train_df_selected.values
+
+# Training the KMeans model
+kmeans = KMeans(n_clusters=3, random_state=42)  # Assuming 3 clusters based on the NObeyesdad categories
+kmeans.fit(X)
+
+# Adding the cluster labels to the dataframe
+train_df_selected['Cluster'] = kmeans.labels_
+
+# Evaluating the model using Silhouette Score
+silhouette_avg = silhouette_score(X, kmeans.labels_)
+print(f'Silhouette Score: {silhouette_avg}')
+
+# Displaying the first few rows of the dataframe with the cluster labels
+print(train_df_selected.head())
+execute_result:
+Silhouette Score: 0.1988621712697601
+        Age    Height    Weight  FAVC  ...       TUE  CALC  MTRANS  Cluster
+0  0.091052  0.039812 -0.246281   1.0  ...  0.589667   1.0     3.0        0
+1 -1.049687 -1.539481 -1.191245   1.0  ...  0.629436   2.0     0.0        2
+2 -1.049687  0.169113 -1.453026   1.0  ...  1.768039   2.0     3.0        1
+3 -0.526903  0.160878  1.653799   1.0  ...  0.257892   1.0     3.0        0
+4  1.365475  2.456030  0.218278   1.0  ...  0.514020   1.0     3.0        0
+
+[5 rows x 11 columns],A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  train_df_selected['Cluster'] = kmeans.labels_
+is_success:
+True
+code:
+# Since the silhouette score has already been calculated in the previous task,
+# there's no need to recalculate it unless we want to verify the score again.
+# However, if you want to ensure the calculation is correct, you can run the following code:
+
+# Recalculate the silhouette score to verify
+silhouette_avg = silhouette_score(X, kmeans.labels_)
+print(f'Silhouette Score: {silhouette_avg}')
+execute_result:
+Silhouette Score: 0.1988621712697601
+is_success:
+True

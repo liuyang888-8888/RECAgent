@@ -1,0 +1,236 @@
+import pandas as pd
+
+# Selecting the appropriate dataset
+train_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\student_performance_train.csv'
+test_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\student_performance_test.csv'
+
+# Loading the data
+train_data = pd.read_csv(train_file)
+test_data = pd.read_csv(test_file)
+
+train_data, test_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(    school sex  age address famsize Pstatus  Medu  Fedu      Mjob      Fjob      reason guardian  traveltime  studytime  failures schoolsup famsup paid activities nursery higher internet romantic  famrel  freetime  goout  Dalc  Walc  health  absences  G1  G2  G3
+ 0       GP   F   18       U     GT3       T     2     2   at_home   at_home       other   mother           1          3         0        no    yes   no         no     yes    yes      yes       no       4         3      3     1     2       2         0  18  18  18
+ 1       GP   M   16       U     GT3       T     4     4   teacher   teacher        home   mother           1          2         0        no    yes  yes        yes     yes    yes      yes      yes       4         4      5     5     5       5         4  12  11  12
+ ..     ...  ..  ...     ...     ...     ...   ...   ...       ...       ...         ...      ...         ...        ...       ...       ...    ...  ...        ...     ...    ...      ...      ...     ...       ...    ...   ...   ...     ...       ...  ..  ..  ..
+ 517     MS   F   15       R     LE3       T     1     1   at_home  services  reputation   father           2          2         0        no    yes   no         no     yes    yes      yes       no       5         4      3     1     2       4         0  10  10  10
+ 518     GP   M   15       U     GT3       T     4     4  services     other      course   mother           1          1         0        no    yes  yes        yes      no    yes      yes       no       5         3      3     1     1       5         2  12  13  12
+ 
+ [519 rows x 33 columns],
+     school sex  age address famsize Pstatus  Medu  Fedu      Mjob     Fjob      reason guardian  traveltime  studytime  failures schoolsup famsup paid activities nursery higher internet romantic  famrel  freetime  goout  Dalc  Walc  health  absences  G1  G2  G3
+ 0       MS   M   18       U     GT3       T     4     4   teacher  teacher        home   father           1          2         0        no     no   no        yes      no    yes      yes       no       3         2      4     1     4       2         4  17  18  19
+ 1       GP   F   16       U     GT3       A     3     1  services    other      course   mother           1          2         0        no    yes   no         no     yes    yes      yes       no       2         3      3     2     2       4         2  11  11  12
+ ..     ...  ..  ...     ...     ...     ...   ...   ...       ...      ...         ...      ...         ...        ...       ...       ...    ...  ...        ...     ...    ...      ...      ...     ...       ...    ...   ...   ...     ...       ...  ..  ..  ..
+ 128     GP   F   17       U     LE3       T     4     3    health    other  reputation   father           1          2         0        no     no   no        yes     yes    yes      yes      yes       3         2      3     1     2       3         0  14  12  12
+ 129     MS   F   18       U     GT3       T     2     2     other    other      course   mother           2          2         0        no    yes   no         no      no    yes      yes      yes       1         3      1     1     1       2         4   8   8  10
+ 
+ [130 rows x 33 columns])import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Preprocessing the data
+# Handling missing values
+train_data.fillna(train_data.mean(), inplace=True)
+test_data.fillna(test_data.mean(), inplace=True)
+
+# Encoding categorical variables
+label_encoders = {}
+categorical_features = ['school', 'sex', 'address', 'famsize', 'Pstatus', 'Mjob', 'Fjob', 'reason', 'guardian', 'schoolsup', 'famsup', 'paid', 'activities', 'nursery', 'higher', 'internet', 'romantic']
+
+for feature in categorical_features:
+    le = LabelEncoder()
+    train_data[feature] = le.fit_transform(train_data[feature])
+    label_encoders[feature] = le
+    test_data[feature] = le.transform(test_data[feature])
+
+# Dropping the target variable from the features
+X_train = train_data.drop(['G3'], axis=1)
+y_train = train_data['G3']
+X_test = test_data.drop(['G3'], axis=1)
+y_test = test_data['G3']
+
+X_train, y_train, X_test, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 6
+    train_data.fillna(train_data.mean(), inplace=True)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11693 in mean
+    result = super().mean(axis, skipna, numeric_only, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12420 in mean
+    return self._stat_function(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12377 in _stat_function
+    return self._reduce(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11562 in _reduce
+    res = df._mgr.reduce(blk_func)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\internals\managers.py:1500 in reduce
+    nbs = blk.reduce(func)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\internals\blocks.py:404 in reduce
+    result = func(self.values)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11481 in blk_func
+    return op(values, axis=axis, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:147 in f
+    result = alt(values, axis=axis, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:404 in new_func
+    result = func(values, axis=axis, skipna=skipna, mask=mask, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:720 in nanmean
+    the_s
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Preprocessing the data
+# Handling missing values
+numeric_features = train_data.select_dtypes(include=[np.number]).columns
+train_data[numeric_features] = train_data[numeric_features].fillna(train_data[numeric_features].mean())
+test_data[numeric_features] = test_data[numeric_features].fillna(test_data[numeric_features].mean())
+
+# Encoding categorical variables
+label_encoders = {}
+categorical_features = ['school', 'sex', 'address', 'famsize', 'Pstatus', 'Mjob', 'Fjob', 'reason', 'guardian', 'schoolsup', 'famsup', 'paid', 'activities', 'nursery', 'higher', 'internet', 'romantic']
+
+for feature in categorical_features:
+    le = LabelEncoder()
+    train_data[feature] = le.fit_transform(train_data[feature])
+    label_encoders[feature] = le
+    test_data[feature] = le.transform(test_data[feature])
+
+# Dropping the target variable from the features
+X_train = train_data.drop(['G3'], axis=1)
+y_train = train_data['G3']
+X_test = test_data.drop(['G3'], axis=1)
+y_test = test_data['G3']
+
+X_train, y_train, X_test, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(     school  sex  age  address  famsize  Pstatus  Medu  Fedu  Mjob  Fjob  reason  guardian  traveltime  studytime  failures  schoolsup  famsup  paid  activities  nursery  higher  internet  romantic  famrel  freetime  goout  Dalc  Walc  health  absences  G1  G2
+ 0         0    0   18        1        0        1     2     2     0     0       2         1           1          3         0          0       1     0           0        1       1         1         0       4         3      3     1     2       2         0  18  18
+ 1         0    1   16        1        0        1     4     4     4     4       1         1           1          2         0          0       1     1           1        1       1         1         1       4         4      5     5     5       5         4  12  11
+ ..      ...  ...  ...      ...      ...      ...   ...   ...   ...   ...     ...       ...         ...        ...       ...        ...     ...   ...         ...      ...     ...       ...       ...     ...       ...    ...   ...   ...     ...       ...  ..  ..
+ 517       1    0   15        0        1        1     1     1     0     3       3         0           2          2         0          0       1     0           0        1       1         1         0       5         4      3     1     2       4         0  10  10
+ 518       0    1   15        1        0        1     4     4     3     2       0         1           1          1         0          0       1     1           1        0       1         1         0       5         3      3     1     1       5         2  12  13
+ 
+ [519 rows x 32 columns],
+ 0      18
+ 1      12
+        ..
+ 517    10
+ 518    12
+ Name: G3, Length: 519, dtype: int64,
+      school  sex  age  address  famsize  Pstatus  Medu  Fedu  Mjob  Fjob  reason  guardian  traveltime  studytime  failures  schoolsup  famsup  paid  activities  nursery  higher  internet  romantic  famrel  freetime  goout  Dalc  Walc  health  absences  G1  G2
+ 0         1    1   18        1        0        1     4     4     4     4       1         0           1          2         0          0       0     0           1        0       1         1         0       3         2      4     1     4       2         4  17  18
+ 1         0    0   16        1        0        0     3     1     3     2       0         1           1          2         0          0       1     0           0        1       1         1         0       2         3      3     2     2       4         2  11  11
+ ..      ...  ...  ...      ...      ...      ...   ...   ...   ...   ...     ...       ...         ...        ...       ...        ...     ...   ...         ...      ...     ...       ...       ...     ...       ...    ...   ...   ...     ...       ...  ..  ..
+ 128       0    0   17        1        1        1     4     3     1     2       3         0           1          2         0          0       0     0           1        1       1         1         1       3         2      3     1     2       3         0  14  12
+ 129       1    0   18        1        0        1     2     2     2     2       0         1           2          2         0          0       1     0           0        0       1         1         1       1         3      1     1     1       2         4   8   8
+ 
+ [130 rows x 32 columns],
+ 0      19
+ 1      12
+        ..
+ 128    12
+ 129    10
+ Name: G3, Length: 130, dtype: int64)from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Splitting the data into training and testing sets
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+
+# Building and training the regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predicting on the validation set
+y_pred = model.predict(X_val)
+
+# Calculating the Mean Squared Error (MSE)
+mse = mean_squared_error(y_val, y_pred)
+
+X_train, X_val, y_train, y_val, model, mse
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(     school  sex  age  address  famsize  Pstatus  Medu  Fedu  Mjob  Fjob  reason  guardian  traveltime  studytime  failures  schoolsup  famsup  paid  activities  nursery  higher  internet  romantic  famrel  freetime  goout  Dalc  Walc  health  absences  G1  G2
+ 433       0    0   15        1        1        1     4     3     3     3       3         0           1          2         0          1       0     0           1        1       1         1         1       4         4      4     2     4       2         0  13  12
+ 517       1    0   15        0        1        1     1     1     0     3       3         0           2          2         0          0       1     0           0        1       1         1         0       5         4      3     1     2       4         0  10  10
+ ..      ...  ...  ...      ...      ...      ...   ...   ...   ...   ...     ...       ...         ...        ...       ...        ...     ...   ...         ...      ...     ...       ...       ...     ...       ...    ...   ...   ...     ...       ...  ..  ..
+ 435       0    0   15        1        0        1     1     1     2     3       0         0           1          2         0          0       1     0           0        1       1         1         0       4         4      2     1     2       5         0  12  12
+ 102       0    1   16        1        0        1     3     3     2     3       1         0           2          1         0          0       0     0           1        1       1         1         0       5         4      2     1     1       5         6  14  14
+ 
+ [415 rows x 32 columns],
+      school  sex  age  address  famsize  Pstatus  Medu  Fedu  Mjob  Fjob  reason  guardian  traveltime  studytime  failures  schoolsup  famsup  paid  activities  nursery  higher  internet  romantic  famrel  freetime  goout  Dalc  Walc  health  absences  G1  G2
+ 275       1    0   15        0        0        1     1     1     0     3       2         1           1          1         1          0       1     0           0        1       1         0         1       4         1      3     1     1       2         6  10  10
+ 93        0    0   15        0        1        1     2     2     1     3       3         1           2          2         0          1       1     0           0        1       1         1         0       4         1      3     1     3       4         0  11  10
+ ..      ...  ...  ...      ...      ...      ...   ...   ...   ...   ...     ...       ...         ...        ...       ...        ...     ...   ...         ...      ...     ...       ...       ...     ...       ...    ...   ...   ...     ...       ...  ..  ..
+ 334       0    0   15        1        0        1     4     4     3     3       0         1           1          1         0          1       1     0           0        1       1         1         0       3         3      4     2     3       5         0  13  12
+ 227       0    1   16        1        0        1     4     3     4     2       1         1           1          2         0          0       1     1           1        1       1         1         0       3         4      3     2     3       3         4  11  10
+ 
+ [104 rows x 32 columns],
+ 433    12
+ 517    10
+        ..
+ 435    12
+ 102    15
+ Name: G3, Length: 415, dtype: int64,
+ 275    10
+ 93     11
+        ..
+ 334    12
+ 227    11
+ Name: G3, Length: 104, dtype: int64,
+ LinearRegression(),
+ 1.2868088281607015)from sklearn.metrics import mean_squared_error
+
+# Predicting on the test set
+y_test_pred = model.predict(X_test)
+
+# Calculating the Mean Squared Error (MSE)
+mse_test = mean_squared_error(y_test, y_test_pred)
+
+mse_test, y_test_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(1.4373665475058175,
+ array([18.20092435, 11.64745525, 18.27978889, 11.03112807, 11.77566814,
+        16.13637437, 17.23159316,  9.1614282 , 10.87819209, 10.64623768,
+        17.97264787, 12.49097479, 12.32506182,  9.29337599, 11.0518205 ,
+        13.43882111, 11.4853634 ,  7.2549281 , 15.48722724, 14.77390842,
+        15.5279251 , 13.6404872 , 14.07065802, 12.36441072, 15.08955333,
+        13.04926468,  8.19792562, 11.19238621, 11.21156712, 15.47198526,
+        16.02643305, 13.37385843,  7.74835369,  6.37174605, 18.15360953,
+        15.51968527, 14.01344505, 15.04676706, 13.22312641, 11.10327758,
+        13.32993002, 10.7231163 ,  8.21301941, 11.30747333, 13.24239341,
+        13.31324912, 17.54134268, 11.19941795, 12.36676607, 11.7769514 ,
+        10.79824453, 11.40760085, 14.25872854,  9.91569284, 10.54475143,
+        18.00417048,  9.32345594, 10.75609483, 11.32861498, 10.20622421,
+         8.72543681, 10.99149219, 16.18600726, 12.29101404, 15.40715768,
+        15.92721067,  9.98784587,  8.25632622,  9.57530515,  9.37705585,
+        16.01227223, 15.74567896, 12.13315734, 16.38346979, 13.63957221,
+        13.53226496, 12.55411074, 15.74848911, 12.51077655, 13.46915442,
+        11.82418602, 11.23311647, 18.19508582,  7.9206824 , 12.67632848,
+        18.77228172, 12.07593443,  8.68288826, 14.9568211 , 12.05826514,
+        15.64688118,  9.11540318, 11.55424081, 18.76822131,  9.2907987 ,
+        14.6151621 , 15.52434557,  9.42482692, 12.77868991,  9.91024516,
+        12.19542063, 11.01305485, 11.47639803, 12.13872244, 12.99729341,
+         9.96170401, 10.74092322, 11.53702976,  9.16500977, 13.3158561 ,
+        13.5489157 ,  8.31596448, 11.51937073, 11.08679753,  5.47950488,
+         9.67293333, 11.37448728, 16.38098577, 15.86251157,  8.79267383,
+        13.57682729, -0.10230854, 15.87158805, 14.0884017 , 12.37230305,
+         6.45879384, 18.44689782,  9.98239974, 12.52419502,  8.62653582]))

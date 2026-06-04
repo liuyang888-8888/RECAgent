@@ -1,0 +1,278 @@
+[
+    {
+        "id": 1,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "bank_customer_churn",
+        "task_description": "请你根据欧洲银行的 10,000 名客户的账户信息，包括有关其信用评分、余额、产品以及他们是否流失的详细信息。训练一个随机森林模型，随机森林模型的树的数量设置为10。你需要对该数据集的Geography和Gender字段进行独热编码，最后还需要在测试集上对该模型进行评估。"
+    },
+    {
+        "id": 2,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "cirrhosis_patient",
+        "task_description": "请你利用 17 个临床特征和肝硬化患者的生存状态的表格数据。其中存活状态包括 0 = D （死亡）、1 = C （删失）、2 = CL （因肝移植而删除），构建一个支持向量机算法的分类模型，使用线性核函数,迭代限制为200次，并对测试集进行预测，保存结果。"
+    },
+    {
+        "id": 3,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "crime_category",
+        "task_description": "我想根据旧金山所有社区的近 12 年的犯罪类别报告数据，构建一个逻辑回归模型，正则化方法使用岭回归Ridge（L2），并将惩罚系数C设置为1.5。你需要对该数据集的pdDistrict字段进行独热编码，然后帮我把模型保存下来。"
+    },
+    {
+        "id": 4,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "employee_attrition",
+        "task_description": "根据员工的个人相关数据并使用一个决策树算法，叶子节点中的最小实例数设置为3，分割子集不小于5，树的最大深度为50，目的是来找出哪些员工可能要流失，最后对测试集进行预测，然后保存预测结果。"
+    },
+    {
+        "id": 5,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "horse_health_outcomes",
+        "task_description": "请使用数据库中的马匹了过去的医疗状况相关数据，我需要你先加载数据，然后对数据中的 ['peripheral_pulse','mucous_membrane','capillary_refill_time'] 进行独热编码，接着构建一个LightGBM的分类模型，可以依据马匹的医疗状况自动判断该马匹最终存活下来的概率，要求将该算法参数中的树的数量设置为10，学习率设置为0.1。"
+    },
+    {
+        "id": 6,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "kidney_stone",
+        "task_description": "我想要构建一个构建一个决策树分类模型，用于根据尿分析（如尿液中各种成分的浓度）预测患者是否存在肾结石。该任务属于二分类问题，目标是根据输入特征预测肾结石的存在（是/否）。并对测试集进行预测，保存预测结果。"
+    },
+    {
+        "id": 7,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "reservation_cancellation",
+        "task_description": "对于酒店经理来说客户是否会取消预定是一个十分值得关注的问题，请使用酒店预订取消相关数据，构建一个随机森林的预测模型，树的数量设置为200，用于预测酒店预订是否会被取消。并在测试集上进行预测，保存预测结果。"
+    },
+    {
+        "id": 8,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "smoker_status_bio_signals",
+        "task_description": "根据生物信号等特征，构建一个决策树分类模型，用于预测一个人是否是抽烟者。该任务属于二分类问题，预测其是否是一个烟民。你需要先加载数据集，然后使用数据抽样组件对数据集进行一个抽样用于评估，保存评估结果。"
+    },
+    {
+        "id": 9,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "heart_diseases",
+        "task_description": "构建一个随机森林分类模型，树的数量设置为10，用于预测个体是否患有心脏疾病。目标是根据患者的生理指标、生活习惯和医疗历史等特征，预测其是否患有心脏疾病。加载完数据集后，需要先进行缺失值处理，使用平均值的填充方式，最在测集上模型进行性能评估。"
+    },
+    {
+        "id": 10,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "car_evaluation",
+        "task_description": "我需要一个用于评估车辆的可接受程度的梯度提升决策树模型，树的数量设置为10，学习率设置为0.1。目标是根据车辆的购买价格、尺寸、安全性等特征，预测其可接受程度（如不可接受、可接受、良好、优秀）。最后在测试集进行评估，保存评估结果。"
+    },
+    {
+        "id": 11,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "rice_cammeo_and_osmancik",
+        "task_description": "我想要一个根据稻米的形态特征（如面积、周长、长度等）的表格数据用于区分两种稻米（Cammeo 和 Osmancik）的随机森林模型，模型参数中的树的数量设置为8，每棵树的最大深度限制为5，并且对测试数据进行预测。"
+    },
+    {
+        "id": 12,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "banknote_authentication",
+        "task_description": " 我需要一个可以根据钞票的方差（Variance）、偏度（Skewness）、峰度（Kurtosis）和熵（Entropy）的数据，预测钞票真伪的梯度决策提升树模型，要求迭代次数设置为20，学习率0.01，然后在验证集上进行评估。"
+    },
+    {
+        "id": 13,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "secondary_mushroom",
+        "task_description": "我需要一个AdaBoost分类模型，学习器数量设置为30，学习率0.01，可以是根据蘑菇特征（如形状、颜色、气味等）的表格数据预测蘑菇是否可食用。加载完数据集之后需要进行空值填充，使用平均值的填充方式，最后在测试集上进行预测，保存预测结果。"
+    },
+    {
+        "id": 14,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "abalone",
+        "task_description": "请使用 Abalone 数据集，该数据集用于通过物理测量值预测鲍鱼的年龄。要求先进行数据抽样，接着训练一个lightGBM模型，学习器类型使用RF,树的数量设置为20，并实现对测试集的预测，然后保存预测结果。"
+    },
+    {
+        "id": 15,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "crab_age",
+        "task_description": "请使用包含了螃蟹的性别、重量，直径，高度和外壳及内脏重量还有年龄的表格数据，先加载数据，然后对数据进行抽样，用抽样之后的数据构建一个决策树回归模型预测螃蟹年龄,叶子节点中的最小实例数设置为2，分割子集不小于5，最大树深度设置为50。最后还需要加上对抽样的测试数据的预测。"
+    },
+    {
+        "id": 16,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "media_campaign_cost",
+        "task_description": "我需要一个可以用于预测 Food Mart 媒体活动的成本的随机梯度下降模型。目标是根据输入特征（如广告渠道、活动时长、目标受众等）预测媒体活动的成本。在测试集上进行模型性能的评估。最后使用保存数据组件把评估结果保存下来。"
+    },
+    {
+        "id": 17,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "mohs_hardness",
+        "task_description": "请基于 mohs_hardness 数据集，构建一个K最近邻（KNN）模型，用于预测矿物的硬度（莫氏硬度）。邻接点的个数指定为5，然后在测试集上进行预测，保存预测结果。"
+    },
+    {
+        "id": 18,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "wild_blueberry_yield",
+        "task_description": "请你构建一个用于预测野生蓝莓的产量支持向量机(SVM)模型,目标是根据植物空间性状、蜜蜂物种组成、天气条件等特征，预测蓝莓的产量。使用线性核函数，代价C设置为0.5，回归损失设置为0.01，在测试集上进行评估。此外我还需要保存模型。"
+    },
+    {
+        "id": 19,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "student_performance",
+        "task_description": "基于学生在校表现相关的数据集，构建一个自适应提升算法”（AdaBoost）的回归模型，用于预测学生在数学（mat）或葡萄牙语（por）科目中的最终成绩（G3）。该任务属于回归问题，目标是根据学生的成绩、人口统计、社会和学校相关特征，预测其最终成绩（G3），最后在测试集上进行预测。"
+    },
+    {
+        "id": 20,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "bike_sharing",
+        "task_description": "我需要你帮我构建一个回归模型，用于预测 Capital 共享单车系统中每小时或每天的租赁自行车数量。目标是根据天气、季节、时间等特征，预测未来的租赁数量，要求使用梯度提升决策树算法，树的数量设置为8，学习率设置为0.01。最后在测试集上进行预测并保存结果。"
+    },
+    {
+        "id": 21,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "forest_fires",
+        "task_description": "我需要你帮我葡萄牙东北部地区森林火灾的燃烧面积数据，构建一个梯度决策提升树模型，迭代10次，学习率设置为0.3。目标是根据气象数据（如温度、湿度、风速等）和其他相关特征，预测火灾的燃烧面积（单位：公顷）。"
+    },
+    {
+        "id": 22,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "monster",
+        "task_description": "帮我训练一个BIRCH的聚类模型，用于根据怪物的骨骼特征、毛发特征、颜色特征等属性，对怪物进行自动聚类，使用自定义簇数量，设置为5，聚类特征半径阈值设置为0.05，最大聚类特征数设置为50。"
+    },
+    {
+        "id": 23,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "obesity_cvd_risk",
+        "task_description": "肥胖对健康有着很大的影响，我有一个表格数据中包含了许多个体的饮食习惯、身体活动、生活方式等日常生活习惯，还有，还有每一个个体的肥胖等级（如体重不足、正常体重、超重、肥胖等）。我想要你根据这些数据，帮我训练一个Mean Shift聚类模型，实现对他们生活行为的分析，分位数设置为0.2。"
+    },
+    {
+        "id": 24,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "titanic",
+        "task_description": "构建一个 k-Means 聚类算法模型,指定K值为5，用于分析泰坦尼克号上的人员组成，从而揭示潜在的人员结构和群体特征。该数据存在空值，需要进行缺失值处理，填充方法使用平均值/频繁值的方式。"
+    },
+    {
+        "id": 25,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "census_income",
+        "task_description": "基于 census_income 数据集，构建一个 DBSCAN 聚类模型,核心点领域样本设置为5，距离度量方式设置为余弦，分析人群收入和其他因素潜在的层次关系。"
+    },
+    {
+        "id": 26,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "atmospheric_carbon_dioxide",
+        "task_description": "大气二氧化碳 （CO2） 的直接测量和连续记录可以追溯到 1958 年。在冰芯中捕获的古代空气样本中也测量了 CO2，这些记录可以追溯到数十万年前。我想使用最近几十年的每个月的 CO2 时序数据，训练一个模型ARIMA时序模型,模型的自回归项数（p）设置为2，差分阶数（d）和滑动平均项数（q）设置为1。"
+    },
+    {
+        "id": 27,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "bitcoin_price",
+        "task_description": "基于过去10年比特币价格的时序数据，构建一个向量自回归模型（Vector Autoregression Model, VAR），优化AR方案采用贝叶斯信息准则 (BIC)，用于分析和预测比特币接下来的几天最高价值。"
+    },
+    {
+        "id": 28,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "electricity_sales",
+        "task_description": "请根据过去24年每个月的电子商务的销量相关数据，使用ARIMA算法训练一个模型，自回归项数（p）设置为1，并在测试集上进行评估。"
+    },
+    {
+        "id": 29,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "nvidia_share_price",
+        "task_description": "我想使用 nvidia_share_price 的时序数据，构建一个ARIMA时间序列模型，用于分析和预测英伟达（NVIDIA）股价的最高市值变化趋势。该任务属于时间序列预测问题，目标是根据历史股价数据预测未来股价，最后在测试集上进行评估。"
+    },
+    {
+        "id": 30,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "sp500",
+        "task_description": "帮我构建一个ARIMA时间序列模型，用于分析和预测标准普尔 500 指数的未来走势。并在测试集上进行评估。"
+    },
+    {
+        "id": 31,
+        "task_type": "deep learning",
+        "deep_learning_type": "text",
+        "task_description": "我想要一个可以根据文本内容，自动生成文本摘要的模型，你帮我构建一个工作流，用于训练一个文本自动摘要模型,计算框架PyTorch,模型使用Seq2Sea，最后展示一下训练日志。"
+    },
+    {
+        "id": 32,
+        "task_type": "deep learning",
+        "deep_learning_type": "text",
+        "task_description": "为了解全国各地麦当劳店的顾客体验和意见，我需要你帮我训练一个文本分类模型，用于根据用户提交的网上评论进行自动文本分类的模型，来了解舆论的大致方向，迭代5轮，学习率设置为0.00001。最后在展示训练日志，并在测试集上进行预测。"
+    },
+    {
+        "id": 33,
+        "task_type": "deep learning",
+        "deep_learning_type": "text",
+        "task_description": "帮我根据我的文本数据集训练一个能够将英语翻译为法语的Seq2Seq翻译模型，迭代5轮，学习率设置为0.001，并向我展示一下训练日志。"
+    },
+    {
+        "id": 34,
+        "task_type": "deep learning",
+        "deep_learning_type": "image",
+        "task_description": "根据一个多分类的图像数据集，帮我构建一个工作流，可以实现训练一个可以对图像进行分类的模型，使用ResNet34的网络结构，迭代300次，然后对测试集进行预测。"
+    },
+    {
+        "id": 35,
+        "task_type": "deep learning",
+        "deep_learning_type": "image",
+        "task_description": "我有一个车辆的图像数据集，我想根据这个数据集训练一个能够识别车辆的目标检测模型，请帮我构建一个这样的工作流，基础模型使用yolov3，训练框架使用Pytorch,epoch设置为30，学习率设置为0.0001，batch_size为4。"
+    },
+    {
+        "id": 36,
+        "task_type": "deep learning",
+        "deep_learning_type": "image",
+        "task_description": "我需要你进行路面分割。你的目标是训练一个模型,基础分割算法使用SegFormer-B5f，它能够对图像中的每一个像素进行分类，类别包括：路面、汽车、路标、标线和背景,帮我构建一个工作流，训练完成后展示一下训练日志。"
+    },
+    {
+        "id": 37,
+        "task_type": "deep learning",
+        "deep_learning_type": "audio",
+        "task_description": "我需要对音频进行一个分类，目标是训练一个模型，可以识别猫、狗、人、汽车等不同类别的声音，分类的算法使用ResNetSE，迭代 30 次，训练结束后我需要看训练日志。"
+    },
+    {
+        "id": 38,
+        "task_type": "deep learning",
+        "deep_learning_type": "graph",
+        "task_description": "我有一个包含多个节点和边的网络图，帮我构建一个工作流训练一个聚类模型，实现对该网络的聚类分析，分析算法使用标签传播聚类 (Leung et al., 2009)这个算法，跳变衰减设置为0.01。"
+    },
+    {
+        "id": 39,
+        "task_type": "deep learning",
+        "deep_learning_type": "video",
+        "task_description": "我想要训练一个可以根据车流视频完成车辆追踪定位的任务的模型，训练时的预训练模型使用yolov8n，迭代次数设置为200，帮我构建一个这样的工作流，最后对测试集进行预测。"
+    },
+    {
+        "id": 40,
+        "task_type": "deep learning",
+        "deep_learning_type": "video",
+        "task_description": "我有许多个人物活动视频，我想根据这些视频训练一个动作分类模型，迭代次数设置为200，请帮我构建一个可以完成该任务的工作流，最后在测试集上进行预测。"
+    },
+    {
+        "id": 41,
+        "task_type": "pretrained modeling application",
+        "task_description": "我需要一个根据文本合成音频的工作流，声音的性别设置为女性，加拿大口音，请帮我构建一个这样的工作流。"
+    }
+
+]

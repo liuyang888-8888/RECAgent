@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 26,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "atmospheric_carbon_dioxide",
+        "task_description": "大气二氧化碳 （CO2） 的直接测量和连续记录可以追溯到 1958 年。在冰芯中捕获的古代空气样本中也测量了 CO2，这些记录可以追溯到数十万年前。我想使用最近几十年的每个月的 CO2 时序数据，训练一个模型ARIMA时序模型,模型的自回归项数（p）设置为2，差分阶数（d）和滑动平均项数（q）设置为1。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 125.98868536949158,
+        "interact_count": 5,
+        "prompt_tokens": 22112,
+        "completion_tokens": 2715,
+        "RCR": 5
+    }
+}

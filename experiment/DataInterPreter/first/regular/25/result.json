@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 83.61568593978882,
+        "interact_count": 8,
+        "prompt_tokens": 8646,
+        "completion_tokens": 1165,
+        "RCR": 5
+    },
+    "task": {
+        "id": 25,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "census_income",
+        "task_description": "基于 census_income 数据集，构建一个 DBSCAN 聚类模型，分析人群收入和其他因素潜在的层次关系。"
+    }
+}

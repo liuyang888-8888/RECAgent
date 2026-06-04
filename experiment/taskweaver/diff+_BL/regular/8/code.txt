@@ -1,0 +1,279 @@
+import pandas as pd
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Check for missing values
+if train_df.isnull().sum().sum() > 0:
+    train_df.fillna(train_df.mean(), inplace=True)
+
+if test_df.isnull().sum().sum() > 0:
+    test_df.fillna(test_df.mean(), inplace=True)
+
+# Encode categorical variables if necessary
+# Assuming 'smoker' is the target variable and it is binary (0 or 1)
+# No need to encode if already numerical
+
+# Separate features and target
+X_train = train_df.drop('smoker', axis=1)
+y_train = train_df['smoker']
+X_test = test_df.drop('smoker', axis=1)
+y_test = test_df['smoker']
+
+X_train, X_test, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 22
+    X_train = train_df.drop('smoker', axis=1)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:5581 in drop
+    return super().drop(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4788 in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4830 in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:7070 in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+
+KeyError: "['smoker'] not found in axis"
+
+import pandas as pd
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Check for missing values
+if train_df.isnull().sum().sum() > 0:
+    train_df.fillna(train_df.mean(), inplace=True)
+
+if test_df.isnull().sum().sum() > 0:
+    test_df.fillna(test_df.mean(), inplace=True)
+
+# Check if 'smoker' column exists
+if 'smoker' in train_df.columns:
+    # Separate features and target
+    X_train = train_df.drop('smoker', axis=1)
+    y_train = train_df['smoker']
+else:
+    X_train = train_df
+    y_train = None
+
+if 'smoker' in test_df.columns:
+    X_test = test_df.drop('smoker', axis=1)
+    y_test = test_df['smoker']
+else:
+    X_test = test_df
+    y_test = None
+
+X_train, X_test, y_train, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(            id  age  height  weight  waist  eyesight_left  eyesight_right  hearing_left  hearing_right  systolic  relaxation  fasting_blood_sugar  Cholesterol  triglyceride  HDL  LDL  hemoglobin  Urine_protein  serum_creatinine  AST  ALT  Gtp  dental_caries  smoking
+ 0            1   70     165      65   89.0            0.6             0.7             2              2       146          83                  147          194            55   57  126        16.2              1               1.1   27   23   37              1        0
+ 1            2   20     170      75   81.0            0.4             0.5             1              1       118          75                   79          178           197   45   93        17.4              1               0.8   27   31   53              0        1
+ ...        ...  ...     ...     ...    ...            ...             ...           ...            ...       ...         ...                  ...          ...           ...  ...  ...         ...            ...               ...  ...  ...  ...            ...      ...
+ 127402  159253   40     160      50   66.0            1.5             1.0             1              1       114          70                   84          189            45   87   93        10.9              1               0.6   15    9   12              0        0
+ 127403  159254   50     165      75   92.0            1.2             1.0             1              1       121          90                  122          165           148   55   80        14.4              1               1.1   22   17   37              0        1
+ 
+ [127404 rows x 24 columns],
+            id  age  height  weight  waist  eyesight_left  eyesight_right  hearing_left  hearing_right  systolic  relaxation  fasting_blood_sugar  Cholesterol  triglyceride  HDL  LDL  hemoglobin  Urine_protein  serum_creatinine  AST  ALT  Gtp  dental_caries  smoking
+ 0           0   55     165      60   81.0            0.5             0.6             1              1       135          87                   94          172           300   40   75        16.5              1               1.0   22   25   27              0        1
+ 1           4   30     165      60   80.5            1.5             1.0             1              1       121          76                   91          155            87   44   93        15.4              1               0.8   19   13   17              0        1
+ ...       ...  ...     ...     ...    ...            ...             ...           ...            ...       ...         ...                  ...          ...           ...  ...  ...         ...            ...               ...  ...  ...  ...            ...      ...
+ 31850  159249   40     170      85   91.4            1.2             0.9             1              1       110          68                   91          220           248   45  125        16.1              1               0.9   26   44   37              0        1
+ 31851  159255   40     145      45   76.4            1.0             1.2             1              1       125          87                   83          186            87   87   81        14.0              1               0.8   21   16   17              0        0
+ 
+ [31852 rows x 24 columns],
+ None,
+ None)from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# Initialize the Decision Tree Classifier
+clf = DecisionTreeClassifier()
+
+# Train the model
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[3], line 8
+    clf.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\tree\_classes.py:1024 in fit
+    super()._fit(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\tree\_classes.py:252 in _fit
+    X, y = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2922 in validate_data
+    raise ValueError(
+
+ValueError: This DecisionTreeClassifier estimator requires y to be passed, but the target y is None.
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# Ensure the target variable is correctly set
+if y_train is None or y_test is None:
+    raise ValueError('The target variable (smoker) is not present in the dataset.')
+
+# Initialize the Decision Tree Classifier
+clf = DecisionTreeClassifier()
+
+# Train the model
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[4], line 6
+    raise ValueError('The target variable (smoker) is not present in the dataset.')
+
+ValueError: The target variable (smoker) is not present in the dataset.
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Check for missing values
+if train_df.isnull().sum().sum() > 0:
+    train_df.fillna(train_df.mean(), inplace=True)
+
+if test_df.isnull().sum().sum() > 0:
+    test_df.fillna(test_df.mean(), inplace=True)
+
+# Check if 'smoker' column exists
+if 'smoker' in train_df.columns:
+    # Separate features and target
+    X_train = train_df.drop('smoker', axis=1)
+    y_train = train_df['smoker']
+else:
+    raise ValueError('The target variable (smoker) is not present in the training dataset.')
+
+if 'smoker' in test_df.columns:
+    X_test = test_df.drop('smoker', axis=1)
+    y_test = test_df['smoker']
+else:
+    raise ValueError('The target variable (smoker) is not present in the test dataset.')
+
+# Initialize the Decision Tree Classifier
+clf = DecisionTreeClassifier()
+
+# Train the model
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[5], line 25
+    raise ValueError('The target variable (smoker) is not present in the training dataset.')
+
+ValueError: The target variable (smoker) is not present in the training dataset.
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\smoker_status_bio_signals_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Check for missing values
+if train_df.isnull().sum().sum() > 0:
+    train_df.fillna(train_df.mean(), inplace=True)
+
+if test_df.isnull().sum().sum() > 0:
+    test_df.fillna(test_df.mean(), inplace=True)
+
+# Check if 'smoker' column exists
+if 'smoker' not in train_df.columns:
+    raise ValueError('The target variable (smoker) is not present in the training dataset.')
+
+if 'smoker' not in test_df.columns:
+    raise ValueError('The target variable (smoker) is not present in the test dataset.')
+
+# Separate features and target
+X_train = train_df.drop('smoker', axis=1)
+y_train = train_df['smoker']
+X_test = test_df.drop('smoker', axis=1)
+y_test = test_df['smoker']
+
+# Initialize the Decision Tree Classifier
+clf = DecisionTreeClassifier()
+
+# Train the model
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[6], line 21
+    raise ValueError('The target variable (smoker) is not present in the training dataset.')
+
+ValueError: The target variable (smoker) is not present in the training dataset.
+

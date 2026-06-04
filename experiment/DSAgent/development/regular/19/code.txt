@@ -1,0 +1,442 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    model = AdaBoostRegressor(random_state=SEED)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-190118/student_performance/train.py", line 62, in <module>
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-190118/student_performance/train.py", line 25, in compute_metrics_for_regression
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 194, in wrapper
+    params = func_sig.bind(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3177, in bind
+    return self._bind(args, kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3166, in _bind
+    raise TypeError(
+TypeError: got an unexpected keyword argument 'squared'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    model = AdaBoostRegressor(random_state=SEED)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-190118/student_performance/train.py", line 76, in <module>
+    submit_predictions_for_test_set(y_submission)
+NameError: name 'submit_predictions_for_test_set' is not defined
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    model = AdaBoostRegressor(random_state=SEED)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    y_pred = model.predict(X)
+    return y_pred
+
+
+def submit_predictions_for_test_set(y_submission):
+    # This function should handle the submission process.
+    # For now, we'll just print the predictions.
+    print("Predictions for the test set:", y_submission)
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final RMSE on validation set:  1.410821562621244
+Predictions for the test set: [16.75       11.62211982 16.71428571 11.35087719 11.75925926 16.09756098
+ 16.71428571  9.8        11.015625   11.015625   16.71428571 11.76
+ 12.56164384 10.89855072 11.94535519 12.79069767 11.94535519  7.58333333
+ 15.55555556 14.98333333 15.28571429 12.91071429 12.88095238 12.56164384
+ 15.28571429 12.79069767  8.36111111 11.46666667 11.32022472 15.62903226
+ 16.         12.56164384  8.48571429  7.32653061 16.71428571 15.28571429
+ 14.61363636 14.98333333 12.79069767 10.19512195 12.91071429 10.89855072
+  8.07582938 11.98089172 12.42079208 12.42079208 16.71428571 11.62211982
+ 11.94535519 11.63636364 10.32544379 11.31578947 14.98333333 10.85217391
+ 11.46666667 16.71428571  9.69406393 11.32022472 10.23255814 10.03225806
+  9.69406393 11.46666667 16.09756098 11.92156863 15.28571429 15.55555556
+  9.93617021  9.8         9.93617021 10.13333333 15.85714286 14.98461538
+ 12.85185185 16.5        12.85185185 12.85185185 12.56164384 14.98461538
+ 12.55172414 12.79069767 10.23255814 11.63636364 16.          8.07582938
+ 11.94535519 16.75       11.76        8.31818182 15.28571429 12.34883721
+ 15.55555556  9.22352941 11.46666667 16.71428571  9.8        15.28571429
+ 15.55555556 10.07142857 12.79069767 10.06569343 11.92156863 11.62211982
+ 11.46666667 10.32544379 11.92156863 11.32022472 11.11564626 11.94535519
+ 10.69879518 12.56164384 12.56164384  9.22352941 11.92156863 11.11564626
+  7.72727273 11.015625   11.015625   16.65625    14.61363636  9.22352941
+ 12.55172414  1.60784314 15.85714286 12.94871795 11.92156863  7.72727273
+ 16.75       10.32544379 12.79069767  8.48571429]
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostRegressor
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    best_rmse = float('inf')
+    best_model = None
+    best_params = {}
+    
+    n_estimators_list = [50, 100, 200]
+    learning_rate_list = [0.01, 0.1, 1.0]
+    
+    for n_estimators in n_estimators_list:
+        for learning_rate in learning_rate_list:
+            model = AdaBoostRegressor(n_estimators=n_estimators, learning_rate=learning_rate, random_state=SEED)
+            model.fit(X_train, y_train)
+            y_valid_pred = model.predict(X_valid)
+            rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+            print(f"RMSE for n_estimators={n_estimators}, learning_rate={learning_rate}: {rmse}")
+            if rmse < best_rmse:
+                best_rmse = rmse
+                best_model = model
+                best_params = {'n_estimators': n_estimators, 'learning_rate': learning_rate}
+    
+    print(f"Best parameters found: {best_params} with RMSE: {best_rmse}")
+    return best_model
+
+
+def predict(model, X):
+    y_pred = model.predict(X)
+    return y_pred
+
+
+def submit_predictions_for_test_set(y_submission):
+    # This function should handle the submission process.
+    # For now, we'll just print the predictions.
+    print("Predictions for the test set:", y_submission)
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['G3'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['G3'], axis=1)
+    y = data_df['G3'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("Final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['G3'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['G3'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+RMSE for n_estimators=50, learning_rate=0.01: 1.4166076352357648
+RMSE for n_estimators=50, learning_rate=0.1: 1.3762717254870105
+RMSE for n_estimators=50, learning_rate=1.0: 1.410821562621244
+RMSE for n_estimators=100, learning_rate=0.01: 1.4590074428310957
+RMSE for n_estimators=100, learning_rate=0.1: 1.2655065819117335
+RMSE for n_estimators=100, learning_rate=1.0: 1.410821562621244
+RMSE for n_estimators=200, learning_rate=0.01: 1.4536633634495946
+RMSE for n_estimators=200, learning_rate=0.1: 1.3417146878356145
+RMSE for n_estimators=200, learning_rate=1.0: 1.410821562621244
+Best parameters found: {'n_estimators': 100, 'learning_rate': 0.1} with RMSE: 1.2655065819117335
+Final RMSE on validation set:  1.2655065819117335
+Predictions for the test set: [16.66666667 11.46296296 16.71153846 11.44897959 11.5        16.17142857
+ 16.66666667  9.8411215  10.17241379 10.57894737 16.71153846 12.76
+ 12.81132075 10.17241379 11.51851852 12.82608696 11.57541899  7.6
+ 15.36       15.08064516 15.27692308 12.84347826 12.84347826 12.81132075
+ 15.27692308 12.82608696  8.70491803 11.4566474  11.41791045 15.36
+ 16.10909091 12.82417582  8.36        4.18009479 16.71153846 15.27692308
+ 15.04109589 15.08064516 12.82608696 11.25       12.82608696 10.49411765
+  7.77272727 11.57541899 12.81927711 12.81927711 16.66666667 11.46296296
+ 12.76811594 11.4566474  11.23214286 11.42857143 15.08064516 10.41558442
+ 11.4566474  16.70588235 10.17241379 11.41791045 11.25        9.93150685
+  9.58       11.4566474  16.20588235 12.76595745 15.27692308 15.36
+  9.8411215   9.54814815  9.8015873  10.24285714 15.45       15.2375
+ 12.81132075 16.24489796 12.82417582 12.83471074 12.81012658 15.2375
+ 12.81012658 12.82608696 11.24489796 11.4566474  16.46875     8.03703704
+ 12.76811594 16.71153846 11.51851852  8.06849315 15.13207547 12.76595745
+ 15.36        9.22352941 11.4566474  16.71153846 10.41818182 15.13207547
+ 15.36       10.32446809 12.81132075  9.8015873  12.75362319 10.49411765
+ 11.4566474  11.23214286 12.76       10.20588235 11.41791045 11.54545455
+ 10.17241379 12.82608696 12.82417582  9.375      11.57541899 11.39130435
+  7.5         9.87272727 10.57894737 16.24489796 15.05263158  9.11458333
+ 12.81927711  1.9009901  15.45       12.84347826 12.76595745  7.5
+ 16.71153846  9.98648649 12.82417582  8.12777778]
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

@@ -1,0 +1,57 @@
+import pandas as pd
+
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\atmospheric_carbon_dioxide_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\atmospheric_carbon_dioxide_test.csv'
+
+# Load the datasets
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Display the first few rows of each dataset
+train_df.head(), test_df.head()
+
+# Result variables
+train_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(           date  Average
+ 0    2019-07-01   408.88
+ 1    1985-02-01   345.80
+ ..          ...      ...
+ 537  2015-04-01   400.96
+ 538  1987-07-01   347.86
+ 
+ [539 rows x 2 columns],
+            date  Average
+ 0    2019-07-01   408.88
+ 1    1985-02-01   345.80
+ ..          ...      ...
+ 537  2015-04-01   400.96
+ 538  1987-07-01   347.86
+ 
+ [539 rows x 2 columns])from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Fit the ARIMA model
+model = ARIMA(train_df['Average'], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Make predictions on the training set
+train_predictions = model_fit.predict(start=0, end=len(train_df)-1)
+
+# Calculate MSE on the training set
+train_mse = mean_squared_error(train_df['Average'], train_predictions)
+
+# Report the result
+train_mse, train_predictions
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(963.6853513995842,
+ 0        0.000000
+ 1      408.583100
+           ...    
+ 537    360.931805
+ 538    354.680758
+ Name: predicted_mean, Length: 539, dtype: float64)

@@ -1,0 +1,480 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\employee_attrition_train.csv')
+test_df = pd.read_csv('E:\\csv\\employee_attrition_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Monitor data types per column
+print("Train dataset column data types:")
+print(train_df_copy.dtypes)
+print("\nTest dataset column data types:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Handle categorical data using label encoding
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    if col != 'Attrition':  # Assuming 'Attrition' is the label column
+        train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+        test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Handle numerical data using scaling
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+for col in numerical_columns:
+    if col != 'Attrition':  # Assuming 'Attrition' is the label column
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Display the first few rows of the preprocessed datasets
+print("\nPreprocessed Train Dataset:")
+print(train_df_copy.head())
+print("\nPreprocessed Test Dataset:")
+print(test_df_copy.head())
+execute_result:
+Train dataset column data types:
+id                           int64
+age                          int64
+DailyRate                    int64
+Department                  object
+DistanceFromHome             int64
+Education                    int64
+EducationField              object
+EmployeeCount                int64
+EnvironmentSatisfaction      int64
+Gender                      object
+HourlyRate                   int64
+JobInvolvement               int64
+JobLevel                     int64
+JobRole                     object
+JobSatisfaction              int64
+MaritalStatus               object
+MonthlyIncome                int64
+MonthlyRate                  int64
+NumCompaniesWorked           int64
+Over18                      object
+OverTime                    object
+PercentSalaryHike            int64
+PerformanceRating            int64
+RelationshipSatisfaction     int64
+StandardHours                int64
+StockOptionLevel             int64
+TotalWorkingYears            int64
+TrainingTimesLastYear        int64
+WorkLifeBalance              int64
+YearsAtCompany               int64
+YearsInCurrentRole           int64
+YearsSinceLastPromotion      int64
+YearsWithCurrManager         int64
+Attrition                    int64
+dtype: object
+
+Test dataset column data types:
+id                           int64
+age                          int64
+DailyRate                    int64
+Department                  object
+DistanceFromHome             int64
+Education                    int64
+EducationField              object
+EmployeeCount                int64
+EnvironmentSatisfaction      int64
+Gender                      object
+HourlyRate                   int64
+JobInvolvement               int64
+JobLevel                     int64
+JobRole                     object
+JobSatisfaction              int64
+MaritalStatus               object
+MonthlyIncome                int64
+MonthlyRate                  int64
+NumCompaniesWorked           int64
+Over18                      object
+OverTime                    object
+PercentSalaryHike            int64
+PerformanceRating            int64
+RelationshipSatisfaction     int64
+StandardHours                int64
+StockOptionLevel             int64
+TotalWorkingYears            int64
+TrainingTimesLastYear        int64
+WorkLifeBalance              int64
+YearsAtCompany               int64
+YearsInCurrentRole           int64
+YearsSinceLastPromotion      int64
+YearsWithCurrManager         int64
+Attrition                    int64
+dtype: object
+
+Preprocessed Train Dataset:
+         id       age  ...  YearsWithCurrManager  Attrition
+0 -1.733990  0.011258  ...              1.044440          0
+1 -1.731936 -0.105775  ...             -0.341738          0
+2 -1.729883 -0.456874  ...             -0.618973          0
+3 -1.727829  0.245324  ...             -0.618973          0
+4 -1.725775  1.649721  ...              1.598911          1
+
+[5 rows x 34 columns]
+
+Preprocessed Test Dataset:
+         id       age  ...  YearsWithCurrManager  Attrition
+0 -1.703186  0.362357  ...              1.598911          0
+1 -1.686758  0.830489  ...             -0.618973          0
+2 -1.674436 -1.393138  ...             -1.173444          0
+3 -1.672383  0.596423  ...             -0.618973          0
+4 -1.668275 -0.105775  ...              0.767204          0
+
+[5 rows x 34 columns]
+is_success:
+True
+code:
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Exploratory Data Analysis (EDA)
+
+# Summary statistics for numerical features
+numerical_summary = train_df_copy.describe()
+print("Summary Statistics for Numerical Features:\n", numerical_summary)
+
+# Summary statistics for categorical features
+categorical_summary = train_df_copy[categorical_columns].describe()
+print("\nSummary Statistics for Categorical Features:\n", categorical_summary)
+
+# Distribution of the target variable
+plt.figure(figsize=(8, 6))
+sns.countplot(x='Attrition', data=train_df_copy)
+plt.title('Distribution of Attrition')
+plt.show()
+
+# Correlation matrix for numerical features
+correlation_matrix = train_df_copy[numerical_columns].corr()
+plt.figure(figsize=(12, 10))
+sns.heatmap(correlation_matrix, annot=True, fmt=".2f")
+plt.title('Correlation Matrix for Numerical Features')
+plt.show()
+
+# Pairplot for a subset of numerical features
+subset_numerical_columns = ['age', 'DailyRate', 'DistanceFromHome', 'MonthlyIncome', 'Attrition']
+sns.pairplot(train_df_copy[subset_numerical_columns], hue='Attrition')
+plt.show()
+
+# Box plots for categorical features vs. target variable
+for col in categorical_columns:
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x=col, y='Attrition', data=train_df_copy)
+    plt.title(f'Box Plot of {col} vs Attrition')
+    plt.show()
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[2], line 2
+      1 import numpy as np
+----> 2 import matplotlib.pyplot as plt
+      3 import seaborn as sns
+      5 # Exploratory Data Analysis (EDA)
+      6 
+      7 # Summary statistics for numerical features
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+# Perform EDA on the training dataset
+import pandas as pd
+
+# Summary statistics for numerical features
+numerical_summary = train_df_copy.describe()
+print("Summary Statistics for Numerical Features:")
+print(numerical_summary)
+
+# Summary statistics for categorical features
+categorical_summary = train_df_copy[categorical_columns].describe()
+print("\nSummary Statistics for Categorical Features:")
+print(categorical_summary)
+
+# Distribution of the target variable
+target_distribution = train_df_copy['Attrition'].value_counts(normalize=True)
+print("\nDistribution of Target Variable (Attrition):")
+print(target_distribution)
+
+# Correlation matrix for numerical features
+correlation_matrix = train_df_copy[numerical_columns].corr()
+print("\nCorrelation Matrix for Numerical Features:")
+print(correlation_matrix)
+execute_result:
+Summary Statistics for Numerical Features:
+                id           age  ...  YearsWithCurrManager    Attrition
+count  1341.000000  1.341000e+03  ...          1.341000e+03  1341.000000
+mean      0.000000 -3.603050e-16  ...          2.185674e-17     0.116331
+std       1.000373  1.000373e+00  ...          1.000373e+00     0.320741
+min      -1.733990 -2.095336e+00  ...         -1.173444e+00     0.000000
+25%      -0.863275 -6.909399e-01  ...         -6.189733e-01     0.000000
+50%       0.003332 -1.057748e-01  ...         -3.417378e-01     0.000000
+75%       0.861725  5.964233e-01  ...          7.672044e-01     0.000000
+max       1.707797  2.820051e+00  ...          3.539560e+00     1.000000
+
+[8 rows x 34 columns]
+
+Summary Statistics for Categorical Features:
+        Department  EducationField  ...  Over18     OverTime
+count  1341.000000     1341.000000  ...  1341.0  1341.000000
+mean      1.263236        2.143922  ...     0.0     0.230425
+std       0.490262        1.268806  ...     0.0     0.421262
+min       0.000000        0.000000  ...     0.0     0.000000
+25%       1.000000        1.000000  ...     0.0     0.000000
+50%       1.000000        2.000000  ...     0.0     0.000000
+75%       2.000000        3.000000  ...     0.0     0.000000
+max       2.000000        5.000000  ...     0.0     1.000000
+
+[8 rows x 7 columns]
+
+Distribution of Target Variable (Attrition):
+Attrition
+0    0.883669
+1    0.116331
+Name: proportion, dtype: float64
+
+Correlation Matrix for Numerical Features:
+                                id       age  ...  YearsWithCurrManager  Attrition
+id                        1.000000  0.016752  ...              0.002204  -0.008300
+age                       0.016752  1.000000  ...              0.208296  -0.152974
+DailyRate                -0.002504  0.067328  ...              0.038356  -0.020959
+DistanceFromHome         -0.012846 -0.050419  ...              0.017166   0.031632
+Education                -0.014542  0.239598  ...              0.108730  -0.073495
+EmployeeCount                  NaN       NaN  ...                   NaN        NaN
+EnvironmentSatisfaction   0.032286  0.028424  ...              0.027464  -0.085381
+HourlyRate               -0.042034  0.033656  ...             -0.081824  -0.024398
+JobInvolvement           -0.000562  0.011461  ...              0.019777  -0.136403
+JobLevel                  0.034045  0.482889  ...              0.405411  -0.140502
+JobSatisfaction          -0.001995  0.006153  ...             -0.002422  -0.067198
+MonthlyIncome             0.009874  0.476927  ...              0.393885  -0.132350
+MonthlyRate               0.029799  0.009102  ...              0.014489  -0.011210
+NumCompaniesWorked       -0.018914  0.298722  ...             -0.109447   0.026450
+PercentSalaryHike        -0.047998 -0.066846  ...             -0.048501  -0.039939
+PerformanceRating        -0.035951 -0.033635  ...              0.022446  -0.006224
+RelationshipSatisfaction  0.022793  0.047640  ...              0.042929  -0.089361
+StandardHours                  NaN       NaN  ...                   NaN        NaN
+StockOptionLevel         -0.033897  0.052259  ...              0.019737  -0.200387
+TotalWorkingYears         0.002464  0.651054  ...              0.509265  -0.136047
+TrainingTimesLastYear     0.014819 -0.001103  ...             -0.064351   0.003904
+WorkLifeBalance          -0.012207  0.043670  ...             -0.009980  -0.049052
+YearsAtCompany           -0.014576  0.309061  ...              0.792115  -0.140029
+YearsInCurrentRole       -0.008291  0.222494  ...              0.754404  -0.154933
+YearsSinceLastPromotion  -0.002925  0.200931  ...              0.544797  -0.043590
+YearsWithCurrManager      0.002204  0.208296  ...              1.000000  -0.138823
+Attrition                -0.008300 -0.152974  ...             -0.138823   1.000000
+
+[27 rows x 27 columns]
+is_success:
+True
+code:
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encoding categorical variables
+categorical_columns = ['Department', 'EducationField', 'Gender', 'JobRole', 'MaritalStatus', 'Over18', 'OverTime']
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Scaling numerical features
+numerical_columns = ['id', 'age', 'DailyRate', 'DistanceFromHome', 'Education', 'EmployeeCount', 'EnvironmentSatisfaction', 'HourlyRate', 'JobInvolvement', 'JobLevel', 'JobSatisfaction', 'MonthlyIncome', 'MonthlyRate', 'NumCompaniesWorked', 'PercentSalaryHike', 'PerformanceRating', 'RelationshipSatisfaction', 'StandardHours', 'StockOptionLevel', 'TotalWorkingYears', 'TrainingTimesLastYear', 'WorkLifeBalance', 'YearsAtCompany', 'YearsInCurrentRole', 'YearsSinceLastPromotion', 'YearsWithCurrManager']
+scaler = StandardScaler()
+for col in numerical_columns:
+    train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+    test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Displaying the first few rows of the preprocessed datasets
+print("Preprocessed Train Dataset:")
+print(train_df_copy.head())
+print("\nPreprocessed Test Dataset:")
+print(test_df_copy.head())
+execute_result:
+Preprocessed Train Dataset:
+         id       age  ...  YearsWithCurrManager  Attrition
+0 -1.733990  0.011258  ...              1.044440          0
+1 -1.731936 -0.105775  ...             -0.341738          0
+2 -1.729883 -0.456874  ...             -0.618973          0
+3 -1.727829  0.245324  ...             -0.618973          0
+4 -1.725775  1.649721  ...              1.598911          1
+
+[5 rows x 34 columns]
+
+Preprocessed Test Dataset:
+         id       age  ...  YearsWithCurrManager  Attrition
+0 -1.703186  0.362357  ...              1.598911          0
+1 -1.686758  0.830489  ...             -0.618973          0
+2 -1.674436 -1.393138  ...             -1.173444          0
+3 -1.672383  0.596423  ...             -0.618973          0
+4 -1.668275 -0.105775  ...              0.767204          0
+
+[5 rows x 34 columns]
+is_success:
+True
+code:
+from sklearn.model_selection import train_test_split
+
+# Splitting the preprocessed training data into training and validation sets
+X_train = train_df_copy.drop(columns=['Attrition'])
+y_train = train_df_copy['Attrition']
+
+X_val = test_df_copy.drop(columns=['Attrition'])
+y_val = test_df_copy['Attrition']
+
+# Splitting the training data
+X_train_split, X_val_split, y_train_split, y_val_split = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+
+# Displaying the shapes of the resulting datasets
+print("Training set shape:", X_train_split.shape, y_train_split.shape)
+print("Validation set shape:", X_val_split.shape, y_val_split.shape)
+execute_result:
+Training set shape: (1072, 33) (1072,)
+Validation set shape: (269, 33) (269,)
+is_success:
+True
+code:
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the Decision Tree Classifier
+decision_tree = DecisionTreeClassifier(random_state=42, max_depth=10, min_samples_split=5, min_samples_leaf=2)
+
+# Train the model
+decision_tree.fit(X_train_split, y_train_split)
+
+# Predict on the validation set
+y_pred = decision_tree.predict(X_val_split)
+
+# Evaluate the model
+accuracy = accuracy_score(y_val_split, y_pred)
+report = classification_report(y_val_split, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print("Classification Report:")
+print(report)
+execute_result:
+Accuracy: 0.8252788104089219
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.88      0.92      0.90       234
+           1       0.25      0.17      0.20        35
+
+    accuracy                           0.83       269
+   macro avg       0.57      0.55      0.55       269
+weighted avg       0.80      0.83      0.81       269
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting on the validation set
+y_val_pred = decision_tree.predict(X_val_split)
+
+# Calculating the F1 score
+f1 = f1_score(y_val_split, y_val_pred)
+
+print(f"F1 Score: {f1}")
+execute_result:
+F1 Score: 0.2033898305084746
+is_success:
+True
+code:
+# Preprocess the test dataset using the same preprocessing steps as the training dataset
+
+# Copy the test dataset to avoid modifying the original
+test_df_preprocessed = test_df_copy.copy()
+
+# Apply the same label encoding for categorical columns
+for col in categorical_columns:
+    if col != 'Attrition':
+        test_df_preprocessed[col] = label_encoder.transform(test_df_preprocessed[col])
+
+# Apply the same scaling for numerical columns
+for col in numerical_columns:
+    if col != 'Attrition':
+        test_df_preprocessed[col] = scaler.transform(test_df_preprocessed[[col]])
+
+# Display the first few rows of the preprocessed test dataset
+print("Preprocessed Test Dataset:")
+print(test_df_preprocessed.head())
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[12], line 9
+      7 for col in categorical_columns:
+      8     if col != 'Attrition':
+----> 9         test_df_preprocessed[col] = label_encoder.transform(test_df_preprocessed[col])
+     11 # Apply the same scaling for numerical columns
+     12 for col in numerical_columns:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\preprocessing\_label.py:137, in LabelEncoder.transform(self, y)
+    134 if _num_samples(y) == 0:
+    135     return np.array([])
+--> 137 return _encode(y, uniques=self.classes_)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_encode.py:232, in _encode(values, uniques, check_unknown)
+    230     diff = _check_unknown(values, uniques)
+    231     if diff:
+--> 232         raise ValueError(f"y contains previously unseen labels: {str(diff)}")
+    233 return np.searchsorted(uniques, values)
+
+ValueError: y contains previously unseen labels: [2]
+is_success:
+False
+code:
+# Preprocess the test dataset using the same preprocessing steps as the training dataset
+# Ensure all categories are handled correctly
+
+# Apply the same label encoding to the test dataset
+for col in categorical_columns:
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Apply the same scaling to the test dataset
+for col in numerical_columns:
+    test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+print("Preprocessed Test Dataset:")
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[13], line 6
+      1 # Preprocess the test dataset using the same preprocessing steps as the training dataset
+      2 # Ensure all categories are handled correctly
+      3 
+      4 # Apply the same label encoding to the test dataset
+      5 for col in categorical_columns:
+----> 6     test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+      8 # Apply the same scaling to the test dataset
+      9 for col in numerical_columns:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\preprocessing\_label.py:137, in LabelEncoder.transform(self, y)
+    134 if _num_samples(y) == 0:
+    135     return np.array([])
+--> 137 return _encode(y, uniques=self.classes_)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_encode.py:232, in _encode(values, uniques, check_unknown)
+    230     diff = _check_unknown(values, uniques)
+    231     if diff:
+--> 232         raise ValueError(f"y contains previously unseen labels: {str(diff)}")
+    233 return np.searchsorted(uniques, values)
+
+ValueError: y contains previously unseen labels: [2]
+is_success:
+False

@@ -1,0 +1,139 @@
+import pandas as pd
+from sklearn.preprocessing import OneHotEncoder
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\horse_health_outcomes_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\horse_health_outcomes_test.csv'
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Perform one-hot encoding on the specified columns
+encoder = OneHotEncoder()
+columns_to_encode = ['peripheral_pulse', 'mucous_membrane', 'capillary_refill_time']
+
+# Fit the encoder on the training data and transform both training and test data
+encoded_train = pd.DataFrame(encoder.fit_transform(train_df[columns_to_encode]).toarray(), columns=encoder.get_feature_names_out(columns_to_encode))
+encoded_test = pd.DataFrame(encoder.transform(test_df[columns_to_encode]).toarray(), columns=encoder.get_feature_names_out(columns_to_encode))
+
+# Concatenate the encoded features back to the original DataFrames
+train_df = pd.concat([train_df.drop(columns=columns_to_encode), encoded_train], axis=1)
+test_df = pd.concat([test_df.drop(columns=columns_to_encode), encoded_test], axis=1)
+
+# Result variables
+train_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(    surgery  hospital_number  rectal_temp  pulse  respiratory_rate outcome  peripheral_pulse_absent  peripheral_pulse_increased  peripheral_pulse_normal  peripheral_pulse_reduced  peripheral_pulse_nan  mucous_membrane_bright_pink  mucous_membrane_bright_red  mucous_membrane_dark_cyanotic  mucous_membrane_normal_pink  mucous_membrane_pale_cyanotic  mucous_membrane_pale_pink  mucous_membrane_nan  capillary_refill_time_less_3_sec  capillary_refill_time_more_3_sec  capillary_refill_time_nan
+ 0       yes           527706         39.0   84.0              24.0    died                      0.0                         0.0                      1.0                       0.0                   0.0                          1.0                         0.0                            0.0                          0.0                            0.0                        0.0                  0.0                               1.0                               0.0                        0.0
+ 1       yes           528641         38.5   66.0              21.0   lived                      0.0                         0.0                      1.0                       0.0                   0.0                          1.0                         0.0                            0.0                          0.0                            0.0                        0.0                  0.0                               1.0                               0.0                        0.0
+ ..      ...              ...          ...    ...               ...     ...                      ...                         ...                      ...                       ...                   ...                          ...                         ...                            ...                          ...                            ...                        ...                  ...                               ...                               ...                        ...
+ 984     yes           528570         36.1   50.0              50.0    died                      0.0                         0.0                      0.0                       1.0                   0.0                          0.0                         1.0                            0.0                          0.0                            0.0                        0.0                  0.0                               1.0                               0.0                        0.0
+ 985     yes           533886         38.0  104.0              70.0   lived                      0.0                         0.0                      0.0                       1.0                   0.0                          0.0                         1.0                            0.0                          0.0                            0.0                        0.0                  0.0                               0.0                               1.0                        0.0
+ 
+ [986 rows x 21 columns],
+     surgery  hospital_number  rectal_temp  pulse  respiratory_rate     outcome  peripheral_pulse_absent  peripheral_pulse_increased  peripheral_pulse_normal  peripheral_pulse_reduced  peripheral_pulse_nan  mucous_membrane_bright_pink  mucous_membrane_bright_red  mucous_membrane_dark_cyanotic  mucous_membrane_normal_pink  mucous_membrane_pale_cyanotic  mucous_membrane_pale_pink  mucous_membrane_nan  capillary_refill_time_less_3_sec  capillary_refill_time_more_3_sec  capillary_refill_time_nan
+ 0        no           535381         39.4   86.0              21.0  euthanized                      0.0                         0.0                      1.0                       0.0                   0.0                          0.0                         0.0                            0.0                          0.0                            0.0                        1.0                  0.0                               1.0                               0.0                        0.0
+ 1       yes           535029         37.5  112.0              12.0  euthanized                      0.0                         0.0                      1.0                       0.0                   0.0                          1.0                         0.0                            0.0                          0.0                            0.0                        0.0                  0.0                               1.0                               0.0                        0.0
+ ..      ...              ...          ...    ...               ...         ...                      ...                         ...                      ...                       ...                   ...                          ...                         ...                            ...                          ...                            ...                        ...                  ...                               ...                               ...                        ...
+ 245     yes           529642         40.8  108.0              12.0        died                      0.0                         0.0                      0.0                       1.0                   0.0                          0.0                         0.0                            0.0                          0.0                            1.0                        0.0                  0.0                               1.0                               0.0                        0.0
+ 246     yes           535163         37.8   78.0              20.0  euthanized                      0.0                         0.0                      0.0                       1.0                   0.0                          0.0                         0.0                            0.0                          0.0                            0.0                        1.0                  0.0                               1.0                               0.0                        0.0
+ 
+ [247 rows x 21 columns])import lightgbm as lgb
+from sklearn.metrics import f1_score
+
+# Define the label column
+label_column = 'outcome'
+
+# Prepare the datasets
+X_train = train_df.drop(columns=[label_column])
+y_train = train_df[label_column]
+X_test = test_df.drop(columns=[label_column])
+y_test = test_df[label_column]
+
+# Define the LightGBM classifier with specified parameters
+model = lgb.LGBMClassifier(n_estimators=10, learning_rate=0.1)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# Result variables
+f1
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 17
+    model.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\sklearn.py:1560 in fit
+    super().fit(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\sklearn.py:1049 in fit
+    self._Booster = train(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\engine.py:297 in train
+    booster = Booster(params=params, train_set=train_set)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:3656 in __init__
+    train_set.construct()
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2590 in construct
+    self._lazy_init(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2123 in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:868 in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:814 in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:805 in _check_for_bad_pandas_dtypes
+    raise ValueError(
+
+ValueError: pandas dtypes must be int, float or bool.
+Fields with bad pandas dtypes: surgery: object
+
+import lightgbm as lgb
+from sklearn.metrics import f1_score
+
+# Convert 'surgery' column to binary integer
+train_df['surgery'] = train_df['surgery'].map({'yes': 1, 'no': 0})
+test_df['surgery'] = test_df['surgery'].map({'yes': 1, 'no': 0})
+
+# Define the label column
+label_column = 'outcome'
+
+# Prepare the datasets
+X_train = train_df.drop(columns=[label_column])
+y_train = train_df[label_column]
+X_test = test_df.drop(columns=[label_column])
+y_test = test_df[label_column]
+
+# Define the LightGBM classifier with specified parameters
+model = lgb.LGBMClassifier(n_estimators=10, learning_rate=0.1)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# Result variables
+f1
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+0.6446119525959776

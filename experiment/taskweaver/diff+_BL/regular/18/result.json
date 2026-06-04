@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 18,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "wild_blueberry_yield",
+        "task_description": "请你构建一个用于预测野生蓝莓的产量的支持向量机（SVM）模型。目标是根据植物空间性状、蜜蜂物种组成、天气条件等特征，预测蓝莓的产量。通过模拟实验生成的数据集，研究人员可以验证机器学习算法在作物产量预测中的潜力。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 199.90277075767517,
+        "interact_count": 5,
+        "prompt_tokens": 24815,
+        "completion_tokens": 2832,
+        "RCR": 5
+    }
+}

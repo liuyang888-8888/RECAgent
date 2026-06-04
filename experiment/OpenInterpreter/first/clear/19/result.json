@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 19,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "student_performance",
+        "task_description": "基于学生在校表现相关的数据集，构建一个自适应提升算法”（AdaBoost）的回归模型，用于预测学生在数学（mat）或葡萄牙语（por）科目中的最终成绩（G3）。该任务属于回归问题，目标是根据学生的成绩、人口统计、社会和学校相关特征，预测其最终成绩（G3），最后在测试集上进行预测。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 126.61670207977295,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 5,
+        "prompt_tokens": 15448,
+        "completion_tokens": 1427
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "task": {
+        "id": 14,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "abalone",
+        "task_description": "请使用 Abalone 数据集，该数据集用于通过物理测量值预测鲍鱼的年龄。要求先进行数据抽样，接着训练一个lightGBM模型，学习器类型使用RF,树的数量设置为20，并实现对测试集的预测，然后保存预测结果。"
+    },
+    "result": {
+        "run_status": "fail",
+        "time": 182.23898911476135,
+        "interact_count": 5,
+        "prompt_tokens": 12105,
+        "completion_tokens": 2864
+    }
+}

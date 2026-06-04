@@ -1,0 +1,18 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 83.5445704460144,
+        "interact_count": 9,
+        "prompt_tokens": 15010,
+        "completion_tokens": 1802,
+        "metrics": 0.5687237605211941,
+        "RCR": 5
+    },
+    "task": {
+        "id": 17,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "mohs_hardness",
+        "task_description": "请基于矿物质莫氏硬度数据集，构建一个回归模型，用于预测矿物的硬度（莫氏硬度）。目标是根据矿物的成分特征（如原子描述符）预测其硬度。"
+    }
+}

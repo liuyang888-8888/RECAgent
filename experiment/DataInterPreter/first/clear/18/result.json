@@ -1,0 +1,16 @@
+{
+    "result": {
+        "run_status": "failed",
+        "time": 0,
+        "interact_count": 39,
+        "prompt_tokens": 52777,
+        "completion_tokens": 21229
+    },
+    "task": {
+        "id": 18,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "wild_blueberry_yield",
+        "task_description": "请你构建一个用于预测野生蓝莓的产量支持向量机(SVM)模型,目标是根据植物空间性状、蜜蜂物种组成、天气条件等特征，预测蓝莓的产量。使用线性核函数，代价C设置为0.5，回归损失设置为0.01，在测试集上进行评估。此外我还需要保存模型。"
+    }
+}

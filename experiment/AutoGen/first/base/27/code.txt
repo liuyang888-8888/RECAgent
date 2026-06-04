@@ -1,0 +1,76 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.metrics import MeanSquaredError
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bitcoin_price_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bitcoin_price_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 选择最高价列
+train_high = train_df['High'].values
+test_high = test_df['High'].values
+
+# 数据预处理
+scaler = MinMaxScaler(feature_range=(0, 1))
+train_scaled = scaler.fit_transform(train_high.reshape(-1, 1))
+test_scaled = scaler.transform(test_high.reshape(-1, 1))
+
+# 创建时间序列数据
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i + seq_length]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+seq_length = 10
+X_train, y_train = create_sequences(train_scaled, seq_length)
+X_test, y_test = create_sequences(test_scaled, seq_length)
+
+# 构建 LSTM 模型
+model = Sequential()
+model.add(LSTM(50, return_sequences=True, input_shape=(seq_length, 1)))
+model.add(LSTM(50))
+model.add(Dense(1))
+model.compile(optimizer='adam', loss='mean_squared_error')
+
+# 训练模型
+model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=1)
+
+# 预测
+train_predictions = model.predict(X_train)
+test_predictions = model.predict(X_test)
+
+# 反归一化
+train_predictions = scaler.inverse_transform(train_predictions)
+y_train = scaler.inverse_transform(y_train.reshape(-1, 1))
+test_predictions = scaler.inverse_transform(test_predictions)
+y_test = scaler.inverse_transform(y_test.reshape(-1, 1))
+
+# 计算训练集上的均方误差
+mse = MeanSquaredError()
+train_mse = mse(y_train, train_predictions).numpy()
+print(f'Training MSE: {train_mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_95a75da8f1731b0995731c2580451ff6b63af05fce2522402cc4f85676936223.py", line 4, in <module>
+    from tensorflow.keras.models import Sequential
+ModuleNotFoundError: No module named 'tensorflow'
+
+生成的代码：
+pip install tensorflow pandas numpy scikit-learn
+
+python -c "import tensorflow as tf; print(tf.__version__)"
+

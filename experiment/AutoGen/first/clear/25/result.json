@@ -1,0 +1,16 @@
+{
+    "task": {
+        "id": 25,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "census_income",
+        "task_description": "基于 census_income 数据集，构建一个 DBSCAN 聚类模型,核心点领域样本设置为5，距离度量方式设置为余弦，分析人群收入和其他因素潜在的层次关系。"
+    },
+    "result": {
+        "run_status": "fail",
+        "time": 35.06232738494873,
+        "interact_count": 1,
+        "prompt_tokens": 611,
+        "completion_tokens": 602
+    }
+}

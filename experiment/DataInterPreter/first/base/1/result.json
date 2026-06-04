@@ -1,0 +1,18 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 106.60933804512024,
+        "interact_count": 11,
+        "prompt_tokens": 10465,
+        "completion_tokens": 1731,
+        "metrics": 0.5809110309809404,
+        "RCR": 5
+    },
+    "task": {
+        "id": 1,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "bank_customer_churn",
+        "task_description": "请你使用 bank_customer_churn 表格数据，训练一个分类模型，可以根据客户的信息预测其是否可能会流失。"
+    }
+}

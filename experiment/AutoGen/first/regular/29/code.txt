@@ -1,0 +1,212 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+df = pd.read_csv(data_path)
+
+# 数据预处理
+df['Date'] = pd.to_datetime(df['Date'])
+df.set_index('Date', inplace=True)
+
+# 选择最高市值列
+high_price = df['High']
+
+# 构建 ARIMA 模型
+model = ARIMA(high_price, order=(5, 1, 0))  # 选择一个初始的 ARIMA 参数 (p, d, q)
+
+# 拟合模型
+model_fit = model.fit()
+
+# 获取拟合值
+fitted_values = model_fit.fittedvalues
+
+# 计算均方误差
+mse = mean_squared_error(high_price, fitted_values)
+
+# 输出均方误差
+print(f'Mean Squared Error (MSE): {mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+Mean Squared Error (MSE): 17735.296595046453
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+df = pd.read_csv(data_path)
+
+# 数据预处理
+df['Date'] = pd.to_datetime(df['Date'])
+df.set_index('Date', inplace=True)
+
+# 确保日期索引是单调递增的
+df = df.sort_index()
+
+# 设置日期索引的频率（假设数据是每日数据）
+df = df.asfreq('D')
+
+# 选择最高市值列
+high_price = df['High']
+
+# 构建 ARIMA 模型
+model = ARIMA(high_price, order=(5, 1, 0))  # 选择一个初始的 ARIMA 参数 (p, d, q)
+
+# 拟合模型
+model_fit = model.fit()
+
+# 获取拟合值
+fitted_values = model_fit.fittedvalues
+
+# 计算均方误差
+mse = mean_squared_error(high_price, fitted_values)
+
+# 输出均方误差
+print(f'Mean Squared Error (MSE): {mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_700dbf07b9b9c2868ac9e51da7f9d8111d8f2661cc69ab910e75fb12d81b1438.py", line 33, in <module>
+    mse = mean_squared_error(high_price, fitted_values)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\metrics\_regression.py", line 565, in mean_squared_error
+    _check_reg_targets_with_floating_dtype(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\metrics\_regression.py", line 198, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, multioutput = _check_reg_targets(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\metrics\_regression.py", line 105, in _check_reg_targets
+    y_true = check_array(y_true, ensure_2d=False, dtype=dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1107, in check_array
+    _assert_all_finite(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input contains NaN.
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+df = pd.read_csv(data_path)
+
+# 数据预处理
+df['Date'] = pd.to_datetime(df['Date'])
+df.set_index('Date', inplace=True)
+
+# 确保日期索引是单调递增的
+df = df.sort_index()
+
+# 设置日期索引的频率（假设数据是每日数据）
+df = df.asfreq('D')
+
+# 处理缺失值
+df['High'].fillna(method='ffill', inplace=True)  # 使用前向填充处理缺失值
+
+# 选择最高市值列
+high_price = df['High']
+
+# 构建 ARIMA 模型
+model = ARIMA(high_price, order=(5, 1, 0))  # 选择一个初始的 ARIMA 参数 (p, d, q)
+
+# 拟合模型
+model_fit = model.fit()
+
+# 获取拟合值
+fitted_values = model_fit.fittedvalues
+
+# 确保拟合值和实际值长度一致
+fitted_values = fitted_values.loc[high_price.index]
+
+# 计算均方误差
+mse = mean_squared_error(high_price, fitted_values)
+
+# 输出均方误差
+print(f'Mean Squared Error (MSE): {mse}')
+
+
+执行结果：
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_caf2f759e307fa5431c31207d64f3092c886ab6a1dd02ed48898301952e0f80e.py:21: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  df['High'].fillna(method='ffill', inplace=True)  # 使用前向填充处理缺失值
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_caf2f759e307fa5431c31207d64f3092c886ab6a1dd02ed48898301952e0f80e.py:21: FutureWarning: Series.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  df['High'].fillna(method='ffill', inplace=True)  # 使用前向填充处理缺失值
+Mean Squared Error (MSE): 10.78344696832238
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+df = pd.read_csv(data_path)
+
+# 数据预处理
+df['Date'] = pd.to_datetime(df['Date'])
+df.set_index('Date', inplace=True)
+
+# 确保日期索引是单调递增的
+df = df.sort_index()
+
+# 设置日期索引的频率（假设数据是每日数据）
+df = df.asfreq('D')
+
+# 处理缺失值
+df['High'] = df['High'].ffill()  # 使用前向填充处理缺失值
+
+# 选择最高市值列
+high_price = df['High']
+
+# 构建 ARIMA 模型
+model = ARIMA(high_price, order=(5, 1, 0))  # 选择一个初始的 ARIMA 参数 (p, d, q)
+
+# 拟合模型
+model_fit = model.fit()
+
+# 获取拟合值
+fitted_values = model_fit.fittedvalues
+
+# 确保拟合值和实际值长度一致
+fitted_values = fitted_values.loc[high_price.index]
+
+# 计算均方误差
+mse = mean_squared_error(high_price, fitted_values)
+
+# 输出均方误差
+print(f'Mean Squared Error (MSE): {mse}')
+
+
+执行结果：
+Mean Squared Error (MSE): 10.78344696832238

@@ -1,0 +1,188 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\bike_sharing_train.csv')
+test_df = pd.read_csv('E:\\csv\\bike_sharing_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Training Data:")
+display(train_df_copy.head())
+print("Testing Data:")
+display(test_df_copy.head())
+
+# Check the data types of each column
+print("Data types in Training Data:")
+print(train_df_copy.dtypes)
+print("Data types in Testing Data:")
+print(test_df_copy.dtypes)
+execute_result:
+Training Data:
+Testing Data:
+Data types in Training Data:
+id              int64
+season          int64
+yr              int64
+mnth            int64
+hr              int64
+holiday         int64
+weekday         int64
+workingday      int64
+weathersit      int64
+temp          float64
+atemp         float64
+hum           float64
+windspeed     float64
+cnt             int64
+dtype: object
+Data types in Testing Data:
+id              int64
+season          int64
+yr              int64
+mnth            int64
+hr              int64
+holiday         int64
+weekday         int64
+workingday      int64
+weathersit      int64
+temp          float64
+atemp         float64
+hum           float64
+windspeed     float64
+cnt             int64
+dtype: object,,
+is_success:
+True
+code:
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+import numpy as np
+
+# Copy the datasets to avoid modifying the original data
+train_df_preprocessed = train_df_copy.copy()
+test_df_preprocessed = test_df_copy.copy()
+
+# Check for missing values and handle them
+def handle_missing_values(df):
+    # Fill missing values with the median for numerical columns
+    for col in df.select_dtypes(include=[np.number]).columns:
+        if df[col].isnull().sum() > 0:
+            df[col].fillna(df[col].median(), inplace=True)
+    return df
+
+train_df_preprocessed = handle_missing_values(train_df_preprocessed)
+test_df_preprocessed = handle_missing_values(test_df_preprocessed)
+
+# Encode categorical variables using Ordinal Encoding
+def encode_categorical_variables(df):
+    # Identify categorical columns (if any)
+    categorical_cols = ['season', 'weathersit']
+    encoder = OrdinalEncoder()
+    df[categorical_cols] = encoder.fit_transform(df[categorical_cols])
+    return df
+
+train_df_preprocessed = encode_categorical_variables(train_df_preprocessed)
+test_df_preprocessed = encode_categorical_variables(test_df_preprocessed)
+
+# Scale numerical features (excluding the label column 'cnt')
+def scale_numerical_features(df):
+    scaler = StandardScaler()
+    numerical_cols = df.select_dtypes(include=[np.number]).drop(columns=['cnt']).columns
+    df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+    return df
+
+train_df_preprocessed = scale_numerical_features(train_df_preprocessed)
+test_df_preprocessed = scale_numerical_features(test_df_preprocessed)
+
+# Display the first few rows of the preprocessed data
+print("Preprocessed Training Data:")
+display(train_df_preprocessed.head())
+print("Preprocessed Testing Data:")
+display(test_df_preprocessed.head())
+execute_result:
+Preprocessed Training Data:
+Preprocessed Testing Data:,,
+is_success:
+True
+code:
+# Splitting the preprocessed data into features (X) and target variable (y)
+X_train = train_df_preprocessed.drop(columns=['cnt'])
+y_train = train_df_preprocessed['cnt']
+X_test = test_df_preprocessed.drop(columns=['cnt'])
+y_test = test_df_preprocessed['cnt']
+
+print("Features in Training Data:")
+display(X_train.head())
+print("Target Variable in Training Data:")
+display(y_train.head())
+print("Features in Testing Data:")
+display(X_test.head())
+print("Target Variable in Testing Data:")
+display(y_test.head())
+execute_result:
+Features in Training Data:
+Target Variable in Training Data:
+Features in Testing Data:
+Target Variable in Testing Data:,,,,
+is_success:
+True
+code:
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Initialize the XGBoost Regressor with specified parameters
+xgb_model = XGBRegressor(n_estimators=8, learning_rate=0.01, objective='reg:squarederror')
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Make predictions on the training set to evaluate the model
+y_train_pred = xgb_model.predict(X_train)
+train_rmse = np.sqrt(mean_squared_error(y_train, y_train_pred))
+train_r2 = r2_score(y_train, y_train_pred)
+
+# Make predictions on the test set to evaluate the model
+y_test_pred = xgb_model.predict(X_test)
+test_rmse = np.sqrt(mean_squared_error(y_test, y_test_pred))
+test_r2 = r2_score(y_test, y_test_pred)
+
+# Print the evaluation metrics
+print(f"Training RMSE: {train_rmse}, R2 Score: {train_r2}")
+print(f"Testing RMSE: {test_rmse}, R2 Score: {test_r2}")
+execute_result:
+Training RMSE: 172.59814182058034, R2 Score: 0.10275929194537392
+Testing RMSE: 171.46418057276668, R2 Score: 0.0715432398112622
+is_success:
+True
+code:
+# Predict the target variable on the test set using the trained model
+y_test_pred = xgb_model.predict(X_test)
+print("Predicted values for the test set:")
+print(y_test_pred)
+execute_result:
+Predicted values for the test set:
+[197.49773 177.38013 200.82614 ... 181.2071  179.49991 192.84413]
+is_success:
+True
+code:
+from sklearn.metrics import mean_squared_error
+
+# Using the predictions and actual values from the test set
+mse_test = mean_squared_error(y_test, y_test_pred)
+print(f"Test Set Mean Squared Error (MSE): {mse_test}")
+execute_result:
+Test Set Mean Squared Error (MSE): 29399.965219490343
+is_success:
+True
+code:
+# Save the test set predictions to a CSV file
+predictions = pd.DataFrame({'id': test_df['id'], 'cnt': y_test_pred})
+predictions.to_csv('bike_sharing_test_predictions.csv', index=False)
+print("Predictions saved to bike_sharing_test_predictions.csv")
+execute_result:
+Predictions saved to bike_sharing_test_predictions.csv
+is_success:
+True

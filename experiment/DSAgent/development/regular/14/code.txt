@@ -1,0 +1,490 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define the LightGBM model with default hyperparameters
+    model = lgb.LGBMRegressor()
+    
+    # Train the model
+    model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], eval_metric='rmse', early_stopping_rounds=10)
+    
+    return model
+
+
+def predict(model, X):
+    # Use the trained model to make predictions
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['rings'])
+    le = LabelEncoder()
+
+    data_df['sex'] = le.fit_transform(data_df['sex'])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['rings'], axis=1)
+
+    y = data_df.rings.to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['rings'])
+    submission_df = submission_df.drop(['rings'], axis=1)
+    submission_df['sex'] = le.fit_transform(submission_df["sex"])
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/lightgbm/sklearn.py:726: UserWarning: 'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. Pass 'early_stopping()' callback via 'callbacks' argument instead.
+  _log_warning("'early_stopping_rounds' argument is deprecated and will be removed in a future release of LightGBM. "
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-190118/abalone/train.py", line 69, in <module>
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-190118/abalone/train.py", line 27, in compute_metrics_for_regression
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 194, in wrapper
+    params = func_sig.bind(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3177, in bind
+    return self._bind(args, kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3166, in _bind
+    raise TypeError(
+TypeError: got an unexpected keyword argument 'squared'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define the LightGBM model with default hyperparameters
+    model = lgb.LGBMRegressor()
+    
+    # Train the model
+    model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], eval_metric='rmse', early_stopping_rounds=10)
+    
+    return model
+
+
+def predict(model, X):
+    # Use the trained model to make predictions
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['rings'])
+    le = LabelEncoder()
+
+    data_df['sex'] = le.fit_transform(data_df['sex'])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['rings'], axis=1)
+
+    y = data_df.rings.to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['rings'])
+    submission_df = submission_df.drop(['rings'], axis=1)
+    submission_df['sex'] = le.fit_transform(submission_df["sex"])
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+[1]	valid_0's rmse: 2.993	valid_0's l2: 8.95807
+[2]	valid_0's rmse: 2.82991	valid_0's l2: 8.00842
+[3]	valid_0's rmse: 2.68932	valid_0's l2: 7.23247
+[4]	valid_0's rmse: 2.56837	valid_0's l2: 6.59655
+[5]	valid_0's rmse: 2.46529	valid_0's l2: 6.07764
+[6]	valid_0's rmse: 2.37711	valid_0's l2: 5.65066
+[7]	valid_0's rmse: 2.30067	valid_0's l2: 5.29306
+[8]	valid_0's rmse: 2.23672	valid_0's l2: 5.00292
+[9]	valid_0's rmse: 2.1814	valid_0's l2: 4.75851
+[10]	valid_0's rmse: 2.13429	valid_0's l2: 4.55518
+[11]	valid_0's rmse: 2.09484	valid_0's l2: 4.38836
+[12]	valid_0's rmse: 2.06003	valid_0's l2: 4.24373
+[13]	valid_0's rmse: 2.03173	valid_0's l2: 4.12792
+[14]	valid_0's rmse: 2.00771	valid_0's l2: 4.0309
+[15]	valid_0's rmse: 1.98628	valid_0's l2: 3.94531
+[16]	valid_0's rmse: 1.9686	valid_0's l2: 3.8754
+[17]	valid_0's rmse: 1.95326	valid_0's l2: 3.81522
+[18]	valid_0's rmse: 1.9398	valid_0's l2: 3.76281
+[19]	valid_0's rmse: 1.92797	valid_0's l2: 3.71708
+[20]	valid_0's rmse: 1.9178	valid_0's l2: 3.67794
+[21]	valid_0's rmse: 1.90981	valid_0's l2: 3.64737
+[22]	valid_0's rmse: 1.90205	valid_0's l2: 3.61779
+[23]	valid_0's rmse: 1.89595	valid_0's l2: 3.59463
+[24]	valid_0's rmse: 1.89063	valid_0's l2: 3.57448
+[25]	valid_0's rmse: 1.88561	valid_0's l2: 3.55551
+[26]	valid_0's rmse: 1.88069	valid_0's l2: 3.537
+[27]	valid_0's rmse: 1.87679	valid_0's l2: 3.52234
+[28]	valid_0's rmse: 1.8729	valid_0's l2: 3.50777
+[29]	valid_0's rmse: 1.87005	valid_0's l2: 3.49708
+[30]	valid_0's rmse: 1.86694	valid_0's l2: 3.48545
+[31]	valid_0's rmse: 1.86469	valid_0's l2: 3.47707
+[32]	valid_0's rmse: 1.86234	valid_0's l2: 3.4683
+[33]	valid_0's rmse: 1.86011	valid_0's l2: 3.46
+[34]	valid_0's rmse: 1.85857	valid_0's l2: 3.45429
+[35]	valid_0's rmse: 1.85726	valid_0's l2: 3.4494
+[36]	valid_0's rmse: 1.85646	valid_0's l2: 3.44645
+[37]	valid_0's rmse: 1.85465	valid_0's l2: 3.43974
+[38]	valid_0's rmse: 1.85232	valid_0's l2: 3.43109
+[39]	valid_0's rmse: 1.85076	valid_0's l2: 3.42533
+[40]	valid_0's rmse: 1.84923	valid_0's l2: 3.41967
+[41]	valid_0's rmse: 1.84871	valid_0's l2: 3.41774
+[42]	valid_0's rmse: 1.848	valid_0's l2: 3.41511
+[43]	valid_0's rmse: 1.84637	valid_0's l2: 3.40908
+[44]	valid_0's rmse: 1.84548	valid_0's l2: 3.4058
+[45]	valid_0's rmse: 1.84492	valid_0's l2: 3.40372
+[46]	valid_0's rmse: 1.84382	valid_0's l2: 3.39965
+[47]	valid_0's rmse: 1.84379	valid_0's l2: 3.39958
+[48]	valid_0's rmse: 1.84297	valid_0's l2: 3.39655
+[49]	valid_0's rmse: 1.84252	valid_0's l2: 3.39487
+[50]	valid_0's rmse: 1.8414	valid_0's l2: 3.39074
+[51]	valid_0's rmse: 1.84148	valid_0's l2: 3.39104
+[52]	valid_0's rmse: 1.84129	valid_0's l2: 3.39034
+[53]	valid_0's rmse: 1.84114	valid_0's l2: 3.38979
+[54]	valid_0's rmse: 1.84132	valid_0's l2: 3.39047
+[55]	valid_0's rmse: 1.84104	valid_0's l2: 3.38941
+[56]	valid_0's rmse: 1.84081	valid_0's l2: 3.38859
+[57]	valid_0's rmse: 1.84081	valid_0's l2: 3.38859
+[58]	valid_0's rmse: 1.84097	valid_0's l2: 3.38918
+[59]	valid_0's rmse: 1.84109	valid_0's l2: 3.38961
+[60]	valid_0's rmse: 1.84101	valid_0's l2: 3.38933
+[61]	valid_0's rmse: 1.84057	valid_0's l2: 3.3877
+[62]	valid_0's rmse: 1.84067	valid_0's l2: 3.38805
+[63]	valid_0's rmse: 1.84069	valid_0's l2: 3.38814
+[64]	valid_0's rmse: 1.84092	valid_0's l2: 3.38897
+[65]	valid_0's rmse: 1.84064	valid_0's l2: 3.38794
+[66]	valid_0's rmse: 1.84049	valid_0's l2: 3.38739
+[67]	valid_0's rmse: 1.84006	valid_0's l2: 3.3858
+[68]	valid_0's rmse: 1.84025	valid_0's l2: 3.38651
+[69]	valid_0's rmse: 1.83963	valid_0's l2: 3.38424
+[70]	valid_0's rmse: 1.83957	valid_0's l2: 3.38402
+[71]	valid_0's rmse: 1.83994	valid_0's l2: 3.38538
+[72]	valid_0's rmse: 1.83983	valid_0's l2: 3.38498
+[73]	valid_0's rmse: 1.84004	valid_0's l2: 3.38575
+[74]	valid_0's rmse: 1.83972	valid_0's l2: 3.38457
+[75]	valid_0's rmse: 1.83958	valid_0's l2: 3.38404
+[76]	valid_0's rmse: 1.83983	valid_0's l2: 3.38496
+[77]	valid_0's rmse: 1.83963	valid_0's l2: 3.38423
+[78]	valid_0's rmse: 1.83982	valid_0's l2: 3.38494
+[79]	valid_0's rmse: 1.83959	valid_0's l2: 3.38411
+[80]	valid_0's rmse: 1.83937	valid_0's l2: 3.38329
+[81]	valid_0's rmse: 1.83925	valid_0's l2: 3.38284
+[82]	valid_0's rmse: 1.83894	valid_0's l2: 3.38172
+[83]	valid_0's rmse: 1.83899	valid_0's l2: 3.3819
+[84]	valid_0's rmse: 1.83846	valid_0's l2: 3.37995
+[85]	valid_0's rmse: 1.83824	valid_0's l2: 3.37911
+[86]	valid_0's rmse: 1.83795	valid_0's l2: 3.37807
+[87]	valid_0's rmse: 1.83814	valid_0's l2: 3.37877
+[88]	valid_0's rmse: 1.83789	valid_0's l2: 3.37785
+[89]	valid_0's rmse: 1.83842	valid_0's l2: 3.37979
+[90]	valid_0's rmse: 1.83802	valid_0's l2: 3.37832
+[91]	valid_0's rmse: 1.83762	valid_0's l2: 3.37686
+[92]	valid_0's rmse: 1.83775	valid_0's l2: 3.37733
+[93]	valid_0's rmse: 1.83783	valid_0's l2: 3.37762
+[94]	valid_0's rmse: 1.83733	valid_0's l2: 3.37577
+[95]	valid_0's rmse: 1.83727	valid_0's l2: 3.37557
+[96]	valid_0's rmse: 1.83731	valid_0's l2: 3.3757
+[97]	valid_0's rmse: 1.83678	valid_0's l2: 3.37377
+[98]	valid_0's rmse: 1.83694	valid_0's l2: 3.37434
+[99]	valid_0's rmse: 1.83635	valid_0's l2: 3.37217
+[100]	valid_0's rmse: 1.83614	valid_0's l2: 3.37142
+final RMSE on validation set:  1.83614195432537
+final MSE on test set:  3.529766405184828
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse, mse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define the LightGBM model with specified hyperparameters
+    model = lgb.LGBMRegressor(learning_rate=0.01, num_leaves=31)
+    
+    # Train the model
+    model.fit(X_train, y_train, eval_set=[(X_valid, y_valid)], eval_metric='rmse', early_stopping_rounds=10)
+    
+    return model
+
+
+def predict(model, X):
+    # Use the trained model to make predictions
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['rings'])
+    le = LabelEncoder()
+
+    data_df['sex'] = le.fit_transform(data_df['sex'])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['rings'], axis=1)
+
+    y = data_df.rings.to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse, mse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+    print("final MSE on validation set: ", mse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['rings'])
+    submission_df = submission_df.drop(['rings'], axis=1)
+    submission_df['sex'] = le.fit_transform(submission_df["sex"])
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+[1]	valid_0's rmse: 3.16299	valid_0's l2: 10.0045
+[2]	valid_0's rmse: 3.144	valid_0's l2: 9.88475
+[3]	valid_0's rmse: 3.12526	valid_0's l2: 9.76726
+[4]	valid_0's rmse: 3.10678	valid_0's l2: 9.65207
+[5]	valid_0's rmse: 3.08858	valid_0's l2: 9.53931
+[6]	valid_0's rmse: 3.07063	valid_0's l2: 9.42876
+[7]	valid_0's rmse: 3.05293	valid_0's l2: 9.32039
+[8]	valid_0's rmse: 3.03549	valid_0's l2: 9.21423
+[9]	valid_0's rmse: 3.01827	valid_0's l2: 9.10995
+[10]	valid_0's rmse: 3.00127	valid_0's l2: 9.00761
+[11]	valid_0's rmse: 2.98452	valid_0's l2: 8.90734
+[12]	valid_0's rmse: 2.96799	valid_0's l2: 8.80895
+[13]	valid_0's rmse: 2.95165	valid_0's l2: 8.71223
+[14]	valid_0's rmse: 2.93561	valid_0's l2: 8.61779
+[15]	valid_0's rmse: 2.91971	valid_0's l2: 8.5247
+[16]	valid_0's rmse: 2.90404	valid_0's l2: 8.43343
+[17]	valid_0's rmse: 2.88861	valid_0's l2: 8.34408
+[18]	valid_0's rmse: 2.87344	valid_0's l2: 8.25668
+[19]	valid_0's rmse: 2.85841	valid_0's l2: 8.17052
+[20]	valid_0's rmse: 2.84363	valid_0's l2: 8.08625
+[21]	valid_0's rmse: 2.82901	valid_0's l2: 8.0033
+[22]	valid_0's rmse: 2.81463	valid_0's l2: 7.92213
+[23]	valid_0's rmse: 2.80045	valid_0's l2: 7.84251
+[24]	valid_0's rmse: 2.78645	valid_0's l2: 7.76429
+[25]	valid_0's rmse: 2.77272	valid_0's l2: 7.688
+[26]	valid_0's rmse: 2.75916	valid_0's l2: 7.61295
+[27]	valid_0's rmse: 2.74571	valid_0's l2: 7.5389
+[28]	valid_0's rmse: 2.73247	valid_0's l2: 7.46642
+[29]	valid_0's rmse: 2.71942	valid_0's l2: 7.39524
+[30]	valid_0's rmse: 2.70655	valid_0's l2: 7.32539
+[31]	valid_0's rmse: 2.69398	valid_0's l2: 7.25754
+[32]	valid_0's rmse: 2.68148	valid_0's l2: 7.19032
+[33]	valid_0's rmse: 2.66923	valid_0's l2: 7.12477
+[34]	valid_0's rmse: 2.65714	valid_0's l2: 7.06041
+[35]	valid_0's rmse: 2.64534	valid_0's l2: 6.99781
+[36]	valid_0's rmse: 2.63365	valid_0's l2: 6.9361
+[37]	valid_0's rmse: 2.62206	valid_0's l2: 6.87519
+[38]	valid_0's rmse: 2.61065	valid_0's l2: 6.81548
+[39]	valid_0's rmse: 2.59939	valid_0's l2: 6.75683
+[40]	valid_0's rmse: 2.58828	valid_0's l2: 6.69919
+[41]	valid_0's rmse: 2.57737	valid_0's l2: 6.64281
+[42]	valid_0's rmse: 2.56667	valid_0's l2: 6.5878
+[43]	valid_0's rmse: 2.55609	valid_0's l2: 6.53358
+[44]	valid_0's rmse: 2.54564	valid_0's l2: 6.48029
+[45]	valid_0's rmse: 2.5354	valid_0's l2: 6.42826
+[46]	valid_0's rmse: 2.52517	valid_0's l2: 6.37649
+[47]	valid_0's rmse: 2.51522	valid_0's l2: 6.32633
+[48]	valid_0's rmse: 2.50529	valid_0's l2: 6.27648
+[49]	valid_0's rmse: 2.49562	valid_0's l2: 6.2281
+[50]	valid_0's rmse: 2.48604	valid_0's l2: 6.18037
+[51]	valid_0's rmse: 2.4766	valid_0's l2: 6.13355
+[52]	valid_0's rmse: 2.46739	valid_0's l2: 6.088
+[53]	valid_0's rmse: 2.45823	valid_0's l2: 6.04291
+[54]	valid_0's rmse: 2.44911	valid_0's l2: 5.99814
+[55]	valid_0's rmse: 2.44019	valid_0's l2: 5.95453
+[56]	valid_0's rmse: 2.43142	valid_0's l2: 5.91179
+[57]	valid_0's rmse: 2.42287	valid_0's l2: 5.87032
+[58]	valid_0's rmse: 2.4144	valid_0's l2: 5.82931
+[59]	valid_0's rmse: 2.406	valid_0's l2: 5.78886
+[60]	valid_0's rmse: 2.39782	valid_0's l2: 5.74954
+[61]	valid_0's rmse: 2.38981	valid_0's l2: 5.71118
+[62]	valid_0's rmse: 2.38183	valid_0's l2: 5.67312
+[63]	valid_0's rmse: 2.37401	valid_0's l2: 5.63594
+[64]	valid_0's rmse: 2.36636	valid_0's l2: 5.59965
+[65]	valid_0's rmse: 2.35873	valid_0's l2: 5.5636
+[66]	valid_0's rmse: 2.35115	valid_0's l2: 5.52791
+[67]	valid_0's rmse: 2.34383	valid_0's l2: 5.49352
+[68]	valid_0's rmse: 2.33646	valid_0's l2: 5.45907
+[69]	valid_0's rmse: 2.32922	valid_0's l2: 5.42526
+[70]	valid_0's rmse: 2.32212	valid_0's l2: 5.39223
+[71]	valid_0's rmse: 2.31525	valid_0's l2: 5.36037
+[72]	valid_0's rmse: 2.30821	valid_0's l2: 5.32785
+[73]	valid_0's rmse: 2.30143	valid_0's l2: 5.29659
+[74]	valid_0's rmse: 2.2948	valid_0's l2: 5.26609
+[75]	valid_0's rmse: 2.28827	valid_0's l2: 5.2362
+[76]	valid_0's rmse: 2.28169	valid_0's l2: 5.20609
+[77]	valid_0's rmse: 2.27533	valid_0's l2: 5.17711
+[78]	valid_0's rmse: 2.26909	valid_0's l2: 5.14878
+[79]	valid_0's rmse: 2.26295	valid_0's l2: 5.12096
+[80]	valid_0's rmse: 2.25692	valid_0's l2: 5.09368
+[81]	valid_0's rmse: 2.25093	valid_0's l2: 5.06669
+[82]	valid_0's rmse: 2.24507	valid_0's l2: 5.04035
+[83]	valid_0's rmse: 2.23927	valid_0's l2: 5.01432
+[84]	valid_0's rmse: 2.23355	valid_0's l2: 4.98874
+[85]	valid_0's rmse: 2.22788	valid_0's l2: 4.96344
+[86]	valid_0's rmse: 2.2223	valid_0's l2: 4.93863
+[87]	valid_0's rmse: 2.21678	valid_0's l2: 4.91413
+[88]	valid_0's rmse: 2.21143	valid_0's l2: 4.8904
+[89]	valid_0's rmse: 2.20609	valid_0's l2: 4.86682
+[90]	valid_0's rmse: 2.20089	valid_0's l2: 4.8439
+[91]	valid_0's rmse: 2.19577	valid_0's l2: 4.82139
+[92]	valid_0's rmse: 2.19072	valid_0's l2: 4.79926
+[93]	valid_0's rmse: 2.18575	valid_0's l2: 4.77751
+[94]	valid_0's rmse: 2.18088	valid_0's l2: 4.75625
+[95]	valid_0's rmse: 2.17609	valid_0's l2: 4.73536
+[96]	valid_0's rmse: 2.17136	valid_0's l2: 4.7148
+[97]	valid_0's rmse: 2.16676	valid_0's l2: 4.69485
+[98]	valid_0's rmse: 2.16222	valid_0's l2: 4.67518
+[99]	valid_0's rmse: 2.15769	valid_0's l2: 4.65563
+[100]	valid_0's rmse: 2.1533	valid_0's l2: 4.63671
+final RMSE on validation set:  2.1533027777616907
+final MSE on validation set:  4.636712852716213
+final MSE on test set:  4.784730767182591
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

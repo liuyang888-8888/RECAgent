@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 85.810382604599,
+        "interact_count": 13,
+        "prompt_tokens": 12770,
+        "completion_tokens": 2461,
+        "RCR": 5
+    },
+    "task": {
+        "id": 9,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "heart_diseases",
+        "task_description": "构建一个随机森林分类模型，树的数量设置为10，用于预测个体是否患有心脏疾病。目标是根据患者的生理指标、生活习惯和医疗历史等特征，预测其是否患有心脏疾病。加载完数据集后，需要先进行缺失值处理，使用平均值的填充方式，最在测集上模型进行性能评估。"
+    }
+}

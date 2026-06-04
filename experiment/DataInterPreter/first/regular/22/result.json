@@ -1,0 +1,16 @@
+{
+    "result": {
+        "run_status": "failed",
+        "time": 0,
+        "interact_count": 38,
+        "prompt_tokens": 50065,
+        "completion_tokens": 8964
+    },
+    "task": {
+        "id": 22,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "monster",
+        "task_description": "帮我训练一个BIRCH的聚类模型，用于根据怪物的骨骼特征、毛发特征、颜色特征等属性，对怪物进行自动聚类。"
+    }
+}

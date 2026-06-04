@@ -1,0 +1,243 @@
+code:
+import pandas as pd
+
+# Load the training data
+train_data_path = 'E:\\csv\\nvidia_share_price_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Load the test data (assuming it exists in the same directory with a similar name)
+test_data_path = 'E:\\csv\\nvidia_share_price_test.csv'
+test_df = pd.read_csv(test_data_path)
+
+# Copy the DataFrames to avoid modifying the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the training data to understand its structure
+print("Training Data Preview:")
+print(train_df_copy.head())
+
+# Display the first few rows of the test data to understand its structure
+print("\nTest Data Preview:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData Types of Training Data:")
+print(train_df_copy.dtypes)
+
+# Check data types of each column in the test data
+print("\nData Types of Test Data:")
+print(test_df_copy.dtypes)
+
+# Perform data preprocessing steps
+# Example: Convert date column to datetime type (if applicable)
+if 'Date' in train_df_copy.columns:
+    train_df_copy['Date'] = pd.to_datetime(train_df_copy['Date'])
+    test_df_copy['Date'] = pd.to_datetime(test_df_copy['Date'])
+
+# Example: Extract year, month, and day from the date column
+if 'Date' in train_df_copy.columns:
+    train_df_copy['Year'] = train_df_copy['Date'].dt.year
+    train_df_copy['Month'] = train_df_copy['Date'].dt.month
+    train_df_copy['Day'] = train_df_copy['Date'].dt.day
+    
+    test_df_copy['Year'] = test_df_copy['Date'].dt.year
+    test_df_copy['Month'] = test_df_copy['Date'].dt.month
+    test_df_copy['Day'] = test_df_copy['Date'].dt.day
+
+# Example: Handle missing values (if any)
+# For simplicity, we'll fill missing values with the median for numerical columns
+numerical_columns = train_df_copy.select_dtypes(include=['number']).columns
+for col in numerical_columns:
+    if train_df_copy[col].isnull().any():
+        median_value = train_df_copy[col].median()
+        train_df_copy[col].fillna(median_value, inplace=True)
+        test_df_copy[col].fillna(median_value, inplace=True)
+
+# Display the first few rows of the preprocessed training data
+print("\nPreprocessed Training Data Preview:")
+print(train_df_copy.head())
+
+# Display the first few rows of the preprocessed test data
+print("\nPreprocessed Test Data Preview:")
+print(test_df_copy.head())
+execute_result:
+Training Data Preview:
+         Date        Open       Close        High         Low
+0  2022-01-14  263.000000  269.420013  271.970001  262.100006
+1  2018-07-19   62.735001   63.007500   63.347500   62.582500
+2  2013-12-31    4.000000    4.005000    4.025000    3.975000
+3  2011-03-18    4.535000    4.405000    4.550000    4.400000
+4  2024-04-15  890.979980  860.010010  906.130005  859.289978
+
+Test Data Preview:
+         Date        Open       Close        High         Low
+0  2022-01-14  263.000000  269.420013  271.970001  262.100006
+1  2018-07-19   62.735001   63.007500   63.347500   62.582500
+2  2013-12-31    4.000000    4.005000    4.025000    3.975000
+3  2011-03-18    4.535000    4.405000    4.550000    4.400000
+4  2024-04-15  890.979980  860.010010  906.130005  859.289978
+
+Data Types of Training Data:
+Date      object
+Open     float64
+Close    float64
+High     float64
+Low      float64
+dtype: object
+
+Data Types of Test Data:
+Date      object
+Open     float64
+Close    float64
+High     float64
+Low      float64
+dtype: object
+
+Preprocessed Training Data Preview:
+        Date        Open       Close        High         Low  Year  Month  Day
+0 2022-01-14  263.000000  269.420013  271.970001  262.100006  2022      1   14
+1 2018-07-19   62.735001   63.007500   63.347500   62.582500  2018      7   19
+2 2013-12-31    4.000000    4.005000    4.025000    3.975000  2013     12   31
+3 2011-03-18    4.535000    4.405000    4.550000    4.400000  2011      3   18
+4 2024-04-15  890.979980  860.010010  906.130005  859.289978  2024      4   15
+
+Preprocessed Test Data Preview:
+        Date        Open       Close        High         Low  Year  Month  Day
+0 2022-01-14  263.000000  269.420013  271.970001  262.100006  2022      1   14
+1 2018-07-19   62.735001   63.007500   63.347500   62.582500  2018      7   19
+2 2013-12-31    4.000000    4.005000    4.025000    3.975000  2013     12   31
+3 2011-03-18    4.535000    4.405000    4.550000    4.400000  2011      3   18
+4 2024-04-15  890.979980  860.010010  906.130005  859.289978  2024      4   15
+is_success:
+True
+code:
+# Set the 'Date' column as the index for both training and test datasets
+train_df_copy.set_index('Date', inplace=True)
+test_df_copy.set_index('Date', inplace=True)
+
+# Check for and handle missing values in numerical columns
+numerical_columns = ['Open', 'Close', 'High', 'Low', 'Year', 'Month', 'Day']
+for col in numerical_columns:
+    if train_df_copy[col].isnull().any():
+        median_value = train_df_copy[col].median()
+        train_df_copy[col].fillna(median_value, inplace=True)
+        test_df_copy[col].fillna(median_value, inplace=True)
+
+# Verify the preprocessing steps
+print("\nPreprocessed Training Data with Date as Index:")
+print(train_df_copy.head())
+print("\nPreprocessed Test Data with Date as Index:")
+print(test_df_copy.head())
+execute_result:
+Preprocessed Training Data with Date as Index:
+                  Open       Close        High         Low  Year  Month  Day
+Date                                                                        
+2022-01-14  263.000000  269.420013  271.970001  262.100006  2022      1   14
+2018-07-19   62.735001   63.007500   63.347500   62.582500  2018      7   19
+2013-12-31    4.000000    4.005000    4.025000    3.975000  2013     12   31
+2011-03-18    4.535000    4.405000    4.550000    4.400000  2011      3   18
+2024-04-15  890.979980  860.010010  906.130005  859.289978  2024      4   15
+
+Preprocessed Test Data with Date as Index:
+                  Open       Close        High         Low  Year  Month  Day
+Date                                                                        
+2022-01-14  263.000000  269.420013  271.970001  262.100006  2022      1   14
+2018-07-19   62.735001   63.007500   63.347500   62.582500  2018      7   19
+2013-12-31    4.000000    4.005000    4.025000    3.975000  2013     12   31
+2011-03-18    4.535000    4.405000    4.550000    4.400000  2011      3   18
+2024-04-15  890.979980  860.010010  906.130005  859.289978  2024      4   15
+is_success:
+True
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+
+# Selecting the target variable (Close price) for the ARIMA model
+target_column = 'Close'
+train_target = train_df_copy[target_column]
+
+# Fitting the ARIMA model
+# Here we use (p, d, q) = (5, 1, 0) as a starting point for the ARIMA parameters
+# p: The number of lag observations included in the model.
+# d: The number of times that the raw observations are differenced.
+# q: The size of the moving average window.
+model = ARIMA(train_target, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Summary of the model
+print(model_fit.summary())
+execute_result:
+SARIMAX Results                                
+==============================================================================
+Dep. Variable:                  Close   No. Observations:                 6116
+Model:                 ARIMA(5, 1, 0)   Log Likelihood              -38476.094
+Date:                Sun, 25 May 2025   AIC                          76964.188
+Time:                        19:13:04   BIC                          77004.499
+Sample:                             0   HQIC                         76978.173
+                               - 6116                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1         -0.8522      0.011    -76.480      0.000      -0.874      -0.830
+ar.L2         -0.6869      0.014    -48.888      0.000      -0.714      -0.659
+ar.L3         -0.5200      0.015    -35.643      0.000      -0.549      -0.491
+ar.L4         -0.3341      0.014    -23.770      0.000      -0.362      -0.307
+ar.L5         -0.1615      0.012    -14.026      0.000      -0.184      -0.139
+sigma2      1.699e+04    110.527    153.756      0.000    1.68e+04    1.72e+04
+===================================================================================
+Ljung-Box (L1) (Q):                   3.32   Jarque-Bera (JB):             54945.45
+Prob(Q):                              0.07   Prob(JB):                         0.00
+Heteroskedasticity (H):               1.09   Skew:                             3.00
+Prob(H) (two-sided):                  0.05   Kurtosis:                        16.40
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+is_success:
+True
+code:
+# Predict the highest market value (Close price) using the fitted ARIMA model
+predictions = model_fit.predict(start=train_df_copy.index[0], end=train_df_copy.index[-1])
+predicted_highest_value = predictions.max()
+actual_highest_value = train_df_copy['Close'].max()
+
+print(f"Predicted Highest Market Value (Close Price): {predicted_highest_value}")
+print(f"Actual Highest Market Value (Close Price): {actual_highest_value}")
+execute_result:
+Predicted Highest Market Value (Close Price): 409.811299490255
+Actual Highest Market Value (Close Price): 950.02002
+is_success:
+True
+code:
+from sklearn.metrics import mean_squared_error
+
+# Predictions on the training set
+predictions_train = model_fit.predict(start=train_df_copy.index[0], end=train_df_copy.index[-1])
+
+# Actual values from the training set
+actual_values_train = train_df_copy['Close']
+
+# Calculate Mean Squared Error (MSE)
+mse = mean_squared_error(actual_values_train, predictions_train)
+print(f"Mean Squared Error (MSE) on the training set: {mse}")
+execute_result:
+Mean Squared Error (MSE) on the training set: 17107.214562629102
+is_success:
+True
+code:
+# Predicting on the test set using the trained model
+predictions_test = model_fit.predict(start=test_df_copy.index[0], end=test_df_copy.index[-1])
+actual_values_test = test_df_copy['Close']
+mse_test = mean_squared_error(actual_values_test, predictions_test)
+print(f"Mean Squared Error (MSE) on the test set: {mse_test}")
+execute_result:
+Mean Squared Error (MSE) on the test set: 17107.214562629102
+is_success:
+True

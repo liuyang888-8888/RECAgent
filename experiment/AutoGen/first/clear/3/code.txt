@@ -1,0 +1,227 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import f1_score
+import joblib
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 对 pdDistrict 字段进行独热编码
+encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+pdDistrict_encoded_train = encoder.fit_transform(train_df[['pdDistrict']])
+pdDistrict_encoded_test = encoder.transform(test_df[['pdDistrict']])
+
+# 将独热编码后的数据与原始数据合并
+train_df_encoded = pd.concat([train_df.drop('pdDistrict', axis=1), pd.DataFrame(pdDistrict_encoded_train, columns=encoder.get_feature_names_out(['pdDistrict']))], axis=1)
+test_df_encoded = pd.concat([test_df.drop('pdDistrict', axis=1), pd.DataFrame(pdDistrict_encoded_test, columns=encoder.get_feature_names_out(['pdDistrict']))], axis=1)
+
+# 分离特征和标签
+X_train = train_df_encoded.drop('category', axis=1)
+y_train = train_df_encoded['category']
+X_test = test_df_encoded.drop('category', axis=1)
+y_test = test_df_encoded['category']
+
+# 3. 构建模型
+model = LogisticRegression(penalty='l2', C=1.5, multi_class='multinomial', solver='lbfgs', max_iter=1000)
+
+# 4. 训练模型
+model.fit(X_train, y_train)
+
+# 5. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+# 6. 保存模型
+model_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\logistic_regression_model.pkl'
+joblib.dump(model, model_path)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_410b64f0a2ae9d8bd489987ad93edead780a4ab8e6d0b4df12af0c96b1685d26.py", line 16, in <module>
+    encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+TypeError: OneHotEncoder.__init__() got an unexpected keyword argument 'sparse'
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+import joblib
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 对 pdDistrict 字段进行独热编码
+train_df_encoded = pd.get_dummies(train_df, columns=['pdDistrict'])
+test_df_encoded = pd.get_dummies(test_df, columns=['pdDistrict'])
+
+# 确保训练集和测试集的列一致
+missing_cols = set(train_df_encoded.columns) - set(test_df_encoded.columns)
+for c in missing_cols:
+    test_df_encoded[c] = 0
+test_df_encoded = test_df_encoded[train_df_encoded.columns]
+
+# 分离特征和标签
+X_train = train_df_encoded.drop('category', axis=1)
+y_train = train_df_encoded['category']
+X_test = test_df_encoded.drop('category', axis=1)
+y_test = test_df_encoded['category']
+
+# 3. 构建模型
+model = LogisticRegression(penalty='l2', C=1.5, multi_class='multinomial', solver='lbfgs', max_iter=1000)
+
+# 4. 训练模型
+model.fit(X_train, y_train)
+
+# 5. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+# 6. 保存模型
+model_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\logistic_regression_model.pkl'
+joblib.dump(model, model_path)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_fe5ca7c6afd78aa37fa923800c103cf458c6ca52f15eb3abe35b46a3fff96c10.py", line 34, in <module>
+    model.fit(X_train, y_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\linear_model\_logistic.py", line 1222, in fit
+    X, y = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2961, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1370, in check_X_y
+    X = check_array(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 973, in check_array
+    array = array.astype(new_dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 6643, in astype
+    new_data = self._mgr.astype(dtype=dtype, copy=copy, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\managers.py", line 430, in astype
+    return self.apply(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\managers.py", line 363, in apply
+    applied = getattr(b, f)(**kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\blocks.py", line 758, in astype
+    new_values = astype_array_safe(values, dtype, copy=copy, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\dtypes\astype.py", line 237, in astype_array_safe
+    new_values = astype_array(values, dtype, copy=copy)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\dtypes\astype.py", line 182, in astype_array
+    values = _astype_nansafe(values, dtype, copy=copy)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\dtypes\astype.py", line 133, in _astype_nansafe
+    return arr.astype(dtype, copy=True)
+ValueError: could not convert string to float: 'Wednesday'
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+import joblib
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 对所有非数值特征进行独热编码
+train_df_encoded = pd.get_dummies(train_df, columns=['pdDistrict', 'dayOfWeek'])
+test_df_encoded = pd.get_dummies(test_df, columns=['pdDistrict', 'dayOfWeek'])
+
+# 确保训练集和测试集的列一致
+missing_cols = set(train_df_encoded.columns) - set(test_df_encoded.columns)
+for c in missing_cols:
+    test_df_encoded[c] = 0
+test_df_encoded = test_df_encoded[train_df_encoded.columns]
+
+# 分离特征和标签
+X_train = train_df_encoded.drop('category', axis=1)
+y_train = train_df_encoded['category']
+X_test = test_df_encoded.drop('category', axis=1)
+y_test = test_df_encoded['category']
+
+# 3. 构建模型
+model = LogisticRegression(penalty='l2', C=1.5, multi_class='multinomial', solver='lbfgs', max_iter=1000)
+
+# 4. 训练模型
+model.fit(X_train, y_train)
+
+# 5. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+# 6. 保存模型
+model_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\logistic_regression_model.pkl'
+joblib.dump(model, model_path)
+
+
+执行结果：
+
+Timeout
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+import joblib
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 对所有非数值特征进行独热编码
+train_df_encoded = pd.get_dummies(train_df, columns=['pdDistrict', 'dayOfWeek'])
+test_df_encoded = pd.get_dummies(test_df, columns=['pdDistrict', 'dayOfWeek'])
+
+# 确保训练集和测试集的列一致
+missing_cols = set(train_df_encoded.columns) - set(test_df_encoded.columns)
+for c in missing_cols:
+    test_df_encoded[c] = 0
+test_df_encoded = test_df_encoded[train_df_encoded.columns]
+
+# 分离特征和标签
+X_train = train_df_encoded.drop('category', axis=1)
+y_train = train_df_encoded['category']
+X_test = test_df_encoded.drop('category', axis=1)
+y_test = test_df_encoded['category']
+
+# 3. 构建模型
+model = LogisticRegression(penalty='l2', C=1.5, multi_class='multinomial', solver='saga', max_iter=2000)
+
+# 4. 训练模型
+model.fit(X_train, y_train)
+
+# 5. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+# 6. 保存模型
+model_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\logistic_regression_model.pkl'
+joblib.dump(model, model_path)
+
+
+执行结果：
+
+Timeout

@@ -1,0 +1,123 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 加载数据集
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# 处理空值，使用平均值填充
+train_data.fillna(train_data.mean(), inplace=True)
+test_data.fillna(test_data.mean(), inplace=True)
+
+# 将非数值特征转换为数值特征
+label_encoders = {}
+for column in train_data.columns:
+    if train_data[column].dtype == 'object':
+        le = LabelEncoder()
+        train_data[column] = le.fit_transform(train_data[column])
+        test_data[column] = le.transform(test_data[column])
+        label_encoders[column] = le
+
+# 将数据集分为特征和标签
+X_train = train_data.drop(columns=['class'])
+y_train = train_data['class']
+X_test = test_data.drop(columns=['class'])
+y_test = test_data['class']
+
+# 训练 AdaBoost 分类模型
+model = AdaBoostClassifier(n_estimators=30, learning_rate=0.01, random_state=42)
+model.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = model.predict(X_test)
+
+# 计算并报告测试集上的 F1 分数（加权平均）
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+# 保存预测结果
+test_data['predicted_class'] = y_pred
+test_data.to_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test_predictions.csv', index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_6b4dc74b5228709a0d333b6e285baf022b17fd4694b045ba96799845175b1c11.py", line 12, in <module>
+    train_data.fillna(train_data.mean(), inplace=True)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 11693, in mean
+    result = super().mean(axis, skipna, numeric_only, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 12420, in mean
+    return self._stat_function(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 12377, in _stat_function
+    return self._reduce(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 11562, in _reduce
+    res = df._mgr.reduce(blk_func)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\managers.py", line 1500, in reduce
+    nbs = blk.reduce(func)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\blocks.py", line 404, in reduce
+    result = func(self.values)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 11481, in blk_func
+    return op(values, axis=axis, skipna=skipna, **kwds)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\nanops.py", line 147, in f
+    result = alt(values, axis=axis, skipna=skipna, **kwds)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\nanops.py", line 404, in new_func
+    result = func(values, axis=axis, skipna=skipna, mask=mask, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\nanops.py", line 719, in nanmean
+    the_sum = values.sum(axis, dtype=dtype_sum)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\_methods.py", line 52, in _sum
+    return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+TypeError: can only concatenate str (not "int") to str
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 加载数据集
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# 将非数值特征转换为数值特征
+label_encoders = {}
+for column in train_data.columns:
+    if train_data[column].dtype == 'object':
+        le = LabelEncoder()
+        train_data[column] = le.fit_transform(train_data[column])
+        test_data[column] = le.transform(test_data[column])
+        label_encoders[column] = le
+
+# 处理空值，使用平均值填充
+train_data.fillna(train_data.mean(), inplace=True)
+test_data.fillna(test_data.mean(), inplace=True)
+
+# 将数据集分为特征和标签
+X_train = train_data.drop(columns=['class'])
+y_train = train_data['class']
+X_test = test_data.drop(columns=['class'])
+y_test = test_data['class']
+
+# 训练 AdaBoost 分类模型
+model = AdaBoostClassifier(n_estimators=30, learning_rate=0.01, random_state=42)
+model.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = model.predict(X_test)
+
+# 计算并报告测试集上的 F1 分数（加权平均）
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+# 保存预测结果
+test_data['predicted_class'] = y_pred
+test_data.to_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test_predictions.csv', index=False)
+
+
+执行结果：
+F1 Score (weighted): 0.6080221906252735

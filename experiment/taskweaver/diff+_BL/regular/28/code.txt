@@ -1,0 +1,151 @@
+import os
+import pandas as pd
+
+# Define the directory path
+folder_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv'
+
+# List all files in the directory
+files = os.listdir(folder_path)
+
+# Display the first few lines of each file
+for file in files:
+    file_path = os.path.join(folder_path, file)
+    if os.path.isfile(file_path):
+        print(f'File: {file}')
+        with open(file_path, 'r') as f:
+            print(f.read(100))  # Display the first 100 characters
+
+files
+result os execution:The execution of the generated python code above has succeeded
+
+The values of variables of the above Python code after execution are:
+
+abalone_test.csv
+abalone_train.csv
+atmospheric_carbon_dioxide_test.csv
+atmospheric_carbon_dioxide_train.csv
+banknote_authentication_test.csv
+banknote_authentication_train.csv
+bank_customer_churn_test.csv
+bank_customer_churn_train.csv
+bike_sharing_test.csv
+bike_sharing_train.csv
+bitcoin_price_test.csv
+bitcoin_price_train.csv
+car_evaluation_test.csv
+car_evaluation_train.csv
+census_income_train.csv
+cirrhosis_patient_test.csv
+cirrhosis_patient_train.csv
+crab_age_test.csv
+crab_age_train.csv
+crime_category_test.csv
+crime_category_train.csv
+electricity_sales_test.csv
+electricity_sales_train.csv
+employee_attrition_test.csv
+employee_attrition_train.csv
+forest_fires_test.csv
+forest_fires_train.csv
+heart_diseases_test.csv
+heart_diseases_train.csv
+horse_health_outcomes_test.csv
+horse_health_outcomes_train.csv
+kidney_stone_test.csv
+kidney_stone_train.csv
+media_campaign_cost_test.csv
+media_campaign_cost_train.csv
+mohs_hardness_test.csv
+mohs_hardness_train.csv
+monster_train.csv
+nvidia_share_price_test.csv
+nvidia_share_price_train.csv
+obesity_cvd_risk_train.csv
+reservation_cancellation_test.csv
+reservation_cancellation_train.csv
+rice_cammeo_and_osmancik_test.csv
+rice_cammeo_and_osmancik_train.csv
+secondary_mushroom_test.csv
+secondary_mushroom_train.csv
+smoker_status_bio_signals_test.csv
+smoker_status_bio_signals_train.csv
+sp500_index_test.csv
+sp500_index_train.csv
+student_performance_test.csv
+student_performance_train.csv
+titanic_train.csv
+wild_blueberry_yield_test.csv
+wild_blueberry_yield_train.csv
+import pandas as pd
+
+# Define the file paths
+train_file_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\media_campaign_cost_train.csv'
+test_file_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\media_campaign_cost_test.csv'
+
+# Load the data
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Display the first 5 rows of each dataset
+print('Training Data - First 5 Rows:')
+print(train_data.head())
+print('\nTest Data - First 5 Rows:')
+print(test_data.head())
+
+train_data, test_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(           id  store_sales  unit_sales  total_children  num_children_at_home  avg_cars_at_home  gross_weight  recyclable_package  low_fat  units_per_case  store_sqft  coffee_bar  video_store  salad_bar  prepared_food  florist   cost
+ 0           2        14.08           4               0                     0                 3          21.3                   1        0              26       21215           1            0          0              0        0  83.51
+ 1           7         4.29           3               2                     0                 2          16.9                   1        0               2       23688           1            1          1              1        1  68.84
+ ...       ...          ...         ...             ...                   ...               ...           ...                 ...      ...             ...         ...         ...          ...        ...            ...      ...    ...
+ 28825  360309         3.34           2               1                     1                 2          17.7                   1        0              33       21215           1            0          0              0        0  90.58
+ 28826  360333        10.74           3               0                     0                 2          11.3                   1        0              35       30584           1            1          1              1        1  87.07
+ 
+ [28827 rows x 17 columns],
+           id  store_sales  unit_sales  total_children  num_children_at_home  avg_cars_at_home  gross_weight  recyclable_package  low_fat  units_per_case  store_sqft  coffee_bar  video_store  salad_bar  prepared_food  florist    cost
+ 0        115         8.52           3               3                     1                 1         19.40                   1        0               6       34452           1            0          0              0        1   75.44
+ 1        117         2.13           3               0                     0                 3         10.60                   1        0              32       30797           1            1          1              1        1  129.38
+ ...      ...          ...         ...             ...                   ...               ...           ...                 ...      ...             ...         ...         ...          ...        ...            ...      ...     ...
+ 7205  360081         7.23           3               1                     0                 2         21.80                   1        0               9       27694           1            1          1              1        1   82.62
+ 7206  360197         6.20           4               0                     0                 1          9.49                   1        0              23       33858           1            0          1              1        1  138.81
+ 
+ [7207 rows x 17 columns])import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Load the data
+train_file_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\media_campaign_cost_train.csv'
+train_data = pd.read_csv(train_file_path)
+
+# Extract the 'store_sales' column as the time series data
+series = train_data['store_sales']
+
+# Fit the ARIMA model
+model = ARIMA(series, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Make predictions
+predictions = model_fit.predict(start=0, end=len(series)-1)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(series, predictions)
+
+mse, predictions, series
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(12.703392441512237,
+ 0         0.000000
+ 1        14.079848
+            ...    
+ 28825     6.573067
+ 28826     6.785921
+ Name: predicted_mean, Length: 28827, dtype: float64,
+ 0        14.08
+ 1         4.29
+          ...  
+ 28825     3.34
+ 28826    10.74
+ Name: store_sales, Length: 28827, dtype: float64)

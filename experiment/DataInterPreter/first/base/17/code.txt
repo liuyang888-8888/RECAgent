@@ -1,0 +1,355 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\mohs_hardness_train.csv')
+test_df = pd.read_csv('E:\\csv\\mohs_hardness_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Function to preprocess the data
+def preprocess_data(df):
+    # Monitor data types per column
+    print("Data types before preprocessing:")
+    print(df.dtypes)
+    
+    # Identify categorical and numerical columns
+    categorical_cols = df.select_dtypes(include=['object']).columns
+    numerical_cols = df.select_dtypes(include=['int64', 'float64']).columns
+    
+    # Apply appropriate methods for categorical data
+    for col in categorical_cols:
+        if col != 'label':  # Ensure we do not touch the label column
+            df[col] = df[col].astype('category').cat.codes
+    
+    # Apply appropriate methods for numerical data
+    for col in numerical_cols:
+        if col != 'label':  # Ensure we do not touch the label column
+            df[col] = (df[col] - df[col].mean()) / df[col].std()
+    
+    # Monitor data types after preprocessing
+    print("Data types after preprocessing:")
+    print(df.dtypes)
+    
+    return df
+
+# Preprocess the training and testing datasets
+train_df_preprocessed = preprocess_data(train_df_copy)
+test_df_preprocessed = preprocess_data(test_df_copy)
+
+# Display the first few rows of the preprocessed datasets
+print("Preprocessed Training Data:")
+print(train_df_preprocessed.head())
+print("Preprocessed Testing Data:")
+print(test_df_preprocessed.head())
+execute_result:
+Data types before preprocessing:
+id                         int64
+allelectrons_Total       float64
+density_Total            float64
+allelectrons_Average     float64
+val_e_Average            float64
+atomicweight_Average     float64
+ionenergy_Average        float64
+el_neg_chi_Average       float64
+R_vdw_element_Average    float64
+zaratio_Average          float64
+density_Average          float64
+Hardness                 float64
+dtype: object
+Data types after preprocessing:
+id                       float64
+allelectrons_Total       float64
+density_Total            float64
+allelectrons_Average     float64
+val_e_Average            float64
+atomicweight_Average     float64
+ionenergy_Average        float64
+el_neg_chi_Average       float64
+R_vdw_element_Average    float64
+zaratio_Average          float64
+density_Average          float64
+Hardness                 float64
+dtype: object
+Data types before preprocessing:
+id                         int64
+allelectrons_Total       float64
+density_Total            float64
+allelectrons_Average     float64
+val_e_Average            float64
+atomicweight_Average     float64
+ionenergy_Average        float64
+el_neg_chi_Average       float64
+R_vdw_element_Average    float64
+zaratio_Average          float64
+density_Average          float64
+Hardness                 float64
+dtype: object
+Data types after preprocessing:
+id                       float64
+allelectrons_Total       float64
+density_Total            float64
+allelectrons_Average     float64
+val_e_Average            float64
+atomicweight_Average     float64
+ionenergy_Average        float64
+el_neg_chi_Average       float64
+R_vdw_element_Average    float64
+zaratio_Average          float64
+density_Average          float64
+Hardness                 float64
+dtype: object
+Preprocessed Training Data:
+         id  allelectrons_Total  ...  density_Average  Hardness
+0 -1.735140           -0.127789  ...        -0.730297  1.095630
+1 -1.734807           -0.238170  ...        -0.325343 -1.273493
+2 -1.734142           -0.054201  ...        -0.141291  0.799490
+3 -1.733809            0.014788  ...         0.414394  0.799490
+4 -1.733476           -0.357750  ...        -0.684751 -1.569633
+
+[5 rows x 12 columns]
+Preprocessed Testing Data:
+         id  allelectrons_Total  ...  density_Average  Hardness
+0 -1.716956           -0.116905  ...        -0.629138  0.827727
+1 -1.715957           -0.116905  ...        -0.695311  0.827727
+2 -1.714292           -0.036635  ...        -0.075177  0.827727
+3 -1.713626           -0.229283  ...        -0.719702  0.827727
+4 -1.712294           -0.096838  ...        -0.683117 -0.688294
+
+[5 rows x 12 columns]
+is_success:
+True
+code:
+def handle_missing_values(df):
+    # Check for missing values
+    print("Missing values before handling:")
+    print(df.isnull().sum())
+    
+    # Fill missing values with median for numerical columns
+    numerical_cols = df.select_dtypes(include=['int64', 'float64']).columns
+    for col in numerical_cols:
+        if col != 'label':
+            df[col].fillna(df[col].median(), inplace=True)
+    
+    # Check for missing values after handling
+    print("Missing values after handling:")
+    print(df.isnull().sum())
+    return df
+
+# Apply the function to both training and testing datasets
+train_df_preprocessed = handle_missing_values(train_df_preprocessed.copy())
+test_df_preprocessed = handle_missing_values(test_df_preprocessed.copy())
+
+print("Preprocessed Training Data after handling missing values:")
+print(train_df_preprocessed.head())
+print("Preprocessed Testing Data after handling missing values:")
+print(test_df_preprocessed.head())
+execute_result:
+Missing values before handling:
+id                       0
+allelectrons_Total       0
+density_Total            0
+allelectrons_Average     0
+val_e_Average            0
+atomicweight_Average     0
+ionenergy_Average        0
+el_neg_chi_Average       0
+R_vdw_element_Average    0
+zaratio_Average          0
+density_Average          0
+Hardness                 0
+dtype: int64
+Missing values after handling:
+id                       0
+allelectrons_Total       0
+density_Total            0
+allelectrons_Average     0
+val_e_Average            0
+atomicweight_Average     0
+ionenergy_Average        0
+el_neg_chi_Average       0
+R_vdw_element_Average    0
+zaratio_Average          0
+density_Average          0
+Hardness                 0
+dtype: int64
+Missing values before handling:
+id                       0
+allelectrons_Total       0
+density_Total            0
+allelectrons_Average     0
+val_e_Average            0
+atomicweight_Average     0
+ionenergy_Average        0
+el_neg_chi_Average       0
+R_vdw_element_Average    0
+zaratio_Average          0
+density_Average          0
+Hardness                 0
+dtype: int64
+Missing values after handling:
+id                       0
+allelectrons_Total       0
+density_Total            0
+allelectrons_Average     0
+val_e_Average            0
+atomicweight_Average     0
+ionenergy_Average        0
+el_neg_chi_Average       0
+R_vdw_element_Average    0
+zaratio_Average          0
+density_Average          0
+Hardness                 0
+dtype: int64
+Preprocessed Training Data after handling missing values:
+         id  allelectrons_Total  ...  density_Average  Hardness
+0 -1.735140           -0.127789  ...        -0.730297  1.095630
+1 -1.734807           -0.238170  ...        -0.325343 -1.273493
+2 -1.734142           -0.054201  ...        -0.141291  0.799490
+3 -1.733809            0.014788  ...         0.414394  0.799490
+4 -1.733476           -0.357750  ...        -0.684751 -1.569633
+
+[5 rows x 12 columns]
+Preprocessed Testing Data after handling missing values:
+         id  allelectrons_Total  ...  density_Average  Hardness
+0 -1.716956           -0.116905  ...        -0.629138  0.827727
+1 -1.715957           -0.116905  ...        -0.695311  0.827727
+2 -1.714292           -0.036635  ...        -0.075177  0.827727
+3 -1.713626           -0.229283  ...        -0.719702  0.827727
+4 -1.712294           -0.096838  ...        -0.683117 -0.688294
+
+[5 rows x 12 columns]
+is_success:
+True
+code:
+# Split the preprocessed data into features (X) and target variable (y)
+def split_features_target(df):
+    X = df.drop(columns=['Hardness'])
+    y = df['Hardness']
+    return X, y
+
+# Apply the function to both training and testing datasets
+X_train, y_train = split_features_target(train_df_preprocessed.copy())
+X_test, y_test = split_features_target(test_df_preprocessed.copy())
+
+# Display the first few rows of the split data
+print("Training Features:")
+print(X_train.head())
+print("\nTraining Target:")
+print(y_train.head())
+print("\nTesting Features:")
+print(X_test.head())
+print("\nTesting Target:")
+print(y_test.head())
+execute_result:
+Training Features:
+         id  allelectrons_Total  ...  zaratio_Average  density_Average
+0 -1.735140           -0.127789  ...        -0.007414        -0.730297
+1 -1.734807           -0.238170  ...        -0.187387        -0.325343
+2 -1.734142           -0.054201  ...        -0.007142        -0.141291
+3 -1.733809            0.014788  ...        -0.428978         0.414394
+4 -1.733476           -0.357750  ...         0.093307        -0.684751
+
+[5 rows x 11 columns]
+
+Training Target:
+0    1.095630
+1   -1.273493
+2    0.799490
+3    0.799490
+4   -1.569633
+Name: Hardness, dtype: float64
+
+Testing Features:
+         id  allelectrons_Total  ...  zaratio_Average  density_Average
+0 -1.716956           -0.116905  ...         0.031352        -0.629138
+1 -1.715957           -0.116905  ...        -0.072412        -0.695311
+2 -1.714292           -0.036635  ...        -0.019538        -0.075177
+3 -1.713626           -0.229283  ...         0.075831        -0.719702
+4 -1.712294           -0.096838  ...        -0.191379        -0.683117
+
+[5 rows x 11 columns]
+
+Testing Target:
+0    0.827727
+1    0.827727
+2    0.827727
+3    0.827727
+4   -0.688294
+Name: Hardness, dtype: float64
+is_success:
+True
+code:
+from sklearn.model_selection import train_test_split, GridSearchCV
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Splitting the training data into training and validation sets
+X_train_val, X_val, y_train_val, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+
+# Initialize the XGBoost Regressor
+xgb_model = XGBRegressor(objective='reg:squarederror', random_state=42)
+
+# Define the parameter grid for Grid Search
+param_grid = {
+    'n_estimators': [100, 200, 300],
+    'max_depth': [3, 5, 7],
+    'learning_rate': [0.01, 0.1, 0.2],
+    'subsample': [0.8, 1.0],
+    'colsample_bytree': [0.8, 1.0]
+}
+
+# Perform Grid Search to find the best parameters
+grid_search = GridSearchCV(estimator=xgb_model, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error', n_jobs=-1)
+grid_search.fit(X_train_val, y_train_val)
+
+# Get the best model
+best_model = grid_search.best_estimator_
+
+# Evaluate the best model on the validation set
+y_val_pred = best_model.predict(X_val)
+val_mse = mean_squared_error(y_val, y_val_pred)
+val_r2 = r2_score(y_val, y_val_pred)
+
+print(f"Best Model Parameters: {grid_search.best_params_}")
+print(f"Validation MSE: {val_mse}")
+print(f"Validation R2 Score: {val_r2}")
+
+# Train the best model on the entire training set
+best_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_test_pred = best_model.predict(X_test)
+
+# Evaluate the model on the test set
+test_mse = mean_squared_error(y_test, y_test_pred)
+test_r2 = r2_score(y_test, y_test_pred)
+
+print(f"Test MSE: {test_mse}")
+print(f"Test R2 Score: {test_r2}")
+execute_result:
+Best Model Parameters: {'colsample_bytree': 0.8, 'learning_rate': 0.01, 'max_depth': 7, 'n_estimators': 300, 'subsample': 0.8}
+Validation MSE: 0.5715098653842963
+Validation R2 Score: 0.4376298754021698
+Test MSE: 0.5687237605211941
+Test R2 Score: 0.43100294598504285
+is_success:
+True
+code:
+# Since the model has already been trained and the test data is already preprocessed,
+# we can directly use the best_model and the preprocessed test data to evaluate the model.
+
+# Predicting the hardness values for the test set
+y_test_pred = best_model.predict(X_test)
+
+# Calculating the Mean Squared Error (MSE) for the test set
+test_mse = mean_squared_error(y_test, y_test_pred)
+
+# Printing the test MSE
+print(f"Test MSE: {test_mse}")
+execute_result:
+Test MSE: 0.5687237605211941
+is_success:
+True

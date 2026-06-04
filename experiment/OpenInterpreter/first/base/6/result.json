@@ -1,0 +1,20 @@
+{
+    "task": {
+        "id": 6,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "kidney_stone",
+        "task_description": "基于 kidney_stone 数据集，构建一个分类模型，用于根据尿液分析（如尿液中各种成分的浓度）预测患者是否存在肾结石。该任务属于二分类问题，目标是根据输入特征预测肾结石的存在（是/否）。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 135.96890544891357,
+        "metrics": 0.7817,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 6,
+        "prompt_tokens": 15458,
+        "completion_tokens": 1775
+    }
+}

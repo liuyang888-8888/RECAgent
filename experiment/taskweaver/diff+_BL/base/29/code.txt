@@ -1,0 +1,53 @@
+import pandas as pd
+
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\nvidia_share_price_train.csv'
+nvidia_data = pd.read_csv(file_path)
+nvidia_data.head(), nvidia_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(         Date        Open       Close        High         Low
+ 0  2022-01-14  263.000000  269.420013  271.970001  262.100006
+ 1  2018-07-19   62.735001   63.007500   63.347500   62.582500
+ 2  2013-12-31    4.000000    4.005000    4.025000    3.975000
+ 3  2011-03-18    4.535000    4.405000    4.550000    4.400000
+ 4  2024-04-15  890.979980  860.010010  906.130005  859.289978,
+             Date        Open       Close        High         Low
+ 0     2022-01-14  263.000000  269.420013  271.970001  262.100006
+ 1     2018-07-19   62.735001   63.007500   63.347500   62.582500
+ ...          ...         ...         ...         ...         ...
+ 6114  2021-06-07  175.712494  176.190002  178.125000  171.927505
+ 6115  2003-06-09    2.133333    2.120833    2.188333    2.088333
+ 
+ [6116 rows x 5 columns])from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Extract the 'Date' and 'High' columns
+nvidia_data['Date'] = pd.to_datetime(nvidia_data['Date'])
+nvidia_data = nvidia_data.sort_values('Date')
+
+# Create a feature matrix (X) and target vector (y)
+X = nvidia_data[['Date']].values
+y = nvidia_data['High'].values
+
+# Convert the date to a numerical format (days since the first date)
+X = (X - X[0]) / np.timedelta64(1, 'D')
+
+# Fit the model
+model = LinearRegression()
+model.fit(X.reshape(-1, 1), y)
+
+# Predict on the training set
+y_pred = model.predict(X.reshape(-1, 1))
+
+# Calculate the MSE
+mse = mean_squared_error(y, y_pred)
+
+mse, y_pred, model
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(9793.698494209808,
+ array([-73.74255788, -73.71377977, -73.68500166, ..., 181.69193306,
+        181.72071117, 181.74948928]),
+ LinearRegression())

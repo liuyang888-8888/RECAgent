@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 30,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "sp500",
+        "task_description": "帮我构建一个ARIMA时间序列模型，用于分析和预测标准普尔 500 指数的未来走势。并在测试集上进行评估。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 151.80516934394836,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 3,
+        "prompt_tokens": 8676,
+        "completion_tokens": 670
+    }
+}

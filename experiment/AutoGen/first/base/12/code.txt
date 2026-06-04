@@ -1,0 +1,112 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 检查是否有缺失值
+print("训练集缺失值情况：", train_df.isnull().sum())
+print("测试集缺失值情况：", test_df.isnull().sum())
+
+# 3. 特征选择
+X_train = train_df[['variance', 'skewness', 'kurtosis', 'entropy']]
+y_train = train_df['class']
+
+X_test = test_df[['variance', 'skewness', 'kurtosis', 'entropy']]
+y_test = test_df['class']
+
+# 4. 模型选择
+model = RandomForestClassifier()
+
+# 5. 模型训练
+model.fit(X_train, y_train)
+
+# 6. 模型评估
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print("测试集上的加权平均 F1 分数：", f1)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_abe9c733a731f932315a2f75766b38a8a7d15e286d2f387f10e62662a1eaa476.py", line 19, in <module>
+    X_train = train_df[['variance', 'skewness', 'kurtosis', 'entropy']]
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 4108, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 6200, in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 6252, in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+KeyError: "['kurtosis'] not in index"
+训练集缺失值情况： variance    0
+skewness    0
+curtosis    0
+entropy     0
+class       0
+dtype: int64
+测试集缺失值情况： variance    0
+skewness    0
+curtosis    0
+entropy     0
+class       0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 检查是否有缺失值
+print("训练集缺失值情况：", train_df.isnull().sum())
+print("测试集缺失值情况：", test_df.isnull().sum())
+
+# 3. 特征选择
+X_train = train_df[['variance', 'skewness', 'curtosis', 'entropy']]
+y_train = train_df['class']
+
+X_test = test_df[['variance', 'skewness', 'curtosis', 'entropy']]
+y_test = test_df['class']
+
+# 4. 模型选择
+model = RandomForestClassifier()
+
+# 5. 模型训练
+model.fit(X_train, y_train)
+
+# 6. 模型评估
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print("测试集上的加权平均 F1 分数：", f1)
+
+
+执行结果：
+训练集缺失值情况： variance    0
+skewness    0
+curtosis    0
+entropy     0
+class       0
+dtype: int64
+测试集缺失值情况： variance    0
+skewness    0
+curtosis    0
+entropy     0
+class       0
+dtype: int64
+测试集上的加权平均 F1 分数： 0.9927228178234889

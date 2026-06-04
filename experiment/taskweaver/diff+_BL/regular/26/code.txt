@@ -1,0 +1,65 @@
+import pandas as pd
+
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\atmospheric_carbon_dioxide_train.csv'
+atmospheric_co2_data = pd.read_csv(file_path)
+
+# Display the first few rows of the dataset
+atmospheric_co2_data.head(), atmospheric_co2_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(         date  Average
+ 0  2019-07-01   408.88
+ 1  1985-02-01   345.80
+ 2  2008-02-01   385.74
+ 3  1986-03-01   347.71
+ 4  2017-02-01   405.91,
+            date  Average
+ 0    2019-07-01   408.88
+ 1    1985-02-01   345.80
+ ..          ...      ...
+ 537  2015-04-01   400.96
+ 538  1987-07-01   347.86
+ 
+ [539 rows x 2 columns])from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Convert the 'date' column to datetime format
+atmospheric_co2_data['date'] = pd.to_datetime(atmospheric_co2_data['date'])
+
+# Set the 'date' column as the index
+atmospheric_co2_data.set_index('date', inplace=True)
+
+# Sort the data by date
+atmospheric_co2_data.sort_index(inplace=True)
+
+# Train the ARIMA model
+model = ARIMA(atmospheric_co2_data['Average'], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Make predictions on the training set
+predictions = model_fit.predict(start=0, end=len(atmospheric_co2_data)-1)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(atmospheric_co2_data['Average'], predictions)
+
+mse, predictions, atmospheric_co2_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(210.2408766292808,
+ 1979-01-01      0.000000
+ 1979-02-01    336.560217
+                  ...    
+ 2023-10-01    418.656875
+ 2023-11-01    420.205774
+ Freq: MS, Name: predicted_mean, Length: 539, dtype: float64,
+             Average
+ date               
+ 1979-01-01   336.56
+ 1979-02-01   337.29
+ ...             ...
+ 2023-10-01   418.64
+ 2023-11-01   420.15
+ 
+ [539 rows x 1 columns])

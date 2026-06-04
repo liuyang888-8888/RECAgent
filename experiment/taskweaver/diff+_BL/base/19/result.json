@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 19,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "student_performance",
+        "task_description": "基于学生在校成绩的数据集，构建一个回归模型，用于预测学生在数学（mat）或葡萄牙语（por）科目中的最终成绩（G3）。该任务属于回归问题，目标是根据学生的成绩、人口统计、社会和学校相关特征，预测其最终成绩（G3）。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 518.1372079849243,
+        "interact_count": 10,
+        "prompt_tokens": 77158,
+        "completion_tokens": 8289,
+        "score": 1.4373665475058175,
+        "RCR": 5
+    }
+}

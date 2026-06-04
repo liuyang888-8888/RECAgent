@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 28,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "electricity_sales",
+        "task_description": "我想使用 electricity_sales 的时序数据，根据过去一年每天的电商销量数据，训练一个时序模型以预测几天销量的情况。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 100.38782525062561,
+        "interact_count": 4,
+        "prompt_tokens": 7774,
+        "completion_tokens": 1511,
+        "metrics": 130.9956894961228,
+        "RCR": 5
+    }
+}

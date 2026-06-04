@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 18,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "wild_blueberry_yield",
+        "task_description": "使用野生蓝莓产量数据集，构建一个回归模型，用于预测野生蓝莓的产量。该任务属于回归问题，目标是根据植物空间性状、蜜蜂物种组成、天气条件等特征，预测蓝莓的产量。通过模拟实验生成的数据集，研究人员可以验证机器学习算法在作物产量预测中的潜力。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 36.778029441833496,
+        "interact_count": 2,
+        "prompt_tokens": 2114,
+        "completion_tokens": 571,
+        "metrics": 333144.5298970206,
+        "RCR": 5
+    }
+}

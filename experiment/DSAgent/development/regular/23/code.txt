@@ -1,0 +1,377 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.cluster import MeanShift
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    silhouette_avg = silhouette_score(X, labels)
+    return silhouette_avg
+
+
+def train_model(X_train):
+    # 定义并训练 Mean Shift 模型
+    model = MeanShift()
+    model.fit(X_train)
+    return model
+
+
+
+
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final silhouette_avg on trained set:  0.48106230318530024
+final silhouette_avg on trained set:  0.48106230318530024
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.cluster import MeanShift
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    silhouette_avg = silhouette_score(X, labels)
+    return silhouette_avg
+
+
+def train_model(X_train):
+    # 定义并训练 Mean Shift 模型
+    best_bandwidth = None
+    best_silhouette_score = -1
+    best_model = None
+
+    # Grid search for the best bandwidth
+    bandwidths = [0.5, 1.0, 1.5, 2.0]
+    for bandwidth in bandwidths:
+        model = MeanShift(bandwidth=bandwidth)
+        model.fit(X_train)
+        silhouette_avg = compute_metrics_for_clustering(X_train, model.labels_)
+        if silhouette_avg > best_silhouette_score:
+            best_silhouette_score = silhouette_avg
+            best_bandwidth = bandwidth
+            best_model = model
+
+    print(f"Best bandwidth: {best_bandwidth}, Best silhouette score: {best_silhouette_score}")
+    return best_model
+
+
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 69, in <module>
+    model = train_model(X)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 44, in train_model
+    silhouette_avg = compute_metrics_for_clustering(X_train, model.labels_)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 29, in compute_metrics_for_clustering
+    silhouette_avg = silhouette_score(X, labels)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 139, in silhouette_score
+    return np.mean(silhouette_samples(X, labels, metric=metric, **kwds))
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 189, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 297, in silhouette_samples
+    check_number_of_labels(len(le.classes_), n_samples)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 36, in check_number_of_labels
+    raise ValueError(
+ValueError: Number of labels is 500. Valid values are 2 to n_samples - 1 (inclusive)
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.cluster import MeanShift
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    if len(np.unique(labels)) > 1:
+        silhouette_avg = silhouette_score(X, labels)
+    else:
+        silhouette_avg = -1  # Invalid case, set to -1
+    return silhouette_avg
+
+def train_model(X_train):
+    # 定义并训练 Mean Shift 模型
+    best_bandwidth = None
+    best_silhouette_score = -1
+    best_model = None
+
+    # Grid search for the best bandwidth
+    bandwidths = [0.5, 1.0, 1.5, 2.0]
+    for bandwidth in bandwidths:
+        model = MeanShift(bandwidth=bandwidth)
+        model.fit(X_train)
+        silhouette_avg = compute_metrics_for_clustering(X_train, model.labels_)
+        if silhouette_avg > best_silhouette_score:
+            best_silhouette_score = silhouette_avg
+            best_bandwidth = bandwidth
+            best_model = model
+
+    print(f"Best bandwidth: {best_bandwidth}, Best silhouette score: {best_silhouette_score}")
+    return best_model
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 65, in <module>
+    model = train_model(X)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 43, in train_model
+    silhouette_avg = compute_metrics_for_clustering(X_train, model.labels_)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 27, in compute_metrics_for_clustering
+    silhouette_avg = silhouette_score(X, labels)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 139, in silhouette_score
+    return np.mean(silhouette_samples(X, labels, metric=metric, **kwds))
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 189, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 297, in silhouette_samples
+    check_number_of_labels(len(le.classes_), n_samples)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 36, in check_number_of_labels
+    raise ValueError(
+ValueError: Number of labels is 500. Valid values are 2 to n_samples - 1 (inclusive)
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.cluster import MeanShift
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    if len(np.unique(labels)) > 1:
+        silhouette_avg = silhouette_score(X, labels)
+    else:
+        silhouette_avg = -1  # Invalid case, set to -1
+    return silhouette_avg
+
+def train_model(X_train):
+    # 定义并训练 Mean Shift 模型
+    best_bandwidth = None
+    best_silhouette_score = -1
+    best_model = None
+
+    # Grid search for the best bandwidth
+    bandwidths = [0.5, 1.0, 1.5, 2.0]
+    for bandwidth in bandwidths:
+        model = MeanShift(bandwidth=bandwidth)
+        model.fit(X_train)
+        silhouette_avg = compute_metrics_for_clustering(X_train, model.labels_)
+        if silhouette_avg > best_silhouette_score:
+            best_silhouette_score = silhouette_avg
+            best_bandwidth = bandwidth
+            best_model = model
+
+    print(f"Best bandwidth: {best_bandwidth}, Best silhouette score: {best_silhouette_score}")
+    return best_model
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 65, in <module>
+    model = train_model(X)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 43, in train_model
+    silhouette_avg = compute_metrics_for_clustering(X_train, model.labels_)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-163902/obesity_cvd_risk/train.py", line 27, in compute_metrics_for_clustering
+    silhouette_avg = silhouette_score(X, labels)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 139, in silhouette_score
+    return np.mean(silhouette_samples(X, labels, metric=metric, **kwds))
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 189, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 297, in silhouette_samples
+    check_number_of_labels(len(le.classes_), n_samples)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 36, in check_number_of_labels
+    raise ValueError(
+ValueError: Number of labels is 500. Valid values are 2 to n_samples - 1 (inclusive)
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

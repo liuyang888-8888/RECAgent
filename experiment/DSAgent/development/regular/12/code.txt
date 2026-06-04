@@ -1,0 +1,218 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from xgboost import XGBClassifier
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define and train the XGBoost model
+    model = XGBClassifier(use_label_encoder=False, eval_metric='logloss')
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    # Predict using the trained XGBoost model
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['class'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # Process data and store in numpy arrays
+    X = data_df.drop(['class'], axis=1)
+    y = data_df['class'].to_numpy()
+
+    # Create train and validation set split
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # Define and train the model
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # Evaluate the model on the validation set and print the result
+    y_valid_pred = predict(model, X_valid)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    print("Final F1 Score on validation set: ", f1)
+
+    # Submit predictions for the test set
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['class'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['class'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Final F1 Score on validation set:  0.9818181818181818
+final F1 Score on test set:  0.9927228178234889
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from xgboost import XGBClassifier
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+
+def train_model(X_train, y_train, X_valid, y_valid, max_depth, learning_rate):
+    # Define and train the XGBoost model with specified hyperparameters
+    model = XGBClassifier(use_label_encoder=False, eval_metric='logloss', max_depth=max_depth, learning_rate=learning_rate)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    # Predict using the trained XGBoost model
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['class'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # Process data and store in numpy arrays
+    X = data_df.drop(['class'], axis=1)
+    y = data_df['class'].to_numpy()
+
+    # Create train and validation set split
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # Define the hyperparameter grid
+    max_depths = [3, 5, 7, 9]
+    learning_rates = [0.01, 0.05, 0.1]
+
+    best_f1 = -1
+    best_params = None
+
+    # Perform grid search
+    for max_depth in max_depths:
+        for learning_rate in learning_rates:
+            # Train the model with the current hyperparameters
+            model = train_model(X_train, y_train, X_valid, y_valid, max_depth, learning_rate)
+
+            # Evaluate the model on the validation set
+            y_valid_pred = predict(model, X_valid)
+            f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+
+            # Check if this is the best model so far
+            if f1 > best_f1:
+                best_f1 = f1
+                best_params = {'max_depth': max_depth, 'learning_rate': learning_rate}
+
+            print(f"Max Depth: {max_depth}, Learning Rate: {learning_rate}, F1 Score: {f1}")
+
+    print(f"Best Hyperparameters: {best_params}, Best F1 Score: {best_f1}")
+
+    # Train the final model with the best hyperparameters
+    final_model = train_model(X_train, y_train, X_valid, y_valid, best_params['max_depth'], best_params['learning_rate'])
+
+    # Submit predictions for the test set
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['class'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['class'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(final_model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Max Depth: 3, Learning Rate: 0.01, F1 Score: 0.9180926692116032
+Max Depth: 3, Learning Rate: 0.05, F1 Score: 0.9727523165539695
+Max Depth: 3, Learning Rate: 0.1, F1 Score: 0.9818181818181818
+Max Depth: 5, Learning Rate: 0.01, F1 Score: 0.9817754154447703
+Max Depth: 5, Learning Rate: 0.05, F1 Score: 0.9726975564038677
+Max Depth: 5, Learning Rate: 0.1, F1 Score: 0.9818181818181818
+Max Depth: 7, Learning Rate: 0.01, F1 Score: 0.9817754154447703
+Max Depth: 7, Learning Rate: 0.05, F1 Score: 0.9726975564038677
+Max Depth: 7, Learning Rate: 0.1, F1 Score: 0.9726975564038677
+Max Depth: 9, Learning Rate: 0.01, F1 Score: 0.9817754154447703
+Max Depth: 9, Learning Rate: 0.05, F1 Score: 0.9726975564038677
+Max Depth: 9, Learning Rate: 0.1, F1 Score: 0.9726975564038677
+Best Hyperparameters: {'max_depth': 3, 'learning_rate': 0.1}, Best F1 Score: 0.9818181818181818
+final F1 Score on test set:  0.9927228178234889
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

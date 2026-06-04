@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 71.35050225257874,
+        "interact_count": 10,
+        "prompt_tokens": 13627,
+        "completion_tokens": 1407,
+        "RCR": 5
+    },
+    "task": {
+        "id": 7,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "reservation_cancellation",
+        "task_description": "对于酒店经理来说客户是否会取消预定是一个十分值得关注的问题，请使用酒店预订取消相关数据，构建一个随机森林的预测模型，树的数量设置为200，用于预测酒店预订是否会被取消。并在测试集上进行预测保存预测结果。"
+    }
+}

@@ -1,0 +1,183 @@
+import pandas as pd
+from sklearn.cluster import Birch
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\monster_train.csv'
+df = pd.read_csv(file_path)
+
+# Preprocess the data
+features = df.drop(columns=['monster_id'])  # Assuming 'monster_id' is the identifier and not a feature
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(features)
+
+# Train the BIRCH model
+birch_model = Birch(threshold=0.5, branching_factor=50, n_clusters=None)
+birch_model.fit(X_scaled)
+
+# Predict clusters
+labels = birch_model.labels_
+
+# Calculate the silhouette score
+silhouette_avg = silhouette_score(X_scaled, labels)
+
+# Report the silhouette score
+silhouette_avg, labels
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 11
+    features = df.drop(columns=['monster_id'])  # Assuming 'monster_id' is the identifier and not a feature
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:5581 in drop
+    return super().drop(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4788 in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4830 in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:7070 in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+
+KeyError: "['monster_id'] not found in axis"
+
+import pandas as pd
+from sklearn.cluster import Birch
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\monster_train.csv'
+df = pd.read_csv(file_path)
+
+# Check the columns of the dataset
+print('Columns in the dataset:', df.columns.tolist())
+
+# Preprocess the data
+if 'monster_id' in df.columns:
+    features = df.drop(columns=['monster_id'])
+else:
+    features = df.copy()
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(features)
+
+# Train the BIRCH model
+birch_model = Birch(threshold=0.5, branching_factor=50, n_clusters=None)
+birch_model.fit(X_scaled)
+
+# Predict clusters
+labels = birch_model.labels_
+
+# Calculate the silhouette score
+silhouette_avg = silhouette_score(X_scaled, labels)
+
+# Report the silhouette score
+silhouette_avg, labels
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 20
+    X_scaled = scaler.fit_transform(features)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:918 in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\preprocessing\_data.py:894 in fit
+    return self.partial_fit(X, y, sample_weight)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\preprocessing\_data.py:930 in partial_fit
+    X = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2944 in validate_data
+    out = check_array(X, input_name="X", **check_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1055 in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_array_api.py:839 in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:2153 in __array__
+    arr = np.asarray(values, dtype=dtype)
+
+ValueError: could not con
+Columns in the dataset: ['id', 'bone_length', 'rotting_flesh', 'hair_length', 'color', 'type']
+
+import pandas as pd
+from sklearn.cluster import Birch
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\monster_train.csv'
+df = pd.read_csv(file_path)
+
+# Check the columns of the dataset
+print('Columns in the dataset:', df.columns.tolist())
+
+# Select only numeric columns for preprocessing
+numeric_features = df.select_dtypes(include=[np.number])
+
+# Preprocess the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(numeric_features)
+
+# Train the BIRCH model
+birch_model = Birch(threshold=0.5, branching_factor=50, n_clusters=None)
+birch_model.fit(X_scaled)
+
+# Predict clusters
+labels = birch_model.labels_
+
+# Calculate the silhouette score
+silhouette_avg = silhouette_score(X_scaled, labels)
+
+# Report the silhouette score
+silhouette_avg, labels
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.2028177633487531,
+ array([ 86,  87,  47,  48,   0,  86,  49,  49,   1,   2,   3,  50,  86,
+         88,  47,  87,  89,  51,  50,   4,  87,  87,  52,  88,  53,  90,
+         52,  49,  88,  89,   5,   3,  50,  91,  54,   3,   6,  54,  55,
+          1,  52,   6,  50,   6,  52,  90,  56,   2,   7,  89,  55,  56,
+          8,   0,   6,  92,  88,  50,   9,  55,  92,  57,  48,  93,  58,
+          9,  91,  54,  10,  57,   1,  11,   1,  55,  54,  87,  87,   2,
+         55,  49,  12,  93,  94,  49,  11,  89,  55,   7,  95,  55,  96,
+         60,  59,  87,  92,  97,  11,  98,  99,   1,  12,  90,   1, 100,
+         57,  93,  56,  94,  59,  56,  13, 101, 102,   1,  93,  12,  13,
+         95,  98,  55,  98,  99,  93,  95, 103,  10,  98,  14,  59,  60,
+         59,  15, 104,  97,  61,  55, 105,  13,  98,  60,  99, 108,  16,
+         17,  62, 106,  13, 107,  62,  15,  18,  98, 106,  63,  13,  64,
+        108, 103,  19,  20,  13,  99, 106,  64, 103, 103, 109, 110,  14,
+         19, 111,  21, 110,  13,  22,  20, 112,  23, 103,  62,  18,  13,
+         65,  21, 112,  25,  20,  24,  21, 102,  17,  65,  66,  19, 113,
+         18, 114,  25,  14,  14, 112,  67, 107, 107,  26,  27,  68,  66,
+        103,  28,  68, 115,  68,  29,  65,  69,  62,  24,  18,  70,  23,
+         69, 116, 115, 116,  65,  70,  65,  30,  66,  31,  32,  70,  68,
+        117, 117, 118,  71,  72, 119, 118,  65,  27,  26,  30,  29,  33,
+         24, 119,  73,  72,  33, 118,  68,  24, 118,  71,  29,  72, 115,
+         27,  30, 120, 121, 115,  27,  34, 122, 118, 122,  35,  36,  29,
+         65,  72, 116, 123,  28,  74, 124,  30,  77,  30,  37,  75,  38,
+         76,  76,  76,  76,  38, 123, 125,  39, 122,  40, 130, 125, 126,
+        126,  33,  77,  28,  77,  78,  76,  71,  71,  76, 122,  74, 118,
+         72, 122, 122,  76,  79, 124, 122,  80, 127,  41,  42, 122,  77,
+         31,  81,  43,  35, 126,  44,  37,  82, 128,  35,  35,  32,  32,
+         74,  76, 127, 126,  82,  83,  41,  78, 127,  38, 122,  76, 129,
+         82,  84,  35,  38,  84, 130,  80, 131, 132,  84,  76, 126,  45,
+         74,  74,  84,  35, 133,  46,  85]))

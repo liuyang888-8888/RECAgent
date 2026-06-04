@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 11,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "rice_cammeo_and_osmancik",
+        "task_description": "基于 rice_cammeo_and_osmancik 数据集，构建一个分类模型，用于区分两种稻米（Cammeo 和 Osmancik）。目标是根据稻米的形态特征（如面积、周长、长度等）的表格数据，预测其属于 Cammeo 还是 Osmancik。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 173.10484433174133,
+        "interact_count": 5,
+        "prompt_tokens": 23569,
+        "completion_tokens": 2939,
+        "score": 0.9288299155609168,
+        "RCR": 5
+    }
+}

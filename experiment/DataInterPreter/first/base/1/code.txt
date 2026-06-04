@@ -1,0 +1,220 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\bank_customer_churn_train.csv')
+test_df = pd.read_csv('E:\\csv\\bank_customer_churn_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Training Data:")
+display(train_df_copy.head())
+print("Testing Data:")
+display(test_df_copy.head())
+
+# Check the data types of each column
+print("Data types in Training Data:")
+print(train_df_copy.dtypes)
+print("Data types in Testing Data:")
+print(test_df_copy.dtypes)
+execute_result:
+Training Data:
+Testing Data:
+Data types in Training Data:
+id                   int64
+CustomerId           int64
+Surname             object
+CreditScore          int64
+Geography           object
+Gender              object
+Age                  int64
+Tenure               int64
+Balance            float64
+NumOfProducts        int64
+HasCrCard            int64
+IsActiveMember       int64
+EstimatedSalary    float64
+Exited               int64
+dtype: object
+Data types in Testing Data:
+id                   int64
+CustomerId           int64
+Surname             object
+CreditScore          int64
+Geography           object
+Gender              object
+Age                  int64
+Tenure               int64
+Balance            float64
+NumOfProducts        int64
+HasCrCard            int64
+IsActiveMember       int64
+EstimatedSalary    float64
+Exited               int64
+dtype: object,,
+is_success:
+True
+code:
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+# Copy the datasets to avoid modifying the original data
+train_df_processed = train_df_copy.copy()
+test_df_processed = test_df_copy.copy()
+
+# Handling missing values
+for df in [train_df_processed, test_df_processed]:
+    # Fill missing values in numeric columns with the median
+    for col in ['CreditScore', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary']:
+        df[col].fillna(df[col].median(), inplace=True)
+    
+    # Fill missing values in categorical columns with the mode
+    for col in ['Surname', 'Geography', 'Gender']:
+        df[col].fillna(df[col].mode()[0], inplace=True)
+
+# Encoding categorical variables
+label_encoder = LabelEncoder()
+for df in [train_df_processed, test_df_processed]:
+    for col in ['Surname', 'Geography', 'Gender']:
+        df[col] = label_encoder.fit_transform(df[col])
+
+# Scaling numerical features
+scaler = StandardScaler()
+numeric_features = ['CreditScore', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary']
+for df in [train_df_processed, test_df_processed]:
+    df[numeric_features] = scaler.fit_transform(df[numeric_features])
+
+# Display the first few rows of the processed datasets
+print("Processed Training Data:")
+display(train_df_processed.head())
+print("Processed Testing Data:")
+display(test_df_processed.head())
+execute_result:
+Processed Training Data:
+Processed Testing Data:,,
+is_success:
+True
+code:
+# Splitting the preprocessed training data into features (X) and target (y)
+X_train = train_df_processed.drop(columns=['Exited'])
+y_train = train_df_processed['Exited']
+
+# Similarly, splitting the preprocessed testing data into features (X) and target (y)
+X_test = test_df_processed.drop(columns=['Exited'])
+y_test = test_df_processed['Exited']
+
+# Displaying the first few rows of X_train and y_train
+print("Features of Training Data (X_train):")
+display(X_train.head())
+print("Target of Training Data (y_train):")
+display(y_train.head())
+
+# Displaying the first few rows of X_test and y_test
+print("Features of Testing Data (X_test):")
+display(X_test.head())
+print("Target of Testing Data (y_test):")
+display(y_test.head())
+execute_result:
+Features of Training Data (X_train):
+Target of Training Data (y_train):
+Features of Testing Data (X_test):
+Target of Testing Data (y_test):,,,,
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Initialize the XGBoost classifier with tuned hyperparameters
+xgb_model = XGBClassifier(
+    n_estimators=1000,
+    max_depth=7,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    gamma=0.1,
+    reg_alpha=0.1,
+    reg_lambda=1.0,
+    random_state=42
+)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Predict on the training set
+y_train_pred = xgb_model.predict(X_train)
+print("Training Accuracy:", accuracy_score(y_train, y_train_pred))
+print("Training Classification Report:\n", classification_report(y_train, y_train_pred))
+print("Training Confusion Matrix:\n", confusion_matrix(y_train, y_train_pred))
+
+# Predict on the testing set
+y_test_pred = xgb_model.predict(X_test)
+print("Testing Accuracy:", accuracy_score(y_test, y_test_pred))
+print("Testing Classification Report:\n", classification_report(y_test, y_test_pred))
+print("Testing Confusion Matrix:\n", confusion_matrix(y_test, y_test_pred))
+execute_result:
+Training Accuracy: 0.9204632385799875
+Training Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.93      0.98      0.95    104061
+           1       0.89      0.71      0.79     27966
+
+    accuracy                           0.92    132027
+   macro avg       0.91      0.84      0.87    132027
+weighted avg       0.92      0.92      0.92    132027
+
+Training Confusion Matrix:
+ [[101572   2489]
+ [  8012  19954]]
+Testing Accuracy: 0.8274608416396522
+Testing Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.89      0.90      0.89     26052
+           1       0.59      0.57      0.58      6955
+
+    accuracy                           0.83     33007
+   macro avg       0.74      0.73      0.74     33007
+weighted avg       0.82      0.83      0.83     33007
+
+Testing Confusion Matrix:
+ [[23365  2687]
+ [ 3008  3947]]
+is_success:
+True
+code:
+# Since the data has already been processed and split into features and target,
+# we just need to ensure that the split is correctly defined and displayed.
+
+# Features of Testing Data (X_test)
+X_test = test_df_processed.drop(columns=['Exited'])
+
+# Target of Testing Data (y_test)
+y_test = test_df_processed['Exited']
+
+print("Features of Testing Data (X_test):")
+display(X_test.head())
+print("Target of Testing Data (y_test):")
+display(y_test.head())
+execute_result:
+Features of Testing Data (X_test):
+Target of Testing Data (y_test):,,
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting on the test set
+y_test_pred = xgb_model.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_test_pred)
+
+print(f"F1 Score on the Test Set: {f1}")
+execute_result:
+F1 Score on the Test Set: 0.5809110309809404
+is_success:
+True

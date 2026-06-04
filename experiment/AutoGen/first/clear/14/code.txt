@@ -1,0 +1,298 @@
+
+生成的代码：
+import pandas as pd
+import lightgbm as lgb
+from sklearn.metrics import mean_squared_error
+import os
+
+# 设置数据路径
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv'
+
+# 加载训练集和测试集
+train_data = pd.read_csv(os.path.join(data_path, 'abalone_train.csv'))
+test_data = pd.read_csv(os.path.join(data_path, 'abalone_test.csv'))
+
+# 分离特征和标签
+X_train = train_data.drop(columns=['Rings'])
+y_train = train_data['Rings']
+X_test = test_data.drop(columns=['Rings'])
+y_test = test_data['Rings']
+
+# 转换为 LightGBM 数据集
+lgb_train = lgb.Dataset(X_train, y_train)
+lgb_test = lgb.Dataset(X_test, y_test, reference=lgb_train)
+
+# 设置 LightGBM 参数
+params = {
+    'boosting_type': 'rf',
+    'num_trees': 20,
+    'objective': 'regression',
+    'metric': 'mse',
+    'feature_fraction': 0.6,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 1,
+    'verbose': 0
+}
+
+# 训练模型
+gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_test, early_stopping_rounds=5)
+
+# 预测
+y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error: {mse}')
+
+# 保存预测结果
+output_path = os.path.join(data_path, 'abalone_predictions.csv')
+pd.DataFrame({'Rings': y_pred}).to_csv(output_path, index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_ff3bdd9a163c0b4aac3ca513ab85fce272114d14140c4f27e64491c1b0795314.py", line 14, in <module>
+    X_train = train_data.drop(columns=['Rings'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['Rings'] not found in axis"
+
+生成的代码：
+import pandas as pd
+import lightgbm as lgb
+from sklearn.metrics import mean_squared_error
+import os
+
+# 设置数据路径
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv'
+
+# 加载训练集和测试集
+train_data = pd.read_csv(os.path.join(data_path, 'abalone_train.csv'))
+test_data = pd.read_csv(os.path.join(data_path, 'abalone_test.csv'))
+
+# 检查列名
+print("Train data columns:", train_data.columns)
+print("Test data columns:", test_data.columns)
+
+# 分离特征和标签
+if 'Rings' in train_data.columns:
+    X_train = train_data.drop(columns=['Rings'])
+    y_train = train_data['Rings']
+else:
+    raise KeyError("Column 'Rings' not found in train data")
+
+if 'Rings' in test_data.columns:
+    X_test = test_data.drop(columns=['Rings'])
+    y_test = test_data['Rings']
+else:
+    raise KeyError("Column 'Rings' not found in test data")
+
+# 转换为 LightGBM 数据集
+lgb_train = lgb.Dataset(X_train, y_train)
+lgb_test = lgb.Dataset(X_test, y_test, reference=lgb_train)
+
+# 设置 LightGBM 参数
+params = {
+    'boosting_type': 'rf',
+    'num_trees': 20,
+    'objective': 'regression',
+    'metric': 'mse',
+    'feature_fraction': 0.6,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 1,
+    'verbose': 0
+}
+
+# 训练模型
+gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_test, early_stopping_rounds=5)
+
+# 预测
+y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error: {mse}')
+
+# 保存预测结果
+output_path = os.path.join(data_path, 'abalone_predictions.csv')
+pd.DataFrame({'Rings': y_pred}).to_csv(output_path, index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_795598d17c8358e9409111f1ef5da46e5a75fdccdbe2248908f435e6e042f3af.py", line 22, in <module>
+    raise KeyError("Column 'Rings' not found in train data")
+KeyError: "Column 'Rings' not found in train data"
+Train data columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+Test data columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+
+生成的代码：
+import pandas as pd
+import lightgbm as lgb
+from sklearn.metrics import mean_squared_error
+import os
+
+# 设置数据路径
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv'
+
+# 加载训练集和测试集
+train_data = pd.read_csv(os.path.join(data_path, 'abalone_train.csv'))
+test_data = pd.read_csv(os.path.join(data_path, 'abalone_test.csv'))
+
+# 检查列名
+print("Train data columns:", train_data.columns)
+print("Test data columns:", test_data.columns)
+
+# 分离特征和标签
+if 'rings' in train_data.columns:
+    X_train = train_data.drop(columns=['rings'])
+    y_train = train_data['rings']
+else:
+    raise KeyError("Column 'rings' not found in train data")
+
+if 'rings' in test_data.columns:
+    X_test = test_data.drop(columns=['rings'])
+    y_test = test_data['rings']
+else:
+    raise KeyError("Column 'rings' not found in test data")
+
+# 转换为 LightGBM 数据集
+lgb_train = lgb.Dataset(X_train, y_train)
+lgb_test = lgb.Dataset(X_test, y_test, reference=lgb_train)
+
+# 设置 LightGBM 参数
+params = {
+    'boosting_type': 'rf',
+    'num_trees': 20,
+    'objective': 'regression',
+    'metric': 'mse',
+    'feature_fraction': 0.6,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 1,
+    'verbose': 0
+}
+
+# 训练模型
+gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_test, early_stopping_rounds=5)
+
+# 预测
+y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error: {mse}')
+
+# 保存预测结果
+output_path = os.path.join(data_path, 'abalone_predictions.csv')
+pd.DataFrame({'rings': y_pred}).to_csv(output_path, index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_48f865a5290db6d665b5ed210fa87a2f590889d5850683582f335893e7de7925.py", line 47, in <module>
+    gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_test, early_stopping_rounds=5)
+TypeError: train() got an unexpected keyword argument 'early_stopping_rounds'
+Train data columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+Test data columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+
+生成的代码：
+import pandas as pd
+import lightgbm as lgb
+from sklearn.metrics import mean_squared_error
+import os
+
+# 设置数据路径
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv'
+
+# 加载训练集和测试集
+train_data = pd.read_csv(os.path.join(data_path, 'abalone_train.csv'))
+test_data = pd.read_csv(os.path.join(data_path, 'abalone_test.csv'))
+
+# 检查列名
+print("Train data columns:", train_data.columns)
+print("Test data columns:", test_data.columns)
+
+# 分离特征和标签
+if 'rings' in train_data.columns:
+    X_train = train_data.drop(columns=['rings'])
+    y_train = train_data['rings']
+else:
+    raise KeyError("Column 'rings' not found in train data")
+
+if 'rings' in test_data.columns:
+    X_test = test_data.drop(columns=['rings'])
+    y_test = test_data['rings']
+else:
+    raise KeyError("Column 'rings' not found in test data")
+
+# 转换为 LightGBM 数据集
+lgb_train = lgb.Dataset(X_train, y_train)
+lgb_test = lgb.Dataset(X_test, y_test, reference=lgb_train)
+
+# 设置 LightGBM 参数
+params = {
+    'boosting_type': 'rf',
+    'num_trees': 20,
+    'objective': 'regression',
+    'metric': 'mse',
+    'feature_fraction': 0.6,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 1,
+    'verbose': 0
+}
+
+# 训练模型
+gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_test)
+
+# 预测
+y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+print(f'Mean Squared Error: {mse}')
+
+# 保存预测结果
+output_path = os.path.join(data_path, 'abalone_predictions.csv')
+pd.DataFrame({'rings': y_pred}).to_csv(output_path, index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_7da127091d051d56f207d22fbae6039269d949c65e36109e663777a0dbba2841.py", line 47, in <module>
+    gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_test)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\engine.py", line 297, in train
+    booster = Booster(params=params, train_set=train_set)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 3656, in __init__
+    train_set.construct()
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 2590, in construct
+    self._lazy_init(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 2123, in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 868, in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 814, in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\lightgbm\basic.py", line 805, in _check_for_bad_pandas_dtypes
+    raise ValueError(
+ValueError: pandas dtypes must be int, float or bool.
+Fields with bad pandas dtypes: sex: object
+Train data columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+Test data columns: Index(['id', 'sex', 'length', 'diameter', 'height', 'whole_weight',
+       'whole_weight1', 'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')

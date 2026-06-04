@@ -1,0 +1,108 @@
+import pandas as pd
+
+# Load the training and test datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\bank_customer_churn_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\bank_customer_churn_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Display the first few rows of each dataset
+train_df.head(), test_df.head()
+
+# Result variables
+train_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(            id  CustomerId        Surname  CreditScore Geography  Gender  Age  Tenure   Balance  NumOfProducts  HasCrCard  IsActiveMember  EstimatedSalary  Exited
+ 0            1    15749177  Okwudiliolisa          627    France    Male   33       1       0.0              2          1               1         49503.50       0
+ 1            2    15694510          Hsueh          678    France    Male   40      10       0.0              2          1               0        184866.69       0
+ ...        ...         ...            ...          ...       ...     ...  ...     ...       ...            ...        ...             ...              ...     ...
+ 132025  165032    15689614         Hsiung          554     Spain  Female   30       7  161533.0              1          0               1         71173.03       0
+ 132026  165033    15732798        Ulyanov          850    France    Male   31       1       0.0              1          1               0         61581.79       1
+ 
+ [132027 rows x 14 columns],
+            id  CustomerId         Surname  CreditScore Geography  Gender  Age  Tenure   Balance  NumOfProducts  HasCrCard  IsActiveMember  EstimatedSalary  Exited
+ 0           0    15674932  Okwudilichukwu          668    France    Male   33       3      0.00              2          1               0        181449.97       0
+ 1          12    15717962           Rossi          759     Spain    Male   71       9      0.00              1          1               1         93081.87       0
+ ...       ...         ...             ...          ...       ...     ...  ...     ...       ...            ...        ...             ...              ...     ...
+ 33005  165027    15703793           Bevan          767    France  Female   44       4  76554.06              2          1               0         77837.63       0
+ 33006  165028    15704770       Oluchukwu          630    France    Male   50       8      0.00              2          1               1          5962.50       0
+ 
+ [33007 rows x 14 columns])from sklearn.preprocessing import LabelEncoder
+
+# Preprocess the data
+# Encode categorical variables
+label_encoder = LabelEncoder()
+train_df['Gender'] = label_encoder.fit_transform(train_df['Gender'])
+test_df['Gender'] = label_encoder.transform(test_df['Gender'])
+
+# Select features and target variable
+features = ['CreditScore', 'Gender', 'Age', 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary']
+target = 'Exited'
+
+X_train = train_df[features]
+y_train = train_df[target]
+X_test = test_df[features]
+y_test = test_df[target]
+
+# Display the first few rows of the processed data
+X_train.head(), y_train.head(), X_test.head(), y_test.head()
+
+# Result variables
+X_train, y_train, X_test, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(        CreditScore  Gender  Age  Tenure   Balance  NumOfProducts  HasCrCard  IsActiveMember  EstimatedSalary
+ 0               627       1   33       1       0.0              2          1               1         49503.50
+ 1               678       1   40      10       0.0              2          1               0        184866.69
+ ...             ...     ...  ...     ...       ...            ...        ...             ...              ...
+ 132025          554       0   30       7  161533.0              1          0               1         71173.03
+ 132026          850       1   31       1       0.0              1          1               0         61581.79
+ 
+ [132027 rows x 9 columns],
+ 0         0
+ 1         0
+          ..
+ 132025    0
+ 132026    1
+ Name: Exited, Length: 132027, dtype: int64,
+        CreditScore  Gender  Age  Tenure   Balance  NumOfProducts  HasCrCard  IsActiveMember  EstimatedSalary
+ 0              668       1   33       3      0.00              2          1               0        181449.97
+ 1              759       1   71       9      0.00              1          1               1         93081.87
+ ...            ...     ...  ...     ...       ...            ...        ...             ...              ...
+ 33005          767       0   44       4  76554.06              2          1               0         77837.63
+ 33006          630       1   50       8      0.00              2          1               1          5962.50
+ 
+ [33007 rows x 9 columns],
+ 0        0
+ 1        0
+         ..
+ 33005    0
+ 33006    0
+ Name: Exited, Length: 33007, dtype: int64)from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Train the Random Forest model
+rf_model = RandomForestClassifier(random_state=42)
+rf_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = rf_model.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+
+# Report the F1 score
+f1
+
+# Result variables
+rf_model, y_pred, f1
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(RandomForestClassifier(random_state=42),
+ array([0, 0, 0, ..., 0, 0, 0], dtype=int64),
+ 0.5926294820717132)

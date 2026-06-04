@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 65.36295962333679,
+        "interact_count": 12,
+        "prompt_tokens": 20921,
+        "completion_tokens": 1831,
+        "RCR": 5
+    },
+    "task": {
+        "id": 17,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "mohs_hardness",
+        "task_description": "请基于 mohs_hardness 数据集，构建一个K最近邻（KNN）模型，用于预测矿物的硬度（莫氏硬度）。邻接点的个数指定为5，然后在测试集上进行预测，保存预测结果。"
+    }
+}

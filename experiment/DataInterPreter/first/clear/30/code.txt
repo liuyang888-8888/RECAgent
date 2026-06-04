@@ -1,0 +1,211 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('sp500_index_train.csv')
+test_df = pd.read_csv('sp500_index_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to inspect them
+print("Training Data:")
+display(train_df_copy.head())
+print("Testing Data:")
+display(test_df_copy.head())
+
+# Check the data types of each column
+print("Data types in Training Data:")
+print(train_df_copy.dtypes)
+print("Data types in Testing Data:")
+print(test_df_copy.dtypes)
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[1], line 4
+      1 import pandas as pd
+      3 # Load the datasets
+----> 4 train_df = pd.read_csv('sp500_index_train.csv')
+      5 test_df = pd.read_csv('sp500_index_test.csv')
+      7 # Copy the DataFrames to ensure we don't modify the original data
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'sp500_index_train.csv'
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the training and testing datasets
+sp500_index_train = pd.read_csv('E:\\csv\\sp500_index_train.csv')
+sp500_index_test = pd.read_csv('E:\\csv\\sp500_index_test.csv')
+
+# Display the first few rows of the datasets to verify loading
+sp500_index_train.head(), sp500_index_test.head()
+execute_result:
+(         date    SP500
+ 0  2023-01-24  4016.95
+ 1  2015-12-17  2041.89
+ 2  2019-11-07  3085.18
+ 3  2017-11-09  2584.62
+ 4  2021-05-18  4127.83,
+          date    SP500
+ 0  2023-01-24  4016.95
+ 1  2015-12-17  2041.89
+ 2  2019-11-07  3085.18
+ 3  2017-11-09  2584.62
+ 4  2021-05-18  4127.83)
+is_success:
+True
+code:
+# Copy the original datasets to avoid modifying them directly
+sp500_index_train_copy = sp500_index_train.copy()
+sp500_index_test_copy = sp500_index_test.copy()
+
+# Convert 'date' column to datetime format
+sp500_index_train_copy['date'] = pd.to_datetime(sp500_index_train_copy['date'])
+sp500_index_test_copy['date'] = pd.to_datetime(sp500_index_test_copy['date'])
+
+# Check for missing values in both datasets
+missing_values_train = sp500_index_train_copy.isnull().sum()
+missing_values_test = sp500_index_test_copy.isnull().sum()
+
+# Display the results of missing value checks
+missing_values_train, missing_values_test
+execute_result:
+(date     0
+ SP500    0
+ dtype: int64,
+ date     0
+ SP500    0
+ dtype: int64)
+is_success:
+True
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+
+# Ensure the date column is set as the index for time series analysis
+sp500_index_train_copy.set_index('date', inplace=True)
+sp500_index_test_copy.set_index('date', inplace=True)
+
+# Fit the ARIMA model
+# Here we use (5,1,0) as an example, but these parameters should be tuned based on the ACF and PACF plots or grid search
+model = ARIMA(sp500_index_train_copy['SP500'], order=(5, 1, 0))
+arima_fit = model.fit()
+
+# Display the summary of the model
+print(arima_fit.summary())
+execute_result:
+SARIMAX Results                                
+==============================================================================
+Dep. Variable:                  SP500   No. Observations:                 2518
+Model:                 ARIMA(5, 1, 0)   Log Likelihood              -21002.661
+Date:                Sun, 25 May 2025   AIC                          42017.322
+Time:                        19:14:09   BIC                          42052.307
+Sample:                             0   HQIC                         42030.019
+                               - 2518                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1         -0.8483      0.020    -42.909      0.000      -0.887      -0.810
+ar.L2         -0.7024      0.025    -27.683      0.000      -0.752      -0.653
+ar.L3         -0.5174      0.027    -18.913      0.000      -0.571      -0.464
+ar.L4         -0.3497      0.025    -13.738      0.000      -0.400      -0.300
+ar.L5         -0.1766      0.020     -8.848      0.000      -0.216      -0.137
+sigma2      1.036e+06   3.83e+04     27.051      0.000    9.61e+05    1.11e+06
+===================================================================================
+Ljung-Box (L1) (Q):                   0.98   Jarque-Bera (JB):               120.37
+Prob(Q):                              0.32   Prob(JB):                         0.00
+Heteroskedasticity (H):               1.03   Skew:                             0.34
+Prob(H) (two-sided):                  0.66   Kurtosis:                         2.17
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+is_success:
+True
+code:
+# Predicting the SP500 values on the training set
+train_predictions = arima_fit.predict(start=sp500_index_train_copy.index[0], end=sp500_index_train_copy.index[-1])
+
+# Calculating the Mean Squared Error (MSE) on the training set
+from sklearn.metrics import mean_squared_error
+mse_train = mean_squared_error(sp500_index_train_copy['SP500'], train_predictions)
+mse_train
+execute_result:
+1041721.0258359485
+is_success:
+True
+code:
+# Predicting on the test set using the trained ARIMA model
+test_predictions = arima_fit.predict(start=sp500_index_test_copy.index[0], end=sp500_index_test_copy.index[-1])
+
+# Calculating the Mean Squared Error (MSE) for the test set predictions
+mse_test = mean_squared_error(sp500_index_test_copy['SP500'], test_predictions)
+mse_test
+execute_result:
+1041721.0258359485
+is_success:
+True

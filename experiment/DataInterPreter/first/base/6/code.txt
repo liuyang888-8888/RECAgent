@@ -1,0 +1,297 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\kidney_stone_train.csv')
+test_df = pd.read_csv('E:\\csv\\kidney_stone_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing to categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    unique_values = train_df_copy[col].unique()
+    value_map = {value: idx for idx, value in enumerate(unique_values)}
+    train_df_copy[col] = train_df_copy[col].map(value_map)
+    test_df_copy[col] = test_df_copy[col].map(value_map)
+
+# Apply appropriate preprocessing to numerical columns
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Verify the preprocessing
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   id  gravity    ph  osmo  cond  urea  calc  target
+0   1    1.025  5.40   703  23.6   394  4.18       0
+1   2    1.009  6.13   371  24.5   159  9.04       0
+2   3    1.021  4.91   442  20.8   398  6.63       1
+3   4    1.021  5.53   874  17.8   385  2.21       1
+4   5    1.025  6.90   947  28.4   395  2.64       1
+
+Test DataFrame:
+   id  gravity    ph  osmo  cond  urea  calc  target
+0   0    1.013  6.19   443  14.8   124  1.45       0
+1   9    1.017  6.61   527  20.0    75  4.49       1
+2  15    1.011  6.81   251   9.8   141  0.17       1
+3  17    1.012  7.38   760  25.7   199  1.05       0
+4  22    1.021  5.94   956  27.6   473  4.45       1
+
+Data types in Train DataFrame:
+id           int64
+gravity    float64
+ph         float64
+osmo         int64
+cond       float64
+urea         int64
+calc       float64
+target       int64
+dtype: object
+
+Data types in Test DataFrame:
+id           int64
+gravity    float64
+ph         float64
+osmo         int64
+cond       float64
+urea         int64
+calc       float64
+target       int64
+dtype: object
+
+Categorical Columns:
+Index([], dtype='object')
+
+Numerical Columns:
+Index(['id', 'gravity', 'ph', 'osmo', 'cond', 'urea', 'calc', 'target'], dtype='object')
+
+Preprocessed Train DataFrame:
+         id   gravity        ph  ...      urea      calc    target
+0 -1.787618  1.041479 -0.843901  ...  0.836720  0.037779 -0.888363
+1 -1.779086 -1.388333  0.284554  ... -0.915071  1.580268 -0.888363
+2 -1.770555  0.434026 -1.601358  ...  0.866538  0.815371  1.125666
+3 -1.762023  0.434026 -0.642944  ...  0.769630 -0.587468  1.125666
+4 -1.753491  1.041479  1.474843  ...  0.844175 -0.450993  1.125666
+
+[5 rows x 8 columns]
+
+Preprocessed Test DataFrame:
+         id   gravity        ph  ...      urea      calc    target
+0 -1.796149 -0.780880  0.377304  ... -1.175976 -0.828680 -0.888363
+1 -1.719365 -0.173427  1.026552  ... -1.541243  0.136168  1.125666
+2 -1.668175 -1.084607  1.335718  ... -1.049250 -1.234932  1.125666
+3 -1.651112 -0.932744  2.216841  ... -0.616893 -0.955634 -0.888363
+4 -1.608454  0.434026 -0.009154  ...  1.425620  0.123473  1.125666
+
+[5 rows x 8 columns]
+is_success:
+True
+code:
+# Handling missing values
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check for missing values in both datasets
+print("Missing values in Train DataFrame:")
+print(train_df_copy.isnull().sum())
+print("\nMissing values in Test DataFrame:")
+print(test_df_copy.isnull().sum())
+
+# Fill missing values with median for numerical columns
+for col in numerical_columns:
+    median_value = train_df_copy[col].median()
+    train_df_copy[col].fillna(median_value, inplace=True)
+    test_df_copy[col].fillna(median_value, inplace=True)
+
+# Verify no missing values remain
+print("\nAfter handling missing values:")
+print("Missing values in Train DataFrame:")
+print(train_df_copy.isnull().sum())
+print("\nMissing values in Test DataFrame:")
+print(test_df_copy.isnull().sum())
+execute_result:
+Missing values in Train DataFrame:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+
+Missing values in Test DataFrame:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+
+After handling missing values:
+Missing values in Train DataFrame:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+
+Missing values in Test DataFrame:
+id         0
+gravity    0
+ph         0
+osmo       0
+cond       0
+urea       0
+calc       0
+target     0
+dtype: int64
+is_success:
+True
+code:
+# Splitting the preprocessed data into features (X) and target (y)
+X_train = train_df_copy.drop(columns=['target'])
+y_train = train_df_copy['target']
+X_test = test_df_copy.drop(columns=['target'])
+y_test = test_df_copy['target']
+
+# Displaying the first few rows of the split datasets
+print("X_train:")
+print(X_train.head())
+print("\ny_train:")
+print(y_train.head())
+print("\nX_test:")
+print(X_test.head())
+print("\ny_test:")
+print(y_test.head())
+execute_result:
+X_train:
+   id  gravity    ph  osmo  cond  urea  calc
+0   1    1.025  5.40   703  23.6   394  4.18
+1   2    1.009  6.13   371  24.5   159  9.04
+2   3    1.021  4.91   442  20.8   398  6.63
+3   4    1.021  5.53   874  17.8   385  2.21
+4   5    1.025  6.90   947  28.4   395  2.64
+
+y_train:
+0    0
+1    0
+2    1
+3    1
+4    1
+Name: target, dtype: int64
+
+X_test:
+   id  gravity    ph  osmo  cond  urea  calc
+0   0    1.013  6.19   443  14.8   124  1.45
+1   9    1.017  6.61   527  20.0    75  4.49
+2  15    1.011  6.81   251   9.8   141  0.17
+3  17    1.012  7.38   760  25.7   199  1.05
+4  22    1.021  5.94   956  27.6   473  4.45
+
+y_test:
+0    0
+1    1
+2    1
+3    0
+4    1
+Name: target, dtype: int64
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the XGBoost classifier with some hyperparameters
+xgb_model = XGBClassifier(
+    n_estimators=100,  # Number of gradient boosted trees
+    max_depth=6,       # Maximum tree depth
+    learning_rate=0.1, # Step size shrinkage used to prevent overfitting
+    subsample=0.8,     # Subsample ratio of the training instances
+    colsample_bytree=0.8, # Subsample ratio of columns when constructing each tree
+    random_state=42    # Random seed for reproducibility
+)
+
+# Fit the model on the training data
+xgb_model.fit(X_train, y_train)
+
+# Predict the labels on the training set and test set
+y_train_pred = xgb_model.predict(X_train)
+y_test_pred = xgb_model.predict(X_test)
+
+# Evaluate the model
+train_accuracy = accuracy_score(y_train, y_train_pred)
+test_accuracy = accuracy_score(y_test, y_test_pred)
+
+print(f"Training Accuracy: {train_accuracy:.4f}")
+print(f"Test Accuracy: {test_accuracy:.4f}")
+print("\nClassification Report (Test Set):")
+print(classification_report(y_test, y_test_pred))
+execute_result:
+Training Accuracy: 1.0000
+Test Accuracy: 0.7952
+
+Classification Report (Test Set):
+              precision    recall  f1-score   support
+
+           0       0.78      0.87      0.82        45
+           1       0.82      0.71      0.76        38
+
+    accuracy                           0.80        83
+   macro avg       0.80      0.79      0.79        83
+weighted avg       0.80      0.80      0.79        83
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting on the test set using the trained model
+y_test_pred = xgb_model.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_test_pred, average='weighted')
+
+print(f"F1 Score (Test Set): {f1:.4f}")
+execute_result:
+F1 Score (Test Set): 0.7934
+is_success:
+True

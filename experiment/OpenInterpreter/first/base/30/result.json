@@ -1,0 +1,20 @@
+{
+    "task": {
+        "id": 30,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "sp500",
+        "task_description": "基于 sp500 数据集，构建一个时间序列模型，用于分析和预测标准普尔 500 指数的未来走势。该任务属于时间序列预测问题，目标是根据历史月度数据（如调整后的收盘价）预测未来标准普尔 500 指数的值。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 142.67290616035461,
+        "metrics": 2665.9166788942052,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 6,
+        "prompt_tokens": 15068,
+        "completion_tokens": 1798
+    }
+}

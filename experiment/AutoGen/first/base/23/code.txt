@@ -1,0 +1,141 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\obesity_cvd_risk_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", df.isnull().sum())
+
+# 处理缺失值（如果有的话）
+df = df.dropna()
+
+# 将分类变量进行编码
+label_encoders = {}
+for column in df.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    df[column] = le.fit_transform(df[column])
+    label_encoders[column] = le
+
+# 3. 特征选择
+# 选择用于聚类的特征
+features = df.drop(columns=['obesity_level'])  # 假设 'obesity_level' 是目标变量，不用于聚类
+
+# 标准化特征
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(features)
+
+# 4. 训练聚类模型
+kmeans = KMeans(n_clusters=4, random_state=42)  # 假设我们选择 4 个聚类
+kmeans.fit(features_scaled)
+
+# 5. 评估模型
+# 计算轮廓系数
+silhouette_avg = silhouette_score(features_scaled, kmeans.labels_)
+print(f"Silhouette Score: {silhouette_avg}")
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_1000e6fe36f5517fdb630e9ba3b8922817308b0f6d0fc7a4a47d3c24ddb96951.py", line 26, in <module>
+    features = df.drop(columns=['obesity_level'])  # 假设 'obesity_level' 是目标变量，不用于聚类
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['obesity_level'] not found in axis"
+Missing values:
+ id                                0
+Gender                            0
+Age                               0
+Height                            0
+Weight                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+NObeyesdad                        0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\obesity_cvd_risk_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", df.isnull().sum())
+
+# 处理缺失值（如果有的话）
+df = df.dropna()
+
+# 将分类变量进行编码
+label_encoders = {}
+for column in df.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    df[column] = le.fit_transform(df[column])
+    label_encoders[column] = le
+
+# 3. 特征选择
+# 选择用于聚类的特征
+features = df.drop(columns=['NObeyesdad'])  # 假设 'NObeyesdad' 是目标变量，不用于聚类
+
+# 标准化特征
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(features)
+
+# 4. 训练聚类模型
+kmeans = KMeans(n_clusters=4, random_state=42)  # 假设我们选择 4 个聚类
+kmeans.fit(features_scaled)
+
+# 5. 评估模型
+# 计算轮廓系数
+silhouette_avg = silhouette_score(features_scaled, kmeans.labels_)
+print(f"Silhouette Score: {silhouette_avg}")
+
+
+执行结果：
+Missing values:
+ id                                0
+Gender                            0
+Age                               0
+Height                            0
+Weight                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+NObeyesdad                        0
+dtype: int64
+Silhouette Score: 0.11369921538970548

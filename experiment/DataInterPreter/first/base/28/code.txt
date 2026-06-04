@@ -1,0 +1,320 @@
+code:
+import pandas as pd
+
+# Load the data
+train_data_path = r'E:\csv\electricity_sales_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows to understand the data
+print(train_df_copy.head())
+
+# Check data types of each column
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_cols = train_df_copy.select_dtypes(include=['object']).columns
+numerical_cols = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_cols)
+print("Numerical Columns:", numerical_cols)
+
+# Example preprocessing steps (adjust as needed based on the actual data)
+# For categorical data, use label encoding instead of one-hot encoding
+for col in categorical_cols:
+    train_df_copy[col] = train_df_copy[col].astype('category').cat.codes
+
+# For numerical data, apply scaling if necessary (excluding the label column)
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+if 'label' in numerical_cols:
+    numerical_cols = numerical_cols.drop('label')
+train_df_copy[numerical_cols] = scaler.fit_transform(train_df_copy[numerical_cols])
+
+# Display the preprocessed data
+print(train_df_copy.head())
+execute_result:
+Date      Sales
+0  2021-10-01  29.109547
+1  2021-10-02  30.720435
+2  2021-10-03  30.305173
+3  2021-10-04  27.390893
+4  2021-10-05  22.841123
+Date      object
+Sales    float64
+dtype: object
+Categorical Columns: Index(['Date'], dtype='object')
+Numerical Columns: Index(['Sales'], dtype='object')
+   Date     Sales
+0     0 -0.759391
+1     1 -0.513966
+2     2 -0.577233
+3     3 -1.021234
+4     4 -1.714409
+is_success:
+True
+code:
+# Convert 'Date' column to datetime format
+train_df_copy['Date'] = pd.to_datetime(train_df_copy['Date'])
+
+# Check for missing values
+missing_values = train_df_copy.isnull().sum()
+print("Missing Values:\n", missing_values)
+
+# Handle missing values if any (for simplicity, we'll fill with forward fill method)
+if missing_values.sum() > 0:
+    train_df_copy.fillna(method='ffill', inplace=True)
+
+# Verify the changes
+print(train_df_copy.head())
+print(train_df_copy.dtypes)
+execute_result:
+Missing Values:
+ Date     0
+Sales    0
+dtype: int64
+                           Date     Sales
+0 1970-01-01 00:00:00.000000000 -0.759391
+1 1970-01-01 00:00:00.000000001 -0.513966
+2 1970-01-01 00:00:00.000000002 -0.577233
+3 1970-01-01 00:00:00.000000003 -1.021234
+4 1970-01-01 00:00:00.000000004 -1.714409
+Date     datetime64[ns]
+Sales           float64
+dtype: object
+is_success:
+True
+code:
+from sklearn.model_selection import train_test_split
+
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_preprocessed = train_df_copy.copy()
+
+# Split the data into training and validation sets
+# We will use the last 20% of the data as the validation set
+train_size = int(len(train_df_preprocessed) * 0.8)
+train_set = train_df_preprocessed[:train_size]
+validation_set = train_df_preprocessed[train_size:]
+
+# Verify the split
+print("Training Set Shape:", train_set.shape)
+print("Validation Set Shape:", validation_set.shape)
+execute_result:
+Training Set Shape: (292, 2)
+Validation Set Shape: (73, 2)
+is_success:
+True
+code:
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+import numpy as np
+
+# Convert the 'Date' column to be the index
+train_set = train_set.set_index('Date')
+validation_set = validation_set.set_index('Date')
+
+# Define the SARIMA model
+model = SARIMAX(train_set['Sales'], order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
+
+# Fit the model
+model_fit = model.fit(disp=False)
+
+# Summary of the model
+print(model_fit.summary())
+
+# Forecasting on the validation set
+forecast = model_fit.forecast(steps=len(validation_set))
+forecast = pd.DataFrame(forecast, index=validation_set.index, columns=['Forecast'])
+
+# Calculate RMSE
+from sklearn.metrics import mean_squared_error
+rmse = np.sqrt(mean_squared_error(validation_set['Sales'], forecast['Forecast']))
+print(f"RMSE: {rmse}")
+
+# Plotting the results
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 6))
+plt.plot(train_set['Sales'], label='Train')
+plt.plot(validation_set['Sales'], label='Validation')
+plt.plot(forecast['Forecast'], label='Forecast')
+plt.legend()
+plt.show()
+execute_result:
+SARIMAX Results                                      
+==========================================================================================
+Dep. Variable:                              Sales   No. Observations:                  292
+Model:             SARIMAX(1, 1, 1)x(1, 1, 1, 12)   Log Likelihood                -215.383
+Date:                            Sun, 27 Apr 2025   AIC                            440.765
+Time:                                    20:58:24   BIC                            458.921
+Sample:                                01-01-1970   HQIC                           448.048
+                                     - 01-01-1970                                         
+Covariance Type:                              opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1          0.2680      0.146      1.836      0.066      -0.018       0.554
+ma.L1          0.3304      0.132      2.510      0.012       0.072       0.588
+ar.S.L12      -0.1173      0.096     -1.218      0.223      -0.306       0.071
+ma.S.L12      -0.9984      4.255     -0.235      0.815      -9.339       7.342
+sigma2         0.2367      1.000      0.237      0.813      -1.723       2.197
+===================================================================================
+Ljung-Box (L1) (Q):                   0.56   Jarque-Bera (JB):                 2.67
+Prob(Q):                              0.45   Prob(JB):                         0.26
+Heteroskedasticity (H):               1.06   Skew:                             0.24
+Prob(H) (two-sided):                  0.79   Kurtosis:                         2.98
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq),---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[7], line 23
+     21 # Calculate RMSE
+     22 from sklearn.metrics import mean_squared_error
+---> 23 rmse = np.sqrt(mean_squared_error(validation_set['Sales'], forecast['Forecast']))
+     24 print(f"RMSE: {rmse}")
+     26 # Plotting the results
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:214, in validate_params.<locals>.decorator.<locals>.wrapper(*args, **kwargs)
+    208 try:
+    209     with config_context(
+    210         skip_parameter_validation=(
+    211             prefer_skip_nested_validation or global_skip_validation
+    212         )
+    213     ):
+--> 214         return func(*args, **kwargs)
+    215 except InvalidParameterError as e:
+    216     # When the function is just a wrapper around an estimator, we allow
+    217     # the function to delegate validation to the estimator, but we replace
+    218     # the name of the estimator by the name of the function in the error
+    219     # message to avoid confusion.
+    220     msg = re.sub(
+    221         r"parameter of \w+ must be",
+    222         f"parameter of {func.__qualname__} must be",
+    223         str(e),
+    224     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:474, in mean_squared_error(y_true, y_pred, sample_weight, multioutput, squared)
+    404 @validate_params(
+    405     {
+    406         "y_true": ["array-like"],
+   (...)
+    415     y_true, y_pred, *, sample_weight=None, multioutput="uniform_average", squared=True
+    416 ):
+    417     """Mean squared error regression loss.
+    418 
+    419     Read more in the :ref:`User Guide <mean_squared_error>`.
+   (...)
+    472     0.825...
+    473     """
+--> 474     y_type, y_true, y_pred, multioutput = _check_reg_targets(
+    475         y_true, y_pred, multioutput
+    476     )
+    477     check_consistent_length(y_true, y_pred, sample_weight)
+    478     output_errors = np.average((y_true - y_pred) ** 2, axis=0, weights=sample_weight)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:101, in _check_reg_targets(y_true, y_pred, multioutput, dtype)
+     99 check_consistent_length(y_true, y_pred)
+    100 y_true = check_array(y_true, ensure_2d=False, dtype=dtype)
+--> 101 y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+    103 if y_true.ndim == 1:
+    104     y_true = y_true.reshape((-1, 1))
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\validation.py:957, in check_array(array, accept_sparse, accept_large_sparse, dtype, order, copy, force_all_finite, ensure_2d, allow_nd, ensure_min_samples, ensure_min_features, estimator, input_name)
+    951         raise ValueError(
+    952             "Found array with dim %d. %s expected <= 2."
+    953             % (array.ndim, estimator_name)
+    954         )
+    956     if force_all_finite:
+--> 957         _assert_all_finite(
+    958             array,
+    959             input_name=input_name,
+    960             estimator_name=estimator_name,
+    961             allow_nan=force_all_finite == "allow-nan",
+    962         )
+    964 if ensure_min_samples > 0:
+    965     n_samples = _num_samples(array)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\validation.py:122, in _assert_all_finite(X, allow_nan, msg_dtype, estimator_name, input_name)
+    119 if first_pass_isfinite:
+    120     return
+--> 122 _assert_all_finite_element_wise(
+    123     X,
+    124     xp=xp,
+    125     allow_nan=allow_nan,
+    126     msg_dtype=msg_dtype,
+    127     estimator_name=estimator_name,
+    128     input_name=input_name,
+    129 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\validation.py:171, in _assert_all_finite_element_wise(X, xp, allow_nan, msg_dtype, estimator_name, input_name)
+    154 if estimator_name and input_name == "X" and has_nan_error:
+    155     # Improve the error message on how to handle missing values in
+    156     # scikit-learn.
+    157     msg_err += (
+    158         f"\n{estimator_name} does not accept missing values"
+    159         " encoded as NaN natively. For supervised learning, you might want"
+   (...)
+    169         "#estimators-that-handle-nan-values"
+    170     )
+--> 171 raise ValueError(msg_err)
+
+ValueError: Input contains NaN.
+is_success:
+False
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+
+# Ensure there are no NaN values in the training set
+train_set.fillna(method='ffill', inplace=True)
+
+# Fit an ARIMA model
+model = ARIMA(train_set['Sales'], order=(5,1,0))
+model_fit = model.fit()
+
+# Forecast on the validation set
+forecast = model_fit.forecast(steps=len(validation_set))
+
+# Handle potential NaN values in the forecast
+forecast = np.nan_to_num(forecast)
+
+# Print the forecast
+print(forecast)
+execute_result:
+[-0.14349436  0.46042335  1.25464118  1.77624054  1.51484674  0.79766002
+  0.05532337 -0.05906721  0.47322118  1.2808868   1.72236422  1.49782074
+  0.75301988  0.08271957 -0.02619164  0.51332525  1.27998929  1.69931608
+  1.45046712  0.73606199  0.094875    0.0136077   0.54590096  1.28477834
+  1.66818702  1.41244577  0.71575546  0.10996341  0.05107287  0.57805974
+  1.28632185  1.63961777  1.3744178   0.69790623  0.12517143  0.08768427
+  0.60798314  1.28735785  1.61093685  1.33825902  0.68152374  0.14077085
+  0.12310946  0.6363428   1.28721543  1.58278612  1.30360967  0.66662473
+  0.15665914  0.15747231  0.66301061  1.28615663  1.5550787   1.270466
+  0.65313122  0.17279797  0.19073589  0.68810467  1.28421245  1.52785423
+  1.23878879  0.64096972  0.1891277   0.22292425  0.71167394  1.28145666
+  1.50113421  1.20853699  0.63006856  0.205604    0.25404418  0.73378168
+  1.27795307],self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+is_success:
+True
+code:
+from sklearn.metrics import mean_squared_error
+
+# Ensure the validation set is processed the same way as the training set
+validation_set_processed = validation_set.copy()
+validation_set_processed[numerical_cols] = scaler.transform(validation_set_processed[numerical_cols])
+
+# Evaluate the model on the validation set
+actual_values = validation_set_processed['Sales']
+predicted_values = forecast
+
+mse = mean_squared_error(actual_values, predicted_values)
+print(f"Mean Squared Error (MSE): {mse}")
+execute_result:
+Mean Squared Error (MSE): 34.43835861203515
+is_success:
+True

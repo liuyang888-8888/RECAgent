@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 27,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "bitcoin_price",
+        "task_description": "基于过去10年比特币价格的时序数据，构建一个向量自回归模型（Vector Autoregression Model, VAR），优化AR方案采用贝叶斯信息准则 (BIC)，用于分析和预测比特币接下来的几天最高价值。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 127.97914862632751,
+        "interact_count": 6,
+        "prompt_tokens": 27275,
+        "completion_tokens": 3382,
+        "RCR": 5
+    }
+}

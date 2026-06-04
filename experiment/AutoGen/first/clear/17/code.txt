@@ -1,0 +1,179 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.metrics import mean_squared_error
+
+# 读取训练集和测试集
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 分离特征和目标变量
+X_train = train_df.drop(columns=['hardness'])
+y_train = train_df['hardness']
+
+X_test = test_df.drop(columns=['hardness'])
+y_test = test_df['hardness']
+
+# 构建 KNN 模型
+k = 5
+knn = KNeighborsRegressor(n_neighbors=k)
+
+# 训练模型
+knn.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = knn.predict(X_test)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+
+# 输出均方误差
+print(f"Mean Squared Error (MSE): {mse}")
+
+# 保存预测结果
+test_df['predicted_hardness'] = y_pred
+test_df.to_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_test_predictions.csv', index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_93b48d697f41fcab97b4fea94efd231a56ddefef7538d5c0e88f58ad48d3fd0d.py", line 13, in <module>
+    X_train = train_df.drop(columns=['hardness'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['hardness'] not found in axis"
+
+生成的代码：
+import pandas as pd
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.metrics import mean_squared_error
+
+# 读取训练集和测试集
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 检查列名
+print("Train dataset columns:", train_df.columns)
+print("Test dataset columns:", test_df.columns)
+
+# 确保 'hardness' 列存在
+if 'hardness' not in train_df.columns or 'hardness' not in test_df.columns:
+    raise ValueError("The 'hardness' column is missing in the dataset.")
+
+# 分离特征和目标变量
+X_train = train_df.drop(columns=['hardness'])
+y_train = train_df['hardness']
+
+X_test = test_df.drop(columns=['hardness'])
+y_test = test_df['hardness']
+
+# 构建 KNN 模型
+k = 5
+knn = KNeighborsRegressor(n_neighbors=k)
+
+# 训练模型
+knn.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = knn.predict(X_test)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+
+# 输出均方误差
+print(f"Mean Squared Error (MSE): {mse}")
+
+# 保存预测结果
+test_df['predicted_hardness'] = y_pred
+test_df.to_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_test_predictions.csv', index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_3838a960a40e7aa03fa43e00eb7e1920d4bfbf352d94ca1b53f5d9bc6f4151e6.py", line 18, in <module>
+    raise ValueError("The 'hardness' column is missing in the dataset.")
+ValueError: The 'hardness' column is missing in the dataset.
+Train dataset columns: Index(['id', 'allelectrons_Total', 'density_Total', 'allelectrons_Average',
+       'val_e_Average', 'atomicweight_Average', 'ionenergy_Average',
+       'el_neg_chi_Average', 'R_vdw_element_Average', 'zaratio_Average',
+       'density_Average', 'Hardness'],
+      dtype='object')
+Test dataset columns: Index(['id', 'allelectrons_Total', 'density_Total', 'allelectrons_Average',
+       'val_e_Average', 'atomicweight_Average', 'ionenergy_Average',
+       'el_neg_chi_Average', 'R_vdw_element_Average', 'zaratio_Average',
+       'density_Average', 'Hardness'],
+      dtype='object')
+
+生成的代码：
+import pandas as pd
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.metrics import mean_squared_error
+
+# 读取训练集和测试集
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 检查列名
+print("Train dataset columns:", train_df.columns)
+print("Test dataset columns:", test_df.columns)
+
+# 确保 'Hardness' 列存在
+if 'Hardness' not in train_df.columns or 'Hardness' not in test_df.columns:
+    raise ValueError("The 'Hardness' column is missing in the dataset.")
+
+# 分离特征和目标变量
+X_train = train_df.drop(columns=['Hardness'])
+y_train = train_df['Hardness']
+
+X_test = test_df.drop(columns=['Hardness'])
+y_test = test_df['Hardness']
+
+# 构建 KNN 模型
+k = 5
+knn = KNeighborsRegressor(n_neighbors=k)
+
+# 训练模型
+knn.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = knn.predict(X_test)
+
+# 计算均方误差
+mse = mean_squared_error(y_test, y_pred)
+
+# 输出均方误差
+print(f"Mean Squared Error (MSE): {mse}")
+
+# 保存预测结果
+test_df['predicted_Hardness'] = y_pred
+test_df.to_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\mohs_hardness_test_predictions.csv', index=False)
+
+
+执行结果：
+Train dataset columns: Index(['id', 'allelectrons_Total', 'density_Total', 'allelectrons_Average',
+       'val_e_Average', 'atomicweight_Average', 'ionenergy_Average',
+       'el_neg_chi_Average', 'R_vdw_element_Average', 'zaratio_Average',
+       'density_Average', 'Hardness'],
+      dtype='object')
+Test dataset columns: Index(['id', 'allelectrons_Total', 'density_Total', 'allelectrons_Average',
+       'val_e_Average', 'atomicweight_Average', 'ionenergy_Average',
+       'el_neg_chi_Average', 'R_vdw_element_Average', 'zaratio_Average',
+       'density_Average', 'Hardness'],
+      dtype='object')
+Mean Squared Error (MSE): 2.6757401056676273

@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 9,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "heart_diseases",
+        "task_description": "构建一个随机森林分类模型，用于预测个体是否患有心脏疾病。目标是根据患者的生理指标、生活习惯和医疗历史等特征，预测其是否患有心脏疾病。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 77.23730969429016,
+        "interact_count": 2,
+        "prompt_tokens": 2200,
+        "completion_tokens": 1268,
+        "RCR": 5
+    }
+}

@@ -1,0 +1,189 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    model = LogisticRegression(random_state=SEED)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['booking_status'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['booking_status'], axis=1)
+    y = data_df['booking_status'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    print("Final F1 Score on validation set: ", f1)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['booking_status'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['booking_status'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Final F1 Score on validation set:  0.749084796224534
+final F1 Score on test set:  0.751631949694326
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define the pipeline with StandardScaler and LogisticRegression
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('classifier', LogisticRegression(random_state=SEED))
+    ])
+    pipeline.fit(X_train, y_train)
+    return pipeline
+
+
+def predict(model, X):
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['booking_status'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['booking_status'], axis=1)
+    y = data_df['booking_status'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    print("Final F1 Score on validation set after feature scaling: ", f1)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['booking_status'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['booking_status'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Final F1 Score on validation set after feature scaling:  0.7589512925949395
+final F1 Score on test set:  0.7672635768912368
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

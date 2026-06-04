@@ -1,0 +1,20 @@
+{
+    "task": {
+        "id": 7,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "reservation_cancellation",
+        "task_description": "对于酒店经理来说客户是否会取消预定是一个十分值得关注的问题，请基于 reservation_cancellation 数据集，构建一个分类模型，用于预测酒店预订是否会被取消。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 110.8658857345581,
+        "metrics": 0.7857531166850196,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 2,
+        "prompt_tokens": 4615,
+        "completion_tokens": 317
+    }
+}

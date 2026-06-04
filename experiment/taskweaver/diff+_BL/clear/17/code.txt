@@ -1,0 +1,129 @@
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import mean_squared_error
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\mohs_hardness_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\mohs_hardness_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Prepare the data
+X_train = train_df.drop('mohs_hardness', axis=1)
+y_train = train_df['mohs_hardness']
+X_test = test_df.drop('mohs_hardness', axis=1)
+y_test = test_df['mohs_hardness']
+
+# Build the KNN model
+knn_model = KNeighborsClassifier(n_neighbors=5)
+knn_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = knn_model.predict(X_test)
+
+# Calculate MSE
+mse = mean_squared_error(y_test, y_pred)
+mse, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 13
+    X_train = train_df.drop('mohs_hardness', axis=1)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:5581 in drop
+    return super().drop(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4788 in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4830 in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:7070 in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+
+KeyError: "['mohs_hardness'] not found in axis"
+
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import mean_squared_error
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\mohs_hardness_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\mohs_hardness_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Check the columns of the datasets
+train_columns = train_df.columns.tolist()
+test_columns = test_df.columns.tolist()
+
+# Print the columns to check if 'mohs_hardness' exists
+train_columns, test_columns
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(['id', 'allelectrons_Total', 'density_Total', 'allelectrons_Average', 'val_e_Average', 'atomicweight_Average', 'ionenergy_Average', 'el_neg_chi_Average', 'R_vdw_element_Average', 'zaratio_Average', 'density_Average', 'Hardness'], ['id', 'allelectrons_Total', 'density_Total', 'allelectrons_Average', 'val_e_Average', 'atomicweight_Average', 'ionenergy_Average', 'el_neg_chi_Average', 'R_vdw_element_Average', 'zaratio_Average', 'density_Average', 'Hardness'])# Prepare the feature and target variables
+X_train = train_df.drop(columns=['id', 'Hardness'])
+y_train = train_df['Hardness']
+X_test = test_df.drop(columns=['id', 'Hardness'])
+y_test = test_df['Hardness']
+
+# Build the KNN model with k=5
+knn_model = KNeighborsClassifier(n_neighbors=5)
+knn_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = knn_model.predict(X_test)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+mse, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[3], line 9
+    knn_model.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\neighbors\_classification.py:239 in fit
+    return self._fit(X, y)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\neighbors\_base.py:508 in _fit
+    check_classification_targets(y)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\multiclass.py:222 in check_classification_targets
+    raise ValueError(
+
+ValueError: Unknown label type: continuous. Maybe you are trying to fit a classifier, which expects discrete classes on a regression target with continuous values.
+
+from sklearn.neighbors import KNeighborsRegressor
+
+# Prepare the feature and target variables
+X_train = train_df.drop(columns=['id', 'Hardness'])
+y_train = train_df['Hardness']
+X_test = test_df.drop(columns=['id', 'Hardness'])
+y_test = test_df['Hardness']
+
+# Build the KNN model with k=5
+knn_model = KNeighborsRegressor(n_neighbors=5)
+knn_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = knn_model.predict(X_test)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+mse, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(2.0791692603266094, array([5.2 , 5.76, 5.9 , ..., 3.54, 5.22, 5.6 ]))

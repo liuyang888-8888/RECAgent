@@ -1,0 +1,206 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\electricity_sales_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\electricity_sales_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 假设数据中有一个名为 'date' 的列和一个名为 'sales' 的列
+# 将 'date' 列转换为日期格式
+train_df['date'] = pd.to_datetime(train_df['date'])
+test_df['date'] = pd.to_datetime(test_df['date'])
+
+# 将数据设置为时间序列
+train_df.set_index('date', inplace=True)
+test_df.set_index('date', inplace=True)
+
+# 提取销量数据
+train_sales = train_df['sales']
+test_sales = test_df['sales']
+
+# 训练 ARIMA 模型
+model = ARIMA(train_sales, order=(5, 1, 0))
+model_fit = model.fit()
+
+# 预测训练集上的值
+train_predictions = model_fit.fittedvalues
+
+# 计算训练集上的均方误差（MSE）
+train_mse = mean_squared_error(train_sales, train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 预测测试集上的值
+test_predictions = model_fit.forecast(steps=len(test_sales))
+
+# 计算测试集上的均方误差（MSE）
+test_mse = mean_squared_error(test_sales, test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3805, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'date'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_5e8a56e2b72c9972372afced835bf0a97d14911fc9b5f2f4fbbe361f878b9621.py", line 15, in <module>
+    train_df['date'] = pd.to_datetime(train_df['date'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 4102, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    raise KeyError(key) from err
+KeyError: 'date'
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\electricity_sales_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\electricity_sales_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 检查数据的列名
+print("Train data columns:", train_df.columns)
+print("Test data columns:", test_df.columns)
+
+# 假设数据中有一个名为 'date' 的列和一个名为 'sales' 的列
+# 如果列名不同，请根据实际情况修改
+date_col = 'date'  # 请根据实际情况修改
+sales_col = 'sales'  # 请根据实际情况修改
+
+# 将 'date' 列转换为日期格式
+train_df[date_col] = pd.to_datetime(train_df[date_col])
+test_df[date_col] = pd.to_datetime(test_df[date_col])
+
+# 将数据设置为时间序列
+train_df.set_index(date_col, inplace=True)
+test_df.set_index(date_col, inplace=True)
+
+# 提取销量数据
+train_sales = train_df[sales_col]
+test_sales = test_df[sales_col]
+
+# 训练 ARIMA 模型
+model = ARIMA(train_sales, order=(5, 1, 0))
+model_fit = model.fit()
+
+# 预测训练集上的值
+train_predictions = model_fit.fittedvalues
+
+# 计算训练集上的均方误差（MSE）
+train_mse = mean_squared_error(train_sales, train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 预测测试集上的值
+test_predictions = model_fit.forecast(steps=len(test_sales))
+
+# 计算测试集上的均方误差（MSE）
+test_mse = mean_squared_error(test_sales, test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3805, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'date'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_76ddad66413e5d5496bd46299d916c43e9a815a7df506d7153d21adbccde561c.py", line 23, in <module>
+    train_df[date_col] = pd.to_datetime(train_df[date_col])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 4102, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    raise KeyError(key) from err
+KeyError: 'date'
+Train data columns: Index(['Date', 'Sales'], dtype='object')
+Test data columns: Index(['Date', 'Sales'], dtype='object')
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\electricity_sales_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\electricity_sales_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 检查数据的列名
+print("Train data columns:", train_df.columns)
+print("Test data columns:", test_df.columns)
+
+# 使用正确的列名
+date_col = 'Date'
+sales_col = 'Sales'
+
+# 将 'Date' 列转换为日期格式
+train_df[date_col] = pd.to_datetime(train_df[date_col])
+test_df[date_col] = pd.to_datetime(test_df[date_col])
+
+# 将数据设置为时间序列
+train_df.set_index(date_col, inplace=True)
+test_df.set_index(date_col, inplace=True)
+
+# 提取销量数据
+train_sales = train_df[sales_col]
+test_sales = test_df[sales_col]
+
+# 训练 ARIMA 模型
+model = ARIMA(train_sales, order=(5, 1, 0))
+model_fit = model.fit()
+
+# 预测训练集上的值
+train_predictions = model_fit.fittedvalues
+
+# 计算训练集上的均方误差（MSE）
+train_mse = mean_squared_error(train_sales, train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 预测测试集上的值
+test_predictions = model_fit.forecast(steps=len(test_sales))
+
+# 计算测试集上的均方误差（MSE）
+test_mse = mean_squared_error(test_sales, test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+Train data columns: Index(['Date', 'Sales'], dtype='object')
+Test data columns: Index(['Date', 'Sales'], dtype='object')
+Training MSE: 4.058089732303738
+Testing MSE: 130.9956894961228

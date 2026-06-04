@@ -1,0 +1,142 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 查看数据结构
+print(train_df.head())
+print(test_df.head())
+
+# 假设目标变量是 'is_canceled'
+target = 'is_canceled'
+
+# 分离特征和目标变量
+X_train = train_df.drop(columns=[target])
+y_train = train_df[target]
+
+X_test = test_df.drop(columns=[target])
+y_test = test_df[target]
+
+# 构建随机森林模型
+rf_model = RandomForestClassifier(n_estimators=200, random_state=42)
+
+# 训练模型
+rf_model.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = rf_model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 输出 F1 分数
+print(f'Weighted F1 Score on the test set: {f1}')
+
+# 保存预测结果
+test_df['predicted_is_canceled'] = y_pred
+test_df.to_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test_predictions.csv', index=False)
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_5b1acf6e26fe3da6d8138ab0819c37a6885862fa776e5480f40c8943a10db4b9.py", line 21, in <module>
+    X_train = train_df.drop(columns=[target])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['is_canceled'] not found in axis"
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   0           2.0  ...                       0               0
+1   2           2.0  ...                       0               0
+2   3           1.0  ...                       0               0
+3   5           0.0  ...                       0               1
+4   6           2.0  ...                       1               1
+
+[5 rows x 19 columns]
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   1           2.0  ...                       0               0
+1   4           2.0  ...                       0               1
+2   7           2.0  ...                       0               0
+3  13           2.0  ...                       0               1
+4  23           1.0  ...                       0               1
+
+[5 rows x 19 columns]
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 查看数据结构
+print(train_df.head())
+print(test_df.head())
+
+# 假设目标变量是 'booking_status'
+target = 'booking_status'
+
+# 分离特征和目标变量
+X_train = train_df.drop(columns=[target])
+y_train = train_df[target]
+
+X_test = test_df.drop(columns=[target])
+y_test = test_df[target]
+
+# 构建随机森林模型
+rf_model = RandomForestClassifier(n_estimators=200, random_state=42)
+
+# 训练模型
+rf_model.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = rf_model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 输出 F1 分数
+print(f'Weighted F1 Score on the test set: {f1}')
+
+# 保存预测结果
+test_df['predicted_booking_status'] = y_pred
+test_df.to_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test_predictions.csv', index=False)
+
+
+执行结果：
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   0           2.0  ...                       0               0
+1   2           2.0  ...                       0               0
+2   3           1.0  ...                       0               0
+3   5           0.0  ...                       0               1
+4   6           2.0  ...                       1               1
+
+[5 rows x 19 columns]
+   id  no_of_adults  ...  no_of_special_requests  booking_status
+0   1           2.0  ...                       0               0
+1   4           2.0  ...                       0               1
+2   7           2.0  ...                       0               0
+3  13           2.0  ...                       0               1
+4  23           1.0  ...                       0               1
+
+[5 rows x 19 columns]
+Weighted F1 Score on the test set: 0.8162987206772215

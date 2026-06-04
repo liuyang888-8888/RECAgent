@@ -1,0 +1,270 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv(r'E:\csv\electricity_sales_train.csv')
+test_df = pd.read_csv(r'E:\csv\electricity_sales_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    label_encoder = train_df_copy[col].astype('category').cat.codes
+    train_df_copy[col] = label_encoder
+    test_df_copy[col] = test_df_copy[col].map(train_df_copy[col].astype('category').cat.categories).fillna(-1).astype(int)
+
+# Apply appropriate preprocessing for numerical columns
+for col in numerical_columns:
+    # Skip the label column if it's numerical
+    if col != 'label':
+        # Example: Apply log transformation to handle skewness (if needed)
+        train_df_copy[col] = train_df_copy[col].apply(lambda x: np.log1p(x))
+        test_df_copy[col] = test_df_copy[col].apply(lambda x: np.log1p(x))
+
+# Verify the preprocessing
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+         Date      Sales
+0  2021-10-01  29.109547
+1  2021-10-02  30.720435
+2  2021-10-03  30.305173
+3  2021-10-04  27.390893
+4  2021-10-05  22.841123
+
+Test DataFrame:
+         Date      Sales
+0  2021-10-01  29.109547
+1  2021-10-02  30.720435
+2  2021-10-03  30.305173
+3  2021-10-04  27.390893
+4  2021-10-05  22.841123
+
+Data types in Train DataFrame:
+Date      object
+Sales    float64
+dtype: object
+
+Data types in Test DataFrame:
+Date      object
+Sales    float64
+dtype: object
+
+Categorical Columns:
+Index(['Date'], dtype='object')
+
+Numerical Columns:
+Index(['Sales'], dtype='object'),---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[1], line 38
+     36     label_encoder = train_df_copy[col].astype('category').cat.codes
+     37     train_df_copy[col] = label_encoder
+---> 38     test_df_copy[col] = test_df_copy[col].map(train_df_copy[col].astype('category').cat.categories).fillna(-1).astype(int)
+     40 # Apply appropriate preprocessing for numerical columns
+     41 for col in numerical_columns:
+     42     # Skip the label column if it's numerical
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\series.py:4540, in Series.map(self, arg, na_action)
+   4460 def map(
+   4461     self,
+   4462     arg: Callable | Mapping | Series,
+   4463     na_action: Literal["ignore"] | None = None,
+   4464 ) -> Series:
+   4465     """
+   4466     Map values of Series according to an input mapping or function.
+   4467 
+   (...)
+   4538     dtype: object
+   4539     """
+-> 4540     new_values = self._map_values(arg, na_action=na_action)
+   4541     return self._constructor(new_values, index=self.index, copy=False).__finalize__(
+   4542         self, method="map"
+   4543     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\base.py:921, in IndexOpsMixin._map_values(self, mapper, na_action, convert)
+    918 if isinstance(arr, ExtensionArray):
+    919     return arr.map(mapper, na_action=na_action)
+--> 921 return algorithms.map_array(arr, mapper, na_action=na_action, convert=convert)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\algorithms.py:1814, in map_array(arr, mapper, na_action, convert)
+   1812 values = arr.astype(object, copy=False)
+   1813 if na_action is None:
+-> 1814     return lib.map_infer(values, mapper, convert=convert)
+   1815 else:
+   1816     return lib.map_infer_mask(
+   1817         values, mapper, mask=isna(values).view(np.uint8), convert=convert
+   1818     )
+
+File lib.pyx:2917, in pandas._libs.lib.map_infer()
+
+TypeError: 'Index' object is not callable
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the training dataset
+train_data_path = r'E:\csv\electricity_sales_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Load the testing dataset
+test_data_path = r'E:\csv\electricity_sales_test.csv'
+test_df = pd.read_csv(test_data_path)
+
+# Display the first few rows of both datasets to verify loading
+train_df.head(), test_df.head()
+execute_result:
+(         Date      Sales
+ 0  2021-10-01  29.109547
+ 1  2021-10-02  30.720435
+ 2  2021-10-03  30.305173
+ 3  2021-10-04  27.390893
+ 4  2021-10-05  22.841123,
+          Date      Sales
+ 0  2021-10-01  29.109547
+ 1  2021-10-02  30.720435
+ 2  2021-10-03  30.305173
+ 3  2021-10-04  27.390893
+ 4  2021-10-05  22.841123)
+is_success:
+True
+code:
+# Copy the original DataFrames to avoid modifying them directly
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Convert the 'Date' column to datetime type
+train_df_copy['Date'] = pd.to_datetime(train_df_copy['Date'])
+test_df_copy['Date'] = pd.to_datetime(test_df_copy['Date'])
+
+# Set the 'Date' column as the index
+train_df_copy.set_index('Date', inplace=True)
+test_df_copy.set_index('Date', inplace=True)
+
+# Ensure the data is sorted chronologically
+train_df_copy.sort_index(inplace=True)
+test_df_copy.sort_index(inplace=True)
+
+# Display the first few rows of the processed DataFrames
+train_df_copy.head(), test_df_copy.head()
+execute_result:
+(                Sales
+ Date                 
+ 2021-10-01  29.109547
+ 2021-10-02  30.720435
+ 2021-10-03  30.305173
+ 2021-10-04  27.390893
+ 2021-10-05  22.841123,
+                 Sales
+ Date                 
+ 2021-10-01  29.109547
+ 2021-10-02  30.720435
+ 2021-10-03  30.305173
+ 2021-10-04  27.390893
+ 2021-10-05  22.841123)
+is_success:
+True
+code:
+# Since the 'Date' column has already been set as the index and converted to datetime,
+# we will proceed with further preprocessing steps if needed.
+
+# For this task, since the data is already split into train and test sets,
+# and the 'Date' column is already in the correct format, we can move forward
+# with any additional preprocessing steps that might be required.
+
+# For example, if there are any missing values, we can handle them here.
+# However, based on the provided information, no such steps are necessary yet.
+
+# If additional preprocessing is required, it should be done here.
+# For now, let's just ensure that the data is ready for modeling.
+
+# Check for missing values in both train and test datasets
+train_missing = train_df_copy.isnull().sum()
+test_missing = test_df_copy.isnull().sum()
+
+# Display the results
+train_missing, test_missing
+execute_result:
+(Sales    0
+ dtype: int64,
+ Sales    0
+ dtype: int64)
+is_success:
+True
+code:
+from statsmodels.tsa.arima.model import ARIMA
+
+# Train the ARIMA model with p=1
+model = ARIMA(train_df_copy['Sales'], order=(1, 1, 0))
+arima_result = model.fit()
+
+# Summary of the model
+print(arima_result.summary())
+execute_result:
+SARIMAX Results                                
+==============================================================================
+Dep. Variable:                  Sales   No. Observations:                  365
+Model:                 ARIMA(1, 1, 0)   Log Likelihood                -954.265
+Date:                Sun, 25 May 2025   AIC                           1912.529
+Time:                        19:12:10   BIC                           1920.324
+Sample:                    10-01-2021   HQIC                          1915.627
+                         - 09-30-2022                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1          0.4547      0.061      7.481      0.000       0.336       0.574
+sigma2        11.0751      0.959     11.543      0.000       9.195      12.956
+===================================================================================
+Ljung-Box (L1) (Q):                  18.55   Jarque-Bera (JB):                 6.38
+Prob(Q):                              0.00   Prob(JB):                         0.04
+Heteroskedasticity (H):               1.01   Skew:                             0.20
+Prob(H) (two-sided):                  0.96   Kurtosis:                         2.48
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+is_success:
+True
+code:
+# Predicting on the test set using the trained ARIMA model
+predictions = arima_result.predict(start=test_df_copy.index[0], end=test_df_copy.index[-1])
+
+# Calculating the Mean Squared Error (MSE) on the test set
+from sklearn.metrics import mean_squared_error
+mse = mean_squared_error(test_df_copy['Sales'], predictions)
+mse
+execute_result:
+13.367773207190364
+is_success:
+True

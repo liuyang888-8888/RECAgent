@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 11,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "rice_cammeo_and_osmancik",
+        "task_description": "我想要一个根据稻米的形态特征（如面积、周长、长度等）的表格数据用于区分两种稻米（Cammeo 和 Osmancik）的随机森林模型。目标是预测其属于 Cammeo 还是 Osmancik。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 28.22944927215576,
+        "interact_count": 2,
+        "prompt_tokens": 2302,
+        "completion_tokens": 401,
+        "RCR": 5
+    }
+}

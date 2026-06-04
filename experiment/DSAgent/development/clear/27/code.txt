@@ -1,0 +1,551 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and fit the VAR model
+    model = VAR(X_train)
+    fitted_model = model.fit()
+    return fitted_model
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(model.y, steps=forecast_steps)
+    forecast_mean = pd.Series(forecast[:, 0], index=pd.date_range(start=model.data.dates[-1], periods=forecast_steps+1, closed='right'))
+    return forecast_mean
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df[["Open"]])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Open"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/base/tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 55, in <module>
+    model = train_model(data_df[["Open"]])
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 33, in train_model
+    model = VAR(X_train)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/vector_ar/var_model.py", line 552, in __init__
+    raise ValueError("Only gave one variable to VAR")
+ValueError: Only gave one variable to VAR
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def create_lagged_features(df, n_lags):
+    for i in range(1, n_lags + 1):
+        df[f'lag_{i}'] = df['Open'].shift(i)
+    df.dropna(inplace=True)
+    return df
+
+
+def train_model(X_train):
+    # Define and fit the VAR model
+    model = VAR(X_train)
+    fitted_model = model.fit()
+    return fitted_model
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(model.y, steps=forecast_steps)
+    forecast_mean = pd.Series(forecast[:, 0], index=pd.date_range(start=model.data.dates[-1], periods=forecast_steps+1, closed='right'))
+    return forecast_mean
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 创建滞后特征
+    n_lags = 5  # 例如，使用前5天的数据作为特征
+    data_df = create_lagged_features(data_df, n_lags)
+
+    # 模型训练
+    model = train_model(data_df)
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Open"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/base/tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 68, in <module>
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Open"])
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 26, in compute_metrics_for_timeseries
+    mse = mean_squared_error(y, y_fits)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 565, in mean_squared_error
+    _check_reg_targets_with_floating_dtype(
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 198, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, multioutput = _check_reg_targets(
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 104, in _check_reg_targets
+    check_consistent_length(y_true, y_pred)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/validation.py", line 475, in check_consistent_length
+    raise ValueError(
+ValueError: Found input variables with inconsistent numbers of samples: [3500, 3499]
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from statsmodels.tsa.vector_ar.var_model import VAR
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def create_lagged_features(df, n_lags):
+    for i in range(1, n_lags + 1):
+        df[f'lag_{i}'] = df['Open'].shift(i)
+    df.dropna(inplace=True)
+    return df
+
+
+def train_model(X_train):
+    # Define and fit the VAR model
+    model = VAR(X_train)
+    fitted_model = model.fit()
+    return fitted_model
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(model.y, steps=forecast_steps)
+    forecast_mean = pd.Series(forecast[:, 0], index=pd.date_range(start=model.data.dates[-1], periods=forecast_steps+1, closed='right'))
+    return forecast_mean
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 创建滞后特征
+    n_lags = 5  # 例如，使用前5天的数据作为特征
+    data_df = create_lagged_features(data_df, n_lags)
+
+    # 模型训练
+    model = train_model(data_df)
+
+    # 打印模型评估结果
+    # Align the indices of fitted values and the target series
+    fitted_values = model.fittedvalues['Open']
+    y_true = data_df['Open'].iloc[n_lags:]
+    mse = compute_metrics_for_timeseries(fitted_values, y_true)
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/base/tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 71, in <module>
+    mse = compute_metrics_for_timeseries(fitted_values, y_true)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 26, in compute_metrics_for_timeseries
+    mse = mean_squared_error(y, y_fits)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 565, in mean_squared_error
+    _check_reg_targets_with_floating_dtype(
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 198, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, multioutput = _check_reg_targets(
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 104, in _check_reg_targets
+    check_consistent_length(y_true, y_pred)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/validation.py", line 475, in check_consistent_length
+    raise ValueError(
+ValueError: Found input variables with inconsistent numbers of samples: [3495, 3499]
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and train the VAR model
+    model = VAR(X_train)
+    results = model.fit()
+    return results
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(model.y, steps=forecast_steps)
+    return forecast
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df[["Open"]])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Open"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/base/tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 53, in <module>
+    model = train_model(data_df[["Open"]])
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 32, in train_model
+    model = VAR(X_train)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/vector_ar/var_model.py", line 552, in __init__
+    raise ValueError("Only gave one variable to VAR")
+ValueError: Only gave one variable to VAR
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and train the VAR model
+    model = VAR(X_train)
+    results = model.fit()
+    return results
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(model.y, steps=forecast_steps)
+    return forecast
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 确保 DataFrame 有频率信息
+    data_df = data_df.asfreq('D')
+
+    # 如果数据集中没有其他特征，可以使用滞后值来创建多变量时间序列
+    data_df['Open_lag1'] = data_df['Open'].shift(1)
+    data_df.dropna(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df[["Open", "Open_lag1"]])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues['Open'], data_df["Open"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 63, in <module>
+    mse = compute_metrics_for_timeseries(model.fittedvalues['Open'], data_df["Open"])
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 26, in compute_metrics_for_timeseries
+    mse = mean_squared_error(y, y_fits)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 565, in mean_squared_error
+    _check_reg_targets_with_floating_dtype(
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 198, in _check_reg_targets_with_floating_dtype
+    y_type, y_true, y_pred, multioutput = _check_reg_targets(
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/_regression.py", line 104, in _check_reg_targets
+    check_consistent_length(y_true, y_pred)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/validation.py", line 475, in check_consistent_length
+    raise ValueError(
+ValueError: Found input variables with inconsistent numbers of samples: [3504, 3503]
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and train the VAR model
+    model = VAR(X_train)
+    results = model.fit()
+    return results
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(model.y, steps=forecast_steps)
+    return forecast
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 确保 DataFrame 有频率信息
+    data_df = data_df.asfreq('D')
+
+    # 如果数据集中没有其他特征，可以使用滞后值来创建多变量时间序列
+    data_df['Open_lag1'] = data_df['Open'].shift(1)
+    data_df.dropna(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df[["Open", "Open_lag1"]])
+
+    # 打印模型评估结果
+    # Align the lengths of the fitted values and the original data
+    mse = compute_metrics_for_timeseries(model.fittedvalues['Open'], data_df["Open"].iloc[1:])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 70, in <module>
+    y_submission = predict(model, forecast_steps=forecast_steps)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250509-035042/bitcoin_price/train.py", line 39, in predict
+    forecast = model.forecast(model.y, steps=forecast_steps)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/base/wrapper.py", line 34, in __getattribute__
+    obj = getattr(results, attr)
+AttributeError: 'VARResults' object has no attribute 'y'
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

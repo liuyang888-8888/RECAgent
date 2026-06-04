@@ -1,0 +1,897 @@
+code:
+import pandas as pd
+
+# Load the S&P 500 index training data
+train_data_path = 'E:\\csv\\sp500_index_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows to understand the data
+print(train_df_copy.head())
+
+# Check data types of each column
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_cols = train_df_copy.select_dtypes(include=['object']).columns
+numerical_cols = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_cols)
+print("Numerical Columns:", numerical_cols)
+
+# Apply appropriate preprocessing methods
+# For example, if there are categorical columns, we can use label encoding instead of one-hot encoding
+from sklearn.preprocessing import LabelEncoder
+
+for col in categorical_cols:
+    le = LabelEncoder()
+    train_df_copy[col] = le.fit_transform(train_df_copy[col])
+
+# For numerical columns, we can apply scaling if necessary
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+train_df_copy[numerical_cols] = scaler.fit_transform(train_df_copy[numerical_cols])
+
+# Display the processed data
+print(train_df_copy.head())
+execute_result:
+date    SP500
+0  2023-01-24  4016.95
+1  2015-12-17  2041.89
+2  2019-11-07  3085.18
+3  2017-11-09  2584.62
+4  2021-05-18  4127.83
+date      object
+SP500    float64
+dtype: object
+Categorical Columns: Index(['date'], dtype='object')
+Numerical Columns: Index(['SP500'], dtype='object')
+   date     SP500
+0  2196  0.954875
+1   410 -1.132978
+2  1389 -0.030107
+3   888 -0.559253
+4  1772  1.072088
+is_success:
+True
+code:
+# Check for missing values
+print(train_df_copy.isnull().sum())
+
+# Convert the 'date' column to datetime format
+train_df_copy['date'] = pd.to_datetime(train_df_copy['date'])
+
+# Verify the conversion
+print(train_df_copy.dtypes)
+execute_result:
+date     0
+SP500    0
+dtype: int64
+date     datetime64[ns]
+SP500           float64
+dtype: object
+is_success:
+True
+code:
+# Splitting the data into features (X) and target variable (y)
+X = train_df_copy.drop(columns=['SP500'])
+y = train_df_copy['SP500']
+
+# Displaying the first few rows of X and y
+print("Features (X):")
+print(X.head())
+print("\nTarget Variable (y):")
+print(y.head())
+execute_result:
+Features (X):
+                           date
+0 1970-01-01 00:00:00.000002196
+1 1970-01-01 00:00:00.000000410
+2 1970-01-01 00:00:00.000001389
+3 1970-01-01 00:00:00.000000888
+4 1970-01-01 00:00:00.000001772
+
+Target Variable (y):
+0    0.954875
+1   -1.132978
+2   -0.030107
+3   -0.559253
+4    1.072088
+Name: SP500, dtype: float64
+is_success:
+True
+code:
+from xgboost import XGBRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+# Splitting the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
+
+# Initialize the XGBoost model with suitable hyperparameters
+xgb_model = XGBRegressor(objective='reg:squarederror', n_estimators=1000, max_depth=6, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = xgb_model.predict(X_test)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+print(f"Mean Squared Error: {mse}")
+
+# Optionally, print more detailed evaluation metrics
+from sklearn.metrics import r2_score, mean_absolute_error
+r2 = r2_score(y_test, y_pred)
+mae = mean_absolute_error(y_test, y_pred)
+print(f"R^2 Score: {r2}")
+print(f"Mean Absolute Error: {mae}")
+execute_result:
+  feature_names=feature_names,
+   1585     feature_types=feature_types,
+   1586     enable_categorical=enable_categorical,
+   1587 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:1632, in QuantileDMatrix._init(self, data, ref, enable_categorical, **meta)
+   1620 config = make_jcargs(
+   1621     nthread=self.nthread, missing=self.missing, max_bin=self.max_bin
+   1622 )
+   1623 ret = _LIB.XGQuantileDMatrixCreateFromCallback(
+   1624     None,
+   1625     it.proxy.handle,
+   (...)
+   1630     ctypes.byref(handle),
+   1631 )
+-> 1632 it.reraise()
+   1633 # delay check_call to throw intermediate exception first
+   1634 _check_call(ret)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:569, in DataIter.reraise(self)
+    567 exc = self._exception
+    568 self._exception = None
+--> 569 raise exc
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:550, in DataIter._handle_exception(self, fn, dft_ret)
+    547     return dft_ret
+    549 try:
+--> 550     return fn()
+    551 except Exception as e:  # pylint: disable=broad-except
+    552     # Defer the exception in order to return 0 and stop the iteration.
+    553     # Exception inside a ctype callback function has no effect except
+    554     # for printing to stderr (doesn't stop the execution).
+    555     tb = sys.exc_info()[2]
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:637, in DataIter._next_wrapper.<locals>.<lambda>()
+    635     self._temporary_data = None
+    636 # pylint: disable=not-callable
+--> 637 return self._handle_exception(lambda: self.next(input_data), 0)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:1402, in SingleBatchInternalIter.next(self, input_data)
+   1400     return 0
+   1401 self.it += 1
+-> 1402 input_data(**self.kwargs)
+   1403 return 1
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:726, in require_keyword_args.<locals>.throw_if.<locals>.inner_f(*args, **kwargs)
+    724 for k, arg in zip(sig.parameters, args):
+    725     kwargs[k] = arg
+--> 726 return func(**kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:617, in DataIter._next_wrapper.<locals>.input_data(data, feature_names, feature_types, **kwargs)
+    615     new, cat_codes, feature_names, feature_types = self._temporary_data
+    616 else:
+--> 617     new, cat_codes, feature_names, feature_types = _proxy_transform(
+    618         data,
+    619         feature_names,
+    620         feature_types,
+    621         self._enable_categorical,
+    622     )
+    623 # Stage the data, meta info are copied inside C++ MetaInfo.
+    624 self._temporary_data = (new, cat_codes, feature_names, feature_types)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:1447, in _proxy_transform(data, feature_names, feature_types, enable_categorical)
+   1445     data = _arrow_transform(data)
+   1446 if _is_pandas_df(data):
+-> 1447     df, feature_names, feature_types = _transform_pandas_df(
+   1448         data, enable_categorical, feature_names, feature_types
+   1449     )
+   1450     return df, None, feature_names, feature_types
+   1451 raise TypeError("Value type is not supported for data iterator:" + str(type(data)))
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:603, in _transform_pandas_df(data, enable_categorical, feature_names, feature_types, meta)
+    596 def _transform_pandas_df(
+    597     data: DataFrame,
+    598     enable_categorical: bool,
+   (...)
+    601     meta: Optional[str] = None,
+    602 ) -> Tuple[PandasTransformed, Optional[FeatureNames], Optional[FeatureTypes]]:
+--> 603     pandas_check_dtypes(data, enable_categorical)
+    604     if meta and len(data.columns) > 1 and meta not in _matrix_meta:
+    605         raise ValueError(f"DataFrame for {meta} cannot have multiple columns")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:569, in pandas_check_dtypes(data, enable_categorical)
+    562 for dtype in data.dtypes:
+    563     if not (
+    564         (dtype.name in _pandas_dtype_mapper)
+    565         or is_pd_sparse_dtype(dtype)
+    566         or (is_pd_cat_dtype(dtype) and enable_categorical)
+    567         or is_pa_ext_dtype(dtype)
+    568     ):
+--> 569         _invalid_dataframe_dtype(data)
+    571     if is_pd_sparse_dtype(dtype):
+    572         sparse_extension = True
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:356, in _invalid_dataframe_dtype(data)
+    354 type_err = "DataFrame.dtypes for data must be int, float, bool or category."
+    355 msg = f"""{type_err} {_ENABLE_CAT_ERR} {err}"""
+--> 356 raise ValueError(msg)
+
+ValueError: DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:date: datetime64[ns]
+is_success:
+False
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import matplotlib.pyplot as plt
+
+# Sort the data by date to ensure chronological order
+train_df_copy = train_df_copy.sort_values(by='date')
+
+# Set the date as the index
+train_df_copy.set_index('date', inplace=True)
+
+# Fit the ARIMA model
+model = ARIMA(train_df_copy['SP500'], order=(5,1,0))
+model_fit = model.fit()
+
+# Summary of the model
+print(model_fit.summary())
+
+# Plot the residuals
+residuals = pd.DataFrame(model_fit.resid)
+residuals.plot()
+plt.show()
+
+# Predicting the next 10 days
+forecast = model_fit.forecast(steps=10)
+print(forecast)
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[8], line 2
+      1 from statsmodels.tsa.arima.model import ARIMA
+----> 2 import matplotlib.pyplot as plt
+      4 # Sort the data by date to ensure chronological order
+      5 train_df_copy = train_df_copy.sort_values(by='date')
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+import matplotlib.pyplot as plt
+
+# Sort the data by date to ensure chronological order
+train_df_copy = train_df_copy.sort_values(by='date')
+
+# Split the data into training and validation sets
+split_ratio = 0.8
+split_index = int(len(train_df_copy) * split_ratio)
+train_set = train_df_copy[:split_index]
+validation_set = train_df_copy[split_index:]
+
+# Fit the SARIMA model
+model = SARIMAX(train_set['SP500'], order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
+results = model.fit()
+
+# Predict the validation set
+predictions = results.predict(start=split_index, end=len(train_df_copy)-1, dynamic=False)
+
+# Plot the predictions against the actual values
+plt.figure(figsize=(10, 6))
+plt.plot(train_set['date'], train_set['SP500'], label='Training Data')
+plt.plot(validation_set['date'], validation_set['SP500'], label='Validation Data')
+plt.plot(validation_set['date'], predictions, label='Predictions', color='red')
+plt.legend()
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[9], line 2
+      1 from statsmodels.tsa.statespace.sarimax import SARIMAX
+----> 2 import matplotlib.pyplot as plt
+      4 # Sort the data by date to ensure chronological order
+      5 train_df_copy = train_df_copy.sort_values(by='date')
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import matplotlib.pyplot as plt
+
+# Sort the dataframe by date to ensure the time series is in chronological order
+train_df_copy = train_df_copy.sort_values(by='date')
+
+# Set the date as the index of the dataframe
+train_df_copy.set_index('date', inplace=True)
+
+# Fit the ARIMA model
+model = ARIMA(y, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Summary of the model
+print(model_fit.summary())
+
+# Plot the residuals
+residuals = pd.DataFrame(model_fit.resid)
+residuals.plot()
+plt.show()
+
+# Predictions
+predictions = model_fit.predict(start=len(y), end=len(y) + 30)
+print(predictions)
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[10], line 2
+      1 from statsmodels.tsa.arima.model import ARIMA
+----> 2 import matplotlib.pyplot as plt
+      4 # Sort the dataframe by date to ensure the time series is in chronological order
+      5 train_df_copy = train_df_copy.sort_values(by='date')
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+import matplotlib.pyplot as plt
+
+# Sort the data by date to ensure chronological order
+train_df_copy = train_df_copy.sort_values(by='date')
+
+# Split the data into training and validation sets
+split_ratio = 0.8
+split_index = int(len(train_df_copy) * split_ratio)
+train_data = train_df_copy[:split_index]
+validation_data = train_df_copy[split_index:]
+
+# Fit the SARIMA model
+model = SARIMAX(train_data['SP500'], order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
+results = model.fit()
+
+# Make predictions
+predictions = results.predict(start=split_index, end=len(train_df_copy)-1, dynamic=False)
+
+# Plot the results
+plt.figure(figsize=(14, 7))
+plt.plot(train_data['date'], train_data['SP500'], label='Train')
+plt.plot(validation_data['date'], validation_data['SP500'], label='Validation')
+plt.plot(validation_data['date'], predictions, label='Predictions')
+plt.legend()
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[11], line 2
+      1 from statsmodels.tsa.statespace.sarimax import SARIMAX
+----> 2 import matplotlib.pyplot as plt
+      4 # Sort the data by date to ensure chronological order
+      5 train_df_copy = train_df_copy.sort_values(by='date')
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+# Convert the date column to a datetime index
+train_df_copy.set_index('date', inplace=True)
+
+# Sort the dataframe by the datetime index
+train_df_copy.sort_index(inplace=True)
+
+# Define the ARIMA model
+model = SARIMAX(y, order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
+
+# Fit the model
+results = model.fit()
+
+# Print the summary of the model
+print(results.summary())
+execute_result:
+SARIMAX Results                                      
+==========================================================================================
+Dep. Variable:                              SP500   No. Observations:                 2518
+Model:             SARIMAX(1, 1, 1)x(1, 1, 1, 12)   Log Likelihood               -3598.357
+Date:                            Sun, 27 Apr 2025   AIC                           7206.713
+Time:                                    21:03:01   BIC                           7235.843
+Sample:                                         0   HQIC                          7217.288
+                                           - 2518                                         
+Covariance Type:                              opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1         -0.0091      0.020     -0.458      0.647      -0.048       0.030
+ma.L1         -0.9992      0.006   -170.214      0.000      -1.011      -0.988
+ar.S.L12       0.0052      0.020      0.253      0.800      -0.035       0.045
+ma.S.L12      -0.9997      0.207     -4.841      0.000      -1.405      -0.595
+sigma2         1.0037      0.208      4.825      0.000       0.596       1.411
+===================================================================================
+Ljung-Box (L1) (Q):                   0.00   Jarque-Bera (JB):               194.68
+Prob(Q):                              0.95   Prob(JB):                         0.00
+Heteroskedasticity (H):               1.00   Skew:                             0.41
+Prob(H) (two-sided):                  0.96   Kurtosis:                         1.91
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).
+is_success:
+True
+code:
+from xgboost import XGBRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Splitting the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the XGBoost model with suitable hyperparameters
+xgb_model = XGBRegressor(objective='reg:squarederror', n_estimators=1000, max_depth=7, learning_rate=0.01, subsample=0.8, colsample_bytree=0.8)
+
+# Fit the model on the training data
+xgb_model.fit(X_train, y_train)
+
+# Predict the target variable on the test set
+y_pred = xgb_model.predict(X_test)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Mean Squared Error: {mse}")
+print(f"R^2 Score: {r2}")
+execute_result:
+  feature_names=feature_names,
+   1585     feature_types=feature_types,
+   1586     enable_categorical=enable_categorical,
+   1587 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:1632, in QuantileDMatrix._init(self, data, ref, enable_categorical, **meta)
+   1620 config = make_jcargs(
+   1621     nthread=self.nthread, missing=self.missing, max_bin=self.max_bin
+   1622 )
+   1623 ret = _LIB.XGQuantileDMatrixCreateFromCallback(
+   1624     None,
+   1625     it.proxy.handle,
+   (...)
+   1630     ctypes.byref(handle),
+   1631 )
+-> 1632 it.reraise()
+   1633 # delay check_call to throw intermediate exception first
+   1634 _check_call(ret)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:569, in DataIter.reraise(self)
+    567 exc = self._exception
+    568 self._exception = None
+--> 569 raise exc
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:550, in DataIter._handle_exception(self, fn, dft_ret)
+    547     return dft_ret
+    549 try:
+--> 550     return fn()
+    551 except Exception as e:  # pylint: disable=broad-except
+    552     # Defer the exception in order to return 0 and stop the iteration.
+    553     # Exception inside a ctype callback function has no effect except
+    554     # for printing to stderr (doesn't stop the execution).
+    555     tb = sys.exc_info()[2]
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:637, in DataIter._next_wrapper.<locals>.<lambda>()
+    635     self._temporary_data = None
+    636 # pylint: disable=not-callable
+--> 637 return self._handle_exception(lambda: self.next(input_data), 0)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:1402, in SingleBatchInternalIter.next(self, input_data)
+   1400     return 0
+   1401 self.it += 1
+-> 1402 input_data(**self.kwargs)
+   1403 return 1
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:726, in require_keyword_args.<locals>.throw_if.<locals>.inner_f(*args, **kwargs)
+    724 for k, arg in zip(sig.parameters, args):
+    725     kwargs[k] = arg
+--> 726 return func(**kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:617, in DataIter._next_wrapper.<locals>.input_data(data, feature_names, feature_types, **kwargs)
+    615     new, cat_codes, feature_names, feature_types = self._temporary_data
+    616 else:
+--> 617     new, cat_codes, feature_names, feature_types = _proxy_transform(
+    618         data,
+    619         feature_names,
+    620         feature_types,
+    621         self._enable_categorical,
+    622     )
+    623 # Stage the data, meta info are copied inside C++ MetaInfo.
+    624 self._temporary_data = (new, cat_codes, feature_names, feature_types)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:1447, in _proxy_transform(data, feature_names, feature_types, enable_categorical)
+   1445     data = _arrow_transform(data)
+   1446 if _is_pandas_df(data):
+-> 1447     df, feature_names, feature_types = _transform_pandas_df(
+   1448         data, enable_categorical, feature_names, feature_types
+   1449     )
+   1450     return df, None, feature_names, feature_types
+   1451 raise TypeError("Value type is not supported for data iterator:" + str(type(data)))
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:603, in _transform_pandas_df(data, enable_categorical, feature_names, feature_types, meta)
+    596 def _transform_pandas_df(
+    597     data: DataFrame,
+    598     enable_categorical: bool,
+   (...)
+    601     meta: Optional[str] = None,
+    602 ) -> Tuple[PandasTransformed, Optional[FeatureNames], Optional[FeatureTypes]]:
+--> 603     pandas_check_dtypes(data, enable_categorical)
+    604     if meta and len(data.columns) > 1 and meta not in _matrix_meta:
+    605         raise ValueError(f"DataFrame for {meta} cannot have multiple columns")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:569, in pandas_check_dtypes(data, enable_categorical)
+    562 for dtype in data.dtypes:
+    563     if not (
+    564         (dtype.name in _pandas_dtype_mapper)
+    565         or is_pd_sparse_dtype(dtype)
+    566         or (is_pd_cat_dtype(dtype) and enable_categorical)
+    567         or is_pa_ext_dtype(dtype)
+    568     ):
+--> 569         _invalid_dataframe_dtype(data)
+    571     if is_pd_sparse_dtype(dtype):
+    572         sparse_extension = True
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:356, in _invalid_dataframe_dtype(data)
+    354 type_err = "DataFrame.dtypes for data must be int, float, bool or category."
+    355 msg = f"""{type_err} {_ENABLE_CAT_ERR} {err}"""
+--> 356 raise ValueError(msg)
+
+ValueError: DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:date: datetime64[ns]
+is_success:
+False
+code:
+# Predicting the target variable using the fitted SARIMAX model
+predictions = results.get_prediction(start=pd.to_datetime('2023-01-01'), dynamic=False)
+predicted_values = predictions.predicted_mean
+print(predicted_values)
+
+# Optionally, you can also plot the predictions against the actual values
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 6))
+plt.plot(train_df_copy.index, y, label='Actual SP500')
+plt.plot(predicted_values.index, predicted_values, label='Predicted SP500', color='red')
+plt.legend()
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:249, in get_index_label_loc(key, index, row_labels)
+    248 if not isinstance(key, (int, np.integer)):
+--> 249     loc = row_labels.get_loc(key)
+    250 else:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\indexes\range.py:418, in RangeIndex.get_loc(self, key)
+    417 if isinstance(key, Hashable):
+--> 418     raise KeyError(key)
+    419 self._check_indexing_error(key)
+
+KeyError: Timestamp('2023-01-01 00:00:00')
+
+During handling of the above exception, another exception occurred:
+
+KeyError                                  Traceback (most recent call last)
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:358, in get_prediction_index(start, end, nobs, base_index, index, silent, index_none, index_generated, data)
+    357 try:
+--> 358     start, _, start_oos = get_index_label_loc(
+    359         start, base_index, data.row_labels
+    360     )
+    361 except KeyError:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:281, in get_index_label_loc(key, index, row_labels)
+    280     except:
+--> 281         raise e
+    282 return loc, index, index_was_expanded
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:245, in get_index_label_loc(key, index, row_labels)
+    244 try:
+--> 245     loc, index, index_was_expanded = get_index_loc(key, index)
+    246 except KeyError as e:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:195, in get_index_loc(key, index)
+    194 except (IndexError, ValueError) as e:
+--> 195     raise KeyError(str(e))
+    196 loc = key
+
+KeyError: 'only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices'
+
+During handling of the above exception, another exception occurred:
+
+KeyError                                  Traceback (most recent call last)
+Cell In[15], line 2
+      1 # Predicting the target variable using the fitted SARIMAX model
+----> 2 predictions = results.get_prediction(start=pd.to_datetime('2023-01-01'), dynamic=False)
+      3 predicted_values = predictions.predicted_mean
+      4 print(predicted_values)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\statespace\mlemodel.py:3341, in MLEResults.get_prediction(self, start, end, dynamic, information_set, signal_only, index, exog, extend_model, extend_kwargs, **kwargs)
+   3337     start = 0
+   3339 # Handle start, end, dynamic
+   3340 start, end, out_of_sample, prediction_index = (
+-> 3341     self.model._get_prediction_index(start, end, index))
+   3343 # Handle `dynamic`
+   3344 if isinstance(dynamic, (str, dt.datetime, pd.Timestamp)):
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:837, in TimeSeriesModel._get_prediction_index(self, start, end, index, silent)
+    781 """
+    782 Get the location of a specific key in an index or model row labels
+    783 
+   (...)
+    834 since we have required them to be full indexes, there is no ambiguity).
+    835 """
+    836 nobs = len(self.endog)
+--> 837 return get_prediction_index(
+    838     start,
+    839     end,
+    840     nobs,
+    841     base_index=self._index,
+    842     index=index,
+    843     silent=silent,
+    844     index_none=self._index_none,
+    845     index_generated=self._index_generated,
+    846     data=self.data,
+    847 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:362, in get_prediction_index(start, end, nobs, base_index, index, silent, index_none, index_generated, data)
+    358     start, _, start_oos = get_index_label_loc(
+    359         start, base_index, data.row_labels
+    360     )
+    361 except KeyError:
+--> 362     raise KeyError(
+    363         "The `start` argument could not be matched to a"
+    364         " location related to the index of the data."
+    365     )
+    366 if end is None:
+    367     end = max(start, len(base_index) - 1)
+
+KeyError: 'The `start` argument could not be matched to a location related to the index of the data.'
+is_success:
+False
+code:
+# Predicting the target variable starting from the earliest date in the training data
+predictions = results.predict(start=train_df_copy.index.min(), end=train_df_copy.index.max(), dynamic=False)
+print(predictions.head())
+execute_result:
+(key, (int, np.integer)):
+--> 249     loc = row_labels.get_loc(key)
+    250 else:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\indexes\range.py:418, in RangeIndex.get_loc(self, key)
+    417 if isinstance(key, Hashable):
+--> 418     raise KeyError(key)
+    419 self._check_indexing_error(key)
+
+KeyError: Timestamp('1970-01-01 00:00:00')
+
+During handling of the above exception, another exception occurred:
+
+KeyError                                  Traceback (most recent call last)
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:358, in get_prediction_index(start, end, nobs, base_index, index, silent, index_none, index_generated, data)
+    357 try:
+--> 358     start, _, start_oos = get_index_label_loc(
+    359         start, base_index, data.row_labels
+    360     )
+    361 except KeyError:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:281, in get_index_label_loc(key, index, row_labels)
+    280     except:
+--> 281         raise e
+    282 return loc, index, index_was_expanded
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:245, in get_index_label_loc(key, index, row_labels)
+    244 try:
+--> 245     loc, index, index_was_expanded = get_index_loc(key, index)
+    246 except KeyError as e:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:195, in get_index_loc(key, index)
+    194 except (IndexError, ValueError) as e:
+--> 195     raise KeyError(str(e))
+    196 loc = key
+
+KeyError: 'only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices'
+
+During handling of the above exception, another exception occurred:
+
+KeyError                                  Traceback (most recent call last)
+Cell In[16], line 2
+      1 # Predicting the target variable starting from the earliest date in the training data
+----> 2 predictions = results.predict(start=train_df_copy.index.min(), end=train_df_copy.index.max(), dynamic=False)
+      3 print(predictions.head())
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\base\wrapper.py:113, in make_wrapper.<locals>.wrapper(self, *args, **kwargs)
+    111     obj = data.wrap_output(func(results, *args, **kwargs), how[0], how[1:])
+    112 elif how:
+--> 113     obj = data.wrap_output(func(results, *args, **kwargs), how)
+    114 return obj
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\statespace\mlemodel.py:3488, in MLEResults.predict(self, start, end, dynamic, information_set, signal_only, **kwargs)
+   3423 r"""
+   3424 In-sample prediction and out-of-sample forecasting
+   3425 
+   (...)
+   3485     including confidence intervals.
+   3486 """
+   3487 # Perform the prediction
+-> 3488 prediction_results = self.get_prediction(
+   3489     start, end, dynamic, information_set=information_set,
+   3490     signal_only=signal_only, **kwargs)
+   3491 return prediction_results.predicted_mean
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\statespace\mlemodel.py:3341, in MLEResults.get_prediction(self, start, end, dynamic, information_set, signal_only, index, exog, extend_model, extend_kwargs, **kwargs)
+   3337     start = 0
+   3339 # Handle start, end, dynamic
+   3340 start, end, out_of_sample, prediction_index = (
+-> 3341     self.model._get_prediction_index(start, end, index))
+   3343 # Handle `dynamic`
+   3344 if isinstance(dynamic, (str, dt.datetime, pd.Timestamp)):
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:837, in TimeSeriesModel._get_prediction_index(self, start, end, index, silent)
+    781 """
+    782 Get the location of a specific key in an index or model row labels
+    783 
+   (...)
+    834 since we have required them to be full indexes, there is no ambiguity).
+    835 """
+    836 nobs = len(self.endog)
+--> 837 return get_prediction_index(
+    838     start,
+    839     end,
+    840     nobs,
+    841     base_index=self._index,
+    842     index=index,
+    843     silent=silent,
+    844     index_none=self._index_none,
+    845     index_generated=self._index_generated,
+    846     data=self.data,
+    847 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:362, in get_prediction_index(start, end, nobs, base_index, index, silent, index_none, index_generated, data)
+    358     start, _, start_oos = get_index_label_loc(
+    359         start, base_index, data.row_labels
+    360     )
+    361 except KeyError:
+--> 362     raise KeyError(
+    363         "The `start` argument could not be matched to a"
+    364         " location related to the index of the data."
+    365     )
+    366 if end is None:
+    367     end = max(start, len(base_index) - 1)
+
+KeyError: 'The `start` argument could not be matched to a location related to the index of the data.'
+is_success:
+False
+code:
+# Predicting the target variable starting from the earliest date in the training data
+predictions = results.get_prediction(start=pd.to_datetime(train_df_copy.index.min()), dynamic=False)
+pred_conf = predictions.conf_int()
+
+# Adding the predictions to the original dataframe for comparison
+train_df_copy['predicted_SP500'] = predictions.predicted_mean
+print(train_df_copy[['SP500', 'predicted_SP500']].head())
+
+# Plotting the actual vs predicted values
+import matplotlib.pyplot as plt
+plt.figure(figsize=(14, 7))
+plt.plot(train_df_copy.index, train_df_copy['SP500'], label='Actual SP500')
+plt.plot(train_df_copy.index, train_df_copy['predicted_SP500'], label='Predicted SP500', color='orange')
+plt.fill_between(pred_conf.index,
+                 pred_conf.iloc[:, 0],
+                 pred_conf.iloc[:, 1], color='pink')
+plt.xlabel('Date')
+plt.ylabel('SP500 Index')
+plt.title('Actual vs Predicted SP500 Index')
+plt.legend()
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:249, in get_index_label_loc(key, index, row_labels)
+    248 if not isinstance(key, (int, np.integer)):
+--> 249     loc = row_labels.get_loc(key)
+    250 else:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\indexes\range.py:418, in RangeIndex.get_loc(self, key)
+    417 if isinstance(key, Hashable):
+--> 418     raise KeyError(key)
+    419 self._check_indexing_error(key)
+
+KeyError: Timestamp('1970-01-01 00:00:00')
+
+During handling of the above exception, another exception occurred:
+
+KeyError                                  Traceback (most recent call last)
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:358, in get_prediction_index(start, end, nobs, base_index, index, silent, index_none, index_generated, data)
+    357 try:
+--> 358     start, _, start_oos = get_index_label_loc(
+    359         start, base_index, data.row_labels
+    360     )
+    361 except KeyError:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:281, in get_index_label_loc(key, index, row_labels)
+    280     except:
+--> 281         raise e
+    282 return loc, index, index_was_expanded
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:245, in get_index_label_loc(key, index, row_labels)
+    244 try:
+--> 245     loc, index, index_was_expanded = get_index_loc(key, index)
+    246 except KeyError as e:
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:195, in get_index_loc(key, index)
+    194 except (IndexError, ValueError) as e:
+--> 195     raise KeyError(str(e))
+    196 loc = key
+
+KeyError: 'only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices'
+
+During handling of the above exception, another exception occurred:
+
+KeyError                                  Traceback (most recent call last)
+Cell In[17], line 2
+      1 # Predicting the target variable starting from the earliest date in the training data
+----> 2 predictions = results.get_prediction(start=pd.to_datetime(train_df_copy.index.min()), dynamic=False)
+      3 pred_conf = predictions.conf_int()
+      5 # Adding the predictions to the original dataframe for comparison
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\statespace\mlemodel.py:3341, in MLEResults.get_prediction(self, start, end, dynamic, information_set, signal_only, index, exog, extend_model, extend_kwargs, **kwargs)
+   3337     start = 0
+   3339 # Handle start, end, dynamic
+   3340 start, end, out_of_sample, prediction_index = (
+-> 3341     self.model._get_prediction_index(start, end, index))
+   3343 # Handle `dynamic`
+   3344 if isinstance(dynamic, (str, dt.datetime, pd.Timestamp)):
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:837, in TimeSeriesModel._get_prediction_index(self, start, end, index, silent)
+    781 """
+    782 Get the location of a specific key in an index or model row labels
+    783 
+   (...)
+    834 since we have required them to be full indexes, there is no ambiguity).
+    835 """
+    836 nobs = len(self.endog)
+--> 837 return get_prediction_index(
+    838     start,
+    839     end,
+    840     nobs,
+    841     base_index=self._index,
+    842     index=index,
+    843     silent=silent,
+    844     index_none=self._index_none,
+    845     index_generated=self._index_generated,
+    846     data=self.data,
+    847 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\statsmodels\tsa\base\tsa_model.py:362, in get_prediction_index(start, end, nobs, base_index, index, silent, index_none, index_generated, data)
+    358     start, _, start_oos = get_index_label_loc(
+    359         start, base_index, data.row_labels
+    360     )
+    361 except KeyError:
+--> 362     raise KeyError(
+    363         "The `start` argument could not be matched to a"
+    364         " location related to the index of the data."
+    365     )
+    366 if end is None:
+    367     end = max(start, len(base_index) - 1)
+
+KeyError: 'The `start` argument could not be matched to a location related to the index of the data.'
+is_success:
+False

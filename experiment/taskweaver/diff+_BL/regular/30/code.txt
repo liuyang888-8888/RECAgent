@@ -1,0 +1,112 @@
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Read the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+df = pd.read_csv(file_path)
+
+# Ensure the date column is in datetime format and sort the dataframe by date
+df['Date'] = pd.to_datetime(df['Date'])
+df.sort_values('Date', inplace=True)
+
+# Set the date as the index
+df.set_index('Date', inplace=True)
+
+# Fit the ARIMA model
+model = ARIMA(df['Close'], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Predict the values on the training set
+predictions = model_fit.predict(start=0, end=len(df)-1)
+
+# Calculate the MSE
+mse = mean_squared_error(df['Close'], predictions)
+
+mse, predictions
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'Date'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[1], line 10
+    df['Date'] = pd.to_datetime(df['Date'])
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:4102 in __getitem__
+    indexer = self.columns.get_loc(key)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'Date'
+
+import pandas as pd
+
+# Read the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+df = pd.read_csv(file_path)
+
+# Inspect the columns of the dataset
+columns = df.columns.tolist()
+columns
+result os execution:The execution of the generated python code above has succeeded
+
+The values of variables of the above Python code after execution are:
+
+date
+SP500
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Read the dataset
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+df = pd.read_csv(file_path)
+
+# Ensure the date column is in datetime format and sort the dataframe by date
+df['date'] = pd.to_datetime(df['date'])
+df.sort_values('date', inplace=True)
+
+# Set the date as the index
+df.set_index('date', inplace=True)
+
+# Fit the ARIMA model
+model = ARIMA(df['SP500'], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Predict the values on the training set
+predictions = model_fit.predict(start=0, end=len(df)-1)
+
+# Calculate the MSE
+mse = mean_squared_error(df['SP500'], predictions)
+
+mse, predictions
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(2662.9971824851164,
+ date
+ 2014-05-05       0.000000
+ 2014-05-06    1884.443923
+                  ...     
+ 2024-05-02    5014.321636
+ 2024-05-03    5061.425330
+ Name: predicted_mean, Length: 2518, dtype: float64)

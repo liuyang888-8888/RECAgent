@@ -1,0 +1,642 @@
+code:
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+# Assuming the datasets are already loaded as 'train_df' and 'test_df'
+# If not, load them here
+# train_df = pd.read_csv('path_to_train.csv')
+# test_df = pd.read_csv('path_to_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Encode categorical columns using LabelEncoder
+label_encoders = {}
+for col in categorical_columns:
+    le = LabelEncoder()
+    train_df_copy[col] = le.fit_transform(train_df_copy[col])
+    test_df_copy[col] = le.transform(test_df_copy[col])
+    label_encoders[col] = le
+
+# Scale numerical columns using StandardScaler
+scaler = StandardScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Display the first few rows of the processed datasets
+train_df_copy.head(), test_df_copy.head()
+execute_result:
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[1], line 10
+      2 from sklearn.preprocessing import LabelEncoder, StandardScaler
+      4 # Assuming the datasets are already loaded as 'train_df' and 'test_df'
+      5 # If not, load them here
+      6 # train_df = pd.read_csv('path_to_train.csv')
+      7 # test_df = pd.read_csv('path_to_test.csv')
+      8 
+      9 # Copy the DataFrames to avoid modifying the original datasets
+---> 10 train_df_copy = train_df.copy()
+     11 test_df_copy = test_df.copy()
+     13 # Identify categorical and numerical columns
+
+NameError: name 'train_df' is not defined
+is_success:
+False
+code:
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the training and testing datasets to understand the structure
+print("Training Data:")
+display(train_df_copy.head())
+print("Testing Data:")
+display(test_df_copy.head())
+
+# Check the data types of each column
+print("Data Types in Training Set:")
+print(train_df_copy.dtypes)
+print("Data Types in Testing Set:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(exclude=['object']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+
+# Apply necessary preprocessing steps based on the data types
+# For example, convert categorical data using label encoding
+from sklearn.preprocessing import LabelEncoder
+
+# Initialize the LabelEncoder
+label_encoder = LabelEncoder()
+
+# Apply label encoding to categorical columns
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Display the first few rows of the preprocessed datasets
+print("Preprocessed Training Data:")
+display(train_df_copy.head())
+print("Preprocessed Testing Data:")
+display(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[2], line 2
+      1 # Copy the DataFrames to avoid modifying the original datasets
+----> 2 train_df_copy = train_df.copy()
+      3 test_df_copy = test_df.copy()
+      5 # Display the first few rows of the training and testing datasets to understand the structure
+
+NameError: name 'train_df' is not defined
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the training dataset
+train_data_path = 'E:\\csv\\forest_fires_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Load the testing dataset
+test_data_path = 'E:\\csv\\forest_fires_test.csv'
+test_df = pd.read_csv(test_data_path)
+
+# Display the first few rows of the datasets to verify loading
+train_df.head(), test_df.head()
+execute_result:
+(   X  Y month  day  FFMC    DMC     DC   ISI  temp  RH  wind  rain   area
+ 0  4  3   sep  sat  92.2  102.3  751.5   8.4  23.5  27   4.0   0.0   3.33
+ 1  4  4   sep  mon  90.9  126.5  686.5   7.0  17.7  39   2.2   0.0   3.07
+ 2  2  5   aug  tue  92.1  152.6  658.2  14.3  20.2  47   4.0   0.0   3.09
+ 3  3  4   aug  tue  96.1  181.1  671.2  14.3  32.3  27   2.2   0.0  14.68
+ 4  5  4   feb  sun  86.8   15.6   48.3   3.9  12.4  53   2.2   0.0   6.38,
+    X  Y month  day  FFMC    DMC     DC   ISI  temp  RH  wind  rain  area
+ 0  6  5   may  sat  85.1   28.0  113.8   3.5  11.3  94   4.9   0.0  0.00
+ 1  7  5   aug  tue  96.1  181.1  671.2  14.3  21.6  65   4.9   0.8  0.00
+ 2  8  6   aug  mon  92.1  207.0  672.6   8.2  25.5  29   1.8   0.0  1.23
+ 3  5  4   sep  fri  94.3   85.1  692.3  15.9  20.1  47   4.9   0.0  1.46
+ 4  2  4   aug  wed  94.5  139.4  689.1  20.0  29.2  30   4.9   0.0  1.95)
+is_success:
+True
+code:
+import numpy as np
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+
+# Copy the datasets to avoid modifying the original ones
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check for missing values and handle them
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encode categorical variables using OrdinalEncoder
+ordinal_encoder = OrdinalEncoder()
+train_df_copy[['month', 'day']] = ordinal_encoder.fit_transform(train_df_copy[['month', 'day']])
+test_df_copy[['month', 'day']] = ordinal_encoder.transform(test_df_copy[['month', 'day']])
+
+# Standardize numeric features except the label 'area'
+numeric_features = ['X', 'Y', 'FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH', 'wind', 'rain']
+scaler = StandardScaler()
+train_df_copy[numeric_features] = scaler.fit_transform(train_df_copy[numeric_features])
+test_df_copy[numeric_features] = scaler.transform(test_df_copy[numeric_features])
+
+# Display the first few rows of the preprocessed datasets
+train_df_copy.head(), test_df_copy.head()
+execute_result:
+p' 'oct' 'sep' 'aug' 'apr' 'aug' 'sep'
+  'sep' 'dec' 'aug' 'aug' 'sep' 'aug' 'aug' 'aug' 'sep' 'jul' 'aug' 'feb'
+  'mar' 'sep' 'sep' 'sep' 'aug' 'sep' 'jul' 'oct' 'sep' 'aug' 'oct' 'aug'
+  'sep' 'jul' 'jul' 'aug' 'sep' 'sep' 'aug' 'aug' 'jun' 'aug' 'aug' 'mar'
+  'sep' 'sep' 'mar' 'jul' 'sep' 'mar' 'sep' 'aug' 'mar' 'mar' 'jul' 'aug'
+  'sep' 'dec' 'jun' 'sep' 'aug' 'oct' 'mar' 'sep' 'oct' 'aug' 'aug' 'mar'
+  'mar' 'aug' 'aug' 'aug' 'sep' 'aug' 'jul' 'sep' 'aug' 'sep' 'aug' 'aug'
+  'aug' 'aug' 'sep' 'sep' 'mar' 'aug' 'aug' 'sep' 'sep' 'aug' 'sep' 'aug'
+  'aug' 'aug' 'jul' 'jul' 'aug' 'aug' 'sep' 'mar' 'sep' 'sep' 'aug' 'sep'
+  'sep' 'aug' 'aug' 'aug' 'sep' 'apr' 'aug' 'sep' 'feb' 'sep' 'aug' 'aug'
+  'aug' 'feb' 'dec' 'oct' 'apr' 'sep' 'sep' 'aug' 'jul' 'aug' 'feb' 'feb'
+  'mar' 'mar' 'mar' 'aug' 'jul' 'sep' 'sep' 'aug' 'jun' 'sep' 'oct' 'sep'
+  'sep' 'aug' 'mar' 'sep' 'sep' 'sep' 'aug' 'sep' 'aug' 'feb' 'jul' 'apr'
+  'sep' 'mar' 'sep' 'sep' 'oct' 'feb' 'aug' 'aug' 'sep' 'sep' 'sep' 'feb'
+  'jul' 'oct' 'sep' 'jul' 'sep' 'mar' 'oct' 'aug' 'aug' 'sep' 'aug' 'jun'
+  'sep' 'jun' 'jul' 'aug' 'sep' 'sep' 'aug' 'aug' 'sep' 'sep' 'aug' 'sep'
+  'sep' 'aug' 'jun' 'sep' 'sep' 'sep' 'aug' 'sep' 'mar' 'aug' 'sep' 'sep'
+  'aug' 'sep' 'sep' 'jul' 'sep' 'aug' 'aug' 'sep' 'sep' 'sep' 'sep' 'jul'
+  'aug' 'feb' 'sep' 'aug' 'mar' 'feb' 'sep' 'aug' 'sep' 'sep' 'sep' 'aug'
+  'feb' 'aug' 'sep' 'sep' 'aug' 'apr' 'aug' 'sep' 'feb' 'sep' 'aug' 'aug'
+  'jun' 'aug' 'feb' 'sep' 'aug' 'aug' 'mar' 'aug' 'sep' 'aug' 'oct' 'sep'
+  'mar' 'aug' 'aug' 'aug' 'jul' 'mar' 'mar' 'jul' 'sep' 'aug' 'sep' 'sep'
+  'aug' 'sep' 'aug' 'sep' 'aug' 'mar' 'jul' 'mar' 'aug' 'jul' 'aug' 'aug'
+  'oct' 'aug' 'sep' 'sep' 'jul' 'aug' 'jun' 'sep' 'sep' 'jul' 'jan' 'jul'
+  'aug' 'sep' 'dec' 'sep' 'sep' 'sep' 'sep' 'sep' 'sep' 'jun' 'may' 'aug'
+  'aug' 'jun' 'jun' 'sep' 'aug' 'mar' 'aug' 'sep' 'sep' 'sep' 'mar' 'sep'
+  'aug' 'mar' 'aug' 'aug' 'oct' 'jul' 'aug' 'mar' 'aug' 'aug' 'sep' 'sep'
+  'sep' 'aug' 'aug' 'aug' 'sep' 'mar' 'sep' 'aug' 'aug' 'sep' 'aug' 'apr'
+  'sep' 'sep' 'sep' 'mar' 'dec' 'aug' 'sep' 'aug' 'mar' 'sep' 'aug' 'sep'
+  'aug' 'aug' 'sep' 'sep' 'apr' 'aug' 'aug' 'mar' 'aug' 'feb' 'sep' 'jun'
+  'aug' 'feb' 'jun' 'mar' 'sep' 'aug' 'aug' 'sep' 'sep' 'aug' 'mar' 'dec'
+  'jul' 'aug' 'aug' 'jul' 'aug' 'aug' 'sep' 'aug' 'sep' 'sep' 'feb' 'jul'
+  'sep' 'aug' 'aug' 'sep' 'aug' 'sep' 'mar' 'mar' 'aug' 'nov' 'sep' 'mar'
+  'sep' 'mar' 'aug' 'jul' 'aug']
+ ['sat' 'mon' 'tue' 'tue' 'sun' 'tue' 'fri' 'sat' 'tue' 'sat' 'thu' 'thu'
+  'fri' 'thu' 'sat' 'thu' 'mon' 'fri' 'sat' 'sun' 'sun' 'sat' 'thu' 'mon'
+  'tue' 'mon' 'sun' 'sat' 'sat' 'sun' 'tue' 'tue' 'sun' 'mon' 'wed' 'fri'
+  'mon' 'mon' 'mon' 'mon' 'thu' 'wed' 'tue' 'sun' 'sun' 'sat' 'mon' 'tue'
+  'fri' 'wed' 'sun' 'mon' 'sun' 'sat' 'sat' 'tue' 'sat' 'thu' 'sun' 'sat'
+  'wed' 'tue' 'sat' 'mon' 'tue' 'fri' 'sat' 'sat' 'sun' 'fri' 'tue' 'wed'
+  'sun' 'wed' 'fri' 'fri' 'mon' 'mon' 'wed' 'sat' 'fri' 'wed' 'sun' 'mon'
+  'tue' 'tue' 'sat' 'wed' 'fri' 'wed' 'wed' 'fri' 'sat' 'thu' 'mon' 'mon'
+  'wed' 'mon' 'fri' 'fri' 'fri' 'sun' 'sun' 'sun' 'wed' 'sun' 'mon' 'thu'
+  'thu' 'sun' 'sat' 'thu' 'wed' 'wed' 'sat' 'thu' 'sat' 'mon' 'sun' 'fri'
+  'thu' 'sat' 'tue' 'thu' 'sun' 'mon' 'fri' 'tue' 'fri' 'mon' 'fri' 'sun'
+  'sun' 'mon' 'fri' 'tue' 'thu' 'tue' 'sat' 'mon' 'sat' 'tue' 'fri' 'tue'
+  'fri' 'sat' 'wed' 'mon' 'wed' 'fri' 'mon' 'wed' 'fri' 'sun' 'sat' 'thu'
+  'tue' 'wed' 'mon' 'wed' 'tue' 'wed' 'fri' 'tue' 'fri' 'sat' 'sat' 'sun'
+  'sat' 'sat' 'fri' 'sun' 'mon' 'sun' 'sun' 'sun' 'sun' 'fri' 'sun' 'sat'
+  'sat' 'sun' 'sun' 'fri' 'fri' 'mon' 'sun' 'thu' 'fri' 'mon' 'fri' 'sun'
+  'tue' 'mon' 'tue' 'sat' 'fri' 'sun' 'tue' 'thu' 'fri' 'mon' 'tue' 'sun'
+  'tue' 'sat' 'sat' 'sun' 'sun' 'thu' 'sat' 'tue' 'tue' 'mon' 'sun' 'wed'
+  'sun' 'fri' 'fri' 'sun' 'sat' 'sun' 'thu' 'mon' 'thu' 'fri' 'wed' 'thu'
+  'thu' 'wed' 'thu' 'sun' 'sun' 'sun' 'fri' 'fri' 'tue' 'sat' 'wed' 'fri'
+  'fri' 'mon' 'fri' 'sun' 'sun' 'wed' 'thu' 'fri' 'mon' 'wed' 'sat' 'sun'
+  'wed' 'sat' 'sun' 'fri' 'thu' 'sat' 'sun' 'sat' 'sun' 'sun' 'mon' 'fri'
+  'mon' 'fri' 'wed' 'sun' 'fri' 'sat' 'sun' 'mon' 'fri' 'tue' 'sat' 'tue'
+  'sat' 'mon' 'thu' 'wed' 'mon' 'thu' 'sat' 'sat' 'sat' 'tue' 'thu' 'sat'
+  'wed' 'sat' 'tue' 'sat' 'thu' 'mon' 'mon' 'wed' 'sat' 'tue' 'sun' 'sun'
+  'thu' 'sun' 'mon' 'wed' 'fri' 'mon' 'sat' 'tue' 'fri' 'sun' 'fri' 'wed'
+  'fri' 'mon' 'fri' 'fri' 'tue' 'sun' 'thu' 'sat' 'mon' 'thu' 'fri' 'sun'
+  'sat' 'fri' 'wed' 'fri' 'tue' 'mon' 'tue' 'mon' 'sun' 'sun' 'thu' 'mon'
+  'thu' 'fri' 'mon' 'tue' 'tue' 'fri' 'mon' 'wed' 'wed' 'mon' 'fri' 'fri'
+  'mon' 'wed' 'sun' 'thu' 'sun' 'wed' 'sat' 'fri' 'tue' 'sun' 'tue' 'thu'
+  'sun' 'thu' 'tue' 'thu' 'sun' 'sat' 'sun' 'sun' 'sun' 'tue' 'mon' 'thu'
+  'thu' 'mon' 'thu' 'mon' 'mon' 'sun' 'wed' 'mon' 'wed' 'sat' 'mon' 'mon'
+  'fri' 'thu' 'sun' 'tue' 'sat' 'thu' 'mon' 'sat' 'sun' 'thu' 'sat' 'sun'
+  'fri' 'sun' 'sun' 'thu' 'sat' 'sat' 'sat' 'mon' 'mon' 'tue' 'tue' 'sat'
+  'fri' 'thu' 'tue' 'sat' 'tue']] to numeric
+is_success:
+False
+code:
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check data types of each column
+print("Train Data Types:\n", train_df_copy.dtypes)
+print("\nTest Data Types:\n", test_df_copy.dtypes)
+
+# Identify categorical columns (assuming they are of type 'object')
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Display the first few rows of the preprocessed datasets to verify changes
+train_df_copy.head(), test_df_copy.head()
+execute_result:
+Train Data Types:
+ X          int64
+Y          int64
+month     object
+day       object
+FFMC     float64
+DMC      float64
+DC       float64
+ISI      float64
+temp     float64
+RH         int64
+wind     float64
+rain     float64
+area     float64
+dtype: object
+
+Test Data Types:
+ X          int64
+Y          int64
+month     object
+day       object
+FFMC     float64
+DMC      float64
+DC       float64
+ISI      float64
+temp     float64
+RH         int64
+wind     float64
+rain     float64
+area     float64
+dtype: object,(   X  Y  month  day  FFMC    DMC     DC   ISI  temp  RH  wind  rain   area
+ 0  4  3     11    2  92.2  102.3  751.5   8.4  23.5  27   4.0   0.0   3.33
+ 1  4  4     11    1  90.9  126.5  686.5   7.0  17.7  39   2.2   0.0   3.07
+ 2  2  5      1    5  92.1  152.6  658.2  14.3  20.2  47   4.0   0.0   3.09
+ 3  3  4      1    5  96.1  181.1  671.2  14.3  32.3  27   2.2   0.0  14.68
+ 4  5  4      3    3  86.8   15.6   48.3   3.9  12.4  53   2.2   0.0   6.38,
+    X  Y  month  day  FFMC    DMC     DC   ISI  temp  RH  wind  rain  area
+ 0  6  5      8    2  85.1   28.0  113.8   3.5  11.3  94   4.9   0.0  0.00
+ 1  7  5      1    5  96.1  181.1  671.2  14.3  21.6  65   4.9   0.8  0.00
+ 2  8  6      1    1  92.1  207.0  672.6   8.2  25.5  29   1.8   0.0  1.23
+ 3  5  4     11    0  94.3   85.1  692.3  15.9  20.1  47   4.9   0.0  1.46
+ 4  2  4      1    6  94.5  139.4  689.1  20.0  29.2  30   4.9   0.0  1.95)
+is_success:
+True
+code:
+# Since the data types have already been checked and the necessary imports are done,
+# we will proceed with the remaining steps of the data preprocessing.
+
+# Copy the datasets to avoid modifying the original ones
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check for missing values and handle them
+# Using median for numeric columns and mode for categorical columns
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encode categorical variables using OrdinalEncoder
+ordinal_encoder = OrdinalEncoder()
+train_df_copy[['month', 'day']] = ordinal_encoder.fit_transform(train_df_copy[['month', 'day']])
+test_df_copy[['month', 'day']] = ordinal_encoder.transform(test_df_copy[['month', 'day']])
+
+# Standardize numeric features except the label 'area'
+numeric_features = ['X', 'Y', 'FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH', 'wind', 'rain']
+scaler = StandardScaler()
+train_df_copy[numeric_features] = scaler.fit_transform(train_df_copy[numeric_features])
+test_df_copy[numeric_features] = scaler.transform(test_df_copy[numeric_features])
+
+# Display the first few rows of the preprocessed datasets
+train_df_copy.head(), test_df_copy.head()
+execute_result:
+p' 'oct' 'sep' 'aug' 'apr' 'aug' 'sep'
+  'sep' 'dec' 'aug' 'aug' 'sep' 'aug' 'aug' 'aug' 'sep' 'jul' 'aug' 'feb'
+  'mar' 'sep' 'sep' 'sep' 'aug' 'sep' 'jul' 'oct' 'sep' 'aug' 'oct' 'aug'
+  'sep' 'jul' 'jul' 'aug' 'sep' 'sep' 'aug' 'aug' 'jun' 'aug' 'aug' 'mar'
+  'sep' 'sep' 'mar' 'jul' 'sep' 'mar' 'sep' 'aug' 'mar' 'mar' 'jul' 'aug'
+  'sep' 'dec' 'jun' 'sep' 'aug' 'oct' 'mar' 'sep' 'oct' 'aug' 'aug' 'mar'
+  'mar' 'aug' 'aug' 'aug' 'sep' 'aug' 'jul' 'sep' 'aug' 'sep' 'aug' 'aug'
+  'aug' 'aug' 'sep' 'sep' 'mar' 'aug' 'aug' 'sep' 'sep' 'aug' 'sep' 'aug'
+  'aug' 'aug' 'jul' 'jul' 'aug' 'aug' 'sep' 'mar' 'sep' 'sep' 'aug' 'sep'
+  'sep' 'aug' 'aug' 'aug' 'sep' 'apr' 'aug' 'sep' 'feb' 'sep' 'aug' 'aug'
+  'aug' 'feb' 'dec' 'oct' 'apr' 'sep' 'sep' 'aug' 'jul' 'aug' 'feb' 'feb'
+  'mar' 'mar' 'mar' 'aug' 'jul' 'sep' 'sep' 'aug' 'jun' 'sep' 'oct' 'sep'
+  'sep' 'aug' 'mar' 'sep' 'sep' 'sep' 'aug' 'sep' 'aug' 'feb' 'jul' 'apr'
+  'sep' 'mar' 'sep' 'sep' 'oct' 'feb' 'aug' 'aug' 'sep' 'sep' 'sep' 'feb'
+  'jul' 'oct' 'sep' 'jul' 'sep' 'mar' 'oct' 'aug' 'aug' 'sep' 'aug' 'jun'
+  'sep' 'jun' 'jul' 'aug' 'sep' 'sep' 'aug' 'aug' 'sep' 'sep' 'aug' 'sep'
+  'sep' 'aug' 'jun' 'sep' 'sep' 'sep' 'aug' 'sep' 'mar' 'aug' 'sep' 'sep'
+  'aug' 'sep' 'sep' 'jul' 'sep' 'aug' 'aug' 'sep' 'sep' 'sep' 'sep' 'jul'
+  'aug' 'feb' 'sep' 'aug' 'mar' 'feb' 'sep' 'aug' 'sep' 'sep' 'sep' 'aug'
+  'feb' 'aug' 'sep' 'sep' 'aug' 'apr' 'aug' 'sep' 'feb' 'sep' 'aug' 'aug'
+  'jun' 'aug' 'feb' 'sep' 'aug' 'aug' 'mar' 'aug' 'sep' 'aug' 'oct' 'sep'
+  'mar' 'aug' 'aug' 'aug' 'jul' 'mar' 'mar' 'jul' 'sep' 'aug' 'sep' 'sep'
+  'aug' 'sep' 'aug' 'sep' 'aug' 'mar' 'jul' 'mar' 'aug' 'jul' 'aug' 'aug'
+  'oct' 'aug' 'sep' 'sep' 'jul' 'aug' 'jun' 'sep' 'sep' 'jul' 'jan' 'jul'
+  'aug' 'sep' 'dec' 'sep' 'sep' 'sep' 'sep' 'sep' 'sep' 'jun' 'may' 'aug'
+  'aug' 'jun' 'jun' 'sep' 'aug' 'mar' 'aug' 'sep' 'sep' 'sep' 'mar' 'sep'
+  'aug' 'mar' 'aug' 'aug' 'oct' 'jul' 'aug' 'mar' 'aug' 'aug' 'sep' 'sep'
+  'sep' 'aug' 'aug' 'aug' 'sep' 'mar' 'sep' 'aug' 'aug' 'sep' 'aug' 'apr'
+  'sep' 'sep' 'sep' 'mar' 'dec' 'aug' 'sep' 'aug' 'mar' 'sep' 'aug' 'sep'
+  'aug' 'aug' 'sep' 'sep' 'apr' 'aug' 'aug' 'mar' 'aug' 'feb' 'sep' 'jun'
+  'aug' 'feb' 'jun' 'mar' 'sep' 'aug' 'aug' 'sep' 'sep' 'aug' 'mar' 'dec'
+  'jul' 'aug' 'aug' 'jul' 'aug' 'aug' 'sep' 'aug' 'sep' 'sep' 'feb' 'jul'
+  'sep' 'aug' 'aug' 'sep' 'aug' 'sep' 'mar' 'mar' 'aug' 'nov' 'sep' 'mar'
+  'sep' 'mar' 'aug' 'jul' 'aug']
+ ['sat' 'mon' 'tue' 'tue' 'sun' 'tue' 'fri' 'sat' 'tue' 'sat' 'thu' 'thu'
+  'fri' 'thu' 'sat' 'thu' 'mon' 'fri' 'sat' 'sun' 'sun' 'sat' 'thu' 'mon'
+  'tue' 'mon' 'sun' 'sat' 'sat' 'sun' 'tue' 'tue' 'sun' 'mon' 'wed' 'fri'
+  'mon' 'mon' 'mon' 'mon' 'thu' 'wed' 'tue' 'sun' 'sun' 'sat' 'mon' 'tue'
+  'fri' 'wed' 'sun' 'mon' 'sun' 'sat' 'sat' 'tue' 'sat' 'thu' 'sun' 'sat'
+  'wed' 'tue' 'sat' 'mon' 'tue' 'fri' 'sat' 'sat' 'sun' 'fri' 'tue' 'wed'
+  'sun' 'wed' 'fri' 'fri' 'mon' 'mon' 'wed' 'sat' 'fri' 'wed' 'sun' 'mon'
+  'tue' 'tue' 'sat' 'wed' 'fri' 'wed' 'wed' 'fri' 'sat' 'thu' 'mon' 'mon'
+  'wed' 'mon' 'fri' 'fri' 'fri' 'sun' 'sun' 'sun' 'wed' 'sun' 'mon' 'thu'
+  'thu' 'sun' 'sat' 'thu' 'wed' 'wed' 'sat' 'thu' 'sat' 'mon' 'sun' 'fri'
+  'thu' 'sat' 'tue' 'thu' 'sun' 'mon' 'fri' 'tue' 'fri' 'mon' 'fri' 'sun'
+  'sun' 'mon' 'fri' 'tue' 'thu' 'tue' 'sat' 'mon' 'sat' 'tue' 'fri' 'tue'
+  'fri' 'sat' 'wed' 'mon' 'wed' 'fri' 'mon' 'wed' 'fri' 'sun' 'sat' 'thu'
+  'tue' 'wed' 'mon' 'wed' 'tue' 'wed' 'fri' 'tue' 'fri' 'sat' 'sat' 'sun'
+  'sat' 'sat' 'fri' 'sun' 'mon' 'sun' 'sun' 'sun' 'sun' 'fri' 'sun' 'sat'
+  'sat' 'sun' 'sun' 'fri' 'fri' 'mon' 'sun' 'thu' 'fri' 'mon' 'fri' 'sun'
+  'tue' 'mon' 'tue' 'sat' 'fri' 'sun' 'tue' 'thu' 'fri' 'mon' 'tue' 'sun'
+  'tue' 'sat' 'sat' 'sun' 'sun' 'thu' 'sat' 'tue' 'tue' 'mon' 'sun' 'wed'
+  'sun' 'fri' 'fri' 'sun' 'sat' 'sun' 'thu' 'mon' 'thu' 'fri' 'wed' 'thu'
+  'thu' 'wed' 'thu' 'sun' 'sun' 'sun' 'fri' 'fri' 'tue' 'sat' 'wed' 'fri'
+  'fri' 'mon' 'fri' 'sun' 'sun' 'wed' 'thu' 'fri' 'mon' 'wed' 'sat' 'sun'
+  'wed' 'sat' 'sun' 'fri' 'thu' 'sat' 'sun' 'sat' 'sun' 'sun' 'mon' 'fri'
+  'mon' 'fri' 'wed' 'sun' 'fri' 'sat' 'sun' 'mon' 'fri' 'tue' 'sat' 'tue'
+  'sat' 'mon' 'thu' 'wed' 'mon' 'thu' 'sat' 'sat' 'sat' 'tue' 'thu' 'sat'
+  'wed' 'sat' 'tue' 'sat' 'thu' 'mon' 'mon' 'wed' 'sat' 'tue' 'sun' 'sun'
+  'thu' 'sun' 'mon' 'wed' 'fri' 'mon' 'sat' 'tue' 'fri' 'sun' 'fri' 'wed'
+  'fri' 'mon' 'fri' 'fri' 'tue' 'sun' 'thu' 'sat' 'mon' 'thu' 'fri' 'sun'
+  'sat' 'fri' 'wed' 'fri' 'tue' 'mon' 'tue' 'mon' 'sun' 'sun' 'thu' 'mon'
+  'thu' 'fri' 'mon' 'tue' 'tue' 'fri' 'mon' 'wed' 'wed' 'mon' 'fri' 'fri'
+  'mon' 'wed' 'sun' 'thu' 'sun' 'wed' 'sat' 'fri' 'tue' 'sun' 'tue' 'thu'
+  'sun' 'thu' 'tue' 'thu' 'sun' 'sat' 'sun' 'sun' 'sun' 'tue' 'mon' 'thu'
+  'thu' 'mon' 'thu' 'mon' 'mon' 'sun' 'wed' 'mon' 'wed' 'sat' 'mon' 'mon'
+  'fri' 'thu' 'sun' 'tue' 'sat' 'thu' 'mon' 'sat' 'sun' 'thu' 'sat' 'sun'
+  'fri' 'sun' 'sun' 'thu' 'sat' 'sat' 'sat' 'mon' 'mon' 'tue' 'tue' 'sat'
+  'fri' 'thu' 'tue' 'sat' 'tue']] to numeric
+is_success:
+False
+code:
+# Ensure that the necessary libraries are imported
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+
+# Load the preprocessed datasets from the previous steps
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check for missing values and handle them
+# Since the data types are already checked and handled in the previous steps, we can directly fill missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encode categorical variables using OrdinalEncoder
+ordinal_encoder = OrdinalEncoder()
+train_df_copy[['month', 'day']] = ordinal_encoder.fit_transform(train_df_copy[['month', 'day']])
+test_df_copy[['month', 'day']] = ordinal_encoder.transform(test_df_copy[['month', 'day']])
+
+# Standardize numeric features except the label 'area'
+numeric_features = ['X', 'Y', 'FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH', 'wind', 'rain']
+scaler = StandardScaler()
+train_df_copy[numeric_features] = scaler.fit_transform(train_df_copy[numeric_features])
+test_df_copy[numeric_features] = scaler.transform(test_df_copy[numeric_features])
+
+# Display the first few rows of the preprocessed datasets
+train_df_copy.head(), test_df_copy.head()
+execute_result:
+p' 'oct' 'sep' 'aug' 'apr' 'aug' 'sep'
+  'sep' 'dec' 'aug' 'aug' 'sep' 'aug' 'aug' 'aug' 'sep' 'jul' 'aug' 'feb'
+  'mar' 'sep' 'sep' 'sep' 'aug' 'sep' 'jul' 'oct' 'sep' 'aug' 'oct' 'aug'
+  'sep' 'jul' 'jul' 'aug' 'sep' 'sep' 'aug' 'aug' 'jun' 'aug' 'aug' 'mar'
+  'sep' 'sep' 'mar' 'jul' 'sep' 'mar' 'sep' 'aug' 'mar' 'mar' 'jul' 'aug'
+  'sep' 'dec' 'jun' 'sep' 'aug' 'oct' 'mar' 'sep' 'oct' 'aug' 'aug' 'mar'
+  'mar' 'aug' 'aug' 'aug' 'sep' 'aug' 'jul' 'sep' 'aug' 'sep' 'aug' 'aug'
+  'aug' 'aug' 'sep' 'sep' 'mar' 'aug' 'aug' 'sep' 'sep' 'aug' 'sep' 'aug'
+  'aug' 'aug' 'jul' 'jul' 'aug' 'aug' 'sep' 'mar' 'sep' 'sep' 'aug' 'sep'
+  'sep' 'aug' 'aug' 'aug' 'sep' 'apr' 'aug' 'sep' 'feb' 'sep' 'aug' 'aug'
+  'aug' 'feb' 'dec' 'oct' 'apr' 'sep' 'sep' 'aug' 'jul' 'aug' 'feb' 'feb'
+  'mar' 'mar' 'mar' 'aug' 'jul' 'sep' 'sep' 'aug' 'jun' 'sep' 'oct' 'sep'
+  'sep' 'aug' 'mar' 'sep' 'sep' 'sep' 'aug' 'sep' 'aug' 'feb' 'jul' 'apr'
+  'sep' 'mar' 'sep' 'sep' 'oct' 'feb' 'aug' 'aug' 'sep' 'sep' 'sep' 'feb'
+  'jul' 'oct' 'sep' 'jul' 'sep' 'mar' 'oct' 'aug' 'aug' 'sep' 'aug' 'jun'
+  'sep' 'jun' 'jul' 'aug' 'sep' 'sep' 'aug' 'aug' 'sep' 'sep' 'aug' 'sep'
+  'sep' 'aug' 'jun' 'sep' 'sep' 'sep' 'aug' 'sep' 'mar' 'aug' 'sep' 'sep'
+  'aug' 'sep' 'sep' 'jul' 'sep' 'aug' 'aug' 'sep' 'sep' 'sep' 'sep' 'jul'
+  'aug' 'feb' 'sep' 'aug' 'mar' 'feb' 'sep' 'aug' 'sep' 'sep' 'sep' 'aug'
+  'feb' 'aug' 'sep' 'sep' 'aug' 'apr' 'aug' 'sep' 'feb' 'sep' 'aug' 'aug'
+  'jun' 'aug' 'feb' 'sep' 'aug' 'aug' 'mar' 'aug' 'sep' 'aug' 'oct' 'sep'
+  'mar' 'aug' 'aug' 'aug' 'jul' 'mar' 'mar' 'jul' 'sep' 'aug' 'sep' 'sep'
+  'aug' 'sep' 'aug' 'sep' 'aug' 'mar' 'jul' 'mar' 'aug' 'jul' 'aug' 'aug'
+  'oct' 'aug' 'sep' 'sep' 'jul' 'aug' 'jun' 'sep' 'sep' 'jul' 'jan' 'jul'
+  'aug' 'sep' 'dec' 'sep' 'sep' 'sep' 'sep' 'sep' 'sep' 'jun' 'may' 'aug'
+  'aug' 'jun' 'jun' 'sep' 'aug' 'mar' 'aug' 'sep' 'sep' 'sep' 'mar' 'sep'
+  'aug' 'mar' 'aug' 'aug' 'oct' 'jul' 'aug' 'mar' 'aug' 'aug' 'sep' 'sep'
+  'sep' 'aug' 'aug' 'aug' 'sep' 'mar' 'sep' 'aug' 'aug' 'sep' 'aug' 'apr'
+  'sep' 'sep' 'sep' 'mar' 'dec' 'aug' 'sep' 'aug' 'mar' 'sep' 'aug' 'sep'
+  'aug' 'aug' 'sep' 'sep' 'apr' 'aug' 'aug' 'mar' 'aug' 'feb' 'sep' 'jun'
+  'aug' 'feb' 'jun' 'mar' 'sep' 'aug' 'aug' 'sep' 'sep' 'aug' 'mar' 'dec'
+  'jul' 'aug' 'aug' 'jul' 'aug' 'aug' 'sep' 'aug' 'sep' 'sep' 'feb' 'jul'
+  'sep' 'aug' 'aug' 'sep' 'aug' 'sep' 'mar' 'mar' 'aug' 'nov' 'sep' 'mar'
+  'sep' 'mar' 'aug' 'jul' 'aug']
+ ['sat' 'mon' 'tue' 'tue' 'sun' 'tue' 'fri' 'sat' 'tue' 'sat' 'thu' 'thu'
+  'fri' 'thu' 'sat' 'thu' 'mon' 'fri' 'sat' 'sun' 'sun' 'sat' 'thu' 'mon'
+  'tue' 'mon' 'sun' 'sat' 'sat' 'sun' 'tue' 'tue' 'sun' 'mon' 'wed' 'fri'
+  'mon' 'mon' 'mon' 'mon' 'thu' 'wed' 'tue' 'sun' 'sun' 'sat' 'mon' 'tue'
+  'fri' 'wed' 'sun' 'mon' 'sun' 'sat' 'sat' 'tue' 'sat' 'thu' 'sun' 'sat'
+  'wed' 'tue' 'sat' 'mon' 'tue' 'fri' 'sat' 'sat' 'sun' 'fri' 'tue' 'wed'
+  'sun' 'wed' 'fri' 'fri' 'mon' 'mon' 'wed' 'sat' 'fri' 'wed' 'sun' 'mon'
+  'tue' 'tue' 'sat' 'wed' 'fri' 'wed' 'wed' 'fri' 'sat' 'thu' 'mon' 'mon'
+  'wed' 'mon' 'fri' 'fri' 'fri' 'sun' 'sun' 'sun' 'wed' 'sun' 'mon' 'thu'
+  'thu' 'sun' 'sat' 'thu' 'wed' 'wed' 'sat' 'thu' 'sat' 'mon' 'sun' 'fri'
+  'thu' 'sat' 'tue' 'thu' 'sun' 'mon' 'fri' 'tue' 'fri' 'mon' 'fri' 'sun'
+  'sun' 'mon' 'fri' 'tue' 'thu' 'tue' 'sat' 'mon' 'sat' 'tue' 'fri' 'tue'
+  'fri' 'sat' 'wed' 'mon' 'wed' 'fri' 'mon' 'wed' 'fri' 'sun' 'sat' 'thu'
+  'tue' 'wed' 'mon' 'wed' 'tue' 'wed' 'fri' 'tue' 'fri' 'sat' 'sat' 'sun'
+  'sat' 'sat' 'fri' 'sun' 'mon' 'sun' 'sun' 'sun' 'sun' 'fri' 'sun' 'sat'
+  'sat' 'sun' 'sun' 'fri' 'fri' 'mon' 'sun' 'thu' 'fri' 'mon' 'fri' 'sun'
+  'tue' 'mon' 'tue' 'sat' 'fri' 'sun' 'tue' 'thu' 'fri' 'mon' 'tue' 'sun'
+  'tue' 'sat' 'sat' 'sun' 'sun' 'thu' 'sat' 'tue' 'tue' 'mon' 'sun' 'wed'
+  'sun' 'fri' 'fri' 'sun' 'sat' 'sun' 'thu' 'mon' 'thu' 'fri' 'wed' 'thu'
+  'thu' 'wed' 'thu' 'sun' 'sun' 'sun' 'fri' 'fri' 'tue' 'sat' 'wed' 'fri'
+  'fri' 'mon' 'fri' 'sun' 'sun' 'wed' 'thu' 'fri' 'mon' 'wed' 'sat' 'sun'
+  'wed' 'sat' 'sun' 'fri' 'thu' 'sat' 'sun' 'sat' 'sun' 'sun' 'mon' 'fri'
+  'mon' 'fri' 'wed' 'sun' 'fri' 'sat' 'sun' 'mon' 'fri' 'tue' 'sat' 'tue'
+  'sat' 'mon' 'thu' 'wed' 'mon' 'thu' 'sat' 'sat' 'sat' 'tue' 'thu' 'sat'
+  'wed' 'sat' 'tue' 'sat' 'thu' 'mon' 'mon' 'wed' 'sat' 'tue' 'sun' 'sun'
+  'thu' 'sun' 'mon' 'wed' 'fri' 'mon' 'sat' 'tue' 'fri' 'sun' 'fri' 'wed'
+  'fri' 'mon' 'fri' 'fri' 'tue' 'sun' 'thu' 'sat' 'mon' 'thu' 'fri' 'sun'
+  'sat' 'fri' 'wed' 'fri' 'tue' 'mon' 'tue' 'mon' 'sun' 'sun' 'thu' 'mon'
+  'thu' 'fri' 'mon' 'tue' 'tue' 'fri' 'mon' 'wed' 'wed' 'mon' 'fri' 'fri'
+  'mon' 'wed' 'sun' 'thu' 'sun' 'wed' 'sat' 'fri' 'tue' 'sun' 'tue' 'thu'
+  'sun' 'thu' 'tue' 'thu' 'sun' 'sat' 'sun' 'sun' 'sun' 'tue' 'mon' 'thu'
+  'thu' 'mon' 'thu' 'mon' 'mon' 'sun' 'wed' 'mon' 'wed' 'sat' 'mon' 'mon'
+  'fri' 'thu' 'sun' 'tue' 'sat' 'thu' 'mon' 'sat' 'sun' 'thu' 'sat' 'sun'
+  'fri' 'sun' 'sun' 'thu' 'sat' 'sat' 'sat' 'mon' 'mon' 'tue' 'tue' 'sat'
+  'fri' 'thu' 'tue' 'sat' 'tue']] to numeric
+is_success:
+False
+code:
+# Ensure that the necessary libraries are imported
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+
+# Load the preprocessed datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check for missing values and handle them
+# Since the data types are already known, we can directly fill missing values with median for numeric columns
+numeric_features = ['X', 'Y', 'FFMC', 'DMC', 'DC', 'ISI', 'temp', 'RH', 'wind', 'rain']
+train_df_copy[numeric_features] = train_df_copy[numeric_features].fillna(train_df_copy[numeric_features].median())
+test_df_copy[numeric_features] = test_df_copy[numeric_features].fillna(test_df_copy[numeric_features].median())
+
+# Encode categorical variables using OrdinalEncoder
+ordinal_encoder = OrdinalEncoder()
+train_df_copy[['month', 'day']] = ordinal_encoder.fit_transform(train_df_copy[['month', 'day']])
+test_df_copy[['month', 'day']] = ordinal_encoder.transform(test_df_copy[['month', 'day']])
+
+# Standardize numeric features except the label 'area'
+scaler = StandardScaler()
+train_df_copy[numeric_features] = scaler.fit_transform(train_df_copy[numeric_features])
+test_df_copy[numeric_features] = scaler.transform(test_df_copy[numeric_features])
+
+# Display the first few rows of the preprocessed datasets
+train_df_copy.head(), test_df_copy.head()
+execute_result:
+(          X         Y  month  day  ...        RH      wind      rain   area
+ 0 -0.288472 -1.094859   11.0  2.0  ... -1.059419  0.001631 -0.067817   3.33
+ 1 -0.288472 -0.266696   11.0  1.0  ... -0.335215 -1.008923 -0.067817   3.07
+ 2 -1.161285  0.561466    1.0  5.0  ...  0.147588  0.001631 -0.067817   3.09
+ 3 -0.724878 -0.266696    1.0  5.0  ... -1.059419 -1.008923 -0.067817  14.68
+ 4  0.147934 -0.266696    3.0  3.0  ...  0.509690 -1.008923 -0.067817   6.38
+ 
+ [5 rows x 13 columns],
+           X         Y  month  day  ...        RH      wind      rain  area
+ 0  0.584341  0.561466    8.0  2.0  ...  2.984055  0.506908 -0.067817  0.00
+ 1  1.020747  0.561466    1.0  5.0  ...  1.233895  0.506908  2.421824  0.00
+ 2  1.457153  1.389629    1.0  1.0  ... -0.938719 -1.233490 -0.067817  1.23
+ 3  0.147934 -0.266696   11.0  0.0  ...  0.147588  0.506908 -0.067817  1.46
+ 4 -1.161285 -0.266696    1.0  6.0  ... -0.878368  0.506908 -0.067817  1.95
+ 
+ [5 rows x 13 columns])
+is_success:
+True
+code:
+# Copy the dataframes to ensure we don't modify the original data
+X_train_copy = X_train.copy()
+X_test_copy = X_test.copy()
+
+# Feature Engineering
+# 1. Interaction Terms
+X_train_copy['FFMC_DMC'] = X_train_copy['FFMC'] * X_train_copy['DMC']
+X_train_copy['temp_wind'] = X_train_copy['temp'] * X_train_copy['wind']
+X_test_copy['FFMC_DMC'] = X_test_copy['FFMC'] * X_test_copy['DMC']
+X_test_copy['temp_wind'] = X_test_copy['temp'] * X_test_copy['wind']
+
+# 2. Polynomial Features
+X_train_copy['FFMC_squared'] = X_train_copy['FFMC'] ** 2
+X_train_copy['temp_squared'] = X_train_copy['temp'] ** 2
+X_test_copy['FFMC_squared'] = X_test_copy['FFMC'] ** 2
+X_test_copy['temp_squared'] = X_test_copy['temp'] ** 2
+
+# 3. Ratio Features
+X_train_copy['FFMC_ratio'] = X_train_copy['FFMC'] / (X_train_copy['DMC'] + 1e-5)
+X_train_copy['temp_ratio'] = X_train_copy['temp'] / (X_train_copy['wind'] + 1e-5)
+X_test_copy['FFMC_ratio'] = X_test_copy['FFMC'] / (X_test_copy['DMC'] + 1e-5)
+X_test_copy['temp_ratio'] = X_test_copy['temp'] / (X_test_copy['wind'] + 1e-5)
+
+# 4. Logarithmic Transformation
+X_train_copy['log_FFMC'] = np.log(X_train_copy['FFMC'] + 1)
+X_train_copy['log_temp'] = np.log(X_train_copy['temp'] + 1)
+X_test_copy['log_FFMC'] = np.log(X_test_copy['FFMC'] + 1)
+X_test_copy['log_temp'] = np.log(X_test_copy['temp'] + 1)
+
+# Display the updated feature sets
+X_train_copy.head(), y_train.head(), X_test_copy.head(), y_test.head()
+execute_result:
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[14], line 2
+      1 # Copy the dataframes to ensure we don't modify the original data
+----> 2 X_train_copy = X_train.copy()
+      3 X_test_copy = X_test.copy()
+      5 # Feature Engineering
+      6 # 1. Interaction Terms
+
+NameError: name 'X_train' is not defined
+is_success:
+False
+code:
+# Selecting features for model training
+# Assuming 'area' is the target variable and the rest are features
+features = train_df_copy.columns.drop('area')
+target = 'area'
+
+X_train = train_df_copy[features]
+y_train = train_df_copy[target]
+
+X_test = test_df_copy[features]
+y_test = test_df_copy[target]
+
+X_train.head(), y_train.head()
+execute_result:
+(          X         Y  month  day  ...      temp        RH      wind      rain
+ 0 -0.288472 -1.094859   11.0  2.0  ...  0.797602 -1.059419  0.001631 -0.067817
+ 1 -0.288472 -0.266696   11.0  1.0  ... -0.205272 -0.335215 -1.008923 -0.067817
+ 2 -1.161285  0.561466    1.0  5.0  ...  0.227001  0.147588  0.001631 -0.067817
+ 3 -0.724878 -0.266696    1.0  5.0  ...  2.319206 -1.059419 -1.008923 -0.067817
+ 4  0.147934 -0.266696    3.0  3.0  ... -1.121692  0.509690 -1.008923 -0.067817
+ 
+ [5 rows x 12 columns],
+ 0     3.33
+ 1     3.07
+ 2     3.09
+ 3    14.68
+ 4     6.38
+ Name: area, dtype: float64)
+is_success:
+True
+code:
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Initialize the XGBoost Regressor with tuned hyperparameters
+xgb_model = XGBRegressor(n_estimators=1000, max_depth=7, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8, random_state=42)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Predict on the training set to evaluate the model
+y_train_pred = xgb_model.predict(X_train)
+train_rmse = mean_squared_error(y_train, y_train_pred, squared=False)
+train_r2 = r2_score(y_train, y_train_pred)
+
+# Predict on the test set to evaluate the model
+y_test_pred = xgb_model.predict(X_test)
+test_rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+test_r2 = r2_score(y_test, y_test_pred)
+
+# Print the evaluation metrics
+print(f"Training RMSE: {train_rmse:.4f}, R2 Score: {train_r2:.4f}")
+print(f"Test RMSE: {test_rmse:.4f}, R2 Score: {test_r2:.4f}")
+execute_result:
+Training RMSE: 0.6258, R2 Score: 0.9998
+Test RMSE: 111.7268, R2 Score: -0.0590
+is_success:
+True

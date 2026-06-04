@@ -1,0 +1,83 @@
+import pandas as pd
+
+train_file_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_train.csv'
+test_file_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_test.csv'
+
+# Load the datasets
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+train_data, test_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(      id  gravity    ph  osmo  cond  urea  calc  target
+ 0      1    1.025  5.40   703  23.6   394  4.18       0
+ 1      2    1.009  6.13   371  24.5   159  9.04       0
+ ..   ...      ...   ...   ...   ...   ...   ...     ...
+ 329  412    1.008  7.12   325  12.6    75  1.03       1
+ 330  413    1.011  6.13   364   9.9   159  0.27       0
+ 
+ [331 rows x 8 columns],
+      id  gravity    ph  osmo  cond  urea  calc  target
+ 0     0    1.013  6.19   443  14.8   124  1.45       0
+ 1     9    1.017  6.61   527  20.0    75  4.49       1
+ ..  ...      ...   ...   ...   ...   ...   ...     ...
+ 81  405    1.005  6.13   225   9.9    72  1.16       0
+ 82  409    1.011  5.21   527  21.4    75  1.53       0
+ 
+ [83 rows x 8 columns])from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Prepare the feature and target variables
+X_train = train_data.drop(['id', 'target'], axis=1)
+y_train = train_data['target']
+X_test = test_data.drop(['id', 'target'], axis=1)
+y_test = test_data['target']
+
+# Initialize and train the model
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+f1, X_train, X_test, y_train, y_test, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.6571428571428571,
+      gravity    ph  osmo  cond  urea  calc
+ 0      1.025  5.40   703  23.6   394  4.18
+ 1      1.009  6.13   371  24.5   159  9.04
+ ..       ...   ...   ...   ...   ...   ...
+ 329    1.008  7.12   325  12.6    75  1.03
+ 330    1.011  6.13   364   9.9   159  0.27
+ 
+ [331 rows x 6 columns],
+     gravity    ph  osmo  cond  urea  calc
+ 0     1.013  6.19   443  14.8   124  1.45
+ 1     1.017  6.61   527  20.0    75  4.49
+ ..      ...   ...   ...   ...   ...   ...
+ 81    1.005  6.13   225   9.9    72  1.16
+ 82    1.011  5.21   527  21.4    75  1.53
+ 
+ [83 rows x 6 columns],
+ 0      0
+ 1      0
+       ..
+ 329    1
+ 330    0
+ Name: target, Length: 331, dtype: int64,
+ 0     0
+ 1     1
+      ..
+ 81    0
+ 82    0
+ Name: target, Length: 83, dtype: int64,
+ array([0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1,
+        1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,
+        0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 0,
+        0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0], dtype=int64))

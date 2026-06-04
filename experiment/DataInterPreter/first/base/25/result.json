@@ -1,0 +1,18 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 112.46736669540405,
+        "interact_count": 12,
+        "prompt_tokens": 14681,
+        "completion_tokens": 2604,
+        "metrics": 0.36725630876064586,
+        "RCR": 5
+    },
+    "task": {
+        "id": 25,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "census_income",
+        "task_description": "基于 census_income 数据集，构建一个聚类模型，分析人群收入和其他因素潜在的层次关系。"
+    }
+}

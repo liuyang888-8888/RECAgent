@@ -1,0 +1,131 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\employee_attrition_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\employee_attrition_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Feature selection - select relevant features for the model
+features = [col for col in train_df.columns if col != 'Attrition']
+
+# Encode categorical variables
+label_encoders = {}
+for feature in features:
+    if train_df[feature].dtype == 'object':
+        le = LabelEncoder()
+        train_df[feature] = le.fit_transform(train_df[feature])
+        test_df[feature] = le.transform(test_df[feature])
+        label_encoders[feature] = le
+
+# Encode target variable
+le_target = LabelEncoder()
+train_df['Attrition'] = le_target.fit_transform(train_df['Attrition'])
+test_df['Attrition'] = le_target.transform(test_df['Attrition'])
+
+# Prepare the final datasets
+X_train = train_df[features]
+y_train = train_df['Attrition']
+X_test = test_df[features]
+y_test = test_df['Attrition']
+
+X_train, y_train, X_test, y_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(        id  age  DailyRate  Department  DistanceFromHome  Education  EducationField  EmployeeCount  EnvironmentSatisfaction  Gender  HourlyRate  JobInvolvement  JobLevel  JobRole  JobSatisfaction  MaritalStatus  MonthlyIncome  MonthlyRate  NumCompaniesWorked  Over18  OverTime  PercentSalaryHike  PerformanceRating  RelationshipSatisfaction  StandardHours  StockOptionLevel  TotalWorkingYears  TrainingTimesLastYear  WorkLifeBalance  YearsAtCompany  YearsInCurrentRole  YearsSinceLastPromotion  YearsWithCurrManager
+ 0        0   36        599           1                24          3               3              1                        4       1          42               3         1        2                4              1           2596         5099                   1       0         1                 13                  3                         2             80                 1                 10                      2                3              10                   0                        7                     8
+ 1        1   35        921           2                 8          3               4              1                        1       1          46               3         1        8                1              1           2899        10778                   1       0         0                 17                  3                         4             80                 1                  4                      3                3               4                   2                        0                     3
+ ...    ...  ...        ...         ...               ...        ...             ...            ...                      ...     ...         ...             ...       ...      ...              ...            ...            ...          ...                 ...     ...       ...                ...                ...                       ...            ...               ...                ...                    ...              ...             ...                 ...                      ...                   ...
+ 1339  1675   36        441           2                 9          2               2              1                        2       1          48               4         2        7                3              0           5406         4051                   1       0         0                 21                  4                         3             80                 2                 10                      3                2              10                   3                        0                     8
+ 1340  1676   36       1141           1                20          3               1              1                        3       0          35               3         1        2                3              2           2593        17381                   0       0         0                 19                  3                         4             80                 0                 10                      3                2               8                   2                        7                     3
+ 
+ [1341 rows x 33 columns],
+ 0       0
+ 1       0
+        ..
+ 1339    0
+ 1340    0
+ Name: Attrition, Length: 1341, dtype: int64,
+        id  age  DailyRate  Department  DistanceFromHome  Education  EducationField  EmployeeCount  EnvironmentSatisfaction  Gender  HourlyRate  JobInvolvement  JobLevel  JobRole  JobSatisfaction  MaritalStatus  MonthlyIncome  MonthlyRate  NumCompaniesWorked  Over18  OverTime  PercentSalaryHike  PerformanceRating  RelationshipSatisfaction  StandardHours  StockOptionLevel  TotalWorkingYears  TrainingTimesLastYear  WorkLifeBalance  YearsAtCompany  YearsInCurrentRole  YearsSinceLastPromotion  YearsWithCurrManager
+ 0      15   39        640           1                25          4               3              1                        1       1          81               3         2        6                3              2           4449         6194                   1       0         0                 21                  4                         3             80                 0                 20                      2                2              20                   9                        6                    10
+ 1      23   43        530           1                 2          3               1              1                        4       0          51               3         1        6                3              2           3312        22474                   3       0         0                 13                  3                         4             80                 0                 18                      3                3               2                   2                        2                     2
+ ..    ...  ...        ...         ...               ...        ...             ...            ...                      ...     ...         ...             ...       ...      ...              ...            ...            ...          ...                 ...     ...       ...                ...                ...                       ...            ...               ...                ...                    ...              ...             ...                 ...                      ...                   ...
+ 334  1656   46        783           2                 1          2               2              1                        4       1          84               3         5        3                4              1          19502         5099                   3       0         0                 14                  3                         3             80                 1                 25                      2                3               7                   1                        1                     7
+ 335  1665   27        523           1                19          1               3              1                        2       1          45               3         1        2                3              0           2008        17808                   1       0         0                 14                  3                         2             80                 3                  1                      1                3               1                   0                        0                     0
+ 
+ [336 rows x 33 columns],
+ 0      0
+ 1      0
+       ..
+ 334    0
+ 335    0
+ Name: Attrition, Length: 336, dtype: int64)from sklearn.model_selection import train_test_split
+
+# Split the data into training and testing sets
+X_train_final, X_test_final, y_train_final, y_test_final = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+
+X_train_final, X_test_final, y_train_final, y_test_final
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(        id  age  DailyRate  Department  DistanceFromHome  Education  EducationField  EmployeeCount  EnvironmentSatisfaction  Gender  HourlyRate  JobInvolvement  JobLevel  JobRole  JobSatisfaction  MaritalStatus  MonthlyIncome  MonthlyRate  NumCompaniesWorked  Over18  OverTime  PercentSalaryHike  PerformanceRating  RelationshipSatisfaction  StandardHours  StockOptionLevel  TotalWorkingYears  TrainingTimesLastYear  WorkLifeBalance  YearsAtCompany  YearsInCurrentRole  YearsSinceLastPromotion  YearsWithCurrManager
+ 810   1025   35        950           2                 7          2               2              1                        4       1          62               3         2        7                1              0           4558         3064                   1       0         0                 12                  3                         4             80                 1                 10                      5                2              10                   8                        7                     8
+ 1288  1611   30       1261           1                19          4               1              1                        4       1          94               3         1        6                3              1           2387         9129                   1       0         0                 12                  3                         1             80                 3                  6                      2                2               6                   2                        0                     4
+ ...    ...  ...        ...         ...               ...        ...             ...            ...                      ...     ...         ...             ...       ...      ...              ...            ...            ...          ...                 ...     ...       ...                ...                ...                       ...            ...               ...                ...                    ...              ...             ...                 ...                      ...                   ...
+ 860   1086   32       1463           2                 7          3               5              1                        1       1          64               3         3        7                1              2           7918        14506                   9       0         0                 11                  3                         3             80                 0                  9                      3                2               7                   6                        1                     6
+ 1126  1417   44       1109           1                 5          2               3              1                        1       1          84               1         5        3                1              0          19190        20682                   1       0         0                 11                  3                         3             80                 1                 26                      2                3              25                  12                       14                     6
+ 
+ [1072 rows x 33 columns],
+        id  age  DailyRate  Department  DistanceFromHome  Education  EducationField  EmployeeCount  EnvironmentSatisfaction  Gender  HourlyRate  JobInvolvement  JobLevel  JobRole  JobSatisfaction  MaritalStatus  MonthlyIncome  MonthlyRate  NumCompaniesWorked  Over18  OverTime  PercentSalaryHike  PerformanceRating  RelationshipSatisfaction  StandardHours  StockOptionLevel  TotalWorkingYears  TrainingTimesLastYear  WorkLifeBalance  YearsAtCompany  YearsInCurrentRole  YearsSinceLastPromotion  YearsWithCurrManager
+ 802  1017   19        722           2                25          2               2              1                        3       0          73               2         1        8                3              2           1475        21703                   1       0         0                 13                  3                         1             80                 0                  1                      4                2               1                   0                        0                     0
+ 548   696   26       1168           1                 2          3               1              1                        4       1          56               3         2        2                4              1           5772        20440                   0       0         0                 18                  3                         2             80                 0                 10                      3                2               9                   7                        0                     7
+ ..    ...  ...        ...         ...               ...        ...             ...            ...                      ...     ...         ...             ...       ...      ...              ...            ...            ...          ...                 ...     ...       ...                ...                ...                       ...            ...               ...                ...                    ...              ...             ...                 ...                      ...                   ...
+ 842  1065   45       1308           1                22          3               4              1                        3       1          66               2         4        3                4              1          17861        18863                   0       0         0                 14                  3                         2             80                 1                 21                      3                3              20                   7                       10                    10
+ 764   967   46        995           1                 2          2               3              1                        2       0          65               3         1        2                3              1           2720         6881                   9       0         0                 12                  3                         3             80                 1                 14                      2                2               4                   2                        2                     0
+ 
+ [269 rows x 33 columns],
+ 810     0
+ 1288    0
+        ..
+ 860     1
+ 1126    0
+ Name: Attrition, Length: 1072, dtype: int64,
+ 802    1
+ 548    0
+       ..
+ 842    0
+ 764    1
+ Name: Attrition, Length: 269, dtype: int64)from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# Train the decision tree model
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train_final, y_train_final)
+
+# Predict on the test set
+y_pred = model.predict(X_test_final)
+
+# Calculate F1 score
+f1 = f1_score(y_test_final, y_pred)
+
+f1, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.26666666666666666,
+ array([0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+        0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0,
+        0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1,
+        0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+        0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 1, 0, 0, 0], dtype=int64))

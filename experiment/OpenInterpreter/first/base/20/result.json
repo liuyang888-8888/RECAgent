@@ -1,0 +1,20 @@
+{
+    "task": {
+        "id": 20,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "bike_sharing",
+        "task_description": "我需要你帮我基于 bike_sharing 数据集，构建一个回归模型，用于预测 Capital 共享单车系统中每小时或每天的租赁自行车数量。目标是根据天气、季节、时间等特征，预测未来的租赁数量。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 102.3496344089508,
+        "metrics": 10089.384222953551,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 3,
+        "prompt_tokens": 5892,
+        "completion_tokens": 971
+    }
+}

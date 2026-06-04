@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 15,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "crab_age",
+        "task_description": "我想使用 crab_age 的表格数据，其中包含了螃蟹的性别、重量，直径，高度和外壳及内脏重量还有年龄，请根据这些数据训练一个回归模型预测螃蟹年龄。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 95.18549227714539,
+        "interact_count": 4,
+        "prompt_tokens": 7803,
+        "completion_tokens": 1430,
+        "metrics": 4.5151032773937185,
+        "RCR": 5
+    }
+}

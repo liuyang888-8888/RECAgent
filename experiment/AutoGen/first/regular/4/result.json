@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 4,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "employee_attrition",
+        "task_description": "通过分析影响员工流失的关键因素，识别可能离职的员工，从而帮助企业制定针对性的留任策略，降低员工流失率。请基于员工的个人相关数据，构建一个决策树模型，用于预测员工流失风险。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 41.445297956466675,
+        "interact_count": 2,
+        "prompt_tokens": 2366,
+        "completion_tokens": 646,
+        "RCR": 5
+    }
+}

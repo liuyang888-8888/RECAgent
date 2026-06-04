@@ -1,0 +1,506 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_distances
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    silhouette_avg = silhouette_score(X, labels)
+    return silhouette_avg
+
+def train_model(X_train):
+    # 标准化数据
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
+    # 定义并训练 DBSCAN 模型
+    dbscan = DBSCAN(eps=0.5, min_samples=5, metric='cosine')
+    dbscan.fit(X_train_scaled)
+    
+    return dbscan
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 打印模型信息
+    print("Trained DBSCAN Model: ", model)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-153648/census_income/train.py", line 59, in <module>
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-153648/census_income/train.py", line 29, in compute_metrics_for_clustering
+    silhouette_avg = silhouette_score(X, labels)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 139, in silhouette_score
+    return np.mean(silhouette_samples(X, labels, metric=metric, **kwds))
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 189, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 297, in silhouette_samples
+    check_number_of_labels(len(le.classes_), n_samples)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 36, in check_number_of_labels
+    raise ValueError(
+ValueError: Number of labels is 1. Valid values are 2 to n_samples - 1 (inclusive)
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_distances
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    if len(np.unique(labels)) > 1:
+        silhouette_avg = silhouette_score(X, labels)
+        return silhouette_avg
+    else:
+        print("Not enough unique labels to compute silhouette score.")
+        return None
+
+def train_model(X_train):
+    # 标准化数据
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
+    # 定义并训练 DBSCAN 模型
+    dbscan = DBSCAN(eps=0.5, min_samples=5, metric='cosine')
+    dbscan.fit(X_train_scaled)
+    
+    return dbscan
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    if silhouette_avg is not None:
+        print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 打印模型信息
+    print("Trained DBSCAN Model: ", model)
+
+    # 提交结果
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-153648/census_income/train.py", line 71, in <module>
+    submit_predictions_for_test_set(model.labels_)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-153648/census_income/submission.py", line 25, in submit_predictions_for_test_set
+    silhouette_avg = compute_metrics_for_clustering(answer_df, labels)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-153648/census_income/submission.py", line 14, in compute_metrics_for_clustering
+    silhouette_avg = silhouette_score(X, labels)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 216, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 139, in silhouette_score
+    return np.mean(silhouette_samples(X, labels, metric=metric, **kwds))
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 189, in wrapper
+    return func(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 297, in silhouette_samples
+    check_number_of_labels(len(le.classes_), n_samples)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/metrics/cluster/_unsupervised.py", line 36, in check_number_of_labels
+    raise ValueError(
+ValueError: Number of labels is 1. Valid values are 2 to n_samples - 1 (inclusive)
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_distances
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    if len(np.unique(labels)) > 1:
+        silhouette_avg = silhouette_score(X, labels)
+        return silhouette_avg
+    else:
+        print("Not enough unique labels to compute silhouette score.")
+        return None
+
+def train_model(X_train):
+    # 标准化数据
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
+    # 定义并训练 DBSCAN 模型
+    dbscan = DBSCAN(eps=0.5, min_samples=5, metric='cosine')
+    dbscan.fit(X_train_scaled)
+    
+    return dbscan
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 定义并训练模型
+    model = train_model(X)
+
+    # 在训练集上评估模型并打印结果
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    if silhouette_avg is not None:
+        print("final silhouette_avg on trained set: ", silhouette_avg)
+
+    # 打印模型信息
+    print("Trained DBSCAN Model: ", model)
+
+    # 提交结果，仅在有有效标签时提交
+    if len(np.unique(model.labels_)) > 1:
+        submit_predictions_for_test_set(model.labels_)
+    else:
+        print("Not enough unique labels to submit predictions.")
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Not enough unique labels to compute silhouette score.
+Trained DBSCAN Model:  DBSCAN(metric='cosine')
+Not enough unique labels to submit predictions.
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_distances
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    if len(np.unique(labels)) > 1:
+        silhouette_avg = silhouette_score(X, labels)
+        return silhouette_avg
+    else:
+        print("Not enough unique labels to compute silhouette score.")
+        return None
+
+def train_model(X_train, eps, min_samples):
+    # 标准化数据
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
+    # 定义并训练 DBSCAN 模型
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric='cosine')
+    dbscan.fit(X_train_scaled)
+    
+    return dbscan, X_train_scaled
+
+def grid_search_dbscan(X):
+    best_silhouette = -1
+    best_model = None
+    best_params = {}
+    eps_values = [0.3, 0.4, 0.5, 0.6, 0.7]
+    min_samples_values = [3, 4, 5, 6, 7]
+
+    for eps in eps_values:
+        for min_samples in min_samples_values:
+            model, X_train_scaled = train_model(X, eps, min_samples)
+            silhouette_avg = compute_metrics_for_clustering(X_train_scaled, model.labels_)
+            if silhouette_avg is not None and silhouette_avg > best_silhouette:
+                best_silhouette = silhouette_avg
+                best_model = model
+                best_params = {'eps': eps, 'min_samples': min_samples}
+    
+    return best_model, best_silhouette, best_params
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 进行网格搜索以找到最佳的 DBSCAN 模型
+    best_model, best_silhouette, best_params = grid_search_dbscan(X)
+
+    # 打印最佳模型的信息
+    print("Best DBSCAN Model: ", best_model)
+    print("Best Silhouette Score: ", best_silhouette)
+    print("Best Hyperparameters: ", best_params)
+
+    # 提交结果，仅在有有效标签时提交
+    if len(np.unique(best_model.labels_)) > 1:
+        submit_predictions_for_test_set(best_model.labels_)
+    else:
+        print("Not enough unique labels to submit predictions.")
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250525-153648/census_income/train.py", line 86, in <module>
+    if len(np.unique(best_model.labels_)) > 1:
+AttributeError: 'NoneType' object has no attribute 'labels_'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import DBSCAN
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics.pairwise import cosine_distances
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    if len(np.unique(labels)) > 1:
+        silhouette_avg = silhouette_score(X, labels)
+        return silhouette_avg
+    else:
+        print("Not enough unique labels to compute silhouette score.")
+        return None
+
+def train_model(X_train, eps, min_samples):
+    # 标准化数据
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
+    # 定义并训练 DBSCAN 模型
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples, metric='cosine')
+    dbscan.fit(X_train_scaled)
+    
+    return dbscan, X_train_scaled
+
+def grid_search_dbscan(X):
+    best_silhouette = -1
+    best_model = None
+    best_params = {}
+    eps_values = [0.3, 0.4, 0.5, 0.6, 0.7]
+    min_samples_values = [3, 4, 5, 6, 7]
+
+    for eps in eps_values:
+        for min_samples in min_samples_values:
+            model, X_train_scaled = train_model(X, eps, min_samples)
+            silhouette_avg = compute_metrics_for_clustering(X_train_scaled, model.labels_)
+            if silhouette_avg is not None and silhouette_avg > best_silhouette:
+                best_silhouette = silhouette_avg
+                best_model = model
+                best_params = {'eps': eps, 'min_samples': min_samples}
+    
+    # Ensure best_model is always a valid model
+    if best_model is None:
+        best_model, _ = train_model(X, eps_values[0], min_samples_values[0])
+    
+    return best_model, best_silhouette, best_params
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.values
+
+    # 进行网格搜索以找到最佳的 DBSCAN 模型
+    best_model, best_silhouette, best_params = grid_search_dbscan(X)
+
+    # 打印最佳模型的信息
+    print("Best DBSCAN Model: ", best_model)
+    print("Best Silhouette Score: ", best_silhouette)
+    print("Best Hyperparameters: ", best_params)
+
+    # 提交结果，仅在有有效标签时提交
+    if len(np.unique(best_model.labels_)) > 1:
+        submit_predictions_for_test_set(best_model.labels_)
+    else:
+        print("Not enough unique labels to submit predictions.")
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Not enough unique labels to compute silhouette score.
+Best DBSCAN Model:  DBSCAN(eps=0.3, metric='cosine', min_samples=3)
+Best Silhouette Score:  -1
+Best Hyperparameters:  {}
+Not enough unique labels to submit predictions.
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

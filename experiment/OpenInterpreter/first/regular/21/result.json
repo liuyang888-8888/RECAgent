@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 21,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "forest_fires",
+        "task_description": "我需要你帮我葡萄牙东北部地区森林火灾的燃烧面积数据，我想使用梯度决策提升树算法。目标是根据气象数据（如温度、湿度、风速等）和其他相关特征，预测火灾的燃烧面积（单位：公顷）。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 115.72500276565552,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 6,
+        "prompt_tokens": 14893,
+        "completion_tokens": 1352
+    }
+}

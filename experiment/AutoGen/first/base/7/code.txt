@@ -1,0 +1,187 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Step 1: Load the data
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test.csv')
+
+# Step 2: Data preprocessing
+# Check for missing values and handle them if necessary
+print("Missing values in training data:\n", train_data.isnull().sum())
+print("Missing values in test data:\n", test_data.isnull().sum())
+
+# For simplicity, we will drop rows with missing values
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# Step 3: Feature selection
+# Assuming the target variable is 'is_canceled'
+X_train = train_data.drop(columns=['is_canceled'])
+y_train = train_data['is_canceled']
+
+X_test = test_data.drop(columns=['is_canceled'])
+y_test = test_data['is_canceled']
+
+# Step 4: Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Step 5: Model training
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Step 6: Model evaluation
+y_pred = model.predict(X_test_scaled)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_5dab3dacfbeb1575367f79dbe89a9eff1723bb21056812fba4f326b0cc1a0c4e.py", line 22, in <module>
+    X_train = train_data.drop(columns=['is_canceled'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['is_canceled'] not found in axis"
+Missing values in training data:
+ id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+Missing values in test data:
+ id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Step 1: Load the data
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test.csv')
+
+# Step 2: Data preprocessing
+# Check for missing values and handle them if necessary
+print("Missing values in training data:\n", train_data.isnull().sum())
+print("Missing values in test data:\n", test_data.isnull().sum())
+
+# For simplicity, we will drop rows with missing values
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# Step 3: Feature selection
+# Assuming the target variable is 'booking_status'
+X_train = train_data.drop(columns=['booking_status'])
+y_train = train_data['booking_status']
+
+X_test = test_data.drop(columns=['booking_status'])
+y_test = test_data['booking_status']
+
+# Step 4: Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Step 5: Model training
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Step 6: Model evaluation
+y_pred = model.predict(X_test_scaled)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'F1 Score (weighted): {f1}')
+
+
+执行结果：
+Missing values in training data:
+ id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+Missing values in test data:
+ id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+F1 Score (weighted): 0.8147000417656634

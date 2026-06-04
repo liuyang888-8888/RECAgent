@@ -1,0 +1,193 @@
+code:
+import pandas as pd
+
+# Load the data
+train_data_path = 'E:\\csv\\atmospheric_carbon_dioxide_train.csv'
+test_data_path = 'E:\\csv\\atmospheric_carbon_dioxide_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Copy the DataFrames to avoid modifying the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the train and test datasets to understand the structure
+print("Train Data:")
+print(train_df_copy.head())
+print("\nTest Data:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData Types in Train Data:")
+print(train_df_copy.dtypes)
+print("\nData Types in Test Data:")
+print(test_df_copy.dtypes)
+execute_result:
+Train Data:
+         date  Average
+0  2019-07-01   408.88
+1  1985-02-01   345.80
+2  2008-02-01   385.74
+3  1986-03-01   347.71
+4  2017-02-01   405.91
+
+Test Data:
+         date  Average
+0  2019-07-01   408.88
+1  1985-02-01   345.80
+2  2008-02-01   385.74
+3  1986-03-01   347.71
+4  2017-02-01   405.91
+
+Data Types in Train Data:
+date        object
+Average    float64
+dtype: object
+
+Data Types in Test Data:
+date        object
+Average    float64
+dtype: object
+is_success:
+True
+code:
+# Preprocessing the data
+train_df_preprocessed = train_df_copy.copy()
+test_df_preprocessed = test_df_copy.copy()
+
+# Convert 'date' column to datetime
+train_df_preprocessed['date'] = pd.to_datetime(train_df_preprocessed['date'])
+test_df_preprocessed['date'] = pd.to_datetime(test_df_preprocessed['date'])
+
+# Check for missing values and handle them
+if train_df_preprocessed.isnull().values.any():
+    print("Handling missing values in train data...")
+    # For simplicity, fill missing values with forward fill method
+    train_df_preprocessed.fillna(method='ffill', inplace=True)
+
+if test_df_preprocessed.isnull().values.any():
+    print("Handling missing values in test data...")
+    # For simplicity, fill missing values with forward fill method
+    test_df_preprocessed.fillna(method='ffill', inplace=True)
+
+# Verify the preprocessing
+print("Preprocessed Train Data:")
+print(train_df_preprocessed.head())
+print("\nPreprocessed Test Data:")
+print(test_df_preprocessed.head())
+execute_result:
+Preprocessed Train Data:
+        date  Average
+0 2019-07-01   408.88
+1 1985-02-01   345.80
+2 2008-02-01   385.74
+3 1986-03-01   347.71
+4 2017-02-01   405.91
+
+Preprocessed Test Data:
+        date  Average
+0 2019-07-01   408.88
+1 1985-02-01   345.80
+2 2008-02-01   385.74
+3 1986-03-01   347.71
+4 2017-02-01   405.91
+is_success:
+True
+code:
+# Splitting the data into features (X) and target variable (y)
+train_X = train_df_preprocessed.drop(columns=['Average'])
+train_y = train_df_preprocessed['Average']
+
+test_X = test_df_preprocessed.drop(columns=['Average'])
+test_y = test_df_preprocessed['Average']
+
+# Displaying the first few rows of the split datasets
+print("Train Features (X):")
+print(train_X.head())
+print("\nTrain Target (y):")
+print(train_y.head())
+print("\nTest Features (X):")
+print(test_X.head())
+print("\nTest Target (y):")
+print(test_y.head())
+execute_result:
+Train Features (X):
+        date
+0 2019-07-01
+1 1985-02-01
+2 2008-02-01
+3 1986-03-01
+4 2017-02-01
+
+Train Target (y):
+0    408.88
+1    345.80
+2    385.74
+3    347.71
+4    405.91
+Name: Average, dtype: float64
+
+Test Features (X):
+        date
+0 2019-07-01
+1 1985-02-01
+2 2008-02-01
+3 1986-03-01
+4 2017-02-01
+
+Test Target (y):
+0    408.88
+1    345.80
+2    385.74
+3    347.71
+4    405.91
+Name: Average, dtype: float64
+is_success:
+True
+code:
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Convert datetime to numeric for XGBoost
+train_X['date'] = train_X['date'].map(pd.Timestamp.timestamp)
+test_X['date'] = test_X['date'].map(pd.Timestamp.timestamp)
+
+# Initialize the model
+model = XGBRegressor(objective='reg:squarederror', n_estimators=1000, max_depth=7, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8)
+
+# Train the model
+model.fit(train_X, train_y)
+
+# Make predictions
+train_predictions = model.predict(train_X)
+test_predictions = model.predict(test_X)
+
+# Evaluate the model
+train_rmse = mean_squared_error(train_y, train_predictions, squared=False)
+test_rmse = mean_squared_error(test_y, test_predictions, squared=False)
+train_r2 = r2_score(train_y, train_predictions)
+test_r2 = r2_score(test_y, test_predictions)
+
+print(f"Train RMSE: {train_rmse}")
+print(f"Test RMSE: {test_rmse}")
+print(f"Train R2 Score: {train_r2}")
+print(f"Test R2 Score: {test_r2}")
+execute_result:
+Train RMSE: 0.5290332412020884
+Test RMSE: 0.5290332412020884
+Train R2 Score: 0.9995206696421274
+Test R2 Score: 0.9995206696421274
+is_success:
+True
+code:
+from sklearn.metrics import mean_squared_error
+
+# Using the trained model and preprocessed data from the previous tasks
+train_predictions = model.predict(train_X)
+train_mse = mean_squared_error(train_y, train_predictions)
+print(f"Train MSE: {train_mse}")
+execute_result:
+Train MSE: 0.279876170296787
+is_success:
+True

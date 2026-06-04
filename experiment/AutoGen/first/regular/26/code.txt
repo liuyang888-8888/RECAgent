@@ -1,0 +1,123 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\atmospheric_carbon_dioxide_train.csv'
+df = pd.read_csv(data_path)
+
+# 确保数据按时间顺序排列
+df['date'] = pd.to_datetime(df['date'])
+df = df.sort_values(by='date')
+
+# 检查并处理缺失值
+df = df.dropna()
+
+# 提取时间序列数据
+co2_series = df['co2']
+
+# 构建 ARIMA 模型
+model = ARIMA(co2_series, order=(5, 1, 0))  # 选择一个初始的 ARIMA 参数 (p, d, q)
+
+# 拟合模型
+model_fit = model.fit()
+
+# 预测训练集
+predictions = model_fit.fittedvalues
+
+# 计算均方误差
+mse = mean_squared_error(co2_series, predictions)
+
+# 输出均方误差
+print(f'Training Set MSE: {mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3805, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'co2'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_64962ee23ed9ff2d087b31cd0ad4464903a8af213e1d3ceeffa1160284370914.py", line 18, in <module>
+    co2_series = df['co2']
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 4102, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    raise KeyError(key) from err
+KeyError: 'co2'
+
+生成的代码：
+import pandas as pd
+
+# 读取数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\atmospheric_carbon_dioxide_train.csv'
+df = pd.read_csv(data_path)
+
+# 查看数据的前几行和列名
+print(df.head())
+print(df.columns)
+
+
+执行结果：
+         date  Average
+0  2019-07-01   408.88
+1  1985-02-01   345.80
+2  2008-02-01   385.74
+3  1986-03-01   347.71
+4  2017-02-01   405.91
+Index(['date', 'Average'], dtype='object')
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 读取数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\atmospheric_carbon_dioxide_train.csv'
+df = pd.read_csv(data_path)
+
+# 确保数据按时间顺序排列
+df['date'] = pd.to_datetime(df['date'])
+df = df.sort_values(by='date')
+
+# 检查并处理缺失值
+df = df.dropna()
+
+# 提取时间序列数据
+co2_series = df['Average']
+
+# 构建 ARIMA 模型
+model = ARIMA(co2_series, order=(5, 1, 0))  # 选择一个初始的 ARIMA 参数 (p, d, q)
+
+# 拟合模型
+model_fit = model.fit()
+
+# 预测训练集
+predictions = model_fit.fittedvalues
+
+# 计算均方误差
+mse = mean_squared_error(co2_series, predictions)
+
+# 输出均方误差
+print(f'Training Set MSE: {mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: An unsupported index was provided. As a result, forecasts cannot be generated. To use the model for forecasting, use one of the supported classes of index.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: An unsupported index was provided. As a result, forecasts cannot be generated. To use the model for forecasting, use one of the supported classes of index.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: An unsupported index was provided. As a result, forecasts cannot be generated. To use the model for forecasting, use one of the supported classes of index.
+  self._init_dates(dates, freq)
+Training Set MSE: 210.2408766292808

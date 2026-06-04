@@ -1,0 +1,109 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+
+# Define the path to the data files
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\reservation_cancellation_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\reservation_cancellation_test.csv'
+
+# Load the data
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Prepare the data
+X_train = train_data.drop(columns=['is_canceled'])
+y_train = train_data['is_canceled']
+X_test = test_data.drop(columns=['is_canceled'])
+y_test = test_data['is_canceled']
+
+# Result variables
+X_train, y_train, X_test, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 15
+    X_train = train_data.drop(columns=['is_canceled'])
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:5581 in drop
+    return super().drop(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4788 in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4830 in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:7070 in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+
+KeyError: "['is_canceled'] not found in axis"
+
+import pandas as pd
+
+# Define the path to the data files
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\reservation_cancellation_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\reservation_cancellation_test.csv'
+
+# Load the data
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Check the columns of the datasets
+train_columns = train_data.columns.tolist()
+test_columns = test_data.columns.tolist()
+
+# Print the columns to verify
+print('Train Data Columns:', train_columns)
+print('Test Data Columns:', test_columns)
+
+# Result variables
+train_columns, test_columns
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(['id', 'no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights', 'type_of_meal_plan', 'required_car_parking_space', 'room_type_reserved', 'lead_time', 'arrival_year', 'arrival_month', 'arrival_date', 'market_segment_type', 'repeated_guest', 'no_of_previous_cancellations', 'no_of_previous_bookings_not_canceled', 'avg_price_per_room', 'no_of_special_requests', 'booking_status'], ['id', 'no_of_adults', 'no_of_children', 'no_of_weekend_nights', 'no_of_week_nights', 'type_of_meal_plan', 'required_car_parking_space', 'room_type_reserved', 'lead_time', 'arrival_year', 'arrival_month', 'arrival_date', 'market_segment_type', 'repeated_guest', 'no_of_previous_cancellations', 'no_of_previous_bookings_not_canceled', 'avg_price_per_room', 'no_of_special_requests', 'booking_status'])from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Define the target variable and features
+target = 'booking_status'
+features = [col for col in train_data.columns if col != target]
+
+# Prepare the data
+X_train = train_data[features]
+y_train = train_data[target]
+X_test = test_data[features]
+y_test = test_data[target]
+
+# Build the Random Forest model
+rf_model = RandomForestClassifier(n_estimators=200, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = rf_model.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+
+# Save the predictions
+predictions = pd.DataFrame({'id': test_data['id'], 'predicted_booking_status': y_pred})
+predictions.to_csv('E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\reservation_cancellation_predictions.csv', index=False)
+
+# Result variables
+rf_model, y_pred, f1, predictions
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(RandomForestClassifier(n_estimators=200, random_state=42),
+ array([0, 1, 0, ..., 1, 1, 0], dtype=int64),
+ 0.7574562095628846,
+          id  predicted_booking_status
+ 0         1                         0
+ 1         4                         1
+ ...     ...                       ...
+ 8418  42092                         1
+ 8419  42094                         0
+ 
+ [8420 rows x 2 columns])

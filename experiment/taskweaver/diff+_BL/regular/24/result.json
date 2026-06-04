@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 24,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "titanic",
+        "task_description": "构建一个 k-Means 聚类算法模型，用于分析泰坦尼克号上的人员组成。目标是根据乘客的特征（如年龄、性别、舱位等级、票价等）将乘客划分为不同的群组，从而揭示潜在的人员结构和群体特征。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 165.10752868652344,
+        "interact_count": 5,
+        "prompt_tokens": 24379,
+        "completion_tokens": 2783,
+        "RCR": 5
+    }
+}

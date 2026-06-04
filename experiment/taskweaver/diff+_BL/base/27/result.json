@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 27,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "bitcoin_price",
+        "task_description": "我想使用 bitcoin_price 的时序数据，根据过去10年比特币的价格浮动的表格数据，训练一个时序模型,预测接下来的几天最高价值。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 237.17789340019226,
+        "interact_count": 5,
+        "prompt_tokens": 23734,
+        "completion_tokens": 3431,
+        "score": 312809057.04993445,
+        "RCR": 5
+    }
+}

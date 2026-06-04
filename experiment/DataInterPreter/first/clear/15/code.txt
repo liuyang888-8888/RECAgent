@@ -1,0 +1,340 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv(r'E:\csv\crab_age_train.csv')
+test_df = pd.read_csv(r'E:\csv\crab_age_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Check data types and apply appropriate methods
+print("Original Data Types - Train:")
+print(train_df_copy.dtypes)
+print("\nOriginal Data Types - Test:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Apply necessary preprocessing steps
+for col in numerical_columns:
+    if col != 'label':  # Ensure not to modify the label column
+        # Example: Scaling numerical columns (if needed)
+        mean_val = train_df_copy[col].mean()
+        std_val = train_df_copy[col].std()
+        train_df_copy[col] = (train_df_copy[col] - mean_val) / std_val
+        test_df_copy[col] = (test_df_copy[col] - mean_val) / std_val
+
+for col in categorical_columns:
+    # Example: Label encoding for categorical columns (if needed)
+    unique_values = train_df_copy[col].unique()
+    value_map = {value: idx for idx, value in enumerate(unique_values)}
+    train_df_copy[col] = train_df_copy[col].map(value_map)
+    test_df_copy[col] = test_df_copy[col].map(value_map)
+
+# Verify the changes
+print("\nProcessed Data Types - Train:")
+print(train_df_copy.dtypes)
+print("\nProcessed Data Types - Test:")
+print(test_df_copy.dtypes)
+execute_result:
+Original Data Types - Train:
+id                  int64
+Sex                object
+Length            float64
+Diameter          float64
+Height            float64
+Weight            float64
+Shucked_Weight    float64
+Viscera_Weight    float64
+Shell_Weight      float64
+Age                 int64
+dtype: object
+
+Original Data Types - Test:
+id                  int64
+Sex                object
+Length            float64
+Diameter          float64
+Height            float64
+Weight            float64
+Shucked_Weight    float64
+Viscera_Weight    float64
+Shell_Weight      float64
+Age                 int64
+dtype: object
+
+Processed Data Types - Train:
+id                float64
+Sex                 int64
+Length            float64
+Diameter          float64
+Height            float64
+Weight            float64
+Shucked_Weight    float64
+Viscera_Weight    float64
+Shell_Weight      float64
+Age               float64
+dtype: object
+
+Processed Data Types - Test:
+id                float64
+Sex                 int64
+Length            float64
+Diameter          float64
+Height            float64
+Weight            float64
+Shucked_Weight    float64
+Viscera_Weight    float64
+Shell_Weight      float64
+Age               float64
+dtype: object
+is_success:
+True
+code:
+import numpy as np
+
+# Display the first few rows of the original and processed datasets
+print("Original Train Data Head:")
+print(train_df.head())
+print("\nOriginal Test Data Head:")
+print(test_df.head())
+print("\nProcessed Train Data Head:")
+print(train_df_copy.head())
+print("\nProcessed Test Data Head:")
+print(test_df_copy.head())
+
+# Analyze the distribution of numerical and categorical columns
+numerical_columns = train_df_copy.select_dtypes(include=['float64']).columns
+categorical_columns = train_df_copy.select_dtypes(include=['int64']).drop('id', errors='ignore').columns
+
+print("\nSummary Statistics for Numerical Columns in Train Data:")
+print(train_df_copy[numerical_columns].describe())
+
+print("\nValue Counts for Categorical Columns in Train Data:")
+for col in categorical_columns:
+    print(f"\n{col}:")
+    print(train_df_copy[col].value_counts())
+execute_result:
+Original Train Data Head:
+   id Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+0   0   I  1.5250    1.1750  ...       12.728926        6.647958      8.348928    9
+1   1   I  1.1000    0.8250  ...        4.521745        2.324659      3.401940    8
+2   2   M  1.3875    1.1125  ...       11.339800        5.556502      6.662133    9
+3   3   F  1.7000    1.4125  ...       20.354941       10.991839     14.996885   11
+4   5   M  1.5000    1.1750  ...       13.409313        6.789705      7.937860   10
+
+[5 rows x 10 columns]
+
+Original Test Data Head:
+   id Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+0   4   I  1.2500    1.0125  ...       11.977664        4.507570      5.953395    8
+1   6   M  1.5750    1.1375  ...       11.935140        7.342521      8.646598   11
+2  12   M  1.3500    1.0250  ...        8.504850        4.635143      6.945627   10
+3  32   F  1.7625    1.3875  ...       23.090668        6.080968     11.297276   13
+4  35   F  1.4250    1.1500  ...       11.793392        5.528153      7.796112   10
+
+[5 rows x 10 columns]
+
+Processed Train Data Head:
+         id  Sex    Length  ...  Viscera_Weight  Shell_Weight       Age
+0 -1.729591    0  0.720690  ...        0.568578      0.453151 -0.305965
+1 -1.729545    0 -0.759500  ...       -0.980807     -0.929203 -0.621337
+2 -1.729498    1  0.241805  ...        0.177422     -0.018196 -0.305965
+3 -1.729451    2  1.330179  ...        2.125340      2.310813  0.324779
+4 -1.729358    1  0.633620  ...        0.619378      0.338285  0.009407
+
+[5 rows x 10 columns]
+
+Processed Test Data Head:
+         id  Sex    Length  ...  Viscera_Weight  Shell_Weight       Age
+0 -1.729404    0 -0.237080  ...       -0.198495     -0.216241 -0.621337
+1 -1.729311    1  0.894829  ...        0.817496      0.536330  0.324779
+2 -1.729030    1  0.111200  ...       -0.152775      0.061022  0.009407
+3 -1.728095    2  1.547854  ...        0.365380      1.277018  0.955522
+4 -1.727955    2  0.372410  ...        0.167262      0.298676  0.009407
+
+[5 rows x 10 columns]
+
+Summary Statistics for Numerical Columns in Train Data:
+                 id        Length  ...  Shell_Weight           Age
+count  5.924000e+04  5.924000e+04  ...  5.924000e+04  5.924000e+04
+mean  -1.842326e-16  3.468154e-16  ...  4.018093e-18 -1.773058e-16
+std    1.000000e+00  1.000000e+00  ...  1.000000e+00  1.000000e+00
+min   -1.729591e+00 -3.937554e+00  ... -1.867937e+00 -2.828939e+00
+25%   -8.668695e-01 -5.853601e-01  ... -7.707673e-01 -6.213366e-01
+50%    2.937871e-04  1.982696e-01  ...  5.309980e-02  9.406851e-03
+75%    8.685908e-01  7.642245e-01  ...  6.551565e-01  3.247786e-01
+max    1.732283e+00  2.419649e+00  ...  6.081589e+00  6.001470e+00
+
+[8 rows x 9 columns]
+
+Value Counts for Categorical Columns in Train Data:
+
+Sex:
+Sex
+1    21574
+0    19174
+2    18492
+Name: count, dtype: int64
+is_success:
+True
+code:
+# Sample a subset of the training data for model training
+train_sample = train_df_copy.sample(frac=0.1, random_state=42)
+test_sample = test_df_copy.sample(frac=0.1, random_state=42)
+
+# Display the sampled data
+print("Sampled Train Data Head:")
+print(train_sample.head())
+print("\nSampled Test Data Head:")
+print(test_sample.head())
+execute_result:
+Sampled Train Data Head:
+             id  Sex    Length  ...  Viscera_Weight  Shell_Weight       Age
+26164 -0.204310    0 -1.717270  ...       -1.514202     -1.499573 -1.252080
+32999  0.197043    0 -2.196155  ...       -1.625961     -1.701579 -1.567452
+14966 -0.857648    2  1.025434  ...        0.985134      0.647235 -0.621337
+109   -1.723467    0 -2.370295  ...       -1.625961     -1.721383 -2.198195
+19822 -0.575462    2 -0.803035  ...       -0.808089     -0.849985 -0.936708
+
+[5 rows x 10 columns]
+
+Sampled Test Data Head:
+             id  Sex    Length  ...  Viscera_Weight  Shell_Weight       Age
+9611   0.524250    1 -0.324150  ...       -0.371213     -0.414286  0.640150
+8570   0.281381    1  1.156039  ...        1.223892      1.328509  0.324779
+2662  -1.102621    2 -1.673735  ...       -1.443083     -1.483729 -0.936708
+11888  1.045378    1  1.025434  ...        1.660768      0.853202  1.270894
+14801  1.729899    1  0.459480  ...       -0.208654      0.575939  0.955522
+
+[5 rows x 10 columns]
+is_success:
+True
+code:
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+from xgboost import XGBRegressor
+
+# Splitting the processed training data into features and target
+X_train = train_df_copy.drop(columns=['id', 'Age'])
+y_train = train_df_copy['Age']
+
+# Splitting the processed testing data into features and target
+X_test = test_df_copy.drop(columns=['id', 'Age'])
+y_test = test_df_copy['Age']
+
+# Defining the XGBoost Regressor with specified parameters
+xgb_model = XGBRegressor(
+    n_estimators=1000,
+    max_depth=7,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    random_state=42
+)
+
+# Training the model
+xgb_model.fit(X_train, y_train)
+
+# Making predictions
+y_pred_train = xgb_model.predict(X_train)
+y_pred_test = xgb_model.predict(X_test)
+
+# Evaluating the model
+mse_train = mean_squared_error(y_train, y_pred_train)
+r2_train = r2_score(y_train, y_pred_train)
+mse_test = mean_squared_error(y_test, y_pred_test)
+r2_test = r2_score(y_test, y_pred_test)
+
+print(f"Training MSE: {mse_train:.4f}, R2 Score: {r2_train:.4f}")
+print(f"Testing MSE: {mse_test:.4f}, R2 Score: {r2_test:.4f}")
+execute_result:
+Training MSE: 0.2277, R2 Score: 0.7723
+Testing MSE: 0.4239, R2 Score: 0.5818
+is_success:
+True
+code:
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Using the sampled data for training the decision tree model
+X_train_sample = train_sample.drop(columns=['id', 'Age'])
+y_train_sample = train_sample['Age']
+X_test_sample = test_sample.drop(columns=['id', 'Age'])
+y_test_sample = test_sample['Age']
+
+# Initialize the Decision Tree Regressor with suitable hyperparameters
+dt_model = DecisionTreeRegressor(
+    max_depth=10,
+    min_samples_split=5,
+    min_samples_leaf=2,
+    random_state=42
+)
+
+# Fit the model on the sampled training data
+dt_model.fit(X_train_sample, y_train_sample)
+
+# Predictions on the sampled training and testing data
+y_pred_train_sample = dt_model.predict(X_train_sample)
+y_pred_test_sample = dt_model.predict(X_test_sample)
+
+# Evaluate the model
+mse_train_sample = mean_squared_error(y_train_sample, y_pred_train_sample)
+r2_train_sample = r2_score(y_train_sample, y_pred_train_sample)
+mse_test_sample = mean_squared_error(y_test_sample, y_pred_test_sample)
+r2_test_sample = r2_score(y_test_sample, y_pred_test_sample)
+
+print(f"Sampled Training MSE: {mse_train_sample:.4f}, R2 Score: {r2_train_sample:.4f}")
+print(f"Sampled Testing MSE: {mse_test_sample:.4f}, R2 Score: {r2_test_sample:.4f}")
+execute_result:
+Sampled Training MSE: 0.2387, R2 Score: 0.7685
+Sampled Testing MSE: 0.5488, R2 Score: 0.4784
+is_success:
+True
+code:
+# Predicting the age of crabs using the test dataset with the trained XGBoost model
+
+# Using the previously trained XGBoost model to predict the ages in the test set
+y_pred_test = xgb_model.predict(X_test)
+
+# Evaluating the performance of the model on the test set
+mse_test = mean_squared_error(y_test, y_pred_test)
+r2_test = r2_score(y_test, y_pred_test)
+
+# Printing the evaluation metrics
+print(f"Testing MSE: {mse_test:.4f}, R2 Score: {r2_test:.4f}")
+
+# Optionally, you can also print out the first few predictions to inspect them
+print("\nFirst few predicted ages:")
+print(y_pred_test[:5])
+execute_result:
+Testing MSE: 0.4239, R2 Score: 0.5818
+
+First few predicted ages:
+[-0.5461412   0.824868    0.17176178  0.7337184   0.14201927]
+is_success:
+True
+code:
+# Since the model has already been trained and the test data has been processed,
+# we can directly calculate the MSE using the predictions and the actual values from the test set.
+
+from sklearn.metrics import mean_squared_error
+
+# Assuming y_pred_test and y_test are available from the previous steps
+mse_test_final = mean_squared_error(y_test, y_pred_test)
+print(f"Final Testing MSE: {mse_test_final:.4f}")
+execute_result:
+Final Testing MSE: 0.4239
+is_success:
+True
+code:
+# Since the model has already been trained and the data processed, we can directly report the final testing MSE.
+print(f"Final Testing MSE: {mse_test_final:.4f}")
+execute_result:
+Final Testing MSE: 0.4239
+is_success:
+True

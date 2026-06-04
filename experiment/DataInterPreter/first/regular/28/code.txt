@@ -1,0 +1,225 @@
+code:
+import pandas as pd
+
+# Load the data
+train_data_path = r'E:\csv\electricity_sales_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows to understand the data
+print(train_df_copy.head())
+
+# Check data types of each column
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_cols = train_df_copy.select_dtypes(include=['object']).columns
+numerical_cols = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_cols)
+print("Numerical Columns:", numerical_cols)
+
+# Apply appropriate preprocessing for categorical and numerical columns
+# For example, label encoding for categorical columns and scaling for numerical columns
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+
+# Initialize encoders and scalers
+label_encoders = {col: LabelEncoder() for col in categorical_cols}
+scalers = {col: StandardScaler() for col in numerical_cols}
+
+# Apply label encoding to categorical columns
+for col in categorical_cols:
+    train_df_copy[col] = label_encoders[col].fit_transform(train_df_copy[col])
+
+# Apply standard scaling to numerical columns
+for col in numerical_cols:
+    train_df_copy[col] = scalers[col].fit_transform(train_df_copy[[col]])
+
+# Display the preprocessed data
+print(train_df_copy.head())
+execute_result:
+Date      Sales
+0  2021-10-01  29.109547
+1  2021-10-02  30.720435
+2  2021-10-03  30.305173
+3  2021-10-04  27.390893
+4  2021-10-05  22.841123
+Date      object
+Sales    float64
+dtype: object
+Categorical Columns: Index(['Date'], dtype='object')
+Numerical Columns: Index(['Sales'], dtype='object')
+   Date     Sales
+0     0 -0.759391
+1     1 -0.513966
+2     2 -0.577233
+3     3 -1.021234
+4     4 -1.714409
+is_success:
+True
+code:
+# Convert 'Date' column to datetime type and set it as the index
+train_df_copy['Date'] = pd.to_datetime(train_df_copy['Date'])
+train_df_copy.set_index('Date', inplace=True)
+print(train_df_copy.head())
+execute_result:
+Sales
+Date                                   
+1970-01-01 00:00:00.000000000 -0.759391
+1970-01-01 00:00:00.000000001 -0.513966
+1970-01-01 00:00:00.000000002 -0.577233
+1970-01-01 00:00:00.000000003 -1.021234
+1970-01-01 00:00:00.000000004 -1.714409
+is_success:
+True
+code:
+from sklearn.model_selection import train_test_split
+
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_preprocessed = train_df_copy.copy()
+
+# Split the data into training and validation sets
+X = train_df_preprocessed.drop(columns=['Sales'])
+y = train_df_preprocessed['Sales']
+
+X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Display the shapes of the resulting datasets
+print(f"X_train shape: {X_train.shape}")
+print(f"X_val shape: {X_val.shape}")
+print(f"y_train shape: {y_train.shape}")
+print(f"y_val shape: {y_val.shape}")
+execute_result:
+X_train shape: (292, 0)
+X_val shape: (73, 0)
+y_train shape: (292,)
+y_val shape: (73,)
+is_success:
+True
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+
+# Since the dataset is now indexed by date and we are dealing with time series data,
+# we will use the ARIMA model to forecast the 'Sales' column.
+
+# Convert the sales data to a time series
+sales_series = train_df_preprocessed['Sales']
+
+# Fit the ARIMA model
+# Here we choose an ARIMA(1,1,1) model as a starting point
+# p=1: AR term
+# d=1: Differencing order
+# q=1: MA term
+model = ARIMA(sales_series, order=(1, 1, 1))
+arima_result = model.fit()
+
+# Print the summary of the model
+print(arima_result.summary())
+execute_result:
+SARIMAX Results                                
+==============================================================================
+Dep. Variable:                  Sales   No. Observations:                  365
+Model:                 ARIMA(1, 1, 1)   Log Likelihood                -255.118
+Date:                Sun, 27 Apr 2025   AIC                            516.236
+Time:                        21:55:39   BIC                            527.928
+Sample:                    01-01-1970   HQIC                           520.883
+                         - 01-01-1970                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1          0.2523      0.111      2.281      0.023       0.035       0.469
+ma.L1          0.3312      0.108      3.073      0.002       0.120       0.542
+sigma2         0.2376      0.019     12.265      0.000       0.200       0.276
+===================================================================================
+Ljung-Box (L1) (Q):                   0.68   Jarque-Bera (JB):                 3.84
+Prob(Q):                              0.41   Prob(JB):                         0.15
+Heteroskedasticity (H):               1.03   Skew:                             0.20
+Prob(H) (two-sided):                  0.87   Kurtosis:                         2.68
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+is_success:
+True
+code:
+# Predict the values for the training set using the trained ARIMA model
+predictions = arima_result.predict(start=len(y_train), end=len(y_train) + len(y_val) - 1, dynamic=False)
+
+# Convert predictions to a DataFrame for easier comparison with y_val
+predictions_df = pd.DataFrame(predictions, index=y_val.index, columns=['Predicted Sales'])
+
+# Combine actual and predicted sales for visualization
+comparison_df = pd.concat([y_val.reset_index(), predictions_df.reset_index()], axis=1)
+comparison_df.columns = ['Date', 'Actual Sales', 'Date', 'Predicted Sales']
+comparison_df.drop(columns=['Date'], inplace=True)
+
+# Display the first few rows of the comparison DataFrame
+print(comparison_df.head())
+
+# Optionally, plot the actual vs predicted sales
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 6))
+plt.plot(comparison_df['Actual Sales'], label='Actual Sales')
+plt.plot(comparison_df['Predicted Sales'], label='Predicted Sales', linestyle='--')
+plt.xlabel('Date')
+plt.ylabel('Sales')
+plt.title('Actual vs Predicted Sales')
+plt.legend()
+plt.show()
+execute_result:
+Actual Sales Predicted Sales
+0     -0.737159             NaN
+1     -2.238840             NaN
+2     -0.417447             NaN
+3      1.747004             NaN
+4     -0.102259             NaN,---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[8], line 16
+     13 print(comparison_df.head())
+     15 # Optionally, plot the actual vs predicted sales
+---> 16 import matplotlib.pyplot as plt
+     17 plt.figure(figsize=(10, 6))
+     18 plt.plot(comparison_df['Actual Sales'], label='Actual Sales')
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+# Predict the values for the training set using the trained ARIMA model
+predictions = arima_result.predict(start=len(y_train), end=len(y_train) + len(y_val) - 1, dynamic=False)
+print(predictions)
+execute_result:
+1970-01-01 00:00:00.000000292   -0.068889
+1970-01-01 00:00:00.000000293    0.606739
+1970-01-01 00:00:00.000000294    0.220259
+1970-01-01 00:00:00.000000295    1.729907
+1970-01-01 00:00:00.000000296    2.036930
+                                   ...   
+1970-01-01 00:00:00.000000360    2.063545
+1970-01-01 00:00:00.000000361    1.106944
+1970-01-01 00:00:00.000000362    0.406124
+1970-01-01 00:00:00.000000363    0.809607
+1970-01-01 00:00:00.000000364    1.253397
+Freq: N, Name: predicted_mean, Length: 73, dtype: float64
+is_success:
+True
+code:
+from sklearn.metrics import mean_squared_error
+
+# Predict on the training set
+train_predictions = arima_result.predict(start=0, end=len(y_train) - 1, dynamic=False)
+
+# Calculate MSE
+mse = mean_squared_error(y_train, train_predictions)
+print(f"Mean Squared Error on Training Set: {mse}")
+execute_result:
+Mean Squared Error on Training Set: 2.0616523690883324
+is_success:
+True

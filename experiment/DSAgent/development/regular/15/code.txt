@@ -1,0 +1,302 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeRegressor
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define and train the decision tree model
+    model = DecisionTreeRegressor(random_state=SEED)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    # Predict using the trained model
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['Age'])
+    le = LabelEncoder()
+
+    data_df['Sex'] = le.fit_transform(data_df['Sex'])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['Age'], axis=1)
+
+    y = data_df.Age.to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['Age'])
+    submission_df = submission_df.drop(['Age'], axis=1)
+    submission_df['Sex'] = le.fit_transform(submission_df["Sex"])
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-190118/crab_age/train.py", line 66, in <module>
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-190118/crab_age/train.py", line 27, in compute_metrics_for_regression
+    rmse = mean_squared_error(y_test, y_test_pred, squared=False)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/sklearn/utils/_param_validation.py", line 194, in wrapper
+    params = func_sig.bind(*args, **kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3177, in bind
+    return self._bind(args, kwargs)
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/inspect.py", line 3166, in _bind
+    raise TypeError(
+TypeError: got an unexpected keyword argument 'squared'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.tree import DecisionTreeRegressor
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define and train the decision tree model
+    model = DecisionTreeRegressor(random_state=SEED)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    # Predict using the trained model
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['Age'])
+    le = LabelEncoder()
+
+    data_df['Sex'] = le.fit_transform(data_df['Sex'])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['Age'], axis=1)
+
+    y = data_df.Age.to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['Age'])
+    submission_df = submission_df.drop(['Age'], axis=1)
+    submission_df['Sex'] = le.fit_transform(submission_df["Sex"])
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final RMSE on validation set:  2.997016297031519
+final MSE on test set:  8.728580109378164
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_regression(y_test, y_test_pred):
+    mse = mean_squared_error(y_test, y_test_pred)
+    rmse = np.sqrt(mse)
+    return rmse
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    # Define and train the LightGBM model
+    params = {
+        'max_depth': 10,
+        'learning_rate': 0.1,
+        'objective': 'regression',
+        'metric': 'rmse',
+        'random_state': SEED
+    }
+    train_data = lgb.Dataset(X_train, label=y_train)
+    valid_data = lgb.Dataset(X_valid, label=y_valid, reference=train_data)
+    model = lgb.train(params, train_data, valid_sets=[valid_data], early_stopping_rounds=10, verbose_eval=10)
+    return model
+
+
+def predict(model, X):
+    # Predict using the trained model
+    y_pred = model.predict(X, num_iteration=model.best_iteration)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['Age'])
+    le = LabelEncoder()
+
+    data_df['Sex'] = le.fit_transform(data_df['Sex'])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['Age'], axis=1)
+
+    y = data_df.Age.to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    rmse = compute_metrics_for_regression(y_valid, y_valid_pred)
+    print("final RMSE on validation set: ", rmse)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['Age'])
+    submission_df = submission_df.drop(['Age'], axis=1)
+    submission_df['Sex'] = le.fit_transform(submission_df["Sex"])
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+[LightGBM] [Warning] Accuracy may be bad since you didn't explicitly set num_leaves OR 2^max_depth > num_leaves. (num_leaves=31).
+[LightGBM] [Warning] Accuracy may be bad since you didn't explicitly set num_leaves OR 2^max_depth > num_leaves. (num_leaves=31).
+[LightGBM] [Warning] Auto-choosing row-wise multi-threading, the overhead of testing was 0.001596 seconds.
+You can set `force_row_wise=true` to remove the overhead.
+And if memory is not enough, you can set `force_col_wise=true`.
+[LightGBM] [Info] Total Bins 1575
+[LightGBM] [Info] Number of data points in the train set: 53316, number of used features: 9
+[LightGBM] [Warning] Accuracy may be bad since you didn't explicitly set num_leaves OR 2^max_depth > num_leaves. (num_leaves=31).
+[LightGBM] [Info] Start training from score 9.973216
+Training until validation scores don't improve for 10 rounds
+[10]	valid_0's rmse: 2.26974
+[20]	valid_0's rmse: 2.08994
+[30]	valid_0's rmse: 2.05324
+[40]	valid_0's rmse: 2.04424
+[50]	valid_0's rmse: 2.04228
+Early stopping, best iteration is:
+[48]	valid_0's rmse: 2.04222
+final RMSE on validation set:  2.0422178977446954
+final MSE on test set:  4.178885162561194
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

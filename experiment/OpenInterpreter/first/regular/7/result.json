@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 7,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "reservation_cancellation",
+        "task_description": "对于酒店经理来说客户是否会取消预定是一个十分值得关注的问题，请使用酒店预订取消相关数据，构建一个随机森林的预测模型，用于预测酒店预订是否会被取消。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 86.68813109397888,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 3,
+        "prompt_tokens": 7288,
+        "completion_tokens": 847
+    }
+}

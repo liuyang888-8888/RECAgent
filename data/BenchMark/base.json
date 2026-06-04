@@ -1,0 +1,298 @@
+[
+    {
+        "id": 1,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "bank_customer_churn",
+        "task_description": "请你使用 bank_customer_churn 表格数据，训练一个分类模型，可以根据客户的信息预测其是否可能会流失。"
+    },
+    {
+        "id": 2,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "cirrhosis_patient",
+        "task_description": "请使用 cirrhosis_patient 数据，利用 17 个临床特征预测肝硬化患者的生存状态。存活状态包括 0 = D （死亡）、1 = C （删失）、2 = CL （因肝移植而删除），构建一个分类模型。"
+    },
+    {
+        "id": 3,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "crime_category",
+        "task_description": "分析历史数据有助于把握未来趋势，旧金山所有社区的近 12 年的犯罪报告存放在 crime_category 表中。请根据这些数据训练一个分类模型。"
+    },
+    {
+        "id": 4,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "employee_attrition",
+        "task_description": "我想使用雇员流失训练数据，训练一个分类模型可以根据员工的个人相关信息，来找出公司中哪些员工可能要流失。"
+    },
+    {
+        "id": 5,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "horse_health_outcomes",
+        "task_description": "horse_health_outcomes 的数据保存马匹了过去的医疗状况，我需要一个分类模型，可以依据马匹的医疗状况自动判断该马匹最终存活下来的概率。"
+    },
+    {
+        "id": 6,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "kidney_stone",
+        "task_description": "基于 kidney_stone 数据集，构建一个分类模型，用于根据尿液分析（如尿液中各种成分的浓度）预测患者是否存在肾结石。该任务属于二分类问题，目标是根据输入特征预测肾结石的存在（是/否）。"
+    },
+    {
+        "id": 7,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "reservation_cancellation",
+        "task_description": "对于酒店经理来说客户是否会取消预定是一个十分值得关注的问题，请基于 reservation_cancellation 数据集，构建一个分类模型，用于预测酒店预订是否会被取消。"
+    },
+    {
+        "id": 8,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "smoker_status_bio_signals",
+        "task_description": "基于 smoker_status_bio_signals 的表格数据集，构建一个分类模型，用于预测一个人是否是抽烟者。该任务属于二分类问题，目标是根据生物信号等特征，预测其是否是一个烟民。"
+    },
+    {
+        "id": 9,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "heart_diseases",
+        "task_description": "基于 heart_diseases 数据集，构建一个分类模型，用于预测个体是否患有心脏疾病。该任务属于多分类问题，目标是根据患者的生理指标、生活习惯和医疗历史等特征，预测其是否患有心脏疾病。"
+    },
+    {
+        "id": 10,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "car_evaluation",
+        "task_description": "基于 car_evaluation 数据集，构建一个分类模型，用于评估车辆的可接受程度。该任务属于多分类问题，目标是根据车辆的购买价格、尺寸、安全性等特征，预测其可接受程度（如不可接受、可接受、良好、优秀）。"
+    },
+    {
+        "id": 11,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "rice_cammeo_and_osmancik",
+        "task_description": "基于 rice_cammeo_and_osmancik 数据集，构建一个分类模型，用于区分两种稻米（Cammeo 和 Osmancik）。目标是根据稻米的形态特征（如面积、周长、长度等）的表格数据，预测其属于 Cammeo 还是 Osmancik。"
+    },
+    {
+        "id": 12,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "banknote_authentication",
+        "task_description": "基于 banknote_authentication 表格数据集，该数据包含了方差（Variance）、偏度（Skewness）、峰度（Kurtosis）和熵（Entropy）的数据，根据这些构建一个分类模型，用于预测钞票的真伪。目标是根据这些特征，预测钞票是真钞还是伪钞。"
+    },
+    {
+        "id": 13,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "secondary_mushroom",
+        "task_description": "基于蘑菇外形特征的数据集，构建一个分类模型，用于判断蘑菇是否可食用。"
+    },
+    {
+        "id": 14,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "abalone",
+        "task_description": "我需要一个模型可以使用鲍鱼外形来预估鲍鱼年龄。"
+    },
+    {
+        "id": 15,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "crab_age",
+        "task_description": "我想使用 crab_age 的表格数据，其中包含了螃蟹的性别、重量，直径，高度和外壳及内脏重量还有年龄，请根据这些数据训练一个回归模型预测螃蟹年龄。"
+    },
+    {
+        "id": 16,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "media_campaign_cost",
+        "task_description": "基于 media_campaign_cost 数据集，构建一个回归模型，用于预测 Food Mart 媒体活动的成本。该任务属于回归问题，目标是根据输入特征（如广告渠道、活动时长、目标受众等）预测媒体活动的成本。"
+    },
+    {
+        "id": 17,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "mohs_hardness",
+        "task_description": "请基于矿物质莫氏硬度数据集，构建一个回归模型，用于预测矿物的硬度（莫氏硬度）。目标是根据矿物的成分特征（如原子描述符）预测其硬度。"
+    },
+    {
+        "id": 18,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "wild_blueberry_yield",
+        "task_description": "使用野生蓝莓产量数据集，构建一个回归模型，用于预测野生蓝莓的产量。该任务属于回归问题，目标是根据植物空间性状、蜜蜂物种组成、天气条件等特征，预测蓝莓的产量。通过模拟实验生成的数据集，研究人员可以验证机器学习算法在作物产量预测中的潜力。"
+    },
+    {
+        "id": 19,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "student_performance",
+        "task_description": "基于学生在校成绩的数据集，构建一个回归模型，用于预测学生在数学（mat）或葡萄牙语（por）科目中的最终成绩（G3）。该任务属于回归问题，目标是根据学生的成绩、人口统计、社会和学校相关特征，预测其最终成绩（G3）。"
+    },
+    {
+        "id": 20,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "bike_sharing",
+        "task_description": "我需要你帮我基于 bike_sharing 数据集，构建一个回归模型，用于预测 Capital 共享单车系统中每小时或每天的租赁自行车数量。目标是根据天气、季节、时间等特征，预测未来的租赁数量。"
+    },
+    {
+        "id": 21,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "forest_fires",
+        "task_description": "我需要你帮我基于森林火灾数据集，构建一个回归模型，用于预测葡萄牙东北部地区森林火灾的燃烧面积。该任务属于回归问题，目标是根据气象数据（如温度、湿度、风速等）和其他相关特征，预测火灾的燃烧面积（单位：公顷）。"
+    },
+    {
+        "id": 22,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "monster",
+        "task_description": "基于 monster 的数据集，用于根据怪物的骨骼特征、毛发特征、颜色特征等属性，对怪物进行聚类分析。"
+    },
+    {
+        "id": 23,
+      "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "obesity_cvd_risk",
+        "task_description": "肥胖对健康有着很大的影响，obesity_cvd_risk 数据中包含了许多个体的饮食习惯、身体活动、生活方式等日常生活习惯，还有，还有每一个个体的肥胖等级（如体重不足、正常体重、超重、肥胖等）。我想要你根据这些数据，帮我训练一个聚类模型，实现对他们生活行为的分析。"
+    },
+    {
+        "id": 24,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "titanic",
+        "task_description": "基于 titanic 数据集，构建一个聚类模型，用于分析泰坦尼克号上的人员组成。目标是根据乘客的特征（如年龄、性别、舱位等级、票价等）将乘客划分为不同的群组，从而揭示潜在的人员结构和群体特征。"
+    },
+    {
+        "id": 25,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "census_income",
+        "task_description": "基于 census_income 数据集，构建一个聚类模型，分析人群收入和其他因素潜在的层次关系。"
+    },
+    {
+        "id": 26,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "atmospheric_carbon_dioxide",
+        "task_description": "我想使用 atmospheric_carbon_dioxide 数据，训练一个时序预测模型。"
+    },
+    {
+        "id": 27,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "bitcoin_price",
+        "task_description": "我想使用 bitcoin_price 的时序数据，根据过去10年比特币的价格浮动的表格数据，训练一个时序模型,预测接下来的几天最高价值。"
+    },
+    {
+        "id": 28,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "electricity_sales",
+        "task_description": "我想使用 electricity_sales 的时序数据，根据过去一年每天的电商销量数据，训练一个时序模型以预测几天销量的情况。"
+    },
+    {
+        "id": 29,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "nvidia_share_price",
+        "task_description": "我想使用 nvidia_share_price 的时序数据，构建一个时间序列模型，用于分析和预测英伟达（NVIDIA）股价的每日最高的变化趋势。该任务属于时间序列预测问题，目标是根据历史股价数据预测未来股价。"
+    },
+    {
+        "id": 30,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "sp500",
+        "task_description": "基于 sp500 数据集，构建一个时间序列模型，用于分析和预测标准普尔 500 指数的未来走势。该任务属于时间序列预测问题，目标是根据历史月度数据（如调整后的收盘价）预测未来标准普尔 500 指数的值。"
+    },
+    {
+        "id": 31,
+        "task_type": "deep learning",
+        "deep_learning_type": "text",
+        "task_description": "我想要一个可以根据文本内容，自动生成文本摘要的模型，你帮我构建一个工作流，用于训练一个文本自动摘要模型。"
+    },
+    {
+        "id": 32,
+        "task_type": "deep learning",
+        "deep_learning_type": "text",
+        "task_description": "为了解全国各地麦当劳店的顾客体验和意见，我需要你帮我训练一个文本分类模型，用于根据用户提交的网上评论进行自动文本分类的模型，来了解舆论的大致方向。"
+    },
+    {
+        "id": 33,
+        "task_type": "deep learning",
+        "deep_learning_type": "text",
+        "task_description": "帮我根据我的文本数据集训练一个能够将汉语翻译为英文的翻译器模型。"
+    },
+    {
+        "id": 34,
+        "task_type": "deep learning",
+        "deep_learning_type": "image",
+        "task_description": "根据一个多分类的图像数据集，帮我构建一个工作流，可以实现训练一个可以对图像进行分类的模型。"
+    },
+    {
+        "id": 35,
+        "task_type": "deep learning",
+        "deep_learning_type": "image",
+        "task_description": "我有一个车辆的图像数据集，我想根据这个数据集训练一个能够识别车辆的目标检测模型，请帮我构建一个工作流。"
+    },
+    {
+        "id": 36,
+        "task_type": "deep learning",
+        "deep_learning_type": "image",
+        "task_description": "我需要你进行路面分割。你的目标是训练一个分割模型，它能够对图像中的每一个像素进行分类，类别包括：路面、汽车、路标、标线和背景。"
+    },
+    {
+        "id": 37,
+        "task_type": "deep learning",
+        "deep_learning_type": "audio",
+        "task_description": "我需要对音频进行一个分类，目标是训练一个音频分类模型，可以识别猫、狗、人、汽车等不同类别的声音。"
+    },
+    {
+        "id": 38,
+        "task_type": "deep learning",
+        "deep_learning_type": "graph",
+        "task_description": "我有一个包含多个节点和边的网络图，帮我构建一个工作流训练一个聚类模型，实现对该网络的聚类分析。"
+    },
+    {
+        "id": 39,
+        "task_type": "deep learning",
+        "deep_learning_type": "video",
+        "task_description": "我想要一个可以根据车流视频完成车辆追踪定位的任务的模型，帮我构建一个这样的工作流训练模型。"
+    },
+    {
+        "id": 40,
+        "task_type": "deep learning",
+        "deep_learning_type": "video",
+        "task_description": "我有许多个人物活动视频，我想根据这些视频训练一个动作分类模型，请帮我构建一个可以完成该任务的工作流。"
+    },
+    {
+        "id": 41,
+        "task_type": "pretrained modeling application",
+        "deep_learning_type": "video",
+        "task_description": "我需要一个可以完成根据视频内容进行问答任务的工作流，请帮我构建一个这样的工作流。"
+    },
+    {
+        "id": 42,
+        "task_type": "pretrained modeling application",
+        "task_description": "我想要把音频提取成文字，请帮我构建一个可以完成该任务的工作流。"
+    },
+    {
+        "id": 43,
+        "task_type": "pretrained modeling application",
+        "task_description": "我需要一个根据文本合成音频的工作流，请帮我构建一个这样的工作流。"
+    },
+    {
+        "id": 44,
+        "task_type": "pretrained modeling application",
+        "task_description": "我有一个包含多个节点和边的网络图，帮我构建一个工作流实现对该图的信息的查看。"
+    },
+    {
+        "id": 45,
+        "task_type": "pretrained modeling application",
+        "task_description": "我需要一个可以实现简体转繁体的工作流。"
+    }
+]

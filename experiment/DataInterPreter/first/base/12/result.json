@@ -1,0 +1,16 @@
+{
+    "result": {
+        "run_status": "failed",
+        "time": 0,
+        "interact_count": 37,
+        "prompt_tokens": 50890,
+        "completion_tokens": 4653
+    },
+    "task": {
+        "id": 12,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "banknote_authentication",
+        "task_description": "基于 banknote_authentication 表格数据集，该数据包含了方差（Variance）、偏度（Skewness）、峰度（Kurtosis）和熵（Entropy）的数据，根据这些构建一个分类模型，用于预测钞票的真伪。目标是根据这些特征，预测钞票是真钞还是伪钞。"
+    }
+}

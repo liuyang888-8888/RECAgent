@@ -1,0 +1,253 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 导入数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_test.csv'
+
+train_data = pd.read_csv(train_path, parse_dates=['Date'], index_col='Date')
+test_data = pd.read_csv(test_path, parse_dates=['Date'], index_col='Date')
+
+# 2. 数据预处理
+# 确保数据按时间顺序排列
+train_data = train_data.sort_index()
+test_data = test_data.sort_index()
+
+# 检查并处理缺失值
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# 3. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们使用 (1, 1, 1) 作为示例参数
+model = ARIMA(train_data['Close'], order=(1, 1, 1))
+model_fit = model.fit()
+
+# 4. 评估模型
+# 在训练集上计算均方误差（MSE）
+train_predictions = model_fit.fittedvalues
+train_mse = mean_squared_error(train_data['Close'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_data))
+test_mse = mean_squared_error(test_data['Close'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_b4512fcab90aeca20dca05df2def4e5899e5230a6ad4771cb56ef6e83c891c71.py", line 10, in <module>
+    train_data = pd.read_csv(train_path, parse_dates=['Date'], index_col='Date')
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\io\parsers\readers.py", line 1898, in _make_engine
+    return mapping[engine](f, **self.options)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\io\parsers\c_parser_wrapper.py", line 161, in __init__
+    self._validate_parse_dates_presence(self.names)  # type: ignore[has-type]
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\io\parsers\base_parser.py", line 243, in _validate_parse_dates_presence
+    raise ValueError(
+ValueError: Missing column provided to 'parse_dates': 'Date'
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 导入数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 2. 检查列名
+print("Train data columns:", train_data.columns)
+print("Test data columns:", test_data.columns)
+
+# 3. 数据预处理
+# 确保数据按时间顺序排列
+train_data = train_data.sort_values(by='Date')
+test_data = test_data.sort_values(by='Date')
+
+# 将日期列设置为索引
+train_data.set_index('Date', inplace=True)
+test_data.set_index('Date', inplace=True)
+
+# 检查并处理缺失值
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# 4. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们使用 (1, 1, 1) 作为示例参数
+model = ARIMA(train_data['Close'], order=(1, 1, 1))
+model_fit = model.fit()
+
+# 5. 评估模型
+# 在训练集上计算均方误差（MSE）
+train_predictions = model_fit.fittedvalues
+train_mse = mean_squared_error(train_data['Close'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_data))
+test_mse = mean_squared_error(test_data['Close'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_3a213e75435f369d5bbc29179b65736ec5c98b3e481e2aaaedd2451eaa43236d.py", line 19, in <module>
+    train_data = train_data.sort_values(by='Date')
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 7189, in sort_values
+    k = self._get_label_or_level_values(by[0], axis=axis)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 1911, in _get_label_or_level_values
+    raise KeyError(key)
+KeyError: 'Date'
+Train data columns: Index(['date', 'SP500'], dtype='object')
+Test data columns: Index(['date', 'SP500'], dtype='object')
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 导入数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 2. 检查列名
+print("Train data columns:", train_data.columns)
+print("Test data columns:", test_data.columns)
+
+# 3. 数据预处理
+# 确保数据按时间顺序排列
+train_data = train_data.sort_values(by='date')
+test_data = test_data.sort_values(by='date')
+
+# 将日期列设置为索引
+train_data.set_index('date', inplace=True)
+test_data.set_index('date', inplace=True)
+
+# 检查并处理缺失值
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# 4. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们使用 (1, 1, 1) 作为示例参数
+model = ARIMA(train_data['SP500'], order=(1, 1, 1))
+model_fit = model.fit()
+
+# 5. 评估模型
+# 在训练集上计算均方误差（MSE）
+train_predictions = model_fit.fittedvalues
+train_mse = mean_squared_error(train_data['SP500'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_data))
+test_mse = mean_squared_error(test_data['SP500'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:837: ValueWarning: No supported index is available. Prediction results will be given with an integer index beginning at `start`.
+  return get_prediction_index(
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:837: FutureWarning: No supported index is available. In the next version, calling this method in a model without a supported index will result in an exception.
+  return get_prediction_index(
+Train data columns: Index(['date', 'SP500'], dtype='object')
+Test data columns: Index(['date', 'SP500'], dtype='object')
+Training MSE: 2665.9166788942052
+Testing MSE: 4937693.537744327
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 导入数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 2. 检查列名
+print("Train data columns:", train_data.columns)
+print("Test data columns:", test_data.columns)
+
+# 3. 数据预处理
+# 确保数据按时间顺序排列
+train_data = train_data.sort_values(by='date')
+test_data = test_data.sort_values(by='date')
+
+# 将日期列设置为索引，并设置频率为日
+train_data.set_index(pd.to_datetime(train_data['date']), inplace=True)
+train_data.index.freq = 'D'
+test_data.set_index(pd.to_datetime(test_data['date']), inplace=True)
+test_data.index.freq = 'D'
+
+# 检查并处理缺失值
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# 4. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们使用 (1, 1, 1) 作为示例参数
+model = ARIMA(train_data['SP500'], order=(1, 1, 1))
+model_fit = model.fit()
+
+# 5. 评估模型
+# 在训练集上计算均方误差（MSE）
+train_predictions = model_fit.fittedvalues
+train_mse = mean_squared_error(train_data['SP500'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_data))
+test_mse = mean_squared_error(test_data['SP500'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\arrays\datetimelike.py", line 2124, in _validate_frequency
+    raise ValueError
+ValueError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_d1bd156d605281e6167f9cea4ea32042d17190f2c6eb37352a2ae80d70da8617.py", line 24, in <module>
+    train_data.index.freq = 'D'
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\datetimelike.py", line 106, in freq
+    self._data.freq = value  # type: ignore[misc]
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\arrays\datetimelike.py", line 2054, in freq
+    self._validate_frequency(self, value)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\arrays\datetimelike.py", line 2135, in _validate_frequency
+    raise ValueError(
+ValueError: Inferred frequency None from passed values does not conform to passed frequency D
+Train data columns: Index(['date', 'SP500'], dtype='object')
+Test data columns: Index(['date', 'SP500'], dtype='object')

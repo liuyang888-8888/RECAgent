@@ -1,0 +1,157 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+import os
+
+# 设置数据路径
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_test.csv'
+
+# 加载数据
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# 分离特征和标签
+X_train = train_data.drop('Target', axis=1)
+y_train = train_data['Target']
+X_test = test_data.drop('Target', axis=1)
+y_test = test_data['Target']
+
+# 构建决策树模型
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+# 对测试集进行预测
+y_pred = model.predict(X_test)
+
+# 计算F1分数
+f1 = f1_score(y_test, y_pred)
+
+# 保存预测结果
+output_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\predictions.csv'
+pd.DataFrame({'Predictions': y_pred}).to_csv(output_path, index=False)
+
+f1, output_path
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 16
+    X_train = train_data.drop('Target', axis=1)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:5581 in drop
+    return super().drop(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4788 in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4830 in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:7070 in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+
+KeyError: "['Target'] not found in axis"
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# 设置数据路径
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_test.csv'
+
+# 加载数据
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# 检查数据集的列名
+print(train_data.columns)
+print(test_data.columns)
+
+# 分离特征和标签
+# 假设标签列名为'label'
+X_train = train_data.drop('label', axis=1)
+y_train = train_data['label']
+X_test = test_data.drop('label', axis=1)
+y_test = test_data['label']
+
+# 构建决策树模型
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+# 对测试集进行预测
+y_pred = model.predict(X_test)
+
+# 计算F1分数
+f1 = f1_score(y_test, y_pred)
+
+# 保存预测结果
+output_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\predictions.csv'
+pd.DataFrame({'Predictions': y_pred}).to_csv(output_path, index=False)
+
+f1, output_path
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 19
+    X_train = train_data.drop('label', axis=1)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:5581 in drop
+    return super().drop(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4788 in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:4830 in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:7070 in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+
+KeyError: "['label'] not found in axis"
+
+Index(['id', 'gravity', 'ph', 'osmo', 'cond', 'urea', 'calc', 'target'], dtype='object')
+Index(['id', 'gravity', 'ph', 'osmo', 'cond', 'urea', 'calc', 'target'], dtype='object')
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# 设置数据路径
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\kidney_stone_test.csv'
+
+# 加载数据
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# 分离特征和标签
+X_train = train_data.drop('target', axis=1)
+y_train = train_data['target']
+X_test = test_data.drop('target', axis=1)
+y_test = test_data['target']
+
+# 构建决策树模型
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
+
+# 对测试集进行预测
+y_pred = model.predict(X_test)
+
+# 计算F1分数
+f1 = f1_score(y_test, y_pred)
+
+# 保存预测结果
+output_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\predictions.csv'
+pd.DataFrame({'Predictions': y_pred}).to_csv(output_path, index=False)
+
+f1, output_path
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.5915492957746479, 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\predictions.csv')

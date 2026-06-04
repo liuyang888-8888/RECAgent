@@ -1,0 +1,270 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and train the ARIMA model
+    model = ARIMA(X_train, order=(1, 1, 1))
+    model_fit = model.fit()
+    return model_fit
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(steps=forecast_steps)
+    return forecast
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df["Open"])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Open"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final MSE on trained set:  707230.2630721101
+往后 3 步的预测结果:
+2024-04-22    64931.175153
+2024-04-23    64938.747502
+2024-04-24    64937.817273
+Freq: D, Name: predicted_mean, dtype: float64
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and train the ARIMA model
+    model = ARIMA(X_train, order=(1, 1, 1))
+    model_fit = model.fit()
+    return model_fit
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(steps=forecast_steps)
+    return forecast
+
+
+def add_lag_features(df, column, lags):
+    for lag in lags:
+        df[f'{column}_lag_{lag}'] = df[column].shift(lag)
+    return df
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 添加滞后特征
+    lags = [1, 2, 3]
+    data_df = add_lag_features(data_df, 'Open', lags)
+
+    # 去除含有 NaN 的行
+    data_df.dropna(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df[["Open", "Open_lag_1", "Open_lag_2", "Open_lag_3"]])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Open"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/base/tsa_model.py:473: ValueWarning: No frequency information was provided, so inferred frequency D will be used.
+  self._init_dates(dates, freq)
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/bitcoin_price/train.py", line 66, in <module>
+    model = train_model(data_df[["Open", "Open_lag_1", "Open_lag_2", "Open_lag_3"]])
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/bitcoin_price/train.py", line 32, in train_model
+    model = ARIMA(X_train, order=(1, 1, 1))
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/arima/model.py", line 158, in __init__
+    self._spec_arima = SARIMAXSpecification(
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/statsmodels/tsa/arima/specification.py", line 454, in __init__
+    raise ValueError('SARIMAX models require univariate `endog`. Got'
+ValueError: SARIMAX models require univariate `endog`. Got shape (3502, 4).
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and train the ARIMA model
+    model = ARIMA(X_train, order=(1, 1, 1))
+    model_fit = model.fit()
+    return model_fit
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.forecast(steps=forecast_steps)
+    return forecast
+
+
+def add_lag_features(df, column, lags):
+    for lag in lags:
+        df[f'{column}_lag_{lag}'] = df[column].shift(lag)
+    return df
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 添加滞后特征
+    lags = [1, 2, 3]
+    data_df = add_lag_features(data_df, 'Open', lags)
+
+    # 去除含有 NaN 的行
+    data_df.dropna(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df["Open"])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Open"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final MSE on trained set:  707814.0207730004
+往后 3 步的预测结果:
+2024-04-22    64931.217347
+2024-04-23    64940.638661
+2024-04-24    64939.197711
+Freq: D, Name: predicted_mean, dtype: float64
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

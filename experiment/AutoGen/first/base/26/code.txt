@@ -1,0 +1,186 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\atmospheric_carbon_dioxide_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 确保数据按时间顺序排列
+df = df.sort_values(by='Date')
+
+# 将时间序列数据转换为监督学习问题
+def create_supervised_dataset(df, target, features, lag=1):
+    X = df[features].values
+    y = df[target].values
+    X_supervised, y_supervised = [], []
+    for i in range(len(df) - lag):
+        X_supervised.append(X[i:i+lag])
+        y_supervised.append(y[i+lag])
+    return np.array(X_supervised), np.array(y_supervised)
+
+# 选择特征和目标变量
+features = ['Date']
+target = 'CO2'
+
+# 将日期转换为时间戳
+df['Date'] = pd.to_datetime(df['Date'])
+df['Date'] = df['Date'].map(pd.Timestamp.timestamp)
+
+# 创建监督学习数据集
+X, y = create_supervised_dataset(df, target, features, lag=1)
+
+# 3. 训练模型
+model = LinearRegression()
+model.fit(X, y)
+
+# 4. 评估模型
+y_pred = model.predict(X)
+mse = mean_squared_error(y, y_pred)
+
+print(f'Training MSE: {mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_57e6b6d8b2b074b3d87f29a85ccab7f87d5500db8e4cdbefcc53240f77a65e2c.py", line 12, in <module>
+    df = df.sort_values(by='Date')
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 7189, in sort_values
+    k = self._get_label_or_level_values(by[0], axis=axis)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 1911, in _get_label_or_level_values
+    raise KeyError(key)
+KeyError: 'Date'
+
+生成的代码：
+import pandas as pd
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\atmospheric_carbon_dioxide_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 查看数据的前几行
+print(df.head())
+
+
+执行结果：
+         date  Average
+0  2019-07-01   408.88
+1  1985-02-01   345.80
+2  2008-02-01   385.74
+3  1986-03-01   347.71
+4  2017-02-01   405.91
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\atmospheric_carbon_dioxide_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 确保数据按时间顺序排列
+df = df.sort_values(by='date')
+
+# 将时间序列数据转换为监督学习问题
+def create_supervised_dataset(df, target, features, lag=1):
+    X = df[features].values
+    y = df[target].values
+    X_supervised, y_supervised = [], []
+    for i in range(len(df) - lag):
+        X_supervised.append(X[i:i+lag])
+        y_supervised.append(y[i+lag])
+    return np.array(X_supervised), np.array(y_supervised)
+
+# 选择特征和目标变量
+features = ['date']
+target = 'Average'
+
+# 将日期转换为时间戳
+df['date'] = pd.to_datetime(df['date'])
+df['date'] = df['date'].map(pd.Timestamp.timestamp)
+
+# 创建监督学习数据集
+X, y = create_supervised_dataset(df, target, features, lag=1)
+
+# 3. 训练模型
+model = LinearRegression()
+model.fit(X, y)
+
+# 4. 评估模型
+y_pred = model.predict(X)
+mse = mean_squared_error(y, y_pred)
+
+print(f'Training MSE: {mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_1aa44b611cf8c02fba2e0d96dbf16a0dc08c4c23da159c991c82b0d3ffbdf322.py", line 37, in <module>
+    model.fit(X, y)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\linear_model\_base.py", line 601, in fit
+    X, y = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2961, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1370, in check_X_y
+    X = check_array(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1101, in check_array
+    raise ValueError(
+ValueError: Found array with dim 3. LinearRegression expected <= 2.
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# 1. 导入数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\atmospheric_carbon_dioxide_train.csv'
+df = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 确保数据按时间顺序排列
+df = df.sort_values(by='date')
+
+# 将时间序列数据转换为监督学习问题
+def create_supervised_dataset(df, target, features, lag=1):
+    X = df[features].values
+    y = df[target].values
+    X_supervised, y_supervised = [], []
+    for i in range(len(df) - lag):
+        X_supervised.append(X[i:i+lag].flatten())  # 将多维数组展平为一维
+        y_supervised.append(y[i+lag])
+    return np.array(X_supervised), np.array(y_supervised)
+
+# 选择特征和目标变量
+features = ['date']
+target = 'Average'
+
+# 将日期转换为时间戳
+df['date'] = pd.to_datetime(df['date'])
+df['date'] = df['date'].map(pd.Timestamp.timestamp)
+
+# 创建监督学习数据集
+X, y = create_supervised_dataset(df, target, features, lag=1)
+
+# 3. 训练模型
+model = LinearRegression()
+model.fit(X, y)
+
+# 4. 评估模型
+y_pred = model.predict(X)
+mse = mean_squared_error(y, y_pred)
+
+print(f'Training MSE: {mse}')
+
+
+执行结果：
+Training MSE: 8.23386498363336

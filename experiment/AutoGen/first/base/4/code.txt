@@ -1,0 +1,375 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 1. 导入必要的库
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 2. 加载数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_test.csv')
+
+# 3. 数据预处理
+# 假设目标变量是 'Attrition'，并且是二分类问题
+# 将 'Attrition' 转换为二进制标签
+train_data['Attrition'] = train_data['Attrition'].map({'Yes': 1, 'No': 0})
+test_data['Attrition'] = test_data['Attrition'].map({'Yes': 1, 'No': 0})
+
+# 选择特征和目标变量
+X_train = train_data.drop(columns=['Attrition'])
+y_train = train_data['Attrition']
+X_test = test_data.drop(columns=['Attrition'])
+y_test = test_data['Attrition']
+
+# 4. 划分特征和标签
+# 由于我们已经有一个单独的测试集，这里不需要再进行划分
+
+# 5. 训练模型
+# 定义数值和类别特征
+numeric_features = X_train.select_dtypes(include=['int64', 'float64']).columns
+categorical_features = X_train.select_dtypes(include=['object']).columns
+
+# 创建预处理管道
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(), categorical_features)
+    ])
+
+# 创建模型管道
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+
+# 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_c9ddcfed0496f89e5c919cf51f9ef6a01ce46c1c977597197cacf7f526650840.py", line 56, in <module>
+    model.fit(X_train, y_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\pipeline.py", line 662, in fit
+    self._final_estimator.fit(Xt, y, **last_step_params["fit"])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\ensemble\_forest.py", line 360, in fit
+    X, y = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2961, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1387, in check_X_y
+    y = _check_y(y, multi_output=multi_output, y_numeric=y_numeric, estimator=estimator)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1397, in _check_y
+    y = check_array(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1107, in check_array
+    _assert_all_finite(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input y contains NaN.
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# 1. 导入必要的库
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# 2. 加载数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_test.csv')
+
+# 3. 数据预处理
+# 假设目标变量是 'Attrition'，并且是二分类问题
+# 将 'Attrition' 转换为二进制标签
+train_data['Attrition'] = train_data['Attrition'].map({'Yes': 1, 'No': 0})
+test_data['Attrition'] = test_data['Attrition'].map({'Yes': 1, 'No': 0})
+
+# 选择特征和目标变量
+X_train = train_data.drop(columns=['Attrition'])
+y_train = train_data['Attrition']
+X_test = test_data.drop(columns=['Attrition'])
+y_test = test_data['Attrition']
+
+# 处理缺失值
+# 使用 SimpleImputer 填充缺失值
+numeric_features = X_train.select_dtypes(include=['int64', 'float64']).columns
+categorical_features = X_train.select_dtypes(include=['object']).columns
+
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', StandardScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+# 创建预处理管道
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# 创建模型管道
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+
+# 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_4aecc0e8df1a42d5e610118cb8c26b91be21d5693e940a6389389c562decc75b.py", line 65, in <module>
+    model.fit(X_train, y_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\pipeline.py", line 662, in fit
+    self._final_estimator.fit(Xt, y, **last_step_params["fit"])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\ensemble\_forest.py", line 360, in fit
+    X, y = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2961, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1387, in check_X_y
+    y = _check_y(y, multi_output=multi_output, y_numeric=y_numeric, estimator=estimator)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1397, in _check_y
+    y = check_array(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1107, in check_array
+    _assert_all_finite(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 120, in _assert_all_finite
+    _assert_all_finite_element_wise(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 169, in _assert_all_finite_element_wise
+    raise ValueError(msg_err)
+ValueError: Input y contains NaN.
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# 1. 导入必要的库
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# 2. 加载数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_test.csv')
+
+# 3. 数据预处理
+# 假设目标变量是 'Attrition'，并且是二分类问题
+# 将 'Attrition' 转换为二进制标签
+train_data['Attrition'] = train_data['Attrition'].map({'Yes': 1, 'No': 0})
+test_data['Attrition'] = test_data['Attrition'].map({'Yes': 1, 'No': 0})
+
+# 处理目标变量中的缺失值
+train_data['Attrition'].fillna(0, inplace=True)  # 假设缺失值为0（不流失）
+test_data['Attrition'].fillna(0, inplace=True)  # 假设缺失值为0（不流失）
+
+# 选择特征和目标变量
+X_train = train_data.drop(columns=['Attrition'])
+y_train = train_data['Attrition']
+X_test = test_data.drop(columns=['Attrition'])
+y_test = test_data['Attrition']
+
+# 处理特征中的缺失值
+# 使用 SimpleImputer 填充缺失值
+numeric_features = X_train.select_dtypes(include=['int64', 'float64']).columns
+categorical_features = X_train.select_dtypes(include=['object']).columns
+
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', StandardScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+# 创建预处理管道
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# 创建模型管道
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+
+# 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_977191edacf26340b5f877c5f184d22f68703f81339360c561b0c89c4d511452.py:31: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  train_data['Attrition'].fillna(0, inplace=True)  # 假设缺失值为0（不流失）
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_977191edacf26340b5f877c5f184d22f68703f81339360c561b0c89c4d511452.py:32: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  test_data['Attrition'].fillna(0, inplace=True)  # 假设缺失值为0（不流失）
+加权平均 F1 分数: 1.0
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# 1. 导入必要的库
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# 2. 加载数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\employee_attrition_test.csv')
+
+# 3. 数据预处理
+# 假设目标变量是 'Attrition'，并且是二分类问题
+# 将 'Attrition' 转换为二进制标签
+train_data['Attrition'] = train_data['Attrition'].map({'Yes': 1, 'No': 0})
+test_data['Attrition'] = test_data['Attrition'].map({'Yes': 1, 'No': 0})
+
+# 处理目标变量中的缺失值
+train_data['Attrition'] = train_data['Attrition'].fillna(0)  # 假设缺失值为0（不流失）
+test_data['Attrition'] = test_data['Attrition'].fillna(0)  # 假设缺失值为0（不流失）
+
+# 选择特征和目标变量
+X_train = train_data.drop(columns=['Attrition'])
+y_train = train_data['Attrition']
+X_test = test_data.drop(columns=['Attrition'])
+y_test = test_data['Attrition']
+
+# 处理特征中的缺失值
+# 使用 SimpleImputer 填充缺失值
+numeric_features = X_train.select_dtypes(include=['int64', 'float64']).columns
+categorical_features = X_train.select_dtypes(include=['object']).columns
+
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='mean')),
+    ('scaler', StandardScaler())
+])
+
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+# 创建预处理管道
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# 创建模型管道
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+
+# 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+加权平均 F1 分数: 1.0

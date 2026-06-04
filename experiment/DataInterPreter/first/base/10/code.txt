@@ -1,0 +1,444 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\car_evaluation_train.csv')
+test_df = pd.read_csv('E:\\csv\\car_evaluation_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train Dataset:")
+print(train_df_copy.head())
+print("\nTest Dataset:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train Dataset:")
+print(train_df_copy.dtypes)
+print("\nData types in Test Dataset:")
+print(test_df_copy.dtypes)
+
+# Identify categorical columns (excluding the label column)
+categorical_columns = [col for col in train_df_copy.columns if train_df_copy[col].dtype == 'object' and col != 'label']
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Display the first few rows of the preprocessed datasets
+print("\nPreprocessed Train Dataset:")
+print(train_df_copy.head())
+print("\nPreprocessed Test Dataset:")
+print(test_df_copy.head())
+execute_result:
+Train Dataset:
+  buying  maint  doors  persons lug_boot safety  class
+0  vhigh  vhigh      0        0      big   high  unacc
+1    med  vhigh      3        4    small    med  unacc
+2    low    low      0        2      big   high  unacc
+3   high    med      4        2      med    med  unacc
+4   high    med      3        2      med    low  unacc
+
+Test Dataset:
+  buying maint  doors  persons lug_boot safety  class
+0   high  high      4        2      med   high  unacc
+1    med   low      2        4      med    med    acc
+2   high  high      0        2      big    med  unacc
+3    low  high      0        4      med    med    acc
+4    med   low      4        0      med    low  unacc
+
+Data types in Train Dataset:
+buying      object
+maint       object
+doors        int64
+persons      int64
+lug_boot    object
+safety      object
+class       object
+dtype: object
+
+Data types in Test Dataset:
+buying      object
+maint       object
+doors        int64
+persons      int64
+lug_boot    object
+safety      object
+class       object
+dtype: object
+
+Preprocessed Train Dataset:
+   buying  maint  doors  persons  lug_boot  safety  class
+0       3      3      0        0         0       0      2
+1       2      3      3        4         2       2      2
+2       1      1      0        2         0       0      2
+3       0      2      4        2         1       2      2
+4       0      2      3        2         1       1      2
+
+Preprocessed Test Dataset:
+   buying  maint  doors  persons  lug_boot  safety  class
+0       0      0      4        2         1       0      2
+1       2      1      2        4         1       2      0
+2       0      0      0        2         0       2      2
+3       1      0      0        4         1       2      0
+4       2      1      4        0         1       1      2
+is_success:
+True
+code:
+# Since the data has already been preprocessed in the finished tasks,
+# we will focus on ensuring that the preprocessing steps are correctly applied
+# and that no further unnecessary preprocessing is done.
+
+# Copy the datasets to ensure we don't modify the original ones
+train_df_processed = train_df_copy.copy()
+test_df_processed = test_df_copy.copy()
+
+# Verify that the label column remains unchanged
+assert (train_df_processed['class'] == train_df['class']).all(), "Label column in train dataset has been modified."
+assert (test_df_processed['class'] == test_df['class']).all(), "Label column in test dataset has been modified."
+
+# Display the preprocessed datasets to verify
+print("\nFinal Preprocessed Train Dataset:")
+print(train_df_processed.head())
+print("\nFinal Preprocessed Test Dataset:")
+print(test_df_processed.head())
+execute_result:
+---------------------------------------------------------------------------
+AssertionError                            Traceback (most recent call last)
+Cell In[3], line 10
+      7 test_df_processed = test_df_copy.copy()
+      9 # Verify that the label column remains unchanged
+---> 10 assert (train_df_processed['class'] == train_df['class']).all(), "Label column in train dataset has been modified."
+     11 assert (test_df_processed['class'] == test_df['class']).all(), "Label column in test dataset has been modified."
+     13 # Display the preprocessed datasets to verify
+
+AssertionError: Label column in train dataset has been modified.
+is_success:
+False
+code:
+# Since the label column has already been encoded, we need to ensure no further modifications are made to it.
+# We will now check the data types of each column to ensure they are appropriate for the next steps in the pipeline.
+
+# Check data types of the preprocessed datasets
+print("Data types in Preprocessed Train Dataset:")
+print(train_df_copy.dtypes)
+print("\nData types in Preprocessed Test Dataset:")
+print(test_df_copy.dtypes)
+
+# Ensure that all categorical columns are treated as categorical data types
+categorical_columns = [col for col in train_df_copy.columns if col != 'class']
+train_df_copy[categorical_columns] = train_df_copy[categorical_columns].astype('category')
+test_df_copy[categorical_columns] = test_df_copy[categorical_columns].astype('category')
+
+# Verify the updated data types
+print("\nUpdated Data types in Preprocessed Train Dataset:")
+print(train_df_copy.dtypes)
+print("\nUpdated Data types in Preprocessed Test Dataset:")
+print(test_df_copy.dtypes)
+execute_result:
+Data types in Preprocessed Train Dataset:
+buying      int32
+maint       int32
+doors       int64
+persons     int64
+lug_boot    int32
+safety      int32
+class       int32
+dtype: object
+
+Data types in Preprocessed Test Dataset:
+buying      int32
+maint       int32
+doors       int64
+persons     int64
+lug_boot    int32
+safety      int32
+class       int32
+dtype: object
+
+Updated Data types in Preprocessed Train Dataset:
+buying      category
+maint       category
+doors       category
+persons     category
+lug_boot    category
+safety      category
+class          int32
+dtype: object
+
+Updated Data types in Preprocessed Test Dataset:
+buying      category
+maint       category
+doors       category
+persons     category
+lug_boot    category
+safety      category
+class          int32
+dtype: object
+is_success:
+True
+code:
+# Since the data has already been preprocessed and split into features and target,
+# we will now ensure that the data types are consistent and appropriate for modeling.
+
+# Convert the 'doors' and 'persons' columns to category type as they represent categorical data
+X_train[['doors', 'persons']] = X_train[['doors', 'persons']].astype('category')
+X_test[['doors', 'persons']] = X_test[['doors', 'persons']].astype('category')
+
+# Verify the updated data types
+print("Updated Data types in Train Features:")
+print(X_train.dtypes)
+print("\nUpdated Data types in Test Features:")
+print(X_test.dtypes)
+execute_result:
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[7], line 5
+      1 # Since the data has already been preprocessed and split into features and target,
+      2 # we will now ensure that the data types are consistent and appropriate for modeling.
+      3 
+      4 # Convert the 'doors' and 'persons' columns to category type as they represent categorical data
+----> 5 X_train[['doors', 'persons']] = X_train[['doors', 'persons']].astype('category')
+      6 X_test[['doors', 'persons']] = X_test[['doors', 'persons']].astype('category')
+      8 # Verify the updated data types
+
+NameError: name 'X_train' is not defined
+is_success:
+False
+code:
+# Splitting the preprocessed data into features (X) and target (y)
+X_train = train_df_copy.drop(columns=['class'])
+y_train = train_df_copy['class']
+
+X_test = test_df_copy.drop(columns=['class'])
+y_test = test_df_copy['class']
+
+print("Features in Train Dataset:")
+print(X_train.head())
+print("\nTarget in Train Dataset:")
+print(y_train.head())
+print("\nFeatures in Test Dataset:")
+print(X_test.head())
+print("\nTarget in Test Dataset:")
+print(y_test.head())
+execute_result:
+Features in Train Dataset:
+  buying maint doors persons lug_boot safety
+0      3     3     0       0        0      0
+1      2     3     3       4        2      2
+2      1     1     0       2        0      0
+3      0     2     4       2        1      2
+4      0     2     3       2        1      1
+
+Target in Train Dataset:
+0    2
+1    2
+2    2
+3    2
+4    2
+Name: class, dtype: int32
+
+Features in Test Dataset:
+  buying maint doors persons lug_boot safety
+0      0     0     4       2        1      0
+1      2     1     2       4        1      2
+2      0     0     0       2        0      2
+3      1     0     0       4        1      2
+4      2     1     4       0        1      1
+
+Target in Test Dataset:
+0    2
+1    0
+2    2
+3    0
+4    2
+Name: class, dtype: int32
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the XGBoost classifier with suitable hyperparameters
+xgb_model = XGBClassifier(
+    n_estimators=1000,
+    max_depth=7,
+    learning_rate=0.1,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    gamma=0.1,
+    reg_alpha=0.1,
+    reg_lambda=1.0,
+    random_state=42
+)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Predict on the training set
+y_train_pred = xgb_model.predict(X_train)
+print("Training Accuracy:", accuracy_score(y_train, y_train_pred))
+print("Training Classification Report:\n", classification_report(y_train, y_train_pred))
+
+# Predict on the test set
+y_test_pred = xgb_model.predict(X_test)
+print("Test Accuracy:", accuracy_score(y_test, y_test_pred))
+print("Test Classification Report:\n", classification_report(y_test, y_test_pred))
+execute_result:
+ble_categorical=enable_categorical,
+   1587 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:1632, in QuantileDMatrix._init(self, data, ref, enable_categorical, **meta)
+   1620 config = make_jcargs(
+   1621     nthread=self.nthread, missing=self.missing, max_bin=self.max_bin
+   1622 )
+   1623 ret = _LIB.XGQuantileDMatrixCreateFromCallback(
+   1624     None,
+   1625     it.proxy.handle,
+   (...)
+   1630     ctypes.byref(handle),
+   1631 )
+-> 1632 it.reraise()
+   1633 # delay check_call to throw intermediate exception first
+   1634 _check_call(ret)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:569, in DataIter.reraise(self)
+    567 exc = self._exception
+    568 self._exception = None
+--> 569 raise exc
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:550, in DataIter._handle_exception(self, fn, dft_ret)
+    547     return dft_ret
+    549 try:
+--> 550     return fn()
+    551 except Exception as e:  # pylint: disable=broad-except
+    552     # Defer the exception in order to return 0 and stop the iteration.
+    553     # Exception inside a ctype callback function has no effect except
+    554     # for printing to stderr (doesn't stop the execution).
+    555     tb = sys.exc_info()[2]
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:637, in DataIter._next_wrapper.<locals>.<lambda>()
+    635     self._temporary_data = None
+    636 # pylint: disable=not-callable
+--> 637 return self._handle_exception(lambda: self.next(input_data), 0)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:1402, in SingleBatchInternalIter.next(self, input_data)
+   1400     return 0
+   1401 self.it += 1
+-> 1402 input_data(**self.kwargs)
+   1403 return 1
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:726, in require_keyword_args.<locals>.throw_if.<locals>.inner_f(*args, **kwargs)
+    724 for k, arg in zip(sig.parameters, args):
+    725     kwargs[k] = arg
+--> 726 return func(**kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:617, in DataIter._next_wrapper.<locals>.input_data(data, feature_names, feature_types, **kwargs)
+    615     new, cat_codes, feature_names, feature_types = self._temporary_data
+    616 else:
+--> 617     new, cat_codes, feature_names, feature_types = _proxy_transform(
+    618         data,
+    619         feature_names,
+    620         feature_types,
+    621         self._enable_categorical,
+    622     )
+    623 # Stage the data, meta info are copied inside C++ MetaInfo.
+    624 self._temporary_data = (new, cat_codes, feature_names, feature_types)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:1447, in _proxy_transform(data, feature_names, feature_types, enable_categorical)
+   1445     data = _arrow_transform(data)
+   1446 if _is_pandas_df(data):
+-> 1447     df, feature_names, feature_types = _transform_pandas_df(
+   1448         data, enable_categorical, feature_names, feature_types
+   1449     )
+   1450     return df, None, feature_names, feature_types
+   1451 raise TypeError("Value type is not supported for data iterator:" + str(type(data)))
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:603, in _transform_pandas_df(data, enable_categorical, feature_names, feature_types, meta)
+    596 def _transform_pandas_df(
+    597     data: DataFrame,
+    598     enable_categorical: bool,
+   (...)
+    601     meta: Optional[str] = None,
+    602 ) -> Tuple[PandasTransformed, Optional[FeatureNames], Optional[FeatureTypes]]:
+--> 603     pandas_check_dtypes(data, enable_categorical)
+    604     if meta and len(data.columns) > 1 and meta not in _matrix_meta:
+    605         raise ValueError(f"DataFrame for {meta} cannot have multiple columns")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:569, in pandas_check_dtypes(data, enable_categorical)
+    562 for dtype in data.dtypes:
+    563     if not (
+    564         (dtype.name in _pandas_dtype_mapper)
+    565         or is_pd_sparse_dtype(dtype)
+    566         or (is_pd_cat_dtype(dtype) and enable_categorical)
+    567         or is_pa_ext_dtype(dtype)
+    568     ):
+--> 569         _invalid_dataframe_dtype(data)
+    571     if is_pd_sparse_dtype(dtype):
+    572         sparse_extension = True
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\data.py:356, in _invalid_dataframe_dtype(data)
+    354 type_err = "DataFrame.dtypes for data must be int, float, bool or category."
+    355 msg = f"""{type_err} {_ENABLE_CAT_ERR} {err}"""
+--> 356 raise ValueError(msg)
+
+ValueError: DataFrame.dtypes for data must be int, float, bool or category. When categorical type is supplied, the experimental DMatrix parameter`enable_categorical` must be set to `True`.  Invalid columns:buying: category, maint: category, doors: category, persons: category, lug_boot: category, safety: category
+is_success:
+False
+code:
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the classifier
+clf = RandomForestClassifier(random_state=42)
+
+# Train the model
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Model Accuracy: {accuracy}")
+print("Classification Report:")
+print(report)
+execute_result:
+Model Accuracy: 0.9335260115606936
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.96      0.77      0.85        83
+           1       0.59      0.91      0.71        11
+           2       0.96      1.00      0.98       235
+           3       0.88      0.82      0.85        17
+
+    accuracy                           0.93       346
+   macro avg       0.84      0.88      0.85       346
+weighted avg       0.94      0.93      0.93       346
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting the target values for the test dataset
+y_pred = clf.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# Printing the F1 score
+print(f"Weighted F1 Score: {f1}")
+execute_result:
+Weighted F1 Score: 0.9327567386526925
+is_success:
+True

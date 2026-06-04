@@ -1,0 +1,133 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 1. 加载数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\car_evaluation_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\car_evaluation_test.csv')
+
+# 2. 数据预处理
+# 检查是否有缺失值
+print("训练集缺失值情况：", train_data.isnull().sum())
+print("测试集缺失值情况：", test_data.isnull().sum())
+
+# 将分类特征转换为数值
+label_encoders = {}
+for column in train_data.columns:
+    le = LabelEncoder()
+    train_data[column] = le.fit_transform(train_data[column])
+    test_data[column] = le.transform(test_data[column])
+    label_encoders[column] = le
+
+# 3. 划分特征和标签
+X_train = train_data.drop(columns=['acceptability'])
+y_train = train_data['acceptability']
+
+X_test = test_data.drop(columns=['acceptability'])
+y_test = test_data['acceptability']
+
+# 4. 构建模型
+model = RandomForestClassifier(random_state=42)
+
+# 5. 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"测试集上的加权平均 F1 分数: {f1:.4f}")
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_e494366723987161f7c89827f636327206e2c2da55160a3a88b998b4426a5de3.py", line 24, in <module>
+    X_train = train_data.drop(columns=['acceptability'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['acceptability'] not found in axis"
+训练集缺失值情况： buying      0
+maint       0
+doors       0
+persons     0
+lug_boot    0
+safety      0
+class       0
+dtype: int64
+测试集缺失值情况： buying      0
+maint       0
+doors       0
+persons     0
+lug_boot    0
+safety      0
+class       0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 1. 加载数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\car_evaluation_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\car_evaluation_test.csv')
+
+# 2. 数据预处理
+# 检查是否有缺失值
+print("训练集缺失值情况：", train_data.isnull().sum())
+print("测试集缺失值情况：", test_data.isnull().sum())
+
+# 将分类特征转换为数值
+label_encoders = {}
+for column in train_data.columns:
+    le = LabelEncoder()
+    train_data[column] = le.fit_transform(train_data[column])
+    test_data[column] = le.transform(test_data[column])
+    label_encoders[column] = le
+
+# 3. 划分特征和标签
+X_train = train_data.drop(columns=['class'])
+y_train = train_data['class']
+
+X_test = test_data.drop(columns=['class'])
+y_test = test_data['class']
+
+# 4. 构建模型
+model = RandomForestClassifier(random_state=42)
+
+# 5. 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"测试集上的加权平均 F1 分数: {f1:.4f}")
+
+
+执行结果：
+训练集缺失值情况： buying      0
+maint       0
+doors       0
+persons     0
+lug_boot    0
+safety      0
+class       0
+dtype: int64
+测试集缺失值情况： buying      0
+maint       0
+doors       0
+persons     0
+lug_boot    0
+safety      0
+class       0
+dtype: int64
+测试集上的加权平均 F1 分数: 0.9328

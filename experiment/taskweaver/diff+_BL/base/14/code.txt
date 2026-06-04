@@ -1,0 +1,150 @@
+import pandas as pd
+
+train_file_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\abalone_train.csv'
+test_file_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\abalone_test.csv'
+
+# Load the datasets
+abalone_train = pd.read_csv(train_file_path)
+abalone_test = pd.read_csv(test_file_path)
+
+abalone_train, abalone_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(          id sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight  rings
+ 0          0   F   0.550      0.43   0.150        0.7715         0.3285         0.1465        0.2400     11
+ 1          1   F   0.630      0.49   0.145        1.1300         0.4580         0.2765        0.3200     11
+ ...      ...  ..     ...       ...     ...           ...            ...            ...           ...    ...
+ 72490  90612   I   0.435      0.33   0.095        0.3215         0.1510         0.0785        0.0815      6
+ 72491  90613   I   0.345      0.27   0.075        0.2000         0.0980         0.0490        0.0700      6
+ 
+ [72492 rows x 10 columns],
+           id sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight  rings
+ 0          8   I   0.205     0.150    0.04        0.0460         0.0145         0.0105         0.010      4
+ 1         34   I   0.580     0.450    0.14        0.9165         0.3875         0.1615         0.275     10
+ ...      ...  ..     ...       ...     ...           ...            ...            ...           ...    ...
+ 18121  90611   M   0.555     0.425    0.15        0.8790         0.3865         0.1815         0.240      9
+ 18122  90614   I   0.425     0.325    0.10        0.3455         0.1525         0.0785         0.105      8
+ 
+ [18123 rows x 10 columns])from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Features and target variable
+X_train = abalone_train.drop(['id', 'rings'], axis=1)
+y_train = abalone_train['rings']
+
+# Initialize the model
+model = LinearRegression()
+
+# Train the model
+model.fit(X_train, y_train)
+
+model, X_train, y_train
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 12
+    model.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\linear_model\_base.py:601 in fit
+    X, y = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2961 in validate_data
+    X, y = check_X_y(X, y, **check_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1370 in check_X_y
+    X = check_array(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1055 in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_array_api.py:839 in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:2153 in __array__
+    arr = np.asarray(values, dtype=dtype)
+
+ValueError: could not convert string to float: 'F'
+
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Define the transformer for the 'sex' column
+preprocessor = ColumnTransformer(
+    transformers=[('cat', OneHotEncoder(), ['sex'])],
+    remainder='passthrough'
+)
+
+# Create a pipeline that first applies the preprocessing and then fits the model
+pipeline = Pipeline(steps=[('preprocessor', preprocessor), ('model', LinearRegression())])
+
+# Features and target variable
+X_train = abalone_train.drop(['id', 'rings'], axis=1)
+y_train = abalone_train['rings']
+
+# Train the model
+pipeline.fit(X_train, y_train)
+
+pipeline, X_train, y_train
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(Pipeline(steps=[('preprocessor',
+                  ColumnTransformer(remainder='passthrough',
+                                    transformers=[('cat', OneHotEncoder(),
+                                                   ['sex'])])),
+                 ('model', LinearRegression())]),
+       sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight
+ 0       F   0.550      0.43   0.150        0.7715         0.3285         0.1465        0.2400
+ 1       F   0.630      0.49   0.145        1.1300         0.4580         0.2765        0.3200
+ ...    ..     ...       ...     ...           ...            ...            ...           ...
+ 72490   I   0.435      0.33   0.095        0.3215         0.1510         0.0785        0.0815
+ 72491   I   0.345      0.27   0.075        0.2000         0.0980         0.0490        0.0700
+ 
+ [72492 rows x 8 columns],
+ 0        11
+ 1        11
+          ..
+ 72490     6
+ 72491     6
+ Name: rings, Length: 72492, dtype: int64)from sklearn.metrics import mean_squared_error
+
+# Features and target variable for the test set
+X_test = abalone_test.drop(['id', 'rings'], axis=1)
+y_test = abalone_test['rings']
+
+# Predict the target variable for the test set
+y_pred = pipeline.predict(X_test)
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_pred)
+
+mse, X_test, y_test, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(4.095322631071487,
+       sex  length  diameter  height  whole_weight  whole_weight1  whole_weight2  shell_weight
+ 0       I   0.205     0.150    0.04        0.0460         0.0145         0.0105         0.010
+ 1       I   0.580     0.450    0.14        0.9165         0.3875         0.1615         0.275
+ ...    ..     ...       ...     ...           ...            ...            ...           ...
+ 18121   M   0.555     0.425    0.15        0.8790         0.3865         0.1815         0.240
+ 18122   I   0.425     0.325    0.10        0.3455         0.1525         0.0785         0.105
+ 
+ [18123 rows x 8 columns],
+ 0         4
+ 1        10
+          ..
+ 18121     9
+ 18122     8
+ Name: rings, Length: 18123, dtype: int64,
+ array([ 4.85951044, 10.43172623,  6.9558334 , ..., 13.98431609,
+        10.17520559,  7.51053722]))

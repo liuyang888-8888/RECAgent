@@ -1,0 +1,16 @@
+{
+    "task": {
+        "id": 13,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "secondary_mushroom",
+        "task_description": "基于蘑菇外形特征的数据集，构建一个分类模型，用于判断蘑菇是否可食用。"
+    },
+    "result": {
+        "run_status": "failed",
+        "time": 1286.6676716804504,
+        "interact_count": 20,
+        "prompt_tokens": 195735,
+        "completion_tokens": 13704
+    }
+}

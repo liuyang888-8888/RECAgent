@@ -1,0 +1,342 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 假设日期列名为 'Date'，股价列名为 'High'
+train_df['Date'] = pd.to_datetime(train_df['Date'])
+test_df['Date'] = pd.to_datetime(test_df['Date'])
+
+train_df.set_index('Date', inplace=True)
+test_df.set_index('Date', inplace=True)
+
+# 3. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们选择 (5, 1, 0) 作为示例参数
+model = ARIMA(train_df['High'], order=(5, 1, 0))
+
+# 4. 模型拟合
+model_fit = model.fit()
+
+# 5. 预测
+# 在训练集上进行预测
+train_predictions = model_fit.fittedvalues
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_df))
+
+# 6. 评估
+# 计算训练集上的均方误差（MSE）
+train_mse = mean_squared_error(train_df['High'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 计算测试集上的均方误差（MSE）
+test_mse = mean_squared_error(test_df['High'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:837: ValueWarning: No supported index is available. Prediction results will be given with an integer index beginning at `start`.
+  return get_prediction_index(
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:837: FutureWarning: No supported index is available. In the next version, calling this method in a model without a supported index will result in an exception.
+  return get_prediction_index(
+Training MSE: 17735.296595046453
+Testing MSE: 16441.59706762816
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 假设日期列名为 'Date'，股价列名为 'High'
+train_df['Date'] = pd.to_datetime(train_df['Date'])
+test_df['Date'] = pd.to_datetime(test_df['Date'])
+
+# 确保日期索引是单调递增的
+train_df = train_df.sort_index()
+test_df = test_df.sort_index()
+
+# 设置日期索引的频率
+train_df = train_df.asfreq('D')
+test_df = test_df.asfreq('D')
+
+# 填充缺失值（如果有的话）
+train_df['High'].fillna(method='ffill', inplace=True)
+test_df['High'].fillna(method='ffill', inplace=True)
+
+# 3. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们选择 (5, 1, 0) 作为示例参数
+model = ARIMA(train_df['High'], order=(5, 1, 0))
+
+# 4. 模型拟合
+model_fit = model.fit()
+
+# 5. 预测
+# 在训练集上进行预测
+train_predictions = model_fit.fittedvalues
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_df))
+
+# 6. 评估
+# 计算训练集上的均方误差（MSE）
+train_mse = mean_squared_error(train_df['High'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 计算测试集上的均方误差（MSE）
+test_mse = mean_squared_error(test_df['High'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_d3f257da881f96af8db16b72ae7971fed253e87a03920b911e18543209e0c706.py:27: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  train_df['High'].fillna(method='ffill', inplace=True)
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_d3f257da881f96af8db16b72ae7971fed253e87a03920b911e18543209e0c706.py:27: FutureWarning: Series.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  train_df['High'].fillna(method='ffill', inplace=True)
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_d3f257da881f96af8db16b72ae7971fed253e87a03920b911e18543209e0c706.py:28: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  test_df['High'].fillna(method='ffill', inplace=True)
+E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_d3f257da881f96af8db16b72ae7971fed253e87a03920b911e18543209e0c706.py:28: FutureWarning: Series.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.
+  test_df['High'].fillna(method='ffill', inplace=True)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for ARMA and trend. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\fromnumeric.py:4268: RuntimeWarning: Degrees of freedom <= 0 for slice
+  return _methods._var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\_methods.py:181: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\_methods.py:215: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_d3f257da881f96af8db16b72ae7971fed253e87a03920b911e18543209e0c706.py", line 36, in <module>
+    model_fit = model.fit()
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\arima\model.py", line 395, in fit
+    res = super().fit(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\mlemodel.py", line 705, in fit
+    mlefit = super().fit(start_params, method=method,
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\base\model.py", line 566, in fit
+    xopt, retvals, optim_settings = optimizer._fit(f, score, start_params,
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\base\optimizer.py", line 243, in _fit
+    xopt, retvals = func(objective, gradient, start_params, fargs, kwargs,
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\base\optimizer.py", line 660, in _fit_lbfgs
+    retvals = optimize.fmin_l_bfgs_b(func, start_params, maxiter=maxiter,
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\scipy\optimize\_lbfgsb_py.py", line 277, in fmin_l_bfgs_b
+    res = _minimize_lbfgsb(fun, x0, args=args, jac=jac, bounds=bounds,
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\scipy\optimize\_lbfgsb_py.py", line 441, in _minimize_lbfgsb
+    f, g = func_and_grad(x)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\scipy\optimize\_differentiable_functions.py", line 344, in fun_and_grad
+    self._update_fun()
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\scipy\optimize\_differentiable_functions.py", line 295, in _update_fun
+    fx = self._wrapped_fun(self.x)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\scipy\optimize\_differentiable_functions.py", line 21, in wrapped
+    fx = fun(np.copy(x), *args)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\base\model.py", line 534, in f
+    return -self.loglike(params, *args) / nobs
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\mlemodel.py", line 940, in loglike
+    loglike = self.ssm.loglike(complex_step=complex_step, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\kalman_filter.py", line 1001, in loglike
+    kfilter = self._filter(**kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\kalman_filter.py", line 921, in _filter
+    self._initialize_state(prefix=prefix, complex_step=complex_step)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\representation.py", line 1058, in _initialize_state
+    self._statespaces[prefix].initialize(self.initialization,
+  File "statsmodels\\tsa\\statespace\\_representation.pyx", line 1373, in statsmodels.tsa.statespace._representation.dStatespace.initialize
+  File "statsmodels\\tsa\\statespace\\_representation.pyx", line 1362, in statsmodels.tsa.statespace._representation.dStatespace.initialize
+  File "statsmodels\\tsa\\statespace\\_initialization.pyx", line 288, in statsmodels.tsa.statespace._initialization.dInitialization.initialize
+  File "statsmodels\\tsa\\statespace\\_initialization.pyx", line 406, in statsmodels.tsa.statespace._initialization.dInitialization.initialize_stationary_stationary_cov
+  File "statsmodels\\tsa\\statespace\\_tools.pyx", line 1626, in statsmodels.tsa.statespace._tools._dsolve_discrete_lyapunov
+numpy.linalg.LinAlgError: Schur decomposition solver error.
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 假设日期列名为 'Date'，股价列名为 'High'
+train_df['Date'] = pd.to_datetime(train_df['Date'])
+test_df['Date'] = pd.to_datetime(test_df['Date'])
+
+# 确保日期索引是单调递增的
+train_df = train_df.sort_index()
+test_df = test_df.sort_index()
+
+# 设置日期索引的频率
+train_df = train_df.asfreq('D')
+test_df = test_df.asfreq('D')
+
+# 填充缺失值（如果有的话）
+train_df['High'] = train_df['High'].ffill()
+test_df['High'] = test_df['High'].ffill()
+
+# 3. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们选择 (5, 1, 0) 作为示例参数
+model = ARIMA(train_df['High'], order=(5, 1, 0))
+
+# 4. 模型拟合
+try:
+    model_fit = model.fit()
+except Exception as e:
+    print(f"Model fitting failed with error: {e}")
+    exit(1)
+
+# 5. 预测
+# 在训练集上进行预测
+train_predictions = model_fit.fittedvalues
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_df))
+
+# 6. 评估
+# 计算训练集上的均方误差（MSE）
+train_mse = mean_squared_error(train_df['High'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 计算测试集上的均方误差（MSE）
+test_mse = mean_squared_error(test_df['High'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for ARMA and trend. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\fromnumeric.py:4268: RuntimeWarning: Degrees of freedom <= 0 for slice
+  return _methods._var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\_methods.py:181: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\_methods.py:215: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Model fitting failed with error: Schur decomposition solver error.
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\nvidia_share_price_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 假设日期列名为 'Date'，股价列名为 'High'
+train_df['Date'] = pd.to_datetime(train_df['Date'])
+test_df['Date'] = pd.to_datetime(test_df['Date'])
+
+# 确保日期索引是单调递增的
+train_df = train_df.sort_index()
+test_df = test_df.sort_index()
+
+# 设置日期索引的频率
+train_df = train_df.asfreq('D')
+test_df = test_df.asfreq('D')
+
+# 填充缺失值（如果有的话）
+train_df['High'] = train_df['High'].ffill()
+test_df['High'] = test_df['High'].ffill()
+
+# 检查数据量和数据质量
+print(f"Training data shape: {train_df.shape}")
+print(f"Testing data shape: {test_df.shape}")
+print(f"Training data head:\n{train_df.head()}")
+print(f"Testing data head:\n{test_df.head()}")
+
+# 3. 构建 ARIMA 模型
+# 选择合适的 ARIMA 参数 (p, d, q)
+# 这里我们选择 (5, 1, 0) 作为示例参数
+model = ARIMA(train_df['High'], order=(5, 1, 0))
+
+# 4. 模型拟合
+try:
+    model_fit = model.fit()
+except Exception as e:
+    print(f"Model fitting failed with error: {e}")
+    exit(1)
+
+# 5. 预测
+# 在训练集上进行预测
+train_predictions = model_fit.fittedvalues
+
+# 在测试集上进行预测
+test_predictions = model_fit.forecast(steps=len(test_df))
+
+# 6. 评估
+# 计算训练集上的均方误差（MSE）
+train_mse = mean_squared_error(train_df['High'], train_predictions)
+print(f'Training MSE: {train_mse}')
+
+# 计算测试集上的均方误差（MSE）
+test_mse = mean_squared_error(test_df['High'], test_predictions)
+print(f'Testing MSE: {test_mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\statespace\sarimax.py:866: UserWarning: Too few observations to estimate starting parameters for ARMA and trend. All parameters except for variances will be set to zeros.
+  warn('Too few observations to estimate starting parameters%s.'
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\fromnumeric.py:4268: RuntimeWarning: Degrees of freedom <= 0 for slice
+  return _methods._var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\_methods.py:181: RuntimeWarning: invalid value encountered in divide
+  arrmean = um.true_divide(arrmean, div, out=arrmean,
+D:\Dependency\Py_env\autogen\lib\site-packages\numpy\_core\_methods.py:215: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+Training data shape: (1, 5)
+Testing data shape: (1, 5)
+Training data head:
+           Date  Open  Close  High  Low
+1970-01-01  NaT   NaN    NaN   NaN  NaN
+Testing data head:
+           Date  Open  Close  High  Low
+1970-01-01  NaT   NaN    NaN   NaN  NaN
+Model fitting failed with error: Schur decomposition solver error.

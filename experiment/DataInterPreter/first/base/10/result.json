@@ -1,0 +1,18 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 152.72287321090698,
+        "interact_count": 16,
+        "prompt_tokens": 27312,
+        "completion_tokens": 4208,
+        "metrics": 0.9327567386526925,
+        "RCR": 5
+    },
+    "task": {
+        "id": 10,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "car_evaluation",
+        "task_description": "基于 car_evaluation 数据集，构建一个分类模型，用于评估车辆的可接受程度。该任务属于多分类问题，目标是根据车辆的购买价格、尺寸、安全性等特征，预测其可接受程度（如不可接受、可接受、良好、优秀）。"
+    }
+}

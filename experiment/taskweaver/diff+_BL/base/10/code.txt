@@ -1,0 +1,145 @@
+import pandas as pd
+
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\car_evaluation_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\car_evaluation_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+train_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(     buying  maint  doors  persons lug_boot safety  class
+ 0     vhigh  vhigh      0        0      big   high  unacc
+ 1       med  vhigh      3        4    small    med  unacc
+ ...     ...    ...    ...      ...      ...    ...    ...
+ 1380    low   high      4        2    small    med  unacc
+ 1381    med    med      3        0    small    med    acc
+ 
+ [1382 rows x 7 columns],
+     buying  maint  doors  persons lug_boot safety  class
+ 0     high   high      4        2      med   high  unacc
+ 1      med    low      2        4      med    med    acc
+ ..     ...    ...    ...      ...      ...    ...    ...
+ 344  vhigh  vhigh      0        0    small   high  unacc
+ 345    med    med      2        2      med    med  unacc
+ 
+ [346 rows x 7 columns])from sklearn.preprocessing import LabelEncoder
+
+# Encode categorical variables
+label_encoders = {}
+for column in train_df.columns[:-1]:
+    le = LabelEncoder()
+    train_df[column] = le.fit_transform(train_df[column])
+    test_df[column] = le.transform(test_df[column])
+    label_encoders[column] = le
+
+# Split features and labels
+X_train = train_df.drop(columns=['class'])
+y_train = train_df['class']
+X_test = test_df.drop(columns=['class'])
+y_test = test_df['class']
+
+X_train, y_train, X_test, y_test, label_encoders
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(      buying  maint  doors  persons  lug_boot  safety
+ 0          3      3      0        0         0       0
+ 1          2      3      2        2         2       2
+ ...      ...    ...    ...      ...       ...     ...
+ 1380       1      0      3        1         2       2
+ 1381       2      2      2        0         2       2
+ 
+ [1382 rows x 6 columns],
+ 0       unacc
+ 1       unacc
+         ...  
+ 1380    unacc
+ 1381      acc
+ Name: class, Length: 1382, dtype: object,
+      buying  maint  doors  persons  lug_boot  safety
+ 0         0      0      3        1         1       0
+ 1         2      1      1        2         1       2
+ ..      ...    ...    ...      ...       ...     ...
+ 344       3      3      0        0         2       0
+ 345       2      2      1        1         1       2
+ 
+ [346 rows x 6 columns],
+ 0      unacc
+ 1        acc
+        ...  
+ 344    unacc
+ 345    unacc
+ Name: class, Length: 346, dtype: object,
+ {'buying': LabelEncoder(),
+  'maint': LabelEncoder(),
+  'doors': LabelEncoder(),
+  'persons': LabelEncoder(),
+  'lug_boot': LabelEncoder(),
+  'safety': LabelEncoder()})from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Initialize and train the classifier
+clf = RandomForestClassifier()
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+f1, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.9364087419405891,
+ array(['unacc', 'unacc', 'unacc', 'acc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'acc', 'good', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'acc', 'unacc',
+        'unacc', 'acc', 'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'acc', 'good', 'good',
+        'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'acc',
+        'good', 'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'acc', 'unacc', 'acc', 'unacc', 'unacc', 'acc', 'vgood',
+        'unacc', 'acc', 'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'good', 'vgood', 'unacc', 'unacc', 'unacc', 'unacc', 'vgood',
+        'unacc', 'unacc', 'acc', 'vgood', 'acc', 'unacc', 'unacc', 'vgood',
+        'acc', 'unacc', 'good', 'unacc', 'unacc', 'unacc', 'good', 'unacc',
+        'unacc', 'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'good', 'unacc', 'unacc', 'unacc', 'acc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'acc', 'good', 'unacc',
+        'unacc', 'unacc', 'unacc', 'good', 'unacc', 'acc', 'acc', 'unacc',
+        'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'good',
+        'unacc', 'unacc', 'acc', 'unacc', 'vgood', 'unacc', 'unacc',
+        'unacc', 'acc', 'acc', 'acc', 'unacc', 'acc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'good', 'vgood', 'unacc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'acc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'acc', 'unacc', 'acc', 'vgood',
+        'acc', 'unacc', 'acc', 'unacc', 'unacc', 'acc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'good',
+        'vgood', 'unacc', 'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'acc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'acc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'good', 'unacc', 'unacc', 'unacc',
+        'good', 'unacc', 'acc', 'unacc', 'unacc', 'acc', 'unacc', 'unacc',
+        'good', 'unacc', 'unacc', 'unacc', 'vgood', 'vgood', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'acc',
+        'unacc', 'unacc', 'unacc', 'acc', 'unacc', 'acc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'acc', 'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'acc', 'vgood', 'unacc', 'unacc', 'unacc', 'acc', 'unacc', 'unacc',
+        'vgood', 'unacc', 'unacc', 'acc', 'good', 'unacc', 'unacc',
+        'unacc', 'acc', 'acc', 'unacc', 'unacc', 'acc', 'good', 'vgood',
+        'acc', 'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'vgood', 'acc',
+        'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'vgood', 'unacc',
+        'unacc', 'unacc', 'unacc', 'acc', 'unacc', 'unacc', 'vgood', 'acc',
+        'acc', 'unacc', 'unacc', 'acc', 'acc', 'acc', 'unacc', 'acc',
+        'acc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'unacc', 'acc',
+        'unacc', 'unacc', 'unacc', 'unacc', 'acc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'acc', 'unacc', 'unacc', 'unacc', 'unacc',
+        'unacc', 'unacc', 'unacc', 'unacc'], dtype=object))

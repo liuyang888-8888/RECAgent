@@ -1,0 +1,270 @@
+code:
+import pandas as pd
+
+# Load the dataset
+train_df = pd.read_csv(r'E:\csv\census_income_train.csv')
+
+# Create a copy of the DataFrame for preprocessing
+train_df_copy = train_df.copy()
+
+# Display the first few rows of the DataFrame to understand its structure
+print(train_df_copy.head())
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    if col != 'label_column':  # Assuming 'label_column' is the name of the label column
+        train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+
+# Apply scaling to numerical columns
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+for col in numerical_columns:
+    if col != 'label_column':  # Assuming 'label_column' is the name of the label column
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+
+# Display the preprocessed DataFrame
+print(train_df_copy.head())
+execute_result:
+age         workclass  fnlwgt  ... hours_per_week  native_country  income
+0   32           Private   50753  ...             40   United-States  <=50K.
+1   45         State-gov  144351  ...             40   United-States    >50K
+2   35         Local-gov  252217  ...             40   United-States  <=50K.
+3   64           Private   69525  ...             20   United-States   <=50K
+4   63  Self-emp-not-inc   28612  ...             70   United-States   <=50K
+
+[5 rows x 15 columns]
+Categorical Columns: Index(['workclass', 'education', 'marital_status', 'occupation',
+       'relationship', 'race', 'sex', 'native_country', 'income'],
+      dtype='object')
+Numerical Columns: Index(['age', 'fnlwgt', 'education_num', 'capital_gain', 'capital_loss',
+       'hours_per_week'],
+      dtype='object')
+        age  workclass    fnlwgt  ...  hours_per_week  native_country  income
+0 -0.484566          4 -1.315410  ...       -0.034087              39       1
+1  0.463621          7 -0.429090  ...       -0.034087              39       2
+2 -0.265754          2  0.592340  ...       -0.034087              39       1
+3  1.849433          4 -1.137649  ...       -1.648120              39       0
+4  1.776496          6 -1.525072  ...        2.386963              39       0
+
+[5 rows x 15 columns]
+is_success:
+True
+code:
+# Load the test dataset
+test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+test_df_copy = test_df.copy()
+
+# Handle missing values in both train and test datasets
+# For simplicity, we'll fill missing values with the median for numerical columns and mode for categorical columns
+for col in numerical_columns:
+    if col != 'label_column':
+        median_value = train_df_copy[col].median()
+        train_df_copy[col].fillna(median_value, inplace=True)
+        test_df_copy[col].fillna(median_value, inplace=True)
+
+for col in categorical_columns:
+    if col != 'label_column':
+        mode_value = train_df_copy[col].mode()[0]
+        train_df_copy[col].fillna(mode_value, inplace=True)
+        test_df_copy[col].fillna(mode_value, inplace=True)
+
+# Encode categorical variables
+for col in categorical_columns:
+    if col != 'label_column':
+        train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+        test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Scale numerical features
+for col in numerical_columns:
+    if col != 'label_column':
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Display the first few rows of the preprocessed datasets
+print(train_df_copy.head())
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[3], line 2
+      1 # Load the test dataset
+----> 2 test_df = pd.read_csv(r'E:\csv\census_income_test.csv')
+      3 test_df_copy = test_df.copy()
+      5 # Handle missing values in both train and test datasets
+      6 # For simplicity, we'll fill missing values with the median for numerical columns and mode for categorical columns
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'E:\\csv\\census_income_test.csv'
+is_success:
+False
+code:
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)  # Fill numerical missing values with median
+train_df_copy.fillna(train_df_copy.mode().iloc[0], inplace=True)  # Fill categorical missing values with mode
+
+# Encoding categorical variables
+from sklearn.preprocessing import OrdinalEncoder
+ordinal_encoder = OrdinalEncoder()
+for col in categorical_columns:
+    if col != 'income':
+        train_df_copy[col] = ordinal_encoder.fit_transform(train_df_copy[[col]])
+
+# Scaling numerical features
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+for col in numerical_columns:
+    if col != 'fnlwgt':  # Assuming 'fnlwgt' is the label column based on the context
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+
+print(train_df_copy.head())
+execute_result:
+age  workclass    fnlwgt  ...  hours_per_week  native_country  income
+0  0.205479        4.0 -1.315410  ...        0.397959            39.0       1
+1  0.383562        7.0 -0.429090  ...        0.397959            39.0       2
+2  0.246575        2.0  0.592340  ...        0.397959            39.0       1
+3  0.643836        4.0 -1.137649  ...        0.193878            39.0       0
+4  0.630137        6.0 -1.525072  ...        0.704082            39.0       0
+
+[5 rows x 15 columns]
+is_success:
+True
+code:
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_copy_for_clustering = train_df_copy.copy()
+
+# Exclude ID columns and the label column from feature selection
+# Assuming 'fnlwgt' is an ID column and 'income' is the label column
+features_to_exclude = ['fnlwgt', 'income']
+
+# Selecting features for clustering
+selected_features = [col for col in train_df_copy_for_clustering.columns if col not in features_to_exclude]
+
+# Print the selected features
+print("Selected Features for Clustering:", selected_features)
+
+# Create a new DataFrame with only the selected features
+train_df_clustering = train_df_copy_for_clustering[selected_features]
+
+# Display the first few rows of the new DataFrame
+print(train_df_clustering.head())
+execute_result:
+Selected Features for Clustering: ['age', 'workclass', 'education', 'education_num', 'marital_status', 'occupation', 'relationship', 'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country']
+        age  workclass  education  ...  capital_loss  hours_per_week  native_country
+0  0.205479        4.0       11.0  ...           0.0        0.397959            39.0
+1  0.383562        7.0       12.0  ...           0.0        0.397959            39.0
+2  0.246575        2.0        2.0  ...           0.0        0.397959            39.0
+3  0.643836        4.0       11.0  ...           0.0        0.193878            39.0
+4  0.630137        6.0       11.0  ...           0.0        0.704082            39.0
+
+[5 rows x 13 columns]
+is_success:
+True
+code:
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Selecting the features for clustering
+X = train_df_clustering
+
+# Initialize the KMeans model
+kmeans = KMeans(n_clusters=5, random_state=42)  # Assuming 5 clusters for this example
+
+# Fit the model
+kmeans.fit(X)
+
+# Predict the cluster labels
+cluster_labels = kmeans.predict(X)
+
+# Add the cluster labels to the original dataframe
+train_df_copy['Cluster'] = cluster_labels
+
+# Evaluate the model using silhouette score
+silhouette_avg = silhouette_score(X, cluster_labels)
+print(f'Silhouette Score: {silhouette_avg}')
+
+# Display the first few rows of the dataframe with the cluster labels
+print(train_df_copy.head())
+execute_result:
+Silhouette Score: 0.36725630876064586
+        age  workclass    fnlwgt  ...  native_country  income  Cluster
+0  0.205479        4.0 -1.315410  ...            39.0       1        2
+1  0.383562        7.0 -0.429090  ...            39.0       2        2
+2  0.246575        2.0  0.592340  ...            39.0       1        0
+3  0.643836        4.0 -1.137649  ...            39.0       0        3
+4  0.630137        6.0 -1.525072  ...            39.0       0        2
+
+[5 rows x 16 columns]
+is_success:
+True
+code:
+# Since the model has already been trained and the silhouette score calculated,
+# we can directly print the silhouette score from the previous step.
+print(f'Silhouette Score: {silhouette_avg}')
+execute_result:
+Silhouette Score: 0.36725630876064586
+is_success:
+True

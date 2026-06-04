@@ -1,0 +1,315 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\car_evaluation_train.csv')
+test_df = pd.read_csv('E:\\csv\\car_evaluation_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Training Dataset:")
+print(train_df_copy.head())
+print("\nTesting Dataset:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData Types in Training Dataset:")
+print(train_df_copy.dtypes)
+print("\nData Types in Testing Dataset:")
+print(test_df_copy.dtypes)
+
+# Identify categorical columns (assuming all non-numeric columns are categorical)
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Display the first few rows of the preprocessed datasets
+print("\nPreprocessed Training Dataset:")
+print(train_df_copy.head())
+print("\nPreprocessed Testing Dataset:")
+print(test_df_copy.head())
+execute_result:
+Training Dataset:
+  buying  maint  doors  persons lug_boot safety  class
+0  vhigh  vhigh      0        0      big   high  unacc
+1    med  vhigh      3        4    small    med  unacc
+2    low    low      0        2      big   high  unacc
+3   high    med      4        2      med    med  unacc
+4   high    med      3        2      med    low  unacc
+
+Testing Dataset:
+  buying maint  doors  persons lug_boot safety  class
+0   high  high      4        2      med   high  unacc
+1    med   low      2        4      med    med    acc
+2   high  high      0        2      big    med  unacc
+3    low  high      0        4      med    med    acc
+4    med   low      4        0      med    low  unacc
+
+Data Types in Training Dataset:
+buying      object
+maint       object
+doors        int64
+persons      int64
+lug_boot    object
+safety      object
+class       object
+dtype: object
+
+Data Types in Testing Dataset:
+buying      object
+maint       object
+doors        int64
+persons      int64
+lug_boot    object
+safety      object
+class       object
+dtype: object
+
+Preprocessed Training Dataset:
+   buying  maint  doors  persons  lug_boot  safety  class
+0       3      3      0        0         0       0      2
+1       2      3      3        4         2       2      2
+2       1      1      0        2         0       0      2
+3       0      2      4        2         1       2      2
+4       0      2      3        2         1       1      2
+
+Preprocessed Testing Dataset:
+   buying  maint  doors  persons  lug_boot  safety  class
+0       0      0      4        2         1       0      2
+1       2      1      2        4         1       2      0
+2       0      0      0        2         0       2      2
+3       1      0      0        4         1       2      0
+4       2      1      4        0         1       1      2
+is_success:
+True
+code:
+# Splitting the datasets into features (X) and target (y)
+X_train = train_df_copy.drop(columns=['class'])
+y_train = train_df_copy['class']
+X_test = test_df_copy.drop(columns=['class'])
+y_test = test_df_copy['class']
+
+# Displaying the first few rows of the split datasets
+print("Features of Training Dataset:")
+print(X_train.head())
+print("\nTarget of Training Dataset:")
+print(y_train.head())
+print("\nFeatures of Testing Dataset:")
+print(X_test.head())
+print("\nTarget of Testing Dataset:")
+print(y_test.head())
+execute_result:
+Features of Training Dataset:
+   buying  maint  doors  persons  lug_boot  safety
+0       3      3      0        0         0       0
+1       2      3      3        4         2       2
+2       1      1      0        2         0       0
+3       0      2      4        2         1       2
+4       0      2      3        2         1       1
+
+Target of Training Dataset:
+0    2
+1    2
+2    2
+3    2
+4    2
+Name: class, dtype: int32
+
+Features of Testing Dataset:
+   buying  maint  doors  persons  lug_boot  safety
+0       0      0      4        2         1       0
+1       2      1      2        4         1       2
+2       0      0      0        2         0       2
+3       1      0      0        4         1       2
+4       2      1      4        0         1       1
+
+Target of Testing Dataset:
+0    2
+1    0
+2    2
+3    0
+4    2
+Name: class, dtype: int32
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the XGBoost classifier with 10 trees and a learning rate of 0.1
+xgb_model = XGBClassifier(n_estimators=10, learning_rate=0.1, random_state=42)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Make predictions on the training set
+y_train_pred = xgb_model.predict(X_train)
+print("Training Accuracy:", accuracy_score(y_train, y_train_pred))
+print("Training Classification Report:\n", classification_report(y_train, y_train_pred))
+
+# Make predictions on the testing set
+y_test_pred = xgb_model.predict(X_test)
+print("Testing Accuracy:", accuracy_score(y_test, y_test_pred))
+print("Testing Classification Report:\n", classification_report(y_test, y_test_pred))
+execute_result:
+Training Accuracy: 0.9421128798842258
+Training Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.85      0.91      0.88       301
+           1       0.97      0.53      0.69        58
+           2       0.98      0.98      0.98       975
+           3       0.76      0.81      0.79        48
+
+    accuracy                           0.94      1382
+   macro avg       0.89      0.81      0.83      1382
+weighted avg       0.94      0.94      0.94      1382
+
+Testing Accuracy: 0.9132947976878613
+Testing Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.81      0.83      0.82        83
+           1       0.38      0.27      0.32        11
+           2       0.97      1.00      0.98       235
+           3       0.91      0.59      0.71        17
+
+    accuracy                           0.91       346
+   macro avg       0.77      0.67      0.71       346
+weighted avg       0.91      0.91      0.91       346
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predictions on the test set
+y_test_pred = xgb_model.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_test_pred, average='weighted')
+print("F1 Score on Test Set:", f1)
+execute_result:
+F1 Score on Test Set: 0.908558238490763
+is_success:
+True
+code:
+# Save the evaluation results including the F1 score to a file
+evaluation_results = {
+    'Training Accuracy': 0.9421128798842258,
+    'Training Precision': [0.85, 0.97, 0.98, 0.76],
+    'Training Recall': [0.91, 0.53, 0.98, 0.81],
+    'Training F1-Score': [0.88, 0.69, 0.98, 0.79],
+    'Training Support': [301, 58, 975, 48],
+    'Testing Accuracy': 0.9132947976878613,
+    'Testing Precision': [0.81, 0.38, 0.97, 0.91],
+    'Testing Recall': [0.83, 0.27, 1.00, 0.59],
+    'Testing F1-Score': [0.82, 0.32, 0.98, 0.71],
+    'Testing Support': [83, 11, 235, 17],
+    'F1 Score on Test Set': 0.908558238490763
+}
+
+# Convert the dictionary to a DataFrame for better readability
+evaluation_df = pd.DataFrame(evaluation_results, index=[0])
+
+# Save the DataFrame to a CSV file
+evaluation_df.to_csv('evaluation_results.csv', index=False)
+
+print("Evaluation results saved to 'evaluation_results.csv'")
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[8], line 17
+      2 evaluation_results = {
+      3     'Training Accuracy': 0.9421128798842258,
+      4     'Training Precision': [0.85, 0.97, 0.98, 0.76],
+   (...)
+     13     'F1 Score on Test Set': 0.908558238490763
+     14 }
+     16 # Convert the dictionary to a DataFrame for better readability
+---> 17 evaluation_df = pd.DataFrame(evaluation_results, index=[0])
+     19 # Save the DataFrame to a CSV file
+     20 evaluation_df.to_csv('evaluation_results.csv', index=False)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:736, in DataFrame.__init__(self, data, index, columns, dtype, copy)
+    730     mgr = self._init_mgr(
+    731         data, axes={"index": index, "columns": columns}, dtype=dtype, copy=copy
+    732     )
+    734 elif isinstance(data, dict):
+    735     # GH#38939 de facto copy defaults to False only in non-dict cases
+--> 736     mgr = dict_to_mgr(data, index, columns, dtype=dtype, copy=copy, typ=manager)
+    737 elif isinstance(data, ma.MaskedArray):
+    738     from numpy.ma import mrecords
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\construction.py:503, in dict_to_mgr(data, index, columns, dtype, typ, copy)
+    499     else:
+    500         # dtype check to exclude e.g. range objects, scalars
+    501         arrays = [x.copy() if hasattr(x, "dtype") else x for x in arrays]
+--> 503 return arrays_to_mgr(arrays, columns, index, dtype=dtype, typ=typ, consolidate=copy)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\construction.py:119, in arrays_to_mgr(arrays, columns, index, dtype, verify_integrity, typ, consolidate)
+    116         index = ensure_index(index)
+    118     # don't force copy because getting jammed in an ndarray anyway
+--> 119     arrays, refs = _homogenize(arrays, index, dtype)
+    120     # _homogenize ensures
+    121     #  - all(len(x) == len(index) for x in arrays)
+    122     #  - all(x.ndim == 1 for x in arrays)
+   (...)
+    125 
+    126 else:
+    127     index = ensure_index(index)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\construction.py:630, in _homogenize(data, index, dtype)
+    627         val = lib.fast_multiget(val, oindex._values, default=np.nan)
+    629     val = sanitize_array(val, index, dtype=dtype, copy=False)
+--> 630     com.require_length_match(val, index)
+    631     refs.append(None)
+    633 homogenized.append(val)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\common.py:561, in require_length_match(data, index)
+    557 """
+    558 Check the length of data matches the length of the index.
+    559 """
+    560 if len(data) != len(index):
+--> 561     raise ValueError(
+    562         "Length of values "
+    563         f"({len(data)}) "
+    564         "does not match length of index "
+    565         f"({len(index)})"
+    566     )
+
+ValueError: Length of values (4) does not match length of index (1)
+is_success:
+False
+code:
+# Save the evaluation results including the F1 score to a file
+evaluation_results = {
+    'Training Accuracy': accuracy_score(y_train, y_train_pred),
+    'Training Precision': classification_report(y_train, y_train_pred, output_dict=True)['weighted avg']['precision'],
+    'Training Recall': classification_report(y_train, y_train_pred, output_dict=True)['weighted avg']['recall'],
+    'Training F1-Score': classification_report(y_train, y_train_pred, output_dict=True)['weighted avg']['f1-score'],
+    'Testing Accuracy': accuracy_score(y_test, y_test_pred),
+    'Testing Precision': classification_report(y_test, y_test_pred, output_dict=True)['weighted avg']['precision'],
+    'Testing Recall': classification_report(y_test, y_test_pred, output_dict=True)['weighted avg']['recall'],
+    'Testing F1-Score': f1
+}
+
+# Convert the dictionary to a DataFrame for better readability
+results_df = pd.DataFrame([evaluation_results])
+
+# Save the DataFrame to a CSV file
+results_df.to_csv('evaluation_results.csv', index=False)
+
+print("Evaluation results saved to 'evaluation_results.csv'")
+execute_result:
+Evaluation results saved to 'evaluation_results.csv'
+is_success:
+True

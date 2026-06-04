@@ -1,0 +1,261 @@
+code:
+import pandas as pd
+
+# Load the data
+train_data_path = r'E:\csv\obesity_cvd_risk_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows to understand the data
+print(train_df_copy.head())
+
+# Check data types and summary statistics
+print(train_df_copy.info())
+print(train_df_copy.describe(include='all'))
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("Categorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+
+# Apply appropriate preprocessing for categorical and numerical columns
+# For categorical columns, we can use label encoding or ordinal encoding
+from sklearn.preprocessing import LabelEncoder
+
+label_encoders = {}
+for col in categorical_columns:
+    le = LabelEncoder()
+    train_df_copy[col] = le.fit_transform(train_df_copy[col])
+    label_encoders[col] = le
+
+# For numerical columns, we can apply scaling if necessary
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+
+# Display the preprocessed data
+print(train_df_copy.head())
+execute_result:
+id  Gender        Age  ...       CALC                 MTRANS           NObeyesdad
+0   0    Male  24.443011  ...  Sometimes  Public_Transportation  Overweight_Level_II
+1   1  Female  18.000000  ...         no             Automobile        Normal_Weight
+2   2  Female  18.000000  ...         no  Public_Transportation  Insufficient_Weight
+3   3  Female  20.952737  ...  Sometimes  Public_Transportation     Obesity_Type_III
+4   4    Male  31.641081  ...  Sometimes  Public_Transportation  Overweight_Level_II
+
+[5 rows x 18 columns]
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 500 entries, 0 to 499
+Data columns (total 18 columns):
+ #   Column                          Non-Null Count  Dtype  
+---  ------                          --------------  -----  
+ 0   id                              500 non-null    int64  
+ 1   Gender                          500 non-null    object 
+ 2   Age                             500 non-null    float64
+ 3   Height                          500 non-null    float64
+ 4   Weight                          500 non-null    float64
+ 5   family_history_with_overweight  500 non-null    object 
+ 6   FAVC                            500 non-null    object 
+ 7   FCVC                            500 non-null    float64
+ 8   NCP                             500 non-null    float64
+ 9   CAEC                            500 non-null    object 
+ 10  SMOKE                           500 non-null    object 
+ 11  CH2O                            500 non-null    float64
+ 12  SCC                             500 non-null    object 
+ 13  FAF                             500 non-null    float64
+ 14  TUE                             500 non-null    float64
+ 15  CALC                            500 non-null    object 
+ 16  MTRANS                          500 non-null    object 
+ 17  NObeyesdad                      500 non-null    object 
+dtypes: float64(8), int64(1), object(9)
+memory usage: 70.4+ KB
+None
+                id  Gender  ...                 MTRANS        NObeyesdad
+count   500.000000     500  ...                    500               500
+unique         NaN       2  ...                      5                 7
+top            NaN  Female  ...  Public_Transportation  Obesity_Type_III
+freq           NaN     263  ...                    398               103
+mean    249.500000     NaN  ...                    NaN               NaN
+std     144.481833     NaN  ...                    NaN               NaN
+min       0.000000     NaN  ...                    NaN               NaN
+25%     124.750000     NaN  ...                    NaN               NaN
+50%     249.500000     NaN  ...                    NaN               NaN
+75%     374.250000     NaN  ...                    NaN               NaN
+max     499.000000     NaN  ...                    NaN               NaN
+
+[11 rows x 18 columns]
+Categorical Columns: Index(['Gender', 'family_history_with_overweight', 'FAVC', 'CAEC', 'SMOKE',
+       'SCC', 'CALC', 'MTRANS', 'NObeyesdad'],
+      dtype='object')
+Numerical Columns: Index(['id', 'Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE'], dtype='object')
+         id  Gender       Age    Height  ...       TUE  CALC  MTRANS  NObeyesdad
+0 -1.728590       1  0.091052  0.039812  ...  0.589667     1       3           6
+1 -1.721662       0 -1.049687 -1.539481  ...  0.629436     2       0           1
+2 -1.714734       0 -1.049687  0.169113  ...  1.768039     2       3           0
+3 -1.707806       0 -0.526903  0.160878  ...  0.257892     1       3           4
+4 -1.700877       1  1.365475  2.456030  ...  0.514020     1       3           6
+
+[5 rows x 18 columns]
+is_success:
+True
+code:
+# Since the data has already been loaded and initial preprocessing steps have been applied,
+# we will continue with the next steps of data preprocessing.
+
+# Handling missing values
+# Check for missing values in the training dataset
+print(train_df_copy.isnull().sum())
+
+# Assuming there are no missing values, if there were, we would handle them as follows:
+# For numerical columns, we can fill missing values with the mean or median
+# For categorical columns, we can fill missing values with the mode
+# However, since there are no missing values, we skip this step.
+
+# Encoding categorical variables
+# We have already encoded the categorical variables using LabelEncoder in the previous step,
+# so we will not repeat this step here.
+
+# Scaling numerical features
+# We have already scaled the numerical features using StandardScaler in the previous step,
+# so we will not repeat this step here.
+
+# Since the label column (NObeyesdad) should not be standardized, we ensure it remains unchanged.
+# The label column is already encoded, so no further action is needed.
+
+# If there were additional preprocessing steps required, they would be added here.
+# For example, if we needed to create new features or apply specific transformations.
+
+# Since the current task is to preprocess the data, and the main steps have been completed,
+# we will now prepare the data for modeling by separating the features and the target variable.
+
+# Separate features and target variable
+X_train = train_df_copy.drop(columns=['NObeyesdad'])
+y_train = train_df_copy['NObeyesdad']
+
+# Display the first few rows of the processed training data
+print(X_train.head())
+print(y_train.head())
+execute_result:
+id                                0
+Gender                            0
+Age                               0
+Height                            0
+Weight                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+NObeyesdad                        0
+dtype: int64
+         id  Gender       Age    Height  ...       FAF       TUE  CALC  MTRANS
+0 -1.728590       1  0.091052  0.039812  ... -1.162422  0.589667     1       3
+1 -1.721662       0 -1.049687 -1.539481  ...  0.058514  0.629436     2       0
+2 -1.714734       0 -1.049687  0.169113  ... -0.105036  1.768039     2       3
+3 -1.707806       0 -0.526903  0.160878  ...  0.629745  0.257892     1       3
+4 -1.700877       1  1.365475  2.456030  ...  1.240348  0.514020     1       3
+
+[5 rows x 17 columns]
+0    6
+1    1
+2    0
+3    4
+4    6
+Name: NObeyesdad, dtype: int32
+is_success:
+True
+code:
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_engineered = train_df_copy.copy()
+
+# Remove the ID column as it is not useful for clustering
+train_df_engineered = train_df_engineered.drop(columns=['id'])
+
+# Select relevant features for clustering based on diet, physical activity, and lifestyle
+# Diet-related features
+diet_features = ['FAVC', 'FCVC', 'NCP', 'CAEC', 'CH2O']
+
+# Physical activity-related features
+activity_features = ['FAF', 'TUE']
+
+# Lifestyle-related features
+lifestyle_features = ['Gender', 'family_history_with_overweight', 'SMOKE', 'SCC', 'CALC', 'MTRANS']
+
+# Combine all selected features
+selected_features = diet_features + activity_features + lifestyle_features
+
+# Create a new DataFrame with only the selected features
+train_df_selected = train_df_engineered[selected_features]
+
+# Display the first few rows of the selected features DataFrame
+print(train_df_selected.head())
+execute_result:
+FAVC      FCVC       NCP  CAEC  ...  SMOKE  SCC  CALC  MTRANS
+0     1 -0.816447  0.333859     2  ...      0    0     1       3
+1     1 -0.816447  0.358730     1  ...      0    0     2       0
+2     1 -1.040241 -2.006323     2  ...      0    0     2       3
+3     1  1.056841  0.358730     2  ...      0    0     1       3
+4     1  0.456759 -1.172782     2  ...      0    0     1       3
+
+[5 rows x 13 columns]
+is_success:
+True
+code:
+from sklearn.cluster import MeanShift, estimate_bandwidth
+
+# Using the selected features dataframe for clustering
+X_cluster = train_df_selected.values
+
+# Estimate the bandwidth for the Mean Shift algorithm
+bandwidth = estimate_bandwidth(X_cluster, quantile=0.2)
+
+# Initialize and fit the Mean Shift model
+ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+ms.fit(X_cluster)
+
+# Get the cluster labels
+cluster_labels = ms.labels_
+
+# Add the cluster labels to the original dataframe
+train_df_selected['Cluster'] = cluster_labels
+
+# Display the first few rows of the dataframe with cluster labels
+print(train_df_selected.head())
+execute_result:
+FAVC      FCVC       NCP  CAEC      CH2O  ...  SMOKE  SCC  CALC  MTRANS  Cluster
+0     1 -0.816447  0.333859     2  1.248678  ...      0    0     1       3        0
+1     1 -0.816447  0.358730     1 -0.030426  ...      0    0     2       0        1
+2     1 -1.040241 -2.006323     2 -0.180557  ...      0    0     2       3        0
+3     1  1.056841  0.358730     2 -0.576425  ...      0    0     1       3        0
+4     1  0.456759 -1.172782     2 -0.064184  ...      0    0     1       3        0
+
+[5 rows x 14 columns],A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  train_df_selected['Cluster'] = cluster_labels
+is_success:
+True
+code:
+from sklearn.metrics import silhouette_score
+
+# Calculate the silhouette score
+silhouette_avg = silhouette_score(X_cluster, cluster_labels)
+print(f"Silhouette Score: {silhouette_avg}")
+execute_result:
+Silhouette Score: 0.24932503321364188
+is_success:
+True

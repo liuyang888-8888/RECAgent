@@ -1,0 +1,170 @@
+import pandas as pd
+
+# Load the Bitcoin price training data
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\bitcoin_price_train.csv'
+bitcoin_data = pd.read_csv(file_path)
+
+# Display the first few rows of the dataset
+first_rows = bitcoin_data.head()
+
+# Identify the column names for the time series data
+series_columns = list(bitcoin_data.columns)
+
+first_rows, series_columns
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(         Date          Open         Close          High           Low
+ 0  2024-04-21  64992.816406  64926.644531  65723.242188  64277.722656
+ 1  2024-04-20  63851.101562  64994.441406  65442.457031  63172.402344
+ 2  2024-04-19  63510.750000  63843.570312  65481.597656  59651.390625
+ 3  2024-04-18  61275.316406  63512.753906  64125.687500  60833.480469
+ 4  2024-04-17  63831.847656  61276.691406  64486.363281  59768.585938,
+ ['Date', 'Open', 'Close', 'High', 'Low'])from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.metrics import mean_squared_error
+
+# Prepare the data for the VAR model
+bitcoin_data['Date'] = pd.to_datetime(bitcoin_data['Date'])
+bitcoin_data.set_index('Date', inplace=True)
+
+# Select the 'High' column as the time series
+high_series = bitcoin_data[['High']]
+
+# Fit the VAR model
+var_model = VAR(high_series)
+lagged_values = var_model.select_order()
+best_lag = lagged_values.selected_orders['aic']
+model_fit = var_model.fit(best_lag)
+
+# Generate predictions on the training set
+predictions = model_fit.fittedvalues
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(high_series[best_lag:], predictions)
+
+mse, predictions, high_series[best_lag:], model_fit
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 12
+    var_model = VAR(high_series)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\statsmodels\tsa\vector_ar\var_model.py:552 in __init__
+    raise ValueError("Only gave one variable to VAR")
+
+ValueError: Only gave one variable to VAR
+
+D:\Dependency\Py_env\taskweaver\Lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning:
+
+A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+
+D:\Dependency\Py_env\taskweaver\Lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning:
+
+A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+
+
+from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.metrics import mean_squared_error
+
+# Prepare the data for the VAR model
+bitcoin_data['Date'] = pd.to_datetime(bitcoin_data['Date'])
+bitcoin_data.set_index('Date', inplace=True)
+
+# Select the 'High', 'Open', 'Close', and 'Low' columns as the time series
+multivariate_series = bitcoin_data[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model
+var_model = VAR(multivariate_series)
+lagged_values = var_model.select_order()
+best_lag = lagged_values.selected_orders['aic']
+model_fit = var_model.fit(best_lag)
+
+# Generate predictions on the training set
+predictions = model_fit.fittedvalues
+
+# Calculate the Mean Squared Error (MSE) for the 'High' column
+mse = mean_squared_error(multivariate_series['High'][best_lag:], predictions['High'])
+
+mse, predictions, multivariate_series['High'][best_lag:], model_fit
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'Date'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[3], line 5
+    bitcoin_data['Date'] = pd.to_datetime(bitcoin_data['Date'])
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:4102 in __getitem__
+    indexer = self.columns.get_loc(key)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'Date'
+
+from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.metrics import mean_squared_error
+
+# Re-check the data
+first_rows, series_columns = first_rows, series_columns
+
+# Ensure the 'Date' column is correctly set as the index
+bitcoin_data = pd.DataFrame(first_rows, columns=series_columns)
+bitcoin_data['Date'] = pd.to_datetime(bitcoin_data['Date'])
+bitcoin_data.set_index('Date', inplace=True)
+
+# Select the 'High', 'Open', 'Close', and 'Low' columns as the time series
+multivariate_series = bitcoin_data[['High', 'Open', 'Close', 'Low']]
+
+# Fit the VAR model
+var_model = VAR(multivariate_series)
+lagged_values = var_model.select_order()
+best_lag = lagged_values.selected_orders['aic']
+model_fit = var_model.fit(best_lag)
+
+# Generate predictions on the training set
+predictions = model_fit.fittedvalues
+
+# Calculate the Mean Squared Error (MSE) for the 'High' column
+mse = mean_squared_error(multivariate_series['High'][best_lag:], predictions['High'])
+
+mse, predictions, multivariate_series['High'][best_lag:], model_fit
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(393115.31478637696,
+                     High          Open         Close           Low
+ Date                                                              
+ 2024-04-21  65051.869531  63492.366406  63710.820312  61540.716406
+ 2024-04-20  65051.869531  63492.366406  63710.820312  61540.716406
+ 2024-04-19  65051.869531  63492.366406  63710.820312  61540.716406
+ 2024-04-18  65051.869531  63492.366406  63710.820312  61540.716406
+ 2024-04-17  65051.869531  63492.366406  63710.820312  61540.716406,
+ Date
+ 2024-04-21    65723.242188
+ 2024-04-20    65442.457031
+ 2024-04-19    65481.597656
+ 2024-04-18    64125.687500
+ 2024-04-17    64486.363281
+ Name: High, dtype: float64,
+ <statsmodels.tsa.vector_ar.var_model.VARResultsWrapper at 0x1fbee29eb50>)

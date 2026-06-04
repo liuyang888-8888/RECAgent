@@ -1,0 +1,64 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 定义数据路径
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\rice_cammeo_and_osmancik_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\rice_cammeo_and_osmancik_test.csv'
+
+# 加载数据
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 检查数据是否有缺失值
+print("训练数据缺失值情况：", train_data.isnull().sum())
+print("测试数据缺失值情况：", test_data.isnull().sum())
+
+# 将目标变量转换为数值标签
+label_encoder = LabelEncoder()
+train_data['Class'] = label_encoder.fit_transform(train_data['Class'])
+test_data['Class'] = label_encoder.transform(test_data['Class'])
+
+# 分离特征和目标变量
+X_train = train_data.drop(columns=['Class'])
+y_train = train_data['Class']
+X_test = test_data.drop(columns=['Class'])
+y_test = test_data['Class']
+
+# 构建分类模型
+model = LogisticRegression()
+
+# 训练模型
+model.fit(X_train, y_train)
+
+# 预测测试集
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print("测试集上的 F1 分数：", f1)
+
+
+执行结果：
+训练数据缺失值情况： Area                 0
+Perimeter            0
+Major_Axis_Length    0
+Minor_Axis_Length    0
+Eccentricity         0
+Convex_Area          0
+Extent               0
+Class                0
+dtype: int64
+测试数据缺失值情况： Area                 0
+Perimeter            0
+Major_Axis_Length    0
+Minor_Axis_Length    0
+Eccentricity         0
+Convex_Area          0
+Extent               0
+Class                0
+dtype: int64
+测试集上的 F1 分数： 0.9290836631602085

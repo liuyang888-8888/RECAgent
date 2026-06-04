@@ -1,0 +1,124 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 步骤1：导入必要的库
+
+# 步骤2：加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_train.csv'
+df = pd.read_csv(data_path)
+
+# 步骤3：数据预处理
+# 确保日期列是日期时间格式
+df['Date'] = pd.to_datetime(df['Date'])
+# 设置日期列为索引
+df.set_index('Date', inplace=True)
+
+# 选择需要的时间序列数据列
+series = df['Close']
+
+# 步骤4：构建 ARIMA 模型
+# 这里我们使用 (5,1,0) 作为 ARIMA 模型的参数，你可以根据实际情况调整
+model = ARIMA(series, order=(5, 1, 0))
+
+# 步骤5：拟合模型
+model_fit = model.fit()
+
+# 步骤6：计算均方误差
+# 获取拟合值
+fitted_values = model_fit.fittedvalues
+# 计算均方误差
+mse = mean_squared_error(series, fitted_values)
+
+print(f'均方误差 (MSE): {mse}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3805, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\\_libs\\hashtable_class_helper.pxi", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'Date'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_4fa2e5dccc850e19da74525a8497922b2f1c365f79e2846844f61310c7f2bf39.py", line 14, in <module>
+    df['Date'] = pd.to_datetime(df['Date'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 4102, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    raise KeyError(key) from err
+KeyError: 'Date'
+
+生成的代码：
+import pandas as pd
+
+# 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_train.csv'
+df = pd.read_csv(data_path)
+
+# 打印列名
+print(df.columns)
+
+
+执行结果：
+Index(['date', 'SP500'], dtype='object')
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# 步骤1：导入必要的库
+
+# 步骤2：加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\sp500_index_train.csv'
+df = pd.read_csv(data_path)
+
+# 步骤3：数据预处理
+# 确保日期列是日期时间格式
+df['date'] = pd.to_datetime(df['date'])
+# 设置日期列为索引
+df.set_index('date', inplace=True)
+
+# 选择需要的时间序列数据列
+series = df['SP500']
+
+# 步骤4：构建 ARIMA 模型
+# 这里我们使用 (5,1,0) 作为 ARIMA 模型的参数，你可以根据实际情况调整
+model = ARIMA(series, order=(5, 1, 0))
+
+# 步骤5：拟合模型
+model_fit = model.fit()
+
+# 步骤6：计算均方误差
+# 获取拟合值
+fitted_values = model_fit.fittedvalues
+# 计算均方误差
+mse = mean_squared_error(series, fitted_values)
+
+print(f'均方误差 (MSE): {mse}')
+
+
+执行结果：
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it has no associated frequency information and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+D:\Dependency\Py_env\autogen\lib\site-packages\statsmodels\tsa\base\tsa_model.py:473: ValueWarning: A date index has been provided, but it is not monotonic and so will be ignored when e.g. forecasting.
+  self._init_dates(dates, freq)
+均方误差 (MSE): 1041721.0258359485

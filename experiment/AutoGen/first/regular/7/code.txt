@@ -1,0 +1,201 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 1. 导入必要的库
+
+# 2. 加载数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 3. 数据预处理
+# 检查缺失值
+print("训练集缺失值情况：")
+print(train_data.isnull().sum())
+print("测试集缺失值情况：")
+print(test_data.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要进行处理
+
+# 将分类变量进行编码
+label_encoders = {}
+for column in train_data.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    train_data[column] = le.fit_transform(train_data[column])
+    test_data[column] = le.transform(test_data[column])
+    label_encoders[column] = le
+
+# 分离特征和标签
+X_train = train_data.drop(columns=['is_canceled'])
+y_train = train_data['is_canceled']
+X_test = test_data.drop(columns=['is_canceled'])
+y_test = test_data['is_canceled']
+
+# 4. 构建模型
+model = RandomForestClassifier(random_state=42)
+
+# 5. 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"测试集上的加权平均 F1 分数: {f1}")
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_eeb58ae0910f054202fbe52cb9bfe1a1a6dd193ae9c8f434133c46855d04f567.py", line 33, in <module>
+    X_train = train_data.drop(columns=['is_canceled'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['is_canceled'] not found in axis"
+训练集缺失值情况：
+id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+测试集缺失值情况：
+id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 1. 导入必要的库
+
+# 2. 加载数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\reservation_cancellation_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 3. 数据预处理
+# 检查缺失值
+print("训练集缺失值情况：")
+print(train_data.isnull().sum())
+print("测试集缺失值情况：")
+print(test_data.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要进行处理
+
+# 将分类变量进行编码
+label_encoders = {}
+for column in train_data.select_dtypes(include=['object']).columns:
+    le = LabelEncoder()
+    train_data[column] = le.fit_transform(train_data[column])
+    test_data[column] = le.transform(test_data[column])
+    label_encoders[column] = le
+
+# 分离特征和标签
+X_train = train_data.drop(columns=['booking_status'])
+y_train = train_data['booking_status']
+X_test = test_data.drop(columns=['booking_status'])
+y_test = test_data['booking_status']
+
+# 4. 构建模型
+model = RandomForestClassifier(random_state=42)
+
+# 5. 训练模型
+model.fit(X_train, y_train)
+
+# 6. 评估模型
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"测试集上的加权平均 F1 分数: {f1}")
+
+
+执行结果：
+训练集缺失值情况：
+id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+测试集缺失值情况：
+id                                      0
+no_of_adults                            0
+no_of_children                          0
+no_of_weekend_nights                    0
+no_of_week_nights                       0
+type_of_meal_plan                       0
+required_car_parking_space              0
+room_type_reserved                      0
+lead_time                               0
+arrival_year                            0
+arrival_month                           0
+arrival_date                            0
+market_segment_type                     0
+repeated_guest                          0
+no_of_previous_cancellations            0
+no_of_previous_bookings_not_canceled    0
+avg_price_per_room                      0
+no_of_special_requests                  0
+booking_status                          0
+dtype: int64
+测试集上的加权平均 F1 分数: 0.8154789204577875

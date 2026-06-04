@@ -1,0 +1,179 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.cluster import KMeans
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    silhouette_avg = silhouette_score(X, labels)
+    return silhouette_avg
+
+def train_model(X_train):
+    # Scale the data
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
+    # Define and train the K-Means model
+    kmeans = KMeans(n_clusters=4, random_state=SEED)
+    kmeans.fit(X_train_scaled)
+    
+    return kmeans
+
+if __name__ == '__main__':
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # Handle missing values if any
+    data_df.fillna(data_df.mean(), inplace=True)
+
+    # Process data and store in numpy array
+    X = data_df.values
+
+    # Define and train the model
+    model = train_model(X)
+
+    # Evaluate the model and print the silhouette coefficient
+    silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+    print("Final silhouette_avg on trained set: ", silhouette_avg)
+
+    # Submit results
+    submit_predictions_for_test_set(model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Final silhouette_avg on trained set:  -0.0170492306679416
+final silhouette_avg on trained set:  -0.0170492306679416
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import silhouette_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.cluster import KMeans
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_clustering(X, labels):
+    # 计算轮廓系数
+    silhouette_avg = silhouette_score(X, labels)
+    return silhouette_avg
+
+def train_model(X_train, n_clusters, init_method):
+    # Scale the data
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    
+    # Define and train the K-Means model
+    kmeans = KMeans(n_clusters=n_clusters, init=init_method, random_state=SEED)
+    kmeans.fit(X_train_scaled)
+    
+    return kmeans
+
+if __name__ == '__main__':
+    data_df = pd.read_csv('train.csv')
+
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # Handle missing values if any
+    data_df.fillna(data_df.mean(), inplace=True)
+
+    # Process data and store in numpy array
+    X = data_df.values
+
+    # Define the hyperparameters to test
+    n_clusters_list = [3, 5]
+    init_methods = ['k-means++', 'random']
+
+    best_silhouette_avg = -1
+    best_model = None
+    best_params = {}
+
+    for n_clusters in n_clusters_list:
+        for init_method in init_methods:
+            # Define and train the model
+            model = train_model(X, n_clusters, init_method)
+            
+            # Evaluate the model and print the silhouette coefficient
+            silhouette_avg = compute_metrics_for_clustering(X, model.labels_)
+            print(f"Silhouette coefficient for n_clusters={n_clusters}, init={init_method}: {silhouette_avg}")
+            
+            # Track the best model
+            if silhouette_avg > best_silhouette_avg:
+                best_silhouette_avg = silhouette_avg
+                best_model = model
+                best_params = {'n_clusters': n_clusters, 'init': init_method}
+
+    print("Best silhouette coefficient:", best_silhouette_avg)
+    print("Best parameters:", best_params)
+
+    # Submit results
+    submit_predictions_for_test_set(best_model.labels_)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Silhouette coefficient for n_clusters=3, init=k-means++: 0.002915124358915161
+Silhouette coefficient for n_clusters=3, init=random: 0.006793766195173508
+Silhouette coefficient for n_clusters=5, init=k-means++: -0.032102345063370466
+Silhouette coefficient for n_clusters=5, init=random: -0.08479613332309081
+Best silhouette coefficient: 0.006793766195173508
+Best parameters: {'n_clusters': 3, 'init': 'random'}
+final silhouette_avg on trained set:  0.006793766195173508
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

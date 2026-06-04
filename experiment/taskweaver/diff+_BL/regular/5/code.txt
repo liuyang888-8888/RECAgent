@@ -1,0 +1,299 @@
+import pandas as pd
+
+# Load the training and test datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\horse_health_outcomes_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\horse_health_outcomes_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Display the first few rows of the datasets
+train_df.head(), test_df.head()
+
+# Result variables
+train_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(    surgery  hospital_number  rectal_temp  pulse  respiratory_rate peripheral_pulse mucous_membrane capillary_refill_time outcome
+ 0       yes           527706         39.0   84.0              24.0           normal     bright_pink            less_3_sec    died
+ 1       yes           528641         38.5   66.0              21.0           normal     bright_pink            less_3_sec   lived
+ ..      ...              ...          ...    ...               ...              ...             ...                   ...     ...
+ 984     yes           528570         36.1   50.0              50.0          reduced      bright_red            less_3_sec    died
+ 985     yes           533886         38.0  104.0              70.0          reduced      bright_red            more_3_sec   lived
+ 
+ [986 rows x 9 columns],
+     surgery  hospital_number  rectal_temp  pulse  respiratory_rate peripheral_pulse mucous_membrane capillary_refill_time     outcome
+ 0        no           535381         39.4   86.0              21.0           normal       pale_pink            less_3_sec  euthanized
+ 1       yes           535029         37.5  112.0              12.0           normal     bright_pink            less_3_sec  euthanized
+ ..      ...              ...          ...    ...               ...              ...             ...                   ...         ...
+ 245     yes           529642         40.8  108.0              12.0          reduced   pale_cyanotic            less_3_sec        died
+ 246     yes           535163         37.8   78.0              20.0          reduced       pale_pink            less_3_sec  euthanized
+ 
+ [247 rows x 9 columns])from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score
+import lightgbm as lgb
+
+# Preprocess the data
+X_train = train_df.drop(columns=['outcome'])
+y_train = train_df['outcome']
+X_test = test_df.drop(columns=['outcome'])
+y_test = test_df['outcome']
+
+# Convert the data to LightGBM Dataset format
+train_data = lgb.Dataset(X_train, label=y_train)
+test_data = lgb.Dataset(X_test, label=y_test, reference=train_data)
+
+# Define the parameters for the LightGBM model
+params = {
+    'objective': 'binary',
+    'metric': 'binary_logloss',
+    'boosting_type': 'gbdt',
+    'num_leaves': 31,
+    'learning_rate': 0.05,
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the LightGBM model
+model = lgb.train(params, train_data, valid_sets=[test_data], num_boost_round=100, early_stopping_rounds=10)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test, num_iteration=model.best_iteration)
+y_pred_binary = (y_pred > 0.5).astype(int)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred_binary)
+
+# Report the F1 score
+f1, y_pred_binary, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 29
+    model = lgb.train(params, train_data, valid_sets=[test_data], num_boost_round=100, early_stopping_rounds=10)
+
+TypeError: train() got an unexpected keyword argument 'early_stopping_rounds'
+
+from sklearn.metrics import f1_score
+import lightgbm as lgb
+
+# Preprocess the data
+X_train = train_df.drop(columns=['outcome'])
+y_train = train_df['outcome']
+X_test = test_df.drop(columns=['outcome'])
+y_test = test_df['outcome']
+
+# Convert the data to LightGBM Dataset format
+train_data = lgb.Dataset(X_train, label=y_train)
+test_data = lgb.Dataset(X_test, label=y_test, reference=train_data)
+
+# Define the parameters for the LightGBM model
+params = {
+    'objective': 'binary',
+    'metric': 'binary_logloss',
+    'boosting_type': 'gbdt',
+    'num_leaves': 31,
+    'learning_rate': 0.05,
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the LightGBM model
+model = lgb.train(params, train_data, valid_sets=[test_data], num_boost_round=100)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test, num_iteration=model.best_iteration)
+y_pred_binary = (y_pred > 0.5).astype(int)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred_binary)
+
+# Report the F1 score
+f1, y_pred_binary, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[3], line 28
+    model = lgb.train(params, train_data, valid_sets=[test_data], num_boost_round=100)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\engine.py:297 in train
+    booster = Booster(params=params, train_set=train_set)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:3656 in __init__
+    train_set.construct()
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2590 in construct
+    self._lazy_init(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2123 in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:868 in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:814 in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:805 in _check_for_bad_pandas_dtypes
+    raise ValueError(
+
+ValueError: pandas dtypes must be int, float or bool.
+Fields with bad pandas dtypes: surgery: object, peripheral_pulse: object, mucous_membrane: object, capillary_refill_time: object
+
+import pandas as pd
+from sklearn.metrics import f1_score
+import lightgbm as lgb
+
+# Preprocess the data
+X_train = train_df.drop(columns=['outcome'])
+y_train = train_df['outcome']
+X_test = test_df.drop(columns=['outcome'])
+y_test = test_df['outcome']
+
+# Convert categorical features to dummy variables
+X_train_encoded = pd.get_dummies(X_train)
+X_test_encoded = pd.get_dummies(X_test)
+
+# Ensure the same columns in both training and testing sets
+X_test_encoded = X_test_encoded.reindex(columns=X_train_encoded.columns, fill_value=0)
+
+# Convert the data to LightGBM Dataset format
+train_data = lgb.Dataset(X_train_encoded, label=y_train)
+test_data = lgb.Dataset(X_test_encoded, label=y_test, reference=train_data)
+
+# Define the parameters for the LightGBM model
+params = {
+    'objective': 'binary',
+    'metric': 'binary_logloss',
+    'boosting_type': 'gbdt',
+    'num_leaves': 31,
+    'learning_rate': 0.05,
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the LightGBM model
+model = lgb.train(params, train_data, valid_sets=[test_data], num_boost_round=100)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test_encoded, num_iteration=model.best_iteration)
+y_pred_binary = (y_pred > 0.5).astype(int)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred_binary)
+
+# Report the F1 score
+f1, y_pred_binary, y_test, model
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[4], line 36
+    model = lgb.train(params, train_data, valid_sets=[test_data], num_boost_round=100)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\engine.py:297 in train
+    booster = Booster(params=params, train_set=train_set)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:3656 in __init__
+    train_set.construct()
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2590 in construct
+    self._lazy_init(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:2209 in _lazy_init
+    self.set_label(label)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:3077 in set_label
+    label_array = _list_to_1d_numpy(label, dtype=np.float32, name="label")
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:380 in _list_to_1d_numpy
+    _check_for_bad_pandas_dtypes(data.to_frame().dtypes)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\lightgbm\basic.py:805 in _check_for_bad_pandas_dtypes
+    raise ValueError(
+
+ValueError: pandas dtypes must be int, float or bool.
+Fields with bad pandas dtypes: outcome: object
+
+import pandas as pd
+from sklearn.metrics import f1_score
+import lightgbm as lgb
+
+# Preprocess the data
+X_train = train_df.drop(columns=['outcome'])
+y_train = train_df['outcome'].map({'died': 0, 'lived': 1, 'euthanized': 2})
+X_test = test_df.drop(columns=['outcome'])
+y_test = test_df['outcome'].map({'died': 0, 'lived': 1, 'euthanized': 2})
+
+# Convert categorical features to dummy variables
+X_train_encoded = pd.get_dummies(X_train)
+X_test_encoded = pd.get_dummies(X_test)
+
+# Ensure the same columns in both training and testing sets
+X_test_encoded = X_test_encoded.reindex(columns=X_train_encoded.columns, fill_value=0)
+
+# Convert the data to LightGBM Dataset format
+train_data = lgb.Dataset(X_train_encoded, label=y_train)
+test_data = lgb.Dataset(X_test_encoded, label=y_test, reference=train_data)
+
+# Define the parameters for the LightGBM model
+params = {
+    'objective': 'multiclass',
+    'num_class': 3,
+    'metric': 'multi_logloss',
+    'boosting_type': 'gbdt',
+    'num_leaves': 31,
+    'learning_rate': 0.05,
+    'feature_fraction': 0.9,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': 0
+}
+
+# Train the LightGBM model
+model = lgb.train(params, train_data, valid_sets=[test_data], num_boost_round=100)
+
+# Make predictions on the test set
+y_pred = model.predict(X_test_encoded, num_iteration=model.best_iteration)
+y_pred_classes = y_pred.argmax(axis=1)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred_classes, average='weighted')
+
+# Report the F1 score
+f1, y_pred_classes, y_test, model
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(0.6541817860212857,
+ array([2, 2, 1, 1, 0, 0, 0, 0, 2, 1, 1, 0, 1, 0, 2, 2, 1, 1, 0, 0, 2, 2,
+        0, 1, 1, 2, 2, 1, 1, 2, 2, 0, 0, 2, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0,
+        2, 2, 1, 1, 1, 2, 1, 1, 1, 0, 2, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1,
+        2, 2, 0, 0, 0, 1, 2, 1, 0, 2, 0, 2, 1, 0, 1, 1, 1, 2, 1, 0, 1, 0,
+        1, 0, 1, 0, 2, 1, 2, 0, 1, 1, 2, 0, 0, 0, 2, 1, 1, 2, 0, 2, 1, 0,
+        0, 2, 0, 0, 2, 1, 1, 1, 0, 2, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2,
+        1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 0, 2, 1, 2, 0, 1, 0, 1, 2,
+        1, 1, 1, 1, 2, 0, 0, 0, 1, 2, 1, 0, 1, 0, 2, 1, 1, 0, 1, 0, 1, 1,
+        0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 2, 2, 0, 1, 2, 0, 1, 1,
+        0, 0, 1, 1, 1, 0, 0, 2, 1, 1, 2, 0, 0, 1, 1, 1, 1, 0, 0, 2, 1, 0,
+        0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0,
+        1, 0, 0, 0, 2], dtype=int64),
+ 0      2
+ 1      2
+       ..
+ 245    0
+ 246    2
+ Name: outcome, Length: 247, dtype: int64,
+ <lightgbm.basic.Booster at 0x20a4687ccd0>)

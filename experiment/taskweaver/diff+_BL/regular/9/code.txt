@@ -1,0 +1,103 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Preprocess the data
+X_train = train_df.drop('target', axis=1)
+y_train = train_df['target']
+X_test = test_df.drop('target', axis=1)
+y_test = test_df['target']
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Build and train the Random Forest classifier
+rf_classifier = RandomForestClassifier()
+rf_classifier.fit(X_train_scaled, y_train)
+
+# Predict on the test set
+y_pred = rf_classifier.predict(X_test_scaled)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+f1
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 33
+    f1 = f1_score(y_test, y_pred)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:216 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1324 in f1_score
+    return fbeta_score(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:189 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1517 in fbeta_score
+    _, _, f, _ = precision_recall_fscore_support(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_param_validation.py:189 in wrapper
+    return func(*args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1830 in precision_recall_fscore_support
+    labels = _check_set_wise_labels(y_true, y_pred, average, labels, pos_label)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\metrics\_classification.py:1613 in _check_set_wise_labels
+    raise ValueError(
+
+ValueError: Target is multiclass but average='binary'. Please choose another average setting, one of [None, 'micro', 'macro', 'weighted'].
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\heart_diseases_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Preprocess the data
+X_train = train_df.drop('target', axis=1)
+y_train = train_df['target']
+X_test = test_df.drop('target', axis=1)
+y_test = test_df['target']
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Build and train the Random Forest classifier
+rf_classifier = RandomForestClassifier()
+rf_classifier.fit(X_train_scaled, y_train)
+
+# Predict on the test set
+y_pred = rf_classifier.predict(X_test_scaled)
+
+# Calculate the F1 score with macro averaging
+f1 = f1_score(y_test, y_pred, average='macro')
+f1
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+0.2250233426704015

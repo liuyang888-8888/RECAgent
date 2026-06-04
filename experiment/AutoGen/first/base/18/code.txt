@@ -1,0 +1,79 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# 1. 加载数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\wild_blueberry_yield_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\wild_blueberry_yield_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("训练集缺失值情况：", train_df.isnull().sum())
+print("测试集缺失值情况：", test_df.isnull().sum())
+
+# 假设没有缺失值，直接分离特征和目标变量
+X_train = train_df.drop(columns=['yield'])
+y_train = train_df['yield']
+
+X_test = test_df.drop(columns=['yield'])
+y_test = test_df['yield']
+
+# 3. 构建模型
+model = LinearRegression()
+
+# 4. 训练模型
+model.fit(X_train, y_train)
+
+# 5. 评估模型
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+
+print(f"测试集上的均方误差（MSE）: {mse}")
+
+
+执行结果：
+训练集缺失值情况： id                      0
+clonesize               0
+honeybee                0
+bumbles                 0
+andrena                 0
+osmia                   0
+MaxOfUpperTRange        0
+MinOfUpperTRange        0
+AverageOfUpperTRange    0
+MaxOfLowerTRange        0
+MinOfLowerTRange        0
+AverageOfLowerTRange    0
+RainingDays             0
+AverageRainingDays      0
+fruitset                0
+fruitmass               0
+seeds                   0
+yield                   0
+dtype: int64
+测试集缺失值情况： id                      0
+clonesize               0
+honeybee                0
+bumbles                 0
+andrena                 0
+osmia                   0
+MaxOfUpperTRange        0
+MinOfUpperTRange        0
+AverageOfUpperTRange    0
+MaxOfLowerTRange        0
+MinOfLowerTRange        0
+AverageOfLowerTRange    0
+RainingDays             0
+AverageRainingDays      0
+fruitset                0
+fruitmass               0
+seeds                   0
+yield                   0
+dtype: int64
+测试集上的均方误差（MSE）: 333144.5298970206

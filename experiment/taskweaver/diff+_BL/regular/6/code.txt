@@ -1,0 +1,31 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\kidney_stone_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\kidney_stone_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Separate features and target variable
+X_train = train_df.drop('target', axis=1)
+y_train = train_df['target']
+X_test = test_df.drop('target', axis=1)
+y_test = test_df['target']
+
+# Build the decision tree classifier
+clf = DecisionTreeClassifier()
+clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = clf.predict(X_test)
+
+# Calculate the F1 score
+f1 = f1_score(y_test, y_pred)
+f1
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+0.6111111111111112

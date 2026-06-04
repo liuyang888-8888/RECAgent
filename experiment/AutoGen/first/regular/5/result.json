@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 5,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "horse_health_outcomes",
+        "task_description": "请使用数据库中的马匹了过去的医疗状况相关数据，构建一个LightGBM的分类模型，可以依据马匹的医疗状况自动判断该马匹最终存活下来的概率。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 71.11614274978638,
+        "interact_count": 3,
+        "prompt_tokens": 4638,
+        "completion_tokens": 1077,
+        "RCR": 5
+    }
+}

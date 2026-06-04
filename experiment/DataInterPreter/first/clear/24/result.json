@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 73.95556807518005,
+        "interact_count": 13,
+        "prompt_tokens": 16419,
+        "completion_tokens": 1775,
+        "RCR": 4
+    },
+    "task": {
+        "id": 24,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "titanic",
+        "task_description": "构建一个 k-Means 聚类算法模型,指定K值为5，用于分析泰坦尼克号上的人员组成，从而揭示潜在的人员结构和群体特征。该数据存在空值，需要进行缺失值处理，填充方法使用平均值/频繁值的方式。"
+    }
+}

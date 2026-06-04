@@ -1,0 +1,104 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import f1_score
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 分离特征和标签
+X_train = train_df[['variance', 'skewness', 'kurtosis', 'entropy']]
+y_train = train_df['class']
+
+X_test = test_df[['variance', 'skewness', 'kurtosis', 'entropy']]
+y_test = test_df['class']
+
+# 初始化模型
+gbdt = GradientBoostingClassifier(n_estimators=20, learning_rate=0.01, random_state=42)
+
+# 训练模型
+gbdt.fit(X_train, y_train)
+
+# 预测
+y_pred = gbdt.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 输出 F1 分数
+print(f'Weighted F1 Score: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_51ed267c25ba2a5a3563994dc41cc65b6710f7545699022c12ec5e48fb7cfc66.py", line 13, in <module>
+    X_train = train_df[['variance', 'skewness', 'kurtosis', 'entropy']]
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 4108, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 6200, in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 6252, in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+KeyError: "['kurtosis'] not in index"
+
+生成的代码：
+import pandas as pd
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 打印列名
+print("Train data columns:", train_df.columns)
+print("Test data columns:", test_df.columns)
+
+
+执行结果：
+Train data columns: Index(['variance', 'skewness', 'curtosis', 'entropy', 'class'], dtype='object')
+Test data columns: Index(['variance', 'skewness', 'curtosis', 'entropy', 'class'], dtype='object')
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import f1_score
+
+# 读取数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\banknote_authentication_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 分离特征和标签
+X_train = train_df[['variance', 'skewness', 'curtosis', 'entropy']]
+y_train = train_df['class']
+
+X_test = test_df[['variance', 'skewness', 'curtosis', 'entropy']]
+y_test = test_df['class']
+
+# 初始化模型
+gbdt = GradientBoostingClassifier(n_estimators=20, learning_rate=0.01, random_state=42)
+
+# 训练模型
+gbdt.fit(X_train, y_train)
+
+# 预测
+y_pred = gbdt.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 输出 F1 分数
+print(f'Weighted F1 Score: {f1}')
+
+
+执行结果：
+Weighted F1 Score: 0.923276046750531

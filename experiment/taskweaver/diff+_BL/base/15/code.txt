@@ -1,0 +1,60 @@
+import pandas as pd
+
+# Load the training and test datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crab_age_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crab_age_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Display the first five rows of the datasets
+train_df.head(), test_df.head()
+
+# Store the loaded datasets in variables
+train_df, test_df
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(          id Sex  Length  Diameter  Height     Weight  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 0          0   I  1.5250    1.1750  0.3750  28.973189       12.728926        6.647958      8.348928    9
+ 1          1   I  1.1000    0.8250  0.2750  10.418441        4.521745        2.324659      3.401940    8
+ ...      ...  ..     ...       ...     ...        ...             ...             ...           ...  ...
+ 59238  74049   I  1.2125    0.9625  0.3125  16.768729        8.972617        2.919999      4.280774    8
+ 59239  74050   I  0.9125    0.6750  0.2000   5.386405        2.055339        1.034757      1.700970    6
+ 
+ [59240 rows x 10 columns],
+           id Sex  Length  Diameter  Height     Weight  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 0          4   I   1.250    1.0125  0.3375  23.289114       11.977664        4.507570      5.953395    8
+ 1          6   M   1.575    1.1375  0.3500  30.022120       11.935140        7.342521      8.646598   11
+ ...      ...  ..     ...       ...     ...        ...             ...             ...           ...  ...
+ 14809  74038   F   1.425    1.1125  0.3750  22.537852       10.801160        4.890289      6.236890    9
+ 14810  74041   I   1.325    1.0375  0.3250  21.006979        9.100190        4.606794      5.669900    8
+ 
+ [14811 rows x 10 columns])from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Define the features and target variable
+features = ['Sex', 'Length', 'Diameter', 'Height', 'Weight', 'Shucked_Weight', 'Viscera_Weight', 'Shell_Weight']
+target = 'Age'
+
+# Preprocess the categorical feature 'Sex'
+train_df['Sex'] = train_df['Sex'].map({'M': 0, 'F': 1, 'I': 2})
+test_df['Sex'] = test_df['Sex'].map({'M': 0, 'F': 1, 'I': 2})
+
+# Train the regression model
+X_train = train_df[features]
+y_train = train_df[target]
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Evaluate the model on the test data
+X_test = test_df[features]
+y_test = test_df[target]
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+
+mse, model
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(4.590996293873505, LinearRegression())

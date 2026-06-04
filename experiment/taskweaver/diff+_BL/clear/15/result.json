@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 15,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "crab_age",
+        "task_description": "请使用包含了螃蟹的性别、重量，直径，高度和外壳及内脏重量还有年龄的表格数据，先加载数据，然后对数据进行抽样，用抽样之后的数据构建一个决策树回归模型预测螃蟹年龄,叶子节点中的最小实例数设置为2，分割子集不小于5，最大树深度设置为50。最后还需要加上对抽样的测试数据的预测。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 168.34204030036926,
+        "interact_count": 6,
+        "prompt_tokens": 29471,
+        "completion_tokens": 3336,
+        "RCR": 5
+    }
+}

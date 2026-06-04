@@ -1,0 +1,327 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Step 1: Load the data
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_test.csv'
+
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# Step 2: Data preprocessing
+# Check for missing values and handle them if necessary
+print("Missing values in training data:\n", train_data.isnull().sum())
+print("Missing values in test data:\n", test_data.isnull().sum())
+
+# For simplicity, we will drop rows with missing values
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# Step 3: Split the data into features and labels
+X_train = train_data.drop(columns=['status'])
+y_train = train_data['status']
+
+X_test = test_data.drop(columns=['status'])
+y_test = test_data['status']
+
+# Step 4: Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Step 5: Train the model
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Step 6: Evaluate the model
+y_pred = model.predict(X_test_scaled)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'Weighted F1 Score on the test set: {f1:.4f}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_646759524f51e372483f4120d910991be661a47e5995b8b2e3f570f8a3601dbd.py", line 24, in <module>
+    X_train = train_data.drop(columns=['status'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['status'] not found in axis"
+Missing values in training data:
+ id               0
+N_Days           0
+Drug             0
+Age              0
+Sex              0
+Ascites          0
+Hepatomegaly     0
+Spiders          0
+Edema            0
+Bilirubin        0
+Cholesterol      0
+Albumin          0
+Copper           0
+Alk_Phos         0
+SGOT             0
+Tryglicerides    0
+Platelets        0
+Prothrombin      0
+Stage            0
+Status           0
+dtype: int64
+Missing values in test data:
+ id               0
+N_Days           0
+Drug             0
+Age              0
+Sex              0
+Ascites          0
+Hepatomegaly     0
+Spiders          0
+Edema            0
+Bilirubin        0
+Cholesterol      0
+Albumin          0
+Copper           0
+Alk_Phos         0
+SGOT             0
+Tryglicerides    0
+Platelets        0
+Prothrombin      0
+Stage            0
+Status           0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Step 1: Load the data
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_test.csv'
+
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# Step 2: Data preprocessing
+# Check for missing values and handle them if necessary
+print("Missing values in training data:\n", train_data.isnull().sum())
+print("Missing values in test data:\n", test_data.isnull().sum())
+
+# For simplicity, we will drop rows with missing values
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# Step 3: Split the data into features and labels
+X_train = train_data.drop(columns=['Status'])
+y_train = train_data['Status']
+
+X_test = test_data.drop(columns=['Status'])
+y_test = test_data['Status']
+
+# Step 4: Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Step 5: Train the model
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Step 6: Evaluate the model
+y_pred = model.predict(X_test_scaled)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'Weighted F1 Score on the test set: {f1:.4f}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_f098eabd779e95a962aea5c246a6ae88fb3178d7ba7c36f96ef29d5b418f3753.py", line 32, in <module>
+    X_train_scaled = scaler.fit_transform(X_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 918, in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\preprocessing\_data.py", line 894, in fit
+    return self.partial_fit(X, y, sample_weight)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\preprocessing\_data.py", line 930, in partial_fit
+    X = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2944, in validate_data
+    out = check_array(X, input_name="X", **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1055, in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_array_api.py", line 839, in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 2153, in __array__
+    arr = np.asarray(values, dtype=dtype)
+ValueError: could not convert string to float: 'Placebo'
+Missing values in training data:
+ id               0
+N_Days           0
+Drug             0
+Age              0
+Sex              0
+Ascites          0
+Hepatomegaly     0
+Spiders          0
+Edema            0
+Bilirubin        0
+Cholesterol      0
+Albumin          0
+Copper           0
+Alk_Phos         0
+SGOT             0
+Tryglicerides    0
+Platelets        0
+Prothrombin      0
+Stage            0
+Status           0
+dtype: int64
+Missing values in test data:
+ id               0
+N_Days           0
+Drug             0
+Age              0
+Sex              0
+Ascites          0
+Hepatomegaly     0
+Spiders          0
+Edema            0
+Bilirubin        0
+Cholesterol      0
+Albumin          0
+Copper           0
+Alk_Phos         0
+SGOT             0
+Tryglicerides    0
+Platelets        0
+Prothrombin      0
+Stage            0
+Status           0
+dtype: int64
+
+生成的代码：
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Step 1: Load the data
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_test.csv'
+
+train_data = pd.read_csv(train_data_path)
+test_data = pd.read_csv(test_data_path)
+
+# Step 2: Data preprocessing
+# Check for missing values and handle them if necessary
+print("Missing values in training data:\n", train_data.isnull().sum())
+print("Missing values in test data:\n", test_data.isnull().sum())
+
+# For simplicity, we will drop rows with missing values
+train_data = train_data.dropna()
+test_data = test_data.dropna()
+
+# One-hot encode categorical features
+train_data = pd.get_dummies(train_data, columns=['Drug', 'Sex', 'Ascites', 'Hepatomegaly', 'Spiders', 'Edema'])
+test_data = pd.get_dummies(test_data, columns=['Drug', 'Sex', 'Ascites', 'Hepatomegaly', 'Spiders', 'Edema'])
+
+# Ensure that both train and test data have the same columns
+train_columns = set(train_data.columns)
+test_columns = set(test_data.columns)
+all_columns = train_columns.union(test_columns)
+
+for col in all_columns:
+    if col not in train_data.columns:
+        train_data[col] = 0
+    if col not in test_data.columns:
+        test_data[col] = 0
+
+# Reorder columns to match
+train_data = train_data.reindex(columns=sorted(train_data.columns))
+test_data = test_data.reindex(columns=sorted(test_data.columns))
+
+# Step 3: Split the data into features and labels
+X_train = train_data.drop(columns=['Status'])
+y_train = train_data['Status']
+
+X_test = test_data.drop(columns=['Status'])
+y_test = test_data['Status']
+
+# Step 4: Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Step 5: Train the model
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Step 6: Evaluate the model
+y_pred = model.predict(X_test_scaled)
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'Weighted F1 Score on the test set: {f1:.4f}')
+
+
+执行结果：
+Missing values in training data:
+ id               0
+N_Days           0
+Drug             0
+Age              0
+Sex              0
+Ascites          0
+Hepatomegaly     0
+Spiders          0
+Edema            0
+Bilirubin        0
+Cholesterol      0
+Albumin          0
+Copper           0
+Alk_Phos         0
+SGOT             0
+Tryglicerides    0
+Platelets        0
+Prothrombin      0
+Stage            0
+Status           0
+dtype: int64
+Missing values in test data:
+ id               0
+N_Days           0
+Drug             0
+Age              0
+Sex              0
+Ascites          0
+Hepatomegaly     0
+Spiders          0
+Edema            0
+Bilirubin        0
+Cholesterol      0
+Albumin          0
+Copper           0
+Alk_Phos         0
+SGOT             0
+Tryglicerides    0
+Platelets        0
+Prothrombin      0
+Stage            0
+Status           0
+dtype: int64
+Weighted F1 Score on the test set: 0.8245

@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 62.14043092727661,
+        "interact_count": 9,
+        "prompt_tokens": 19676,
+        "completion_tokens": 1669,
+        "RCR": 5
+    },
+    "task": {
+        "id": 29,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "nvidia_share_price",
+        "task_description": "我想使用 nvidia_share_price 的时序数据，构建一个ARIMA时间序列模型，用于分析和预测英伟达（NVIDIA）股价的最高市值变化趋势。该任务属于时间序列预测问题，目标是根据历史股价数据预测未来股价，最后在测试集上进行评估。"
+    }
+}

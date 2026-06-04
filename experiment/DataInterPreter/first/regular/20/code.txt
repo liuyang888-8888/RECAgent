@@ -1,0 +1,250 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\bike_sharing_train.csv')
+test_df = pd.read_csv('E:\\csv\\bike_sharing_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand their structure
+print("Training Data:")
+display(train_df_copy.head())
+print("Testing Data:")
+display(test_df_copy.head())
+
+# Check the data types of each column
+print("Data types in Training Data:")
+print(train_df_copy.dtypes)
+print("Data types in Testing Data:")
+print(test_df_copy.dtypes)
+execute_result:
+Training Data:
+Testing Data:
+Data types in Training Data:
+id              int64
+season          int64
+yr              int64
+mnth            int64
+hr              int64
+holiday         int64
+weekday         int64
+workingday      int64
+weathersit      int64
+temp          float64
+atemp         float64
+hum           float64
+windspeed     float64
+cnt             int64
+dtype: object
+Data types in Testing Data:
+id              int64
+season          int64
+yr              int64
+mnth            int64
+hr              int64
+holiday         int64
+weekday         int64
+workingday      int64
+weathersit      int64
+temp          float64
+atemp         float64
+hum           float64
+windspeed     float64
+cnt             int64
+dtype: object,,
+is_success:
+True
+code:
+# Data Preprocessing
+import numpy as np
+
+# Copy the datasets to avoid modifying the original data
+train_df_processed = train_df_copy.copy()
+test_df_processed = test_df_copy.copy()
+
+# Check for missing values
+print("Missing values in Training Data:")
+print(train_df_processed.isnull().sum())
+print("Missing values in Testing Data:")
+print(test_df_processed.isnull().sum())
+
+# Handle missing values if any (for this example, we will fill with median for numeric columns)
+numeric_columns = ['id', 'season', 'yr', 'mnth', 'hr', 'holiday', 'weekday', 'workingday', 'weathersit', 'temp', 'atemp', 'hum', 'windspeed', 'cnt']
+
+for col in numeric_columns:
+    if train_df_processed[col].isnull().any():
+        median_value = train_df_processed[col].median()
+        train_df_processed[col].fillna(median_value, inplace=True)
+        test_df_processed[col].fillna(median_value, inplace=True)
+
+# Convert data types if necessary
+# For this dataset, all columns are already in the correct data type (int64 or float64), so no conversion is needed.
+
+# Display the first few rows of the processed data
+print("Processed Training Data:")
+display(train_df_processed.head())
+print("Processed Testing Data:")
+display(test_df_processed.head())
+execute_result:
+Missing values in Training Data:
+id            0
+season        0
+yr            0
+mnth          0
+hr            0
+holiday       0
+weekday       0
+workingday    0
+weathersit    0
+temp          0
+atemp         0
+hum           0
+windspeed     0
+cnt           0
+dtype: int64
+Missing values in Testing Data:
+id            0
+season        0
+yr            0
+mnth          0
+hr            0
+holiday       0
+weekday       0
+workingday    0
+weathersit    0
+temp          0
+atemp         0
+hum           0
+windspeed     0
+cnt           0
+dtype: int64
+Processed Training Data:
+Processed Testing Data:,,
+is_success:
+True
+code:
+from sklearn.model_selection import train_test_split
+
+# Copy the processed datasets to avoid modifying the original ones
+train_df_final = train_df_processed.copy()
+test_df_final = test_df_processed.copy()
+
+# Split the training data into training and validation sets
+X_train = train_df_final.drop(columns=['cnt'])
+y_train = train_df_final['cnt']
+X_test = test_df_final.drop(columns=['cnt'])
+y_test = test_df_final['cnt']
+
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+
+# Display the shapes of the resulting datasets
+print(f"Training features shape: {X_train.shape}")
+print(f"Training labels shape: {y_train.shape}")
+print(f"Validation features shape: {X_val.shape}")
+print(f"Validation labels shape: {y_val.shape}")
+print(f"Test features shape: {X_test.shape}")
+print(f"Test labels shape: {y_test.shape}")
+execute_result:
+Training features shape: (11122, 13)
+Training labels shape: (11122,)
+Validation features shape: (2781, 13)
+Validation labels shape: (2781,)
+Test features shape: (3476, 13)
+Test labels shape: (3476,)
+is_success:
+True
+code:
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Initialize the XGBoost regressor with some hyperparameters
+xgb_model = XGBRegressor(
+    n_estimators=1000,
+    max_depth=7,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    random_state=42
+)
+
+# Train the model
+xgb_model.fit(X_train, y_train, early_stopping_rounds=10, eval_set=[(X_val, y_val)], verbose=False)
+
+# Predictions
+y_train_pred = xgb_model.predict(X_train)
+y_val_pred = xgb_model.predict(X_val)
+y_test_pred = xgb_model.predict(X_test)
+
+# Evaluate the model
+train_rmse = np.sqrt(mean_squared_error(y_train, y_train_pred))
+val_rmse = np.sqrt(mean_squared_error(y_val, y_val_pred))
+test_rmse = np.sqrt(mean_squared_error(y_test, y_test_pred))
+
+train_r2 = r2_score(y_train, y_train_pred)
+val_r2 = r2_score(y_val, y_val_pred)
+test_r2 = r2_score(y_test, y_test_pred)
+
+print(f"Training RMSE: {train_rmse:.2f}, R2 Score: {train_r2:.2f}")
+print(f"Validation RMSE: {val_rmse:.2f}, R2 Score: {val_r2:.2f}")
+print(f"Test RMSE: {test_rmse:.2f}, R2 Score: {test_r2:.2f}")
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[7], line 15
+      5 xgb_model = XGBRegressor(
+      6     n_estimators=1000,
+      7     max_depth=7,
+   (...)
+     11     random_state=42
+     12 )
+     14 # Train the model
+---> 15 xgb_model.fit(X_train, y_train, early_stopping_rounds=10, eval_set=[(X_val, y_val)], verbose=False)
+     17 # Predictions
+     18 y_train_pred = xgb_model.predict(X_train)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:726, in require_keyword_args.<locals>.throw_if.<locals>.inner_f(*args, **kwargs)
+    724 for k, arg in zip(sig.parameters, args):
+    725     kwargs[k] = arg
+--> 726 return func(**kwargs)
+
+TypeError: fit() got an unexpected keyword argument 'early_stopping_rounds'
+is_success:
+False
+code:
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Initialize the model
+gbdt_model = GradientBoostingRegressor(random_state=42)
+
+# Train the model
+gbdt_model.fit(X_train, y_train)
+
+# Predict on the validation set
+y_val_pred = gbdt_model.predict(X_val)
+
+# Evaluate the model
+mse = mean_squared_error(y_val, y_val_pred)
+r2 = r2_score(y_val, y_val_pred)
+
+print(f"Mean Squared Error on Validation Set: {mse}")
+print(f"R^2 Score on Validation Set: {r2}")
+execute_result:
+Mean Squared Error on Validation Set: 5655.948922433133
+R^2 Score on Validation Set: 0.8382310383187077
+is_success:
+True
+code:
+# Predict on the test set using the trained model
+y_test_pred = gbdt_model.predict(X_test)
+
+# Calculate Mean Squared Error on the test set
+mse_test = mean_squared_error(y_test, y_test_pred)
+print(f"Mean Squared Error on Test Set: {mse_test}")
+execute_result:
+Mean Squared Error on Test Set: 5189.529445443105
+is_success:
+True

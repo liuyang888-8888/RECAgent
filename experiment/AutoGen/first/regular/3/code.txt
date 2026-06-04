@@ -1,0 +1,251 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 定义数据路径
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+# 加载数据
+train_df = pd.read_csv(train_path)
+test_df = pd.read_csv(test_path)
+
+# 检查并处理缺失值
+if train_df.isnull().sum().sum() > 0:
+    train_df = train_df.dropna()
+if test_df.isnull().sum().sum() > 0:
+    test_df = test_df.dropna()
+
+# 分离特征和标签
+X_train = train_df.drop(columns=['Category'])
+y_train = train_df['Category']
+X_test = test_df.drop(columns=['Category'])
+y_test = test_df['Category']
+
+# 将类别标签编码为数值
+label_encoder = LabelEncoder()
+y_train = label_encoder.fit_transform(y_train)
+y_test = label_encoder.transform(y_test)
+
+# 构建逻辑回归模型
+model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000)
+model.fit(X_train, y_train)
+
+# 在测试集上预测
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'Weighted F1 Score: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_48a6813a613ffc66a65f044bddc9918934f9e0fe1b5023edd82184fcff9c585a.py", line 21, in <module>
+    X_train = train_df.drop(columns=['Category'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['Category'] not found in axis"
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 定义数据路径
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+# 加载数据
+train_df = pd.read_csv(train_path)
+test_df = pd.read_csv(test_path)
+
+# 检查数据列名
+print("Train data columns:", train_df.columns)
+print("Test data columns:", test_df.columns)
+
+# 检查并处理缺失值
+if train_df.isnull().sum().sum() > 0:
+    train_df = train_df.dropna()
+if test_df.isnull().sum().sum() > 0:
+    test_df = test_df.dropna()
+
+# 分离特征和标签
+if 'Category' in train_df.columns and 'Category' in test_df.columns:
+    X_train = train_df.drop(columns=['Category'])
+    y_train = train_df['Category']
+    X_test = test_df.drop(columns=['Category'])
+    y_test = test_df['Category']
+else:
+    raise ValueError("The 'Category' column is not found in the data.")
+
+# 将类别标签编码为数值
+label_encoder = LabelEncoder()
+y_train = label_encoder.fit_transform(y_train)
+y_test = label_encoder.transform(y_test)
+
+# 构建逻辑回归模型
+model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000)
+model.fit(X_train, y_train)
+
+# 在测试集上预测
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'Weighted F1 Score: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_7d30ca8a0f067bda05e32e98078763b223e6cf8a23093d5ff55bcfdb9a9d896a.py", line 31, in <module>
+    raise ValueError("The 'Category' column is not found in the data.")
+ValueError: The 'Category' column is not found in the data.
+Train data columns: Index(['dayOfWeek', 'pdDistrict', 'pos_x', 'pos_y', 'category'], dtype='object')
+Test data columns: Index(['dayOfWeek', 'pdDistrict', 'pos_x', 'pos_y', 'category'], dtype='object')
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 定义数据路径
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+# 加载数据
+train_df = pd.read_csv(train_path)
+test_df = pd.read_csv(test_path)
+
+# 检查数据列名
+print("Train data columns:", train_df.columns)
+print("Test data columns:", test_df.columns)
+
+# 检查并处理缺失值
+if train_df.isnull().sum().sum() > 0:
+    train_df = train_df.dropna()
+if test_df.isnull().sum().sum() > 0:
+    test_df = test_df.dropna()
+
+# 分离特征和标签
+if 'category' in train_df.columns and 'category' in test_df.columns:
+    X_train = train_df.drop(columns=['category'])
+    y_train = train_df['category']
+    X_test = test_df.drop(columns=['category'])
+    y_test = test_df['category']
+else:
+    raise ValueError("The 'category' column is not found in the data.")
+
+# 将类别标签编码为数值
+label_encoder = LabelEncoder()
+y_train = label_encoder.fit_transform(y_train)
+y_test = label_encoder.transform(y_test)
+
+# 构建逻辑回归模型
+model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000)
+model.fit(X_train, y_train)
+
+# 在测试集上预测
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'Weighted F1 Score: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_0108cad99ee1954bff13bb7583bb3f928ed037f6a7cb40a157b5dba6d6f63dbb.py", line 40, in <module>
+    model.fit(X_train, y_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\linear_model\_logistic.py", line 1222, in fit
+    X, y = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2961, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1370, in check_X_y
+    X = check_array(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1055, in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_array_api.py", line 839, in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 2153, in __array__
+    arr = np.asarray(values, dtype=dtype)
+ValueError: could not convert string to float: 'Wednesday'
+Train data columns: Index(['dayOfWeek', 'pdDistrict', 'pos_x', 'pos_y', 'category'], dtype='object')
+Test data columns: Index(['dayOfWeek', 'pdDistrict', 'pos_x', 'pos_y', 'category'], dtype='object')
+
+生成的代码：
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 定义数据路径
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\crime_category_test.csv'
+
+# 加载数据
+train_df = pd.read_csv(train_path)
+test_df = pd.read_csv(test_path)
+
+# 检查数据列名
+print("Train data columns:", train_df.columns)
+print("Test data columns:", test_df.columns)
+
+# 检查并处理缺失值
+if train_df.isnull().sum().sum() > 0:
+    train_df = train_df.dropna()
+if test_df.isnull().sum().sum() > 0:
+    test_df = test_df.dropna()
+
+# 分离特征和标签
+if 'category' in train_df.columns and 'category' in test_df.columns:
+    X_train = train_df.drop(columns=['category'])
+    y_train = train_df['category']
+    X_test = test_df.drop(columns=['category'])
+    y_test = test_df['category']
+else:
+    raise ValueError("The 'category' column is not found in the data.")
+
+# 对类别特征进行 one-hot 编码
+X_train = pd.get_dummies(X_train, columns=['dayOfWeek', 'pdDistrict'])
+X_test = pd.get_dummies(X_test, columns=['dayOfWeek', 'pdDistrict'])
+
+# 确保训练集和测试集的列一致
+missing_cols = set(X_train.columns) - set(X_test.columns)
+for c in missing_cols:
+    X_test[c] = 0
+X_test = X_test[X_train.columns]
+
+# 将类别标签编码为数值
+label_encoder = LabelEncoder()
+y_train = label_encoder.fit_transform(y_train)
+y_test = label_encoder.transform(y_test)
+
+# 构建逻辑回归模型
+model = LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000)
+model.fit(X_train, y_train)
+
+# 在测试集上预测
+y_pred = model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'Weighted F1 Score: {f1}')
+
+
+执行结果：
+
+Timeout

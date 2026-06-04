@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 5,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "horse_health_outcomes",
+        "task_description": "horse_health_outcomes 的数据保存马匹了过去的医疗状况，我需要一个分类模型，可以依据马匹的医疗状况自动判断该马匹最终存活下来的概率。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 56.647026777267456,
+        "interact_count": 3,
+        "prompt_tokens": 5342,
+        "completion_tokens": 833,
+        "metrics": 0.649993148823725,
+        "RCR": 5
+
+    }
+}

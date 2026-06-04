@@ -1,0 +1,20 @@
+{
+    "task": {
+        "id": 22,
+        "task_type": "machine learning",
+        "machine_learning_type": "clustering",
+        "data_source": "monster",
+        "task_description": "基于 monster 的数据集，用于根据怪物的骨骼特征、毛发特征、颜色特征等属性，对怪物进行聚类分析。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 102.80472159385681,
+        "metrics": 0.19520576438663578,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 2,
+        "prompt_tokens": 3896,
+        "completion_tokens": 557
+    }
+}

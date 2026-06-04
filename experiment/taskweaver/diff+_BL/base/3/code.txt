@@ -1,0 +1,176 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.model_selection import train_test_split
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crime_category_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crime_category_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Assuming the target variable is named 'category'
+y_train = train_df['category']
+X_train = train_df.drop('category', axis=1)
+
+y_test = test_df['category']
+X_test = test_df.drop('category', axis=1)
+
+# Train the model
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Predict and evaluate
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+f1
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 22
+    model.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\ensemble\_forest.py:360 in fit
+    X, y = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2961 in validate_data
+    X, y = check_X_y(X, y, **check_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1370 in check_X_y
+    X = check_array(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1055 in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_array_api.py:839 in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:2153 in __array__
+    arr = np.asarray(values, dtype=dtype)
+
+ValueError: could not convert string to float: 'Wednesday'
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crime_category_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crime_category_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# One-hot encode categorical features
+train_df_encoded = pd.get_dummies(train_df)
+test_df_encoded = pd.get_dummies(test_df)
+
+# Ensure both datasets have the same columns
+missing_cols = set(train_df_encoded.columns) - set(test_df_encoded.columns)
+for c in missing_cols:
+    test_df_encoded[c] = 0
+
+# Reorder the columns in the test set to match the training set
+test_df_encoded = test_df_encoded[train_df_encoded.columns]
+
+# Separate features and target
+y_train = train_df_encoded['category']
+X_train = train_df_encoded.drop('category', axis=1)
+
+y_test = test_df_encoded['category']
+X_test = test_df_encoded.drop('category', axis=1)
+
+# Train the model
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Predict and evaluate
+y_pred = model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+f1
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'category'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[2], line 25
+    y_train = train_df_encoded['category']
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:4102 in __getitem__
+    indexer = self.columns.get_loc(key)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'category'
+
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crime_category_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\crime_category_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Separate the target variable before encoding
+y_train = train_df['category']
+y_test = test_df['category']
+
+# Drop the target variable from the datasets
+X_train = train_df.drop('category', axis=1)
+X_test = test_df.drop('category', axis=1)
+
+# One-hot encode categorical features
+X_train_encoded = pd.get_dummies(X_train)
+X_test_encoded = pd.get_dummies(X_test)
+
+# Ensure both datasets have the same columns
+missing_cols = set(X_train_encoded.columns) - set(X_test_encoded.columns)
+for c in missing_cols:
+    X_test_encoded[c] = 0
+
+# Reorder the columns in the test set to match the training set
+X_test_encoded = X_test_encoded[X_train_encoded.columns]
+
+# Train the model
+model = RandomForestClassifier()
+model.fit(X_train_encoded, y_train)
+
+# Predict and evaluate
+y_pred = model.predict(X_test_encoded)
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+f1
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+0.18525679122305816

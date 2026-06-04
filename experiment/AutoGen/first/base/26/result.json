@@ -1,0 +1,18 @@
+{
+    "task": {
+        "id": 26,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "atmospheric_carbon_dioxide",
+        "task_description": "我想使用 atmospheric_carbon_dioxide 数据，训练一个时序预测模型。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 102.29082369804382,
+        "interact_count": 5,
+        "prompt_tokens": 8869,
+        "completion_tokens": 1530,
+        "metrics": 8.23386498363336,
+        "RCR": 5
+    }
+}

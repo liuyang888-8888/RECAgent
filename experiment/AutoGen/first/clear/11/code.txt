@@ -1,0 +1,38 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 读取训练数据和测试数据
+train_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\rice_cammeo_and_osmancik_train.csv'
+test_data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\rice_cammeo_and_osmancik_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# 分离特征和标签
+X_train = train_df.drop(columns=['Class'])
+y_train = train_df['Class']
+
+X_test = test_df.drop(columns=['Class'])
+y_test = test_df['Class']
+
+# 初始化随机森林模型
+rf_model = RandomForestClassifier(n_estimators=8, max_depth=5, random_state=42)
+
+# 训练模型
+rf_model.fit(X_train, y_train)
+
+# 预测测试集
+y_pred = rf_model.predict(X_test)
+
+# 计算加权平均 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 输出 F1 分数
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+加权平均 F1 分数: 0.9290836631602085

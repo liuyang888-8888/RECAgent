@@ -1,0 +1,578 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\heart_diseases_train.csv')
+test_df = pd.read_csv('E:\\csv\\heart_diseases_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object', 'category']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    unique_values = train_df_copy[col].unique()
+    value_map = {value: idx for idx, value in enumerate(unique_values)}
+    train_df_copy[col] = train_df_copy[col].map(value_map)
+    test_df_copy[col] = test_df_copy[col].map(value_map)
+
+# Apply appropriate preprocessing for numerical columns
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Verify the preprocessing
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   age  sex  cp  trestbps  chol  fbs  ...  exang  oldpeak  slope   ca  thal  target
+0   29    1   2       130   204    0  ...      0      0.0      1  0.0   3.0       0
+1   57    1   3       150   126    1  ...      0      0.2      1  1.0   7.0       0
+2   69    1   1       160   234    1  ...      0      0.1      2  1.0   3.0       0
+3   65    0   3       160   360    0  ...      0      0.8      1  0.0   3.0       0
+4   52    1   4       108   233    1  ...      0      0.1      1  3.0   7.0       0
+
+[5 rows x 14 columns]
+
+Test DataFrame:
+   age  sex  cp  trestbps  chol  fbs  ...  exang  oldpeak  slope   ca  thal  target
+0   53    1   3       130   246    1  ...      0      0.0      1  3.0   3.0       0
+1   54    1   4       110   206    0  ...      1      0.0      2  1.0   3.0       3
+2   56    1   4       125   249    1  ...      1      1.2      2  1.0   3.0       1
+3   58    1   4       100   234    0  ...      0      0.1      1  1.0   7.0       2
+4   51    0   4       130   305    0  ...      1      1.2      2  0.0   7.0       2
+
+[5 rows x 14 columns]
+
+Data types in Train DataFrame:
+age           int64
+sex           int64
+cp            int64
+trestbps      int64
+chol          int64
+fbs           int64
+restecg       int64
+thalach       int64
+exang         int64
+oldpeak     float64
+slope         int64
+ca          float64
+thal        float64
+target        int64
+dtype: object
+
+Data types in Test DataFrame:
+age           int64
+sex           int64
+cp            int64
+trestbps      int64
+chol          int64
+fbs           int64
+restecg       int64
+thalach       int64
+exang         int64
+oldpeak     float64
+slope         int64
+ca          float64
+thal        float64
+target        int64
+dtype: object
+
+Categorical Columns:
+Index([], dtype='object')
+
+Numerical Columns:
+Index(['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach',
+       'exang', 'oldpeak', 'slope', 'ca', 'thal', 'target'],
+      dtype='object')
+
+Preprocessed Train DataFrame:
+        age       sex        cp  ...        ca      thal    target
+0 -2.838504  0.722504 -1.104690  ... -0.722676 -0.875535 -0.743059
+1  0.241352  0.722504 -0.092057  ...  0.391644  1.199807 -0.743059
+2  1.561291  0.722504 -2.117322  ...  0.391644 -0.875535 -0.743059
+3  1.121311 -1.384075 -0.092057  ... -0.722676 -0.875535 -0.743059
+4 -0.308622  0.722504  0.920575  ...  2.620282  1.199807 -0.743059
+
+[5 rows x 14 columns]
+
+Preprocessed Test DataFrame:
+        age       sex        cp  ...        ca      thal    target
+0 -0.198627  0.722504 -0.092057  ...  2.620282 -0.875535 -0.743059
+1 -0.088632  0.722504  0.920575  ...  0.391644 -0.875535  1.742936
+2  0.131357  0.722504  0.920575  ...  0.391644 -0.875535  0.085606
+3  0.351347  0.722504  0.920575  ...  0.391644  1.199807  0.914271
+4 -0.418617 -1.384075  0.920575  ... -0.722676  1.199807  0.914271
+
+[5 rows x 14 columns]
+is_success:
+True
+code:
+# Since there are no categorical columns, we will focus on handling missing values and scaling numerical features.
+# First, let's check for missing values in both train and test datasets.
+train_df_missing = train_df_copy.isnull().sum()
+test_df_missing = test_df_copy.isnull().sum()
+
+print("Missing values in Train DataFrame:")
+print(train_df_missing)
+print("\nMissing values in Test DataFrame:")
+print(test_df_missing)
+
+# Handle missing values if any. For simplicity, we'll fill missing values with the median for numerical columns.
+if train_df_missing.sum() > 0 or test_df_missing.sum() > 0:
+    for col in numerical_columns:
+        median_value = train_df_copy[col].median()
+        train_df_copy[col].fillna(median_value, inplace=True)
+        test_df_copy[col].fillna(median_value, inplace=True)
+
+# Scale numerical features using StandardScaler, excluding the target column.
+features_to_scale = [col for col in numerical_columns if col != 'target']
+scaler = StandardScaler()
+train_df_copy[features_to_scale] = scaler.fit_transform(train_df_copy[features_to_scale])
+test_df_copy[features_to_scale] = scaler.transform(test_df_copy[features_to_scale])
+
+print("\nPreprocessed Train DataFrame after handling missing values and scaling:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame after handling missing values and scaling:")
+print(test_df_copy.head())
+execute_result:
+Missing values in Train DataFrame:
+age         0
+sex         0
+cp          0
+trestbps    0
+chol        0
+fbs         0
+restecg     0
+thalach     0
+exang       0
+oldpeak     0
+slope       0
+ca          3
+thal        2
+target      0
+dtype: int64
+
+Missing values in Test DataFrame:
+age         0
+sex         0
+cp          0
+trestbps    0
+chol        0
+fbs         0
+restecg     0
+thalach     0
+exang       0
+oldpeak     0
+slope       0
+ca          1
+thal        0
+target      0
+dtype: int64
+
+Preprocessed Train DataFrame after handling missing values and scaling:
+        age       sex        cp  ...        ca      thal    target
+0 -2.838504  0.722504 -1.104690  ... -0.715869 -0.869161 -0.743059
+1  0.241352  0.722504 -0.092057  ...  0.401810  1.208241 -0.743059
+2  1.561291  0.722504 -2.117322  ...  0.401810 -0.869161 -0.743059
+3  1.121311 -1.384075 -0.092057  ... -0.715869 -0.869161 -0.743059
+4 -0.308622  0.722504  0.920575  ...  2.637167  1.208241 -0.743059
+
+[5 rows x 14 columns]
+
+Preprocessed Test DataFrame after handling missing values and scaling:
+        age       sex        cp  ...        ca      thal    target
+0 -0.198627  0.722504 -0.092057  ...  2.637167 -0.869161 -0.743059
+1 -0.088632  0.722504  0.920575  ...  0.401810 -0.869161  1.742936
+2  0.131357  0.722504  0.920575  ...  0.401810 -0.869161  0.085606
+3  0.351347  0.722504  0.920575  ...  0.401810  1.208241  0.914271
+4 -0.418617 -1.384075  0.920575  ... -0.715869  1.208241  0.914271
+
+[5 rows x 14 columns]
+is_success:
+True
+code:
+# Splitting the preprocessed training data into features (X) and target (y)
+X_train = train_df_copy.drop(columns=['target'])
+y_train = train_df_copy['target']
+
+# Splitting the preprocessed test data into features (X) and target (y)
+X_test = test_df_copy.drop(columns=['target'])
+y_test = test_df_copy['target']
+
+# Displaying the first few rows of the split datasets
+print("X_train:")
+print(X_train.head())
+print("\ny_train:")
+print(y_train.head())
+print("\nX_test:")
+print(X_test.head())
+print("\ny_test:")
+print(y_test.head())
+execute_result:
+X_train:
+        age       sex        cp  ...     slope        ca      thal
+0 -2.838504  0.722504 -1.104690  ... -0.963432 -0.715869 -0.869161
+1  0.241352  0.722504 -0.092057  ... -0.963432  0.401810  1.208241
+2  1.561291  0.722504 -2.117322  ...  0.655669  0.401810 -0.869161
+3  1.121311 -1.384075 -0.092057  ... -0.963432 -0.715869 -0.869161
+4 -0.308622  0.722504  0.920575  ... -0.963432  2.637167  1.208241
+
+[5 rows x 13 columns]
+
+y_train:
+0   -0.743059
+1   -0.743059
+2   -0.743059
+3   -0.743059
+4   -0.743059
+Name: target, dtype: float64
+
+X_test:
+        age       sex        cp  ...     slope        ca      thal
+0 -0.198627  0.722504 -0.092057  ... -0.963432  2.637167 -0.869161
+1 -0.088632  0.722504  0.920575  ...  0.655669  0.401810 -0.869161
+2  0.131357  0.722504  0.920575  ...  0.655669  0.401810 -0.869161
+3  0.351347  0.722504  0.920575  ... -0.963432  0.401810  1.208241
+4 -0.418617 -1.384075  0.920575  ...  0.655669 -0.715869  1.208241
+
+[5 rows x 13 columns]
+
+y_test:
+0   -0.743059
+1    1.742936
+2    0.085606
+3    0.914271
+4    0.914271
+Name: target, dtype: float64
+is_success:
+True
+code:
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the XGBoost classifier with tuned hyperparameters
+xgb_model = XGBClassifier(
+    n_estimators=1000,
+    max_depth=6,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    gamma=0.1,
+    reg_alpha=0.1,
+    reg_lambda=1.0,
+    random_state=42
+)
+
+# Fit the model on the training data
+xgb_model.fit(X_train, y_train)
+
+# Predict the target values for the test set
+y_pred = xgb_model.predict(X_test)
+
+# Evaluate the model's performance
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print("Classification Report:")
+print(report)
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[7], line 18
+      5 xgb_model = XGBClassifier(
+      6     n_estimators=1000,
+      7     max_depth=6,
+   (...)
+     14     random_state=42
+     15 )
+     17 # Fit the model on the training data
+---> 18 xgb_model.fit(X_train, y_train)
+     20 # Predict the target values for the test set
+     21 y_pred = xgb_model.predict(X_test)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\core.py:726, in require_keyword_args.<locals>.throw_if.<locals>.inner_f(*args, **kwargs)
+    724 for k, arg in zip(sig.parameters, args):
+    725     kwargs[k] = arg
+--> 726 return func(**kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\xgboost\sklearn.py:1559, in XGBClassifier.fit(self, X, y, sample_weight, base_margin, eval_set, verbose, xgb_model, sample_weight_eval_set, base_margin_eval_set, feature_weights)
+   1554     expected_classes = self.classes_
+   1555 if (
+   1556     classes.shape != expected_classes.shape
+   1557     or not (classes == expected_classes).all()
+   1558 ):
+-> 1559     raise ValueError(
+   1560         f"Invalid classes inferred from unique values of `y`.  "
+   1561         f"Expected: {expected_classes}, got {classes}"
+   1562     )
+   1564 params = self.get_xgb_params()
+   1566 if callable(self.objective):
+
+ValueError: Invalid classes inferred from unique values of `y`.  Expected: [0 1 2 3 4], got [-0.74305919  0.0856059   0.91427098  1.74293606  2.57160114]
+is_success:
+False
+code:
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Ensure the target variable is an integer for classification
+y_train = y_train.astype(int)
+y_test = y_test.astype(int)
+
+# Initialize the model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Model Accuracy: {accuracy}")
+print(report)
+execute_result:
+Model Accuracy: 0.8032786885245902
+              precision    recall  f1-score   support
+
+           0       0.83      0.98      0.90        50
+           1       0.00      0.00      0.00         7
+           2       0.00      0.00      0.00         4
+
+    accuracy                           0.80        61
+   macro avg       0.28      0.33      0.30        61
+weighted avg       0.68      0.80      0.74        61,_warn_prf(average, modifier, msg_start, len(result))
+  _warn_prf(average, modifier, msg_start, len(result))
+  _warn_prf(average, modifier, msg_start, len(result))
+is_success:
+True
+code:
+# Since the data has already been preprocessed in the previous steps, we will focus on ensuring that the preprocessing steps are applied consistently to both the train and test datasets.
+
+# Copy the original DataFrames to ensure we don't modify the original data
+train_df_preprocessed = train_df_copy.copy()
+test_df_preprocessed = test_df_copy.copy()
+
+# Handle missing values in the 'ca' and 'thal' columns
+for col in ['ca', 'thal']:
+    median_value = train_df_preprocessed[col].median()
+    train_df_preprocessed[col].fillna(median_value, inplace=True)
+    test_df_preprocessed[col].fillna(median_value, inplace=True)
+
+# Scale the numerical features (excluding the target column) using the same scaler fitted on the training data
+features_to_scale = [col for col in numerical_columns if col != 'target']
+scaler = StandardScaler()
+train_df_preprocessed[features_to_scale] = scaler.fit_transform(train_df_preprocessed[features_to_scale])
+test_df_preprocessed[features_to_scale] = scaler.transform(test_df_preprocessed[features_to_scale])
+
+# Verify the preprocessed DataFrames
+print("Preprocessed Train DataFrame:")
+print(train_df_preprocessed.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_preprocessed.head())
+execute_result:
+Preprocessed Train DataFrame:
+        age       sex        cp  ...        ca      thal    target
+0 -2.838504  0.722504 -1.104690  ... -0.715869 -0.869161 -0.743059
+1  0.241352  0.722504 -0.092057  ...  0.401810  1.208241 -0.743059
+2  1.561291  0.722504 -2.117322  ...  0.401810 -0.869161 -0.743059
+3  1.121311 -1.384075 -0.092057  ... -0.715869 -0.869161 -0.743059
+4 -0.308622  0.722504  0.920575  ...  2.637167  1.208241 -0.743059
+
+[5 rows x 14 columns]
+
+Preprocessed Test DataFrame:
+        age       sex        cp  ...        ca      thal    target
+0 -0.198627  0.722504 -0.092057  ...  2.637167 -0.869161 -0.743059
+1 -0.088632  0.722504  0.920575  ...  0.401810 -0.869161  1.742936
+2  0.131357  0.722504  0.920575  ...  0.401810 -0.869161  0.085606
+3  0.351347  0.722504  0.920575  ...  0.401810  1.208241  0.914271
+4 -0.418617 -1.384075  0.920575  ... -0.715869  1.208241  0.914271
+
+[5 rows x 14 columns]
+is_success:
+True
+code:
+# Split the preprocessed test data into features (X_test) and target (y_test)
+X_test = test_df_preprocessed.drop(columns=['target'])
+y_test = test_df_preprocessed['target']
+
+# Display the first few rows of X_test and y_test
+print("X_test:")
+print(X_test.head())
+print("\ny_test:")
+print(y_test.head())
+execute_result:
+X_test:
+        age       sex        cp  ...     slope        ca      thal
+0 -0.198627  0.722504 -0.092057  ... -0.963432  2.637167 -0.869161
+1 -0.088632  0.722504  0.920575  ...  0.655669  0.401810 -0.869161
+2  0.131357  0.722504  0.920575  ...  0.655669  0.401810 -0.869161
+3  0.351347  0.722504  0.920575  ... -0.963432  0.401810  1.208241
+4 -0.418617 -1.384075  0.920575  ...  0.655669 -0.715869  1.208241
+
+[5 rows x 13 columns]
+
+y_test:
+0   -0.743059
+1    1.742936
+2    0.085606
+3    0.914271
+4    0.914271
+Name: target, dtype: float64
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting the target values for the test set
+y_pred = model.predict(X_test)
+
+# Calculating the F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# Printing the F1 score
+print(f"F1 Score: {f1}")
+execute_result:
+ e:
+    216     # When the function is just a wrapper around an estimator, we allow
+    217     # the function to delegate validation to the estimator, but we replace
+    218     # the name of the estimator by the name of the function in the error
+    219     # message to avoid confusion.
+    220     msg = re.sub(
+    221         r"parameter of \w+ must be",
+    222         f"parameter of {func.__qualname__} must be",
+    223         str(e),
+    224     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_classification.py:1239, in f1_score(y_true, y_pred, labels, pos_label, average, sample_weight, zero_division)
+   1070 @validate_params(
+   1071     {
+   1072         "y_true": ["array-like", "sparse matrix"],
+   (...)
+   1097     zero_division="warn",
+   1098 ):
+   1099     """Compute the F1 score, also known as balanced F-score or F-measure.
+   1100 
+   1101     The F1 score can be interpreted as a harmonic mean of the precision and
+   (...)
+   1237     array([0.66666667, 1.        , 0.66666667])
+   1238     """
+-> 1239     return fbeta_score(
+   1240         y_true,
+   1241         y_pred,
+   1242         beta=1,
+   1243         labels=labels,
+   1244         pos_label=pos_label,
+   1245         average=average,
+   1246         sample_weight=sample_weight,
+   1247         zero_division=zero_division,
+   1248     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:187, in validate_params.<locals>.decorator.<locals>.wrapper(*args, **kwargs)
+    185 global_skip_validation = get_config()["skip_parameter_validation"]
+    186 if global_skip_validation:
+--> 187     return func(*args, **kwargs)
+    189 func_sig = signature(func)
+    191 # Map *args/**kwargs to the function signature
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_classification.py:1413, in fbeta_score(y_true, y_pred, beta, labels, pos_label, average, sample_weight, zero_division)
+   1251 @validate_params(
+   1252     {
+   1253         "y_true": ["array-like", "sparse matrix"],
+   (...)
+   1280     zero_division="warn",
+   1281 ):
+   1282     """Compute the F-beta score.
+   1283 
+   1284     The F-beta score is the weighted harmonic mean of precision and recall,
+   (...)
+   1410     0.38...
+   1411     """
+-> 1413     _, _, f, _ = precision_recall_fscore_support(
+   1414         y_true,
+   1415         y_pred,
+   1416         beta=beta,
+   1417         labels=labels,
+   1418         pos_label=pos_label,
+   1419         average=average,
+   1420         warn_for=("f-score",),
+   1421         sample_weight=sample_weight,
+   1422         zero_division=zero_division,
+   1423     )
+   1424     return f
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:187, in validate_params.<locals>.decorator.<locals>.wrapper(*args, **kwargs)
+    185 global_skip_validation = get_config()["skip_parameter_validation"]
+    186 if global_skip_validation:
+--> 187     return func(*args, **kwargs)
+    189 func_sig = signature(func)
+    191 # Map *args/**kwargs to the function signature
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_classification.py:1724, in precision_recall_fscore_support(y_true, y_pred, beta, labels, pos_label, average, warn_for, sample_weight, zero_division)
+   1566 """Compute precision, recall, F-measure and support for each class.
+   1567 
+   1568 The precision is the ratio ``tp / (tp + fp)`` where ``tp`` is the number of
+   (...)
+   1721  array([2, 2, 2]))
+   1722 """
+   1723 zero_division_value = _check_zero_division(zero_division)
+-> 1724 labels = _check_set_wise_labels(y_true, y_pred, average, labels, pos_label)
+   1726 # Calculate tp_sum, pred_sum, true_sum ###
+   1727 samplewise = average == "samples"
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_classification.py:1501, in _check_set_wise_labels(y_true, y_pred, average, labels, pos_label)
+   1498 if average not in average_options and average != "binary":
+   1499     raise ValueError("average has to be one of " + str(average_options))
+-> 1501 y_type, y_true, y_pred = _check_targets(y_true, y_pred)
+   1502 # Convert to Python primitive type to avoid NumPy type / Python str
+   1503 # comparison. See https://github.com/numpy/numpy/issues/6784
+   1504 present_labels = unique_labels(y_true, y_pred).tolist()
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_classification.py:93, in _check_targets(y_true, y_pred)
+     90     y_type = {"multiclass"}
+     92 if len(y_type) > 1:
+---> 93     raise ValueError(
+     94         "Classification metrics can't handle a mix of {0} and {1} targets".format(
+     95             type_true, type_pred
+     96         )
+     97     )
+     99 # We can't have more than one value on y_type => The set is no more needed
+    100 y_type = y_type.pop()
+
+ValueError: Classification metrics can't handle a mix of continuous and binary targets
+is_success:
+False

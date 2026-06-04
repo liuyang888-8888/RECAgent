@@ -1,0 +1,20 @@
+{
+    "task": {
+        "id": 8,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "smoker_status_bio_signals",
+        "task_description": "基于 smoker_status_bio_signals 数据集，构建一个分类模型，用于预测一个人是否是抽烟者。该任务属于二分类问题，目标是根据生物信号等特征，预测其是否是一个烟民。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 98.76871991157532,
+        "metrics": 0.7455445772237888,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 7,
+        "prompt_tokens": 18582,
+        "completion_tokens": 1169
+    }
+}

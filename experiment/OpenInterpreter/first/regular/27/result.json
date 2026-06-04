@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 27,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "bitcoin_price",
+        "task_description": "基于过去10年比特币价格的时序数据，构建一个向量自回归模型（Vector Autoregression Model, VAR），用于分析和预测比特币接下来的几天最高价值。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 100.75485467910767,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 4,
+        "prompt_tokens": 7039,
+        "completion_tokens": 1386
+    }
+}

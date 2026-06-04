@@ -1,0 +1,16 @@
+{
+    "task": {
+        "id": 28,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "electricity_sales",
+        "task_description": "请根据过去24年每个月的电子商务的销量数据，使用ARIMA算法训练一个模型，自回归项数（p）设置为1，并在测试集上进行评估。"
+    },
+    "result": {
+        "run_status": "failed",
+        "time": 517.8316946029663,
+        "interact_count": 11,
+        "prompt_tokens": 67186,
+        "completion_tokens": 7840
+    }
+}

@@ -1,0 +1,57 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import LabelEncoder
+
+# 读取数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\rice_cammeo_and_osmancik_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\rice_cammeo_and_osmancik_test.csv')
+
+# 查看数据的前几行
+print(train_data.head())
+print(test_data.head())
+
+# 分离特征和标签
+X_train = train_data.drop(columns=['Class'])
+y_train = train_data['Class']
+
+X_test = test_data.drop(columns=['Class'])
+y_test = test_data['Class']
+
+# 对标签进行编码
+label_encoder = LabelEncoder()
+y_train = label_encoder.fit_transform(y_train)
+y_test = label_encoder.transform(y_test)
+
+# 构建随机森林模型
+rf_model = RandomForestClassifier(random_state=42)
+rf_model.fit(X_train, y_train)
+
+# 预测
+y_pred = rf_model.predict(X_test)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'测试集上的加权平均 F1 分数: {f1}')
+
+
+执行结果：
+    Area   Perimeter  Major_Axis_Length  ...  Convex_Area    Extent     Class
+0  12529  437.838989         174.861450  ...        12840  0.766019  Osmancik
+1  11051  424.976013         180.871903  ...        11240  0.568058  Osmancik
+2  12975  463.851013         196.423966  ...        13358  0.609126    Cammeo
+3  10398  405.678986         162.227158  ...        10658  0.644717  Osmancik
+4  14541  492.785004         204.257141  ...        14893  0.758292    Cammeo
+
+[5 rows x 8 columns]
+    Area   Perimeter  Major_Axis_Length  ...  Convex_Area    Extent     Class
+0  12442  459.535004         187.508850  ...        12941  0.587580    Cammeo
+1  12408  437.014008         179.741165  ...        12598  0.636928  Osmancik
+2  12867  449.079987         181.700561  ...        13152  0.649062  Osmancik
+3  13090  472.945007         202.601578  ...        13331  0.775290    Cammeo
+4  10359  409.510986         173.337967  ...        10510  0.573588  Osmancik
+
+[5 rows x 8 columns]
+测试集上的加权平均 F1 分数: 0.9251715448188095

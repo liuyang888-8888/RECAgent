@@ -1,0 +1,407 @@
+import pandas as pd
+
+# 选择合适的数据集
+train_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\secondary_mushroom_train.csv'
+test_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\secondary_mushroom_test.csv'
+
+# 加载训练集和测试集
+df_train = pd.read_csv(train_file)
+df_test = pd.read_csv(test_file)
+
+# 对训练集和测试集进行空值填充，使用平均值填充方式
+df_train.fillna(df_train.mean(), inplace=True)
+df_test.fillna(df_test.mean(), inplace=True)
+
+# 结果变量
+df_train, df_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 12
+    df_train.fillna(df_train.mean(), inplace=True)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11693 in mean
+    result = super().mean(axis, skipna, numeric_only, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12420 in mean
+    return self._stat_function(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12377 in _stat_function
+    return self._reduce(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11562 in _reduce
+    res = df._mgr.reduce(blk_func)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\internals\managers.py:1500 in reduce
+    nbs = blk.reduce(func)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\internals\blocks.py:404 in reduce
+    result = func(self.values)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11481 in blk_func
+    return op(values, axis=axis, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:147 in f
+    result = alt(values, axis=axis, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:404 in new_func
+    result = func(values, axis=axis, skipna=skipna, mask=mask, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:719 in nanmean
+    the_sum 
+import pandas as pd
+
+# 选择合适的数据集
+train_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\secondary_mushroom_train.csv'
+test_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\secondary_mushroom_test.csv'
+
+# 加载训练集和测试集
+df_train = pd.read_csv(train_file)
+df_test = pd.read_csv(test_file)
+
+# 对训练集和测试集进行空值填充，仅对数值列使用平均值填充
+df_train_numeric = df_train.select_dtypes(include=[\'number\'])
+df_test_numeric = df_test.select_dtypes(include=[\'number\'])
+df_train[df_train_numeric.columns] = df_train_numeric.fillna(df_train_numeric.mean())
+df_test[df_test_numeric.columns] = df_test_numeric.fillna(df_test_numeric.mean())
+
+# 结果变量
+df_train, df_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+  Cell In[2], line 12
+    df_train_numeric = df_train.select_dtypes(include=[\'number\'])
+                                                        ^
+SyntaxError: unexpected character after line continuation character
+
+import pandas as pd
+
+# 选择合适的数据集
+train_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\secondary_mushroom_train.csv'
+test_file = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\secondary_mushroom_test.csv'
+
+# 加载训练集和测试集
+df_train = pd.read_csv(train_file)
+df_test = pd.read_csv(test_file)
+
+# 对训练集和测试集进行空值填充，仅对数值列使用平均值填充
+df_train_numeric = df_train.select_dtypes(include=['number'])
+df_test_numeric = df_test.select_dtypes(include=['number'])
+df_train[df_train_numeric.columns] = df_train_numeric.fillna(df_train_numeric.mean())
+df_test[df_test_numeric.columns] = df_test_numeric.fillna(df_test_numeric.mean())
+
+# 结果变量
+df_train, df_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(       cap_diameter cap_shape cap_surface cap_color does_bruise_or_bleed gill_attachment gill_spacing gill_color  stem_height  stem_width stem_root stem_surface stem_color veil_type veil_color has_ring ring_type spore_print_color habitat season class
+ 0              2.47         x           y         w                    f               e            c          p         3.53       10.76       NaN          NaN          w       NaN          w        t         e               NaN       g      u     e
+ 1              4.64         c           i         y                    f             NaN            c          r         6.43        7.25       NaN          NaN          w       NaN        NaN        f         f               NaN       d      u     p
+ ...             ...       ...         ...       ...                  ...             ...          ...        ...          ...         ...       ...          ...        ...       ...        ...      ...       ...               ...     ...    ...   ...
+ 48853          6.78         x           s         n                    t               s            d          r         6.43       16.30         r            y          w       NaN        NaN        f         f               NaN       d      u     p
+ 48854          7.12         o           t         r                    f             NaN            c          y         1.61       14.93       NaN          NaN          n       NaN        NaN        f         f               NaN       d      a     p
+ 
+ [48855 rows x 21 columns],
+        cap_diameter cap_shape cap_surface cap_color does_bruise_or_bleed gill_attachment gill_spacing gill_color  stem_height  stem_width stem_root stem_surface stem_color veil_type veil_color has_ring ring_type spore_print_color habitat season class
+ 0              1.32         c           g         n                    f               a          NaN          g         4.41        1.28       NaN          NaN          g       NaN        NaN        f         f               NaN       l      a     e
+ 1              4.41         x           h         o                    f               a            c          n         4.18        6.21       NaN            y          o       NaN        NaN        t         z               NaN       d      w     p
+ ...             ...       ...         ...       ...                  ...             ...          ...        ...          ...         ...       ...          ...        ...       ...        ...      ...       ...               ...     ...    ...   ...
+ 12212         10.95         x           e         y                    t               p          NaN          e         8.90       23.36       NaN          NaN          u       NaN        NaN        f         f               NaN       d      a     p
+ 12213          8.56         x           d         w                    f               s            c          w         7.08       33.01       NaN          NaN          w       NaN        NaN        f         f               NaN       d      s     e
+ 
+ [12214 rows x 21 columns])from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import f1_score
+
+# 创建AdaBoost分类器，学习器数量设置为30，学习率设置为0.01
+ada_clf = AdaBoostClassifier(n_estimators=30, learning_rate=0.01)
+
+# 分离特征和标签
+X_train = df_train.drop('class', axis=1)
+y_train = df_train['class']
+X_test = df_test.drop('class', axis=1)
+y_test = df_test['class']
+
+# 训练模型
+ada_clf.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = ada_clf.predict(X_test)
+
+# 计算f1分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 结果变量
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[4], line 14
+    ada_clf.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\ensemble\_weight_boosting.py:130 in fit
+    X, y = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2961 in validate_data
+    X, y = check_X_y(X, y, **check_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1370 in check_X_y
+    X = check_array(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1107 in check_array
+    _assert_all_finite(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:105 in _assert_all_finite
+    raise ValueError("Input contains NaN")
+
+ValueError: Input contains NaN
+
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import f1_score
+
+# 再次对训练集和测试集进行空值填充
+df_train.fillna(df_train.mean(), inplace=True)
+df_test.fillna(df_test.mean(), inplace=True)
+
+# 创建AdaBoost分类器，学习器数量设置为30，学习率设置为0.01
+ada_clf = AdaBoostClassifier(n_estimators=30, learning_rate=0.01)
+
+# 分离特征和标签
+X_train = df_train.drop('class', axis=1)
+y_train = df_train['class']
+X_test = df_test.drop('class', axis=1)
+y_test = df_test['class']
+
+# 训练模型
+ada_clf.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = ada_clf.predict(X_test)
+
+# 计算f1分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 结果变量
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[5], line 5
+    df_train.fillna(df_train.mean(), inplace=True)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11693 in mean
+    result = super().mean(axis, skipna, numeric_only, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12420 in mean
+    return self._stat_function(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\generic.py:12377 in _stat_function
+    return self._reduce(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11562 in _reduce
+    res = df._mgr.reduce(blk_func)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\internals\managers.py:1500 in reduce
+    nbs = blk.reduce(func)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\internals\blocks.py:404 in reduce
+    result = func(self.values)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:11481 in blk_func
+    return op(values, axis=axis, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:147 in f
+    result = alt(values, axis=axis, skipna=skipna, **kwds)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:404 in new_func
+    result = func(values, axis=axis, skipna=skipna, mask=mask, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\nanops.py:719 in nanmean
+    the_sum =
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import f1_score
+
+# 对训练集和测试集进行空值填充，仅对数值列使用平均值填充
+df_train_numeric = df_train.select_dtypes(include=['number'])
+df_test_numeric = df_test.select_dtypes(include=['number'])
+df_train[df_train_numeric.columns] = df_train_numeric.fillna(df_train_numeric.mean())
+df_test[df_test_numeric.columns] = df_test_numeric.fillna(df_test_numeric.mean())
+
+# 创建AdaBoost分类器，学习器数量设置为30，学习率设置为0.01
+ada_clf = AdaBoostClassifier(n_estimators=30, learning_rate=0.01)
+
+# 分离特征和标签
+X_train = df_train.drop('class', axis=1)
+y_train = df_train['class']
+X_test = df_test.drop('class', axis=1)
+y_test = df_test['class']
+
+# 训练模型
+ada_clf.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = ada_clf.predict(X_test)
+
+# 计算f1分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 结果变量
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[6], line 20
+    ada_clf.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\ensemble\_weight_boosting.py:130 in fit
+    X, y = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2961 in validate_data
+    X, y = check_X_y(X, y, **check_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1370 in check_X_y
+    X = check_array(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1107 in check_array
+    _assert_all_finite(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:105 in _assert_all_finite
+    raise ValueError("Input contains NaN")
+
+ValueError: Input contains NaN
+
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import f1_score
+from sklearn.impute import SimpleImputer
+
+# 创建SimpleImputer实例，使用最频繁出现的值填充空值
+imputer = SimpleImputer(strategy='most_frequent')
+
+# 对训练集和测试集进行空值填充
+df_train_imputed = imputer.fit_transform(df_train)
+df_test_imputed = imputer.transform(df_test)
+
+# 创建AdaBoost分类器，学习器数量设置为30，学习率设置为0.01
+ada_clf = AdaBoostClassifier(n_estimators=30, learning_rate=0.01)
+
+# 分离特征和标签
+X_train = df_train_imputed[:, :-1]
+y_train = df_train_imputed[:, -1]
+X_test = df_test_imputed[:, :-1]
+y_test = df_test_imputed[:, -1]
+
+# 训练模型
+ada_clf.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = ada_clf.predict(X_test)
+
+# 计算f1分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 结果变量
+f1, y_pred
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[7], line 22
+    ada_clf.fit(X_train, y_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\ensemble\_weight_boosting.py:167 in fit
+    sample_weight, estimator_weight, estimator_error = self._boost(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\ensemble\_weight_boosting.py:570 in _boost
+    estimator.fit(X, y, sample_weight=sample_weight)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\tree\_classes.py:1024 in fit
+    super()._fit(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\tree\_classes.py:252 in _fit
+    X, y = validate_data(
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:2956 in validate_data
+    X = check_array(X, input_name="X", **check_X_params)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\validation.py:1055 in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_array_api.py:839 in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+
+ValueError: could not convert string to fl
+import pandas as pd
+
+# 实现字符串转换为数值
+df_train = pd.get_dummies(df_train)
+df_test = pd.get_dummies(df_test)
+
+# 结果变量
+df_train, df_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(       cap_diameter  stem_height  stem_width  cap_shape_b  cap_shape_c  cap_shape_f  cap_shape_o  cap_shape_p  cap_shape_s  cap_shape_x  cap_surface_d  cap_surface_e  cap_surface_g  cap_surface_h  cap_surface_i  cap_surface_k  cap_surface_l  cap_surface_s  cap_surface_t  cap_surface_w  cap_surface_y  cap_color_b  cap_color_e  cap_color_g  cap_color_k  cap_color_l  cap_color_n  cap_color_o  cap_color_p  cap_color_r  cap_color_u  cap_color_w  cap_color_y  does_bruise_or_bleed_f  does_bruise_or_bleed_t  gill_attachment_a  gill_attachment_d  gill_attachment_e  gill_attachment_f  gill_attachment_p  ...  stem_color_w  stem_color_y  veil_type_u  veil_color_e  veil_color_k  veil_color_n  veil_color_u  veil_color_w  veil_color_y  has_ring_f  has_ring_t  ring_type_e  ring_type_f  ring_type_g  ring_type_l  ring_type_m  ring_type_p  ring_type_r  ring_type_z  spore_print_color_g  spore_print_color_k  spore_print_color_n  spore_print_color_p  spore_print_color_r  spore_print_color_u  spore_print_color_w  habitat_d  habitat_g  habitat_h  habitat_l  habitat_m  habitat_p  habitat_u  habitat_w  season_a  season_s  season_u  season_w  class_e  class_p
+ 0              2.47         3.53       10.76        False        False        False        False        False        False         True          False          False          False          False          False          False          False          False          False          False           True        False        False        False        False        False        False        False        False        False        False         True        False                    True                   False              False              False               True              False              False  ...          True         False        False         False         False         False         False          True         False       False        True         True        False        False        False        False        False        False        False                False                False                False                False                False                False                False      False       True      False      False      False      False      False      False     False     False      True     False     True    False
+ 1              4.64         6.43        7.25        False         True        False        False        False        False        False          False          False          False          False           True          False          False          False          False          False          False        False        False        False        False        False        False        False        False        False        False        False         True                    True                   False              False              False              False              False              False  ...          True         False        False         False         False         False         False         False         False        True       False        False         True        False        False        False        False        False        False                False                False                False                False                False                False                False       True      False      False      False      False      False      False      False     False     False      True     False    False     True
+ ...             ...          ...         ...          ...          ...          ...          ...          ...          ...          ...            ...            ...            ...            ...            ...            ...            ...            ...            ...            ...            ...          ...          ...          ...          ...          ...          ...          ...          ...          ...          ...          ...          ...                     ...                     ...                ...                ...                ...                ...                ...  ...           ...           ...          ...           ...           ...           ...           ...           ...           ...         ...         ...          ...          ...          ...          ...          ...          ...          ...          ...                  ...                  ...                  ...                  ...                  ...                  ...                  ...        ...        ...        ...        ...        ...        ...        ...        ...       ...       ...       ...       ...      ...      ...
+ 48853          6.78         6.43       16.30        False        False        False        False        False        False         True          False          False          False          False          False          False          False           True          False          False          False        False        False        False        False        False         True        False        False        False        False        False        False                   False                    True              False              False              False              False              False  ...          True         False        False         False         False         False         False         False         False        True       False        False         True        False        False        False        False        False        False                False                False                False                False                False                False                False       True      False      False      False      False      False      False      False     False     False      True     False    False     True
+ 48854          7.12         1.61       14.93        False        False        False         True        False        False        False          False          False          False          False          False          False          False          False           True          False          False        False        False        False        False        False        False        False        False         True        False        False        False                    True                   False              False              False              False              False              False  ...         False         False        False         False         False         False         False         False         False        True       False        False         True        False        False        False        False        False        False                False                False                False                False                False                False                False       True      False      False      False      False      False      False      False      True     False     False     False    False     True
+ 
+ [48855 rows x 121 columns],
+        cap_diameter  stem_height  stem_width  cap_shape_b  cap_shape_c  cap_shape_f  cap_shape_o  cap_shape_p  cap_shape_s  cap_shape_x  cap_surface_d  cap_surface_e  cap_surface_g  cap_surface_h  cap_surface_i  cap_surface_k  cap_surface_l  cap_surface_s  cap_surface_t  cap_surface_w  cap_surface_y  cap_color_b  cap_color_e  cap_color_g  cap_color_k  cap_color_l  cap_color_n  cap_color_o  cap_color_p  cap_color_r  cap_color_u  cap_color_w  cap_color_y  does_bruise_or_bleed_f  does_bruise_or_bleed_t  gill_attachment_a  gill_attachment_d  gill_attachment_e  gill_attachment_f  gill_attachment_p  ...  stem_color_w  stem_color_y  veil_type_u  veil_color_e  veil_color_k  veil_color_n  veil_color_u  veil_color_w  veil_color_y  has_ring_f  has_ring_t  ring_type_e  ring_type_f  ring_type_g  ring_type_l  ring_type_m  ring_type_p  ring_type_r  ring_type_z  spore_print_color_g  spore_print_color_k  spore_print_color_n  spore_print_color_p  spore_print_color_r  spore_print_color_u  spore_print_color_w  habitat_d  habitat_g  habitat_h  habitat_l  habitat_m  habitat_p  habitat_u  habitat_w  season_a  season_s  season_u  season_w  class_e  class_p
+ 0              1.32         4.41        1.28        False         True        False        False        False        False        False          False          False           True          False          False          False          False          False          False          False          False        False        False        False        False        False         True        False        False        False        False        False        False                    True                   False               True              False              False              False              False  ...         False         False        False         False         False         False         False         False         False        True       False        False         True        False        False        False        False        False        False                False                False                False                False                False                False                False      False      False      False       True      False      False      False      False      True     False     False     False     True    False
+ 1              4.41         4.18        6.21        False        False        False        False        False        False         True          False          False          False           True          False          False          False          False          False          False          False        False        False        False        False        False        False         True        False        False        False        False        False                    True                   False               True              False              False              False              False  ...         False         False        False         False         False         False         False         False         False       False        True        False        False        False        False        False        False        False         True                False                False                False                False                False                False                False       True      False      False      False      False      False      False      False     False     False     False      True    False     True
+ ...             ...          ...         ...          ...          ...          ...          ...          ...          ...          ...            ...            ...            ...            ...            ...            ...            ...            ...            ...            ...            ...          ...          ...          ...          ...          ...          ...          ...          ...          ...          ...          ...          ...                     ...                     ...                ...                ...                ...                ...                ...  ...           ...           ...          ...           ...           ...           ...           ...           ...           ...         ...         ...          ...          ...          ...          ...          ...          ...          ...          ...                  ...                  ...                  ...                  ...                  ...                  ...                  ...        ...        ...        ...        ...        ...        ...        ...        ...       ...       ...       ...       ...      ...      ...
+ 12212         10.95         8.90       23.36        False        False        False        False        False        False         True          False           True          False          False          False          False          False          False          False          False          False        False        False        False        False        False        False        False        False        False        False        False         True                   False                    True              False              False              False              False               True  ...         False         False        False         False         False         False         False         False         False        True       False        False         True        False        False        False        False        False        False                False                False                False                False                False                False                False       True      False      False      False      False      False      False      False      True     False     False     False    False     True
+ 12213          8.56         7.08       33.01        False        False        False        False        False        False         True           True          False          False          False          False          False          False          False          False          False          False        False        False        False        False        False        False        False        False        False        False         True        False                    True                   False              False              False              False              False              False  ...          True         False        False         False         False         False         False         False         False        True       False        False         True        False        False        False        False        False        False                False                False                False                False                False                False                False       True      False      False      False      False      False      False      False     False      True     False     False     True    False
+ 
+ [12214 rows x 121 columns])from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import f1_score
+
+# 创建AdaBoost分类器，学习器数量设置为30，学习率设置为0.01
+ada_clf = AdaBoostClassifier(n_estimators=30, learning_rate=0.01)
+
+# 分离特征和标签
+X_train = df_train.drop('class_e', axis=1)
+y_train = df_train['class_e']
+X_test = df_test.drop('class_e', axis=1)
+y_test = df_test['class_e']
+
+# 训练模型
+ada_clf.fit(X_train, y_train)
+
+# 在测试集上进行预测
+y_pred = ada_clf.predict(X_test)
+
+# 计算f1分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+# 结果变量
+f1, y_pred
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(1.0, array([ True, False,  True, ...,  True, False,  True]))

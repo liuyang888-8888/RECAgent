@@ -1,0 +1,20 @@
+{
+    "task": {
+        "id": 29,
+        "task_type": "machine learning",
+        "machine_learning_type": "timeseries",
+        "data_source": "nvidia_share_price",
+        "task_description": "我想使用 nvidia_share_price 的时序数据，构建一个时间序列模型，用于分析和预测英伟达（NVIDIA）股价的每日最高的变化趋势。该任务属于时间序列预测问题，目标是根据历史股价数据预测未来股价。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 70.91304993629456,
+        "metrics":0.15856220669535148 ,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 4,
+        "prompt_tokens": 7472,
+        "completion_tokens": 893
+    }
+}

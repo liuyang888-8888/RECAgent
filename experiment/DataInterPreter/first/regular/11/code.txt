@@ -1,0 +1,281 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('rice_cammeo_and_osmancik_train.csv')
+test_df = pd.read_csv('rice_cammeo_and_osmancik_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand their structure
+print("Training Data:")
+print(train_df_copy.head())
+print("\nTest Data:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData Types in Training Set:")
+print(train_df_copy.dtypes)
+print("\nData Types in Test Set:")
+print(test_df_copy.dtypes)
+execute_result:
+---------------------------------------------------------------------------
+FileNotFoundError                         Traceback (most recent call last)
+Cell In[1], line 4
+      1 import pandas as pd
+      3 # Load the datasets
+----> 4 train_df = pd.read_csv('rice_cammeo_and_osmancik_train.csv')
+      5 test_df = pd.read_csv('rice_cammeo_and_osmancik_test.csv')
+      7 # Copy the DataFrames to ensure we don't modify the original data
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:948, in read_csv(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, date_format, dayfirst, cache_dates, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, doublequote, escapechar, comment, encoding, encoding_errors, dialect, on_bad_lines, delim_whitespace, low_memory, memory_map, float_precision, storage_options, dtype_backend)
+    935 kwds_defaults = _refine_defaults_read(
+    936     dialect,
+    937     delimiter,
+   (...)
+    944     dtype_backend=dtype_backend,
+    945 )
+    946 kwds.update(kwds_defaults)
+--> 948 return _read(filepath_or_buffer, kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:611, in _read(filepath_or_buffer, kwds)
+    608 _validate_names(kwds.get("names", None))
+    610 # Create the parser.
+--> 611 parser = TextFileReader(filepath_or_buffer, **kwds)
+    613 if chunksize or iterator:
+    614     return parser
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1448, in TextFileReader.__init__(self, f, engine, **kwds)
+   1445     self.options["has_index_names"] = kwds["has_index_names"]
+   1447 self.handles: IOHandles | None = None
+-> 1448 self._engine = self._make_engine(f, self.engine)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\parsers\readers.py:1705, in TextFileReader._make_engine(self, f, engine)
+   1703     if "b" not in mode:
+   1704         mode += "b"
+-> 1705 self.handles = get_handle(
+   1706     f,
+   1707     mode,
+   1708     encoding=self.options.get("encoding", None),
+   1709     compression=self.options.get("compression", None),
+   1710     memory_map=self.options.get("memory_map", False),
+   1711     is_text=is_text,
+   1712     errors=self.options.get("encoding_errors", "strict"),
+   1713     storage_options=self.options.get("storage_options", None),
+   1714 )
+   1715 assert self.handles is not None
+   1716 f = self.handles.handle
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\io\common.py:863, in get_handle(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)
+    858 elif isinstance(handle, str):
+    859     # Check whether the filename is to be opened in binary mode.
+    860     # Binary mode does not support 'encoding' and 'newline'.
+    861     if ioargs.encoding and "b" not in ioargs.mode:
+    862         # Encoding
+--> 863         handle = open(
+    864             handle,
+    865             ioargs.mode,
+    866             encoding=ioargs.encoding,
+    867             errors=errors,
+    868             newline="",
+    869         )
+    870     else:
+    871         # Binary mode
+    872         handle = open(handle, ioargs.mode)
+
+FileNotFoundError: [Errno 2] No such file or directory: 'rice_cammeo_and_osmancik_train.csv'
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the training dataset
+train_data = pd.read_csv('E:\\csv\\rice_cammeo_and_osmancik_train.csv')
+
+# Load the testing dataset
+test_data = pd.read_csv('E:\\csv\\rice_cammeo_and_osmancik_test.csv')
+
+# Display the first few rows of the datasets to verify loading
+train_data.head(), test_data.head()
+execute_result:
+(    Area   Perimeter  Major_Axis_Length  ...  Convex_Area    Extent     Class
+ 0  12529  437.838989         174.861450  ...        12840  0.766019  Osmancik
+ 1  11051  424.976013         180.871903  ...        11240  0.568058  Osmancik
+ 2  12975  463.851013         196.423966  ...        13358  0.609126    Cammeo
+ 3  10398  405.678986         162.227158  ...        10658  0.644717  Osmancik
+ 4  14541  492.785004         204.257141  ...        14893  0.758292    Cammeo
+ 
+ [5 rows x 8 columns],
+     Area   Perimeter  Major_Axis_Length  ...  Convex_Area    Extent     Class
+ 0  12442  459.535004         187.508850  ...        12941  0.587580    Cammeo
+ 1  12408  437.014008         179.741165  ...        12598  0.636928  Osmancik
+ 2  12867  449.079987         181.700561  ...        13152  0.649062  Osmancik
+ 3  13090  472.945007         202.601578  ...        13331  0.775290    Cammeo
+ 4  10359  409.510986         173.337967  ...        10510  0.573588  Osmancik
+ 
+ [5 rows x 8 columns])
+is_success:
+True
+code:
+# Check for missing values in both train and test datasets
+train_data_copy = train_data.copy()
+test_data_copy = test_data.copy()
+
+# Display the number of missing values in each column for both datasets
+print("Missing values in train_data:")
+print(train_data_copy.isnull().sum())
+print("\nMissing values in test_data:")
+print(test_data_copy.isnull().sum())
+
+# Handle missing values if any (for example, fill with median for numeric columns)
+numeric_columns = ['Area', 'Perimeter', 'Major_Axis_Length', 'Minor_Axis_Length', 'Eccentricity', 'Convex_Area', 'Extent']
+
+# Fill missing values with the median of each column
+for col in numeric_columns:
+    if train_data_copy[col].isnull().any():
+        median_value = train_data_copy[col].median()
+        train_data_copy[col].fillna(median_value, inplace=True)
+    
+    if test_data_copy[col].isnull().any():
+        median_value = test_data_copy[col].median()
+        test_data_copy[col].fillna(median_value, inplace=True)
+
+# Verify that there are no missing values left
+print("\nAfter handling missing values:")
+print("Missing values in train_data:")
+print(train_data_copy.isnull().sum())
+print("\nMissing values in test_data:")
+print(test_data_copy.isnull().sum())
+execute_result:
+Missing values in train_data:
+Area                 0
+Perimeter            0
+Major_Axis_Length    0
+Minor_Axis_Length    0
+Eccentricity         0
+Convex_Area          0
+Extent               0
+Class                0
+dtype: int64
+
+Missing values in test_data:
+Area                 0
+Perimeter            0
+Major_Axis_Length    0
+Minor_Axis_Length    0
+Eccentricity         0
+Convex_Area          0
+Extent               0
+Class                0
+dtype: int64
+
+After handling missing values:
+Missing values in train_data:
+Area                 0
+Perimeter            0
+Major_Axis_Length    0
+Minor_Axis_Length    0
+Eccentricity         0
+Convex_Area          0
+Extent               0
+Class                0
+dtype: int64
+
+Missing values in test_data:
+Area                 0
+Perimeter            0
+Major_Axis_Length    0
+Minor_Axis_Length    0
+Eccentricity         0
+Convex_Area          0
+Extent               0
+Class                0
+dtype: int64
+is_success:
+True
+code:
+# Splitting the datasets into features and labels
+X_train = train_data_copy.drop(columns=['Class'])
+y_train = train_data_copy['Class']
+X_test = test_data_copy.drop(columns=['Class'])
+y_test = test_data_copy['Class']
+
+# Displaying the first few rows of the features and labels
+X_train.head(), y_train.head(), X_test.head(), y_test.head()
+execute_result:
+(    Area   Perimeter  Major_Axis_Length  ...  Eccentricity  Convex_Area    Extent
+ 0  12529  437.838989         174.861450  ...      0.849733        12840  0.766019
+ 1  11051  424.976013         180.871903  ...      0.901527        11240  0.568058
+ 2  12975  463.851013         196.423966  ...      0.901363        13358  0.609126
+ 3  10398  405.678986         162.227158  ...      0.861422        10658  0.644717
+ 4  14541  492.785004         204.257141  ...      0.891653        14893  0.758292
+ 
+ [5 rows x 7 columns],
+ 0    Osmancik
+ 1    Osmancik
+ 2      Cammeo
+ 3    Osmancik
+ 4      Cammeo
+ Name: Class, dtype: object,
+     Area   Perimeter  Major_Axis_Length  ...  Eccentricity  Convex_Area    Extent
+ 0  12442  459.535004         187.508850  ...      0.885323        12941  0.587580
+ 1  12408  437.014008         179.741165  ...      0.869343        12598  0.636928
+ 2  12867  449.079987         181.700561  ...      0.864460        13152  0.649062
+ 3  13090  472.945007         202.601578  ...      0.911722        13331  0.775290
+ 4  10359  409.510986         173.337967  ...      0.896273        10510  0.573588
+ 
+ [5 rows x 7 columns],
+ 0      Cammeo
+ 1    Osmancik
+ 2    Osmancik
+ 3      Cammeo
+ 4    Osmancik
+ Name: Class, dtype: object)
+is_success:
+True
+code:
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the Random Forest Classifier
+rf_classifier = RandomForestClassifier(n_estimators=100, max_depth=None, min_samples_split=2, min_samples_leaf=1, random_state=42)
+
+# Train the model
+rf_classifier.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print(report)
+execute_result:
+Accuracy: 0.9251968503937008
+              precision    recall  f1-score   support
+
+      Cammeo       0.92      0.91      0.92       350
+    Osmancik       0.93      0.93      0.93       412
+
+    accuracy                           0.93       762
+   macro avg       0.92      0.92      0.92       762
+weighted avg       0.93      0.93      0.93       762
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting on the test set
+y_pred = rf_classifier.predict(X_test)
+
+# Calculating F1 score
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f"F1 Score: {f1}")
+execute_result:
+F1 Score: 0.9251715448188095
+is_success:
+True

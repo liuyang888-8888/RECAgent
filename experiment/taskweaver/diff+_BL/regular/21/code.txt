@@ -1,0 +1,85 @@
+import pandas as pd
+
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\forest_fires_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\forest_fires_test.csv'
+
+# Load the training and testing datasets
+forest_fires_train = pd.read_csv(train_file_path)
+forest_fires_test = pd.read_csv(test_file_path)
+
+# Display the first few rows of each dataset
+forest_fires_train.head(), forest_fires_test.head()
+
+forest_fires_train, forest_fires_test
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(     X  Y month  day  FFMC    DMC     DC   ISI  temp  RH  wind  rain  area
+ 0    4  3   sep  sat  92.2  102.3  751.5   8.4  23.5  27   4.0   0.0  3.33
+ 1    4  4   sep  mon  90.9  126.5  686.5   7.0  17.7  39   2.2   0.0  3.07
+ ..  .. ..   ...  ...   ...    ...    ...   ...   ...  ..   ...   ...   ...
+ 411  2  5   jul  sat  90.8   84.7  376.6   5.6  23.8  51   1.8   0.0  0.00
+ 412  2  4   aug  tue  94.8  108.3  647.1  17.0  20.1  40   4.0   0.0  0.00
+ 
+ [413 rows x 13 columns],
+      X  Y month  day  FFMC    DMC     DC   ISI  temp  RH  wind  rain   area
+ 0    6  5   may  sat  85.1   28.0  113.8   3.5  11.3  94   4.9   0.0   0.00
+ 1    7  5   aug  tue  96.1  181.1  671.2  14.3  21.6  65   4.9   0.8   0.00
+ ..  .. ..   ...  ...   ...    ...    ...   ...   ...  ..   ...   ...    ...
+ 102  2  4   aug  sun  81.6   56.7  665.6   1.9  21.9  71   5.8   0.0  54.29
+ 103  6  3   sep  thu  92.8  119.0  783.5   7.5  18.9  34   7.2   0.0  34.36
+ 
+ [104 rows x 13 columns])from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
+
+# Define the features and target variable
+features = ['temp', 'RH', 'wind', 'rain', 'FFMC', 'DMC', 'DC', 'ISI']
+target = 'area'
+
+# Train the Gradient Boosting Tree model
+model = GradientBoostingRegressor()
+model.fit(forest_fires_train[features], forest_fires_train[target])
+
+# Predict on the test set
+predictions = model.predict(forest_fires_test[features])
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(forest_fires_test[target], predictions)
+
+mse, predictions, forest_fires_test[target]
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(11631.900206927268,
+ array([  7.96275991,   0.52947035,  96.73996653,   6.38442461,
+          3.66903011,   4.64875328,   6.17315259,   9.74937226,
+          6.30521454,   1.61219887,  35.4814145 ,   2.22647298,
+          4.73727388,   7.66030201,   3.20359048,   1.23862174,
+          5.17257366,   5.90037384,   4.42668474,   1.44559087,
+          6.7100888 ,   6.81772019,   6.20742658,   5.806238  ,
+          5.92556008,  11.87777593,   3.69491223, 131.76621594,
+         12.5804459 ,  11.16415565,   5.03435599,  12.38796987,
+          9.45042616,   4.72773975,   9.46509565,   4.91711867,
+         -1.35695928,  11.68614241,  13.6886222 ,   6.13418715,
+         43.50350568,   5.806238  ,   1.15755793,  45.04463908,
+        143.81934344,  30.49976952,   5.8661705 ,   4.56312614,
+         15.13303188,  52.69725404,   6.28837639,  46.77422298,
+         -0.59301214,   1.15816147,   5.30495903,   5.30725125,
+          3.56833499,   9.4743625 ,   4.01104849,   8.22162021,
+          0.15404447,   1.97786552,  12.82649771,   2.90941743,
+          2.00023677,   7.14428775,   1.72873794,  15.82025305,
+          7.96764824,   4.5396535 ,   0.33839342,   9.48628009,
+         14.09308429,   3.96897005,   5.61183788,   6.37447962,
+         41.3142897 ,  14.4960431 ,   9.09268169,  20.53171809,
+          8.77519812,  46.81627071,  35.4814145 ,   8.19217339,
+          3.98136225,   3.93051767,   8.22162021,   3.6776866 ,
+         10.36241258,  10.73285497,  17.3004876 ,   7.79249256,
+         -0.41752539,   4.5507906 ,   2.26902169,   7.5568437 ,
+          8.72890508,   1.88224859,  15.86943807,  -1.74767521,
+          9.43307695,  11.8736378 ,  10.46669947,   0.46747266]),
+ 0       0.00
+ 1       0.00
+        ...  
+ 102    54.29
+ 103    34.36
+ Name: area, Length: 104, dtype: float64)

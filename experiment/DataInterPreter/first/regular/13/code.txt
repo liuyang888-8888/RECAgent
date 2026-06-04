@@ -1,0 +1,238 @@
+code:
+import pandas as pd
+
+# Load the training and testing datasets
+train_df = pd.read_csv(r'E:\csv\secondary_mushroom_train.csv')
+test_df = pd.read_csv(r'E:\csv\secondary_mushroom_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Training Data:")
+print(train_df_copy.head())
+print("\nTesting Data:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData Types in Training Data:")
+print(train_df_copy.dtypes)
+print("\nData Types in Testing Data:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+execute_result:
+Training Data:
+   cap_diameter cap_shape cap_surface  ... habitat season class
+0          2.47         x           y  ...       g      u     e
+1          4.64         c           i  ...       d      u     p
+2          7.69         x           t  ...       d      w     p
+3          6.91         x           d  ...       d      a     p
+4         16.40         x           t  ...       d      a     e
+
+[5 rows x 21 columns]
+
+Testing Data:
+   cap_diameter cap_shape cap_surface  ... habitat season class
+0          1.32         c           g  ...       l      a     e
+1          4.41         x           h  ...       d      w     p
+2          9.23         o         NaN  ...       d      a     e
+3          3.16         f           w  ...       d      u     p
+4          3.71         x           h  ...       d      a     e
+
+[5 rows x 21 columns]
+
+Data Types in Training Data:
+cap_diameter            float64
+cap_shape                object
+cap_surface              object
+cap_color                object
+does_bruise_or_bleed     object
+gill_attachment          object
+gill_spacing             object
+gill_color               object
+stem_height             float64
+stem_width              float64
+stem_root                object
+stem_surface             object
+stem_color               object
+veil_type                object
+veil_color               object
+has_ring                 object
+ring_type                object
+spore_print_color        object
+habitat                  object
+season                   object
+class                    object
+dtype: object
+
+Data Types in Testing Data:
+cap_diameter            float64
+cap_shape                object
+cap_surface              object
+cap_color                object
+does_bruise_or_bleed     object
+gill_attachment          object
+gill_spacing             object
+gill_color               object
+stem_height             float64
+stem_width              float64
+stem_root                object
+stem_surface             object
+stem_color               object
+veil_type                object
+veil_color               object
+has_ring                 object
+ring_type                object
+spore_print_color        object
+habitat                  object
+season                   object
+class                    object
+dtype: object
+
+Categorical Columns:
+Index(['cap_shape', 'cap_surface', 'cap_color', 'does_bruise_or_bleed',
+       'gill_attachment', 'gill_spacing', 'gill_color', 'stem_root',
+       'stem_surface', 'stem_color', 'veil_type', 'veil_color', 'has_ring',
+       'ring_type', 'spore_print_color', 'habitat', 'season', 'class'],
+      dtype='object')
+
+Numerical Columns:
+Index(['cap_diameter', 'stem_height', 'stem_width'], dtype='object')
+is_success:
+True
+code:
+from sklearn.preprocessing import LabelEncoder
+
+# Copy the datasets to avoid modifying the original data
+train_df_preprocessed = train_df_copy.copy()
+test_df_preprocessed = test_df_copy.copy()
+
+# Initialize the LabelEncoder
+label_encoder = LabelEncoder()
+
+# Encode categorical columns
+for column in categorical_columns:
+    # Fit the encoder on the training data and transform both training and testing data
+    train_df_preprocessed[column] = label_encoder.fit_transform(train_df_preprocessed[column])
+    test_df_preprocessed[column] = label_encoder.transform(test_df_preprocessed[column])
+
+# Split the data into features (X) and labels (y)
+X_train = train_df_preprocessed.drop(columns=['class'])
+y_train = train_df_preprocessed['class']
+X_test = test_df_preprocessed.drop(columns=['class'])
+y_test = test_df_preprocessed['class']
+
+# Display the first few rows of the preprocessed data
+print("Preprocessed Training Data Features:")
+print(X_train.head())
+print("\nPreprocessed Training Data Labels:")
+print(y_train.head())
+print("\nPreprocessed Testing Data Features:")
+print(X_test.head())
+print("\nPreprocessed Testing Data Labels:")
+print(y_test.head())
+execute_result:
+Preprocessed Training Data Features:
+   cap_diameter  cap_shape  cap_surface  ...  spore_print_color  habitat  season
+0          2.47          6           10  ...                  7        1       2
+1          4.64          1            4  ...                  7        0       2
+2          7.69          6            8  ...                  7        0       3
+3          6.91          6            0  ...                  7        0       0
+4         16.40          6            8  ...                  6        0       0
+
+[5 rows x 20 columns]
+
+Preprocessed Training Data Labels:
+0    0
+1    1
+2    1
+3    1
+4    0
+Name: class, dtype: int32
+
+Preprocessed Testing Data Features:
+   cap_diameter  cap_shape  cap_surface  ...  spore_print_color  habitat  season
+0          1.32          1            2  ...                  7        3       0
+1          4.41          6            3  ...                  7        0       3
+2          9.23          3           11  ...                  7        0       0
+3          3.16          2            9  ...                  7        0       2
+4          3.71          6            3  ...                  1        0       0
+
+[5 rows x 20 columns]
+
+Preprocessed Testing Data Labels:
+0    0
+1    1
+2    0
+3    1
+4    0
+Name: class, dtype: int32
+is_success:
+True
+code:
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the AdaBoost classifier
+ada_clf = AdaBoostClassifier(n_estimators=100, learning_rate=0.1, random_state=42)
+
+# Train the model
+ada_clf.fit(X_train, y_train)
+
+# Predict on the training set
+y_train_pred = ada_clf.predict(X_train)
+print("Training Accuracy:", accuracy_score(y_train, y_train_pred))
+print("Training Classification Report:\n", classification_report(y_train, y_train_pred))
+
+# Predict on the testing set
+y_test_pred = ada_clf.predict(X_test)
+print("Testing Accuracy:", accuracy_score(y_test, y_test_pred))
+print("Testing Classification Report:\n", classification_report(y_test, y_test_pred))
+execute_result:
+Training Accuracy: 0.7145225667792447
+Training Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.68      0.67      0.68     21807
+           1       0.74      0.75      0.74     27048
+
+    accuracy                           0.71     48855
+   macro avg       0.71      0.71      0.71     48855
+weighted avg       0.71      0.71      0.71     48855
+
+Testing Accuracy: 0.7133617160635336
+Testing Classification Report:
+               precision    recall  f1-score   support
+
+           0       0.68      0.67      0.67      5374
+           1       0.74      0.75      0.74      6840
+
+    accuracy                           0.71     12214
+   macro avg       0.71      0.71      0.71     12214
+weighted avg       0.71      0.71      0.71     12214
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predicting on the test set using the trained AdaBoost classifier
+y_test_pred = ada_clf.predict(X_test)
+
+# Calculating the F1 score for the test set
+f1 = f1_score(y_test, y_test_pred, average='weighted')
+
+print(f"Weighted F1 Score on Test Set: {f1}")
+execute_result:
+Weighted F1 Score on Test Set: 0.7132411631427213
+is_success:
+True

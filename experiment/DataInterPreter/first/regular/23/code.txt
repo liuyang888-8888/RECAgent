@@ -1,0 +1,158 @@
+code:
+import pandas as pd
+
+# Load the data
+train_data_path = 'E:\\csv\\obesity_cvd_risk_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows to understand the data
+print(train_df_copy.head())
+
+# Check data types
+print(train_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_cols = train_df_copy.select_dtypes(include=['object']).columns
+numerical_cols = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Display the identified columns
+print("Categorical Columns:", categorical_cols)
+print("Numerical Columns:", numerical_cols)
+
+# Apply appropriate preprocessing for categorical and numerical columns
+from sklearn.preprocessing import LabelEncoder
+
+# Initialize LabelEncoder
+label_encoder = LabelEncoder()
+
+# Encode categorical columns
+for col in categorical_cols:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+
+# Display the preprocessed data
+print(train_df_copy.head())
+execute_result:
+id  Gender        Age  ...       CALC                 MTRANS           NObeyesdad
+0   0    Male  24.443011  ...  Sometimes  Public_Transportation  Overweight_Level_II
+1   1  Female  18.000000  ...         no             Automobile        Normal_Weight
+2   2  Female  18.000000  ...         no  Public_Transportation  Insufficient_Weight
+3   3  Female  20.952737  ...  Sometimes  Public_Transportation     Obesity_Type_III
+4   4    Male  31.641081  ...  Sometimes  Public_Transportation  Overweight_Level_II
+
+[5 rows x 18 columns]
+id                                  int64
+Gender                             object
+Age                               float64
+Height                            float64
+Weight                            float64
+family_history_with_overweight     object
+FAVC                               object
+FCVC                              float64
+NCP                               float64
+CAEC                               object
+SMOKE                              object
+CH2O                              float64
+SCC                                object
+FAF                               float64
+TUE                               float64
+CALC                               object
+MTRANS                             object
+NObeyesdad                         object
+dtype: object
+Categorical Columns: Index(['Gender', 'family_history_with_overweight', 'FAVC', 'CAEC', 'SMOKE',
+       'SCC', 'CALC', 'MTRANS', 'NObeyesdad'],
+      dtype='object')
+Numerical Columns: Index(['id', 'Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE'], dtype='object')
+   id  Gender        Age    Height  ...       TUE  CALC  MTRANS  NObeyesdad
+0   0       1  24.443011  1.699998  ...  0.976473     1       3           6
+1   1       0  18.000000  1.560000  ...  1.000000     2       0           1
+2   2       0  18.000000  1.711460  ...  1.673584     2       3           0
+3   3       0  20.952737  1.710730  ...  0.780199     1       3           4
+4   4       1  31.641081  1.914186  ...  0.931721     1       3           6
+
+[5 rows x 18 columns]
+is_success:
+True
+code:
+# Import necessary libraries for preprocessing
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+import numpy as np
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_preprocessed = train_df_copy.copy()
+
+# Handling missing values
+# For simplicity, we will fill missing values with the median for numerical columns and mode for categorical columns
+for col in numerical_cols:
+    train_df_preprocessed[col].fillna(train_df_preprocessed[col].median(), inplace=True)
+
+for col in categorical_cols:
+    train_df_preprocessed[col].fillna(train_df_preprocessed[col].mode()[0], inplace=True)
+
+# Scaling numerical features
+scaler = StandardScaler()
+train_df_preprocessed[numerical_cols] = scaler.fit_transform(train_df_preprocessed[numerical_cols])
+
+# Encoding categorical variables
+ordinal_encoder = OrdinalEncoder()
+train_df_preprocessed[categorical_cols] = ordinal_encoder.fit_transform(train_df_preprocessed[categorical_cols])
+
+# Ensure the label column remains unchanged
+train_df_preprocessed['NObeyesdad'] = train_df_copy['NObeyesdad']
+
+# Display the first few rows of the preprocessed DataFrame
+print(train_df_preprocessed.head())
+execute_result:
+id  Gender       Age    Height  ...       TUE  CALC  MTRANS  NObeyesdad
+0 -1.728590     1.0  0.091052  0.039812  ...  0.589667   1.0     3.0           6
+1 -1.721662     0.0 -1.049687 -1.539481  ...  0.629436   2.0     0.0           1
+2 -1.714734     0.0 -1.049687  0.169113  ...  1.768039   2.0     3.0           0
+3 -1.707806     0.0 -0.526903  0.160878  ...  0.257892   1.0     3.0           4
+4 -1.700877     1.0  1.365475  2.456030  ...  0.514020   1.0     3.0           6
+
+[5 rows x 18 columns]
+is_success:
+True
+code:
+from sklearn.cluster import MeanShift, estimate_bandwidth
+
+# Using the preprocessed data from the previous step
+X = train_df_preprocessed.drop(columns=['NObeyesdad'])
+
+# Estimate the bandwidth for the Mean Shift algorithm
+bandwidth = estimate_bandwidth(X, quantile=0.03)
+
+# Initialize and train the Mean Shift model
+mean_shift = MeanShift(bandwidth=bandwidth, max_iter=500)
+mean_shift.fit(X)
+
+# Add the cluster labels to the original dataframe
+train_df_preprocessed['Cluster'] = mean_shift.labels_
+
+# Display the first few rows of the dataframe with the cluster labels
+print(train_df_preprocessed.head())
+execute_result:
+id  Gender       Age    Height  ...  CALC  MTRANS  NObeyesdad  Cluster
+0 -1.728590     1.0  0.091052  0.039812  ...   1.0     3.0           6        1
+1 -1.721662     0.0 -1.049687 -1.539481  ...   2.0     0.0           1       44
+2 -1.714734     0.0 -1.049687  0.169113  ...   2.0     3.0           0        4
+3 -1.707806     0.0 -0.526903  0.160878  ...   1.0     3.0           4        0
+4 -1.700877     1.0  1.365475  2.456030  ...   1.0     3.0           6       43
+
+[5 rows x 19 columns]
+is_success:
+True
+code:
+from sklearn.metrics import silhouette_score
+
+# Using the preprocessed data and the Mean Shift model from the previous tasks
+X_for_silhouette = train_df_preprocessed.drop(columns=['NObeyesdad', 'Cluster'])
+silhouette_avg = silhouette_score(X_for_silhouette, mean_shift.labels_)
+print(f"The average silhouette score is: {silhouette_avg}")
+execute_result:
+The average silhouette score is: 0.0741030749369138
+is_success:
+True

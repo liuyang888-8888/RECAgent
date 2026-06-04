@@ -1,0 +1,710 @@
+code:
+import pandas as pd
+
+# Load the training data
+train_data_path = 'E:\\csv\\nvidia_share_price_train.csv'
+train_df = pd.read_csv(train_data_path)
+
+# Copy the DataFrame to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+
+# Display the first few rows of the DataFrame to understand its structure
+print(train_df_copy.head())
+
+# Check the data types of each column
+print(train_df_copy.dtypes)
+
+# Perform data preprocessing steps
+# Example: Convert date column to datetime type if it's not already
+if 'date' in train_df_copy.columns:
+    train_df_copy['date'] = pd.to_datetime(train_df_copy['date'])
+
+# Example: Extract year, month, and day from the date column
+if 'date' in train_df_copy.columns:
+    train_df_copy['year'] = train_df_copy['date'].dt.year
+    train_df_copy['month'] = train_df_copy['date'].dt.month
+    train_df_copy['day'] = train_df_copy['date'].dt.day
+
+# Example: Handle missing values if any
+train_df_copy = train_df_copy.dropna()
+
+# Display the preprocessed DataFrame
+print(train_df_copy.head())
+execute_result:
+Date        Open       Close        High         Low
+0  2022-01-14  263.000000  269.420013  271.970001  262.100006
+1  2018-07-19   62.735001   63.007500   63.347500   62.582500
+2  2013-12-31    4.000000    4.005000    4.025000    3.975000
+3  2011-03-18    4.535000    4.405000    4.550000    4.400000
+4  2024-04-15  890.979980  860.010010  906.130005  859.289978
+Date      object
+Open     float64
+Close    float64
+High     float64
+Low      float64
+dtype: object
+         Date        Open       Close        High         Low
+0  2022-01-14  263.000000  269.420013  271.970001  262.100006
+1  2018-07-19   62.735001   63.007500   63.347500   62.582500
+2  2013-12-31    4.000000    4.005000    4.025000    3.975000
+3  2011-03-18    4.535000    4.405000    4.550000    4.400000
+4  2024-04-15  890.979980  860.010010  906.130005  859.289978
+is_success:
+True
+code:
+# Since the date column has already been converted to datetime and missing values have been handled,
+# we will proceed with further preprocessing steps.
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_preprocessed = train_df_copy.copy()
+
+# Check for any remaining missing values
+print("Missing values before preprocessing:", train_df_preprocessed.isnull().sum())
+
+# Since the 'date' column is already in datetime format, we can extract additional features
+# such as day of the week, quarter, etc., which might be useful for time series analysis
+train_df_preprocessed['day_of_week'] = train_df_preprocessed['date'].dt.dayofweek
+train_df_preprocessed['quarter'] = train_df_preprocessed['date'].dt.quarter
+
+# Display the first few rows of the preprocessed DataFrame
+print(train_df_preprocessed.head())
+execute_result:
+Missing values before preprocessing: Date     0
+Open     0
+Close    0
+High     0
+Low      0
+dtype: int64,---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\indexes\base.py:3790, in Index.get_loc(self, key)
+   3789 try:
+-> 3790     return self._engine.get_loc(casted_key)
+   3791 except KeyError as err:
+
+File index.pyx:152, in pandas._libs.index.IndexEngine.get_loc()
+
+File index.pyx:181, in pandas._libs.index.IndexEngine.get_loc()
+
+File pandas\_libs\hashtable_class_helper.pxi:7080, in pandas._libs.hashtable.PyObjectHashTable.get_item()
+
+File pandas\_libs\hashtable_class_helper.pxi:7088, in pandas._libs.hashtable.PyObjectHashTable.get_item()
+
+KeyError: 'date'
+
+The above exception was the direct cause of the following exception:
+
+KeyError                                  Traceback (most recent call last)
+Cell In[3], line 12
+      8 print("Missing values before preprocessing:", train_df_preprocessed.isnull().sum())
+     10 # Since the 'date' column is already in datetime format, we can extract additional features
+     11 # such as day of the week, quarter, etc., which might be useful for time series analysis
+---> 12 train_df_preprocessed['day_of_week'] = train_df_preprocessed['date'].dt.dayofweek
+     13 train_df_preprocessed['quarter'] = train_df_preprocessed['date'].dt.quarter
+     15 # Display the first few rows of the preprocessed DataFrame
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:3896, in DataFrame.__getitem__(self, key)
+   3894 if self.columns.nlevels > 1:
+   3895     return self._getitem_multilevel(key)
+-> 3896 indexer = self.columns.get_loc(key)
+   3897 if is_integer(indexer):
+   3898     indexer = [indexer]
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\indexes\base.py:3797, in Index.get_loc(self, key)
+   3792     if isinstance(casted_key, slice) or (
+   3793         isinstance(casted_key, abc.Iterable)
+   3794         and any(isinstance(x, slice) for x in casted_key)
+   3795     ):
+   3796         raise InvalidIndexError(key)
+-> 3797     raise KeyError(key) from err
+   3798 except TypeError:
+   3799     # If we have a listlike key, _check_indexing_error will raise
+   3800     #  InvalidIndexError. Otherwise we fall through and re-raise
+   3801     #  the TypeError.
+   3802     self._check_indexing_error(key)
+
+KeyError: 'date'
+is_success:
+False
+code:
+# Since the date column has already been converted to datetime and missing values have been handled,
+# we will proceed with additional preprocessing steps if necessary.
+
+# Copy the DataFrame to avoid modifying the original data
+train_df_preprocessed = train_df_copy.copy()
+
+# Check for any remaining missing values
+print("Missing values in train_df_preprocessed:\n", train_df_preprocessed.isnull().sum())
+
+# If there are any remaining missing values, handle them appropriately
+# For example, fill missing values in numeric columns with the median
+numeric_columns = ['Open', 'Close', 'High', 'Low']
+for col in numeric_columns:
+    if train_df_preprocessed[col].isnull().any():
+        train_df_preprocessed[col].fillna(train_df_preprocessed[col].median(), inplace=True)
+
+# Verify that there are no missing values left
+print("Missing values after handling:\n", train_df_preprocessed.isnull().sum())
+
+# Display the first few rows of the preprocessed DataFrame
+print(train_df_preprocessed.head())
+execute_result:
+Missing values in train_df_preprocessed:
+ Date     0
+Open     0
+Close    0
+High     0
+Low      0
+dtype: int64
+Missing values after handling:
+ Date     0
+Open     0
+Close    0
+High     0
+Low      0
+dtype: int64
+         Date        Open       Close        High         Low
+0  2022-01-14  263.000000  269.420013  271.970001  262.100006
+1  2018-07-19   62.735001   63.007500   63.347500   62.582500
+2  2013-12-31    4.000000    4.005000    4.025000    3.975000
+3  2011-03-18    4.535000    4.405000    4.550000    4.400000
+4  2024-04-15  890.979980  860.010010  906.130005  859.289978
+is_success:
+True
+code:
+from statsmodels.tsa.arima.model import ARIMA
+import numpy as np
+
+# Convert the 'Date' column to datetime and set it as the index
+train_df_preprocessed['Date'] = pd.to_datetime(train_df_preprocessed['Date'])
+train_df_preprocessed.set_index('Date', inplace=True)
+
+# Select the target variable (e.g., 'Close' price)
+target_variable = 'Close'
+y = train_df_preprocessed[target_variable]
+
+# Fit an ARIMA model
+# Here we use (p, d, q) = (5, 1, 0) as an example, but you can tune these parameters
+model = ARIMA(y, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Print the summary of the model
+print(model_fit.summary())
+
+# Optionally, plot the residuals to check for any unusual patterns
+residuals = model_fit.resid
+residuals.plot(title='Residuals')
+import matplotlib.pyplot as plt
+plt.show()
+execute_result:
+SARIMAX Results                                
+==============================================================================
+Dep. Variable:                  Close   No. Observations:                 6116
+Model:                 ARIMA(5, 1, 0)   Log Likelihood              -38476.094
+Date:                Sun, 27 Apr 2025   AIC                          76964.188
+Time:                        21:57:20   BIC                          77004.499
+Sample:                             0   HQIC                         76978.173
+                               - 6116                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1         -0.8522      0.011    -76.480      0.000      -0.874      -0.830
+ar.L2         -0.6869      0.014    -48.888      0.000      -0.714      -0.659
+ar.L3         -0.5200      0.015    -35.643      0.000      -0.549      -0.491
+ar.L4         -0.3341      0.014    -23.770      0.000      -0.362      -0.307
+ar.L5         -0.1615      0.012    -14.026      0.000      -0.184      -0.139
+sigma2      1.699e+04    110.527    153.756      0.000    1.68e+04    1.72e+04
+===================================================================================
+Ljung-Box (L1) (Q):                   3.32   Jarque-Bera (JB):             54945.45
+Prob(Q):                              0.07   Prob(JB):                         0.00
+Heteroskedasticity (H):               1.09   Skew:                             3.00
+Prob(H) (two-sided):                  0.05   Kurtosis:                        16.40
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq),---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+Cell In[7], line 22
+     20 # Optionally, plot the residuals to check for any unusual patterns
+     21 residuals = model_fit.resid
+---> 22 residuals.plot(title='Residuals')
+     23 import matplotlib.pyplot as plt
+     24 plt.show()
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\plotting\_core.py:951, in PlotAccessor.__call__(self, *args, **kwargs)
+    950 def __call__(self, *args, **kwargs):
+--> 951     plot_backend = _get_plot_backend(kwargs.pop("backend", None))
+    953     x, y, kind, kwargs = self._get_call_args(
+    954         plot_backend.__name__, self._parent, args, kwargs
+    955     )
+    957     kind = self._kind_aliases.get(kind, kind)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\plotting\_core.py:1947, in _get_plot_backend(backend)
+   1944 if backend_str in _backends:
+   1945     return _backends[backend_str]
+-> 1947 module = _load_backend(backend_str)
+   1948 _backends[backend_str] = module
+   1949 return module
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\plotting\_core.py:1877, in _load_backend(backend)
+   1875         module = importlib.import_module("pandas.plotting._matplotlib")
+   1876     except ImportError:
+-> 1877         raise ImportError(
+   1878             "matplotlib is required for plotting when the "
+   1879             'default backend "matplotlib" is selected.'
+   1880         ) from None
+   1881     return module
+   1883 found_backend = False
+
+ImportError: matplotlib is required for plotting when the default backend "matplotlib" is selected.
+is_success:
+False
+code:
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+import matplotlib.pyplot as plt
+
+# Convert 'Date' column to datetime if not already done
+train_df_preprocessed['Date'] = pd.to_datetime(train_df_preprocessed['Date'])
+
+# Set 'Date' as the index
+train_df_preprocessed.set_index('Date', inplace=True)
+
+# Select the target variable (e.g., 'Close' price)
+target_variable = 'Close'
+train_series = train_df_preprocessed[target_variable]
+
+# Fit an ARIMA model
+model = SARIMAX(train_series, order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
+results = model.fit()
+
+# Print the summary of the model
+print(results.summary())
+
+# Plot the original data and the fitted values
+plt.figure(figsize=(12, 6))
+plt.plot(train_series, label='Original')
+plt.plot(results.fittedvalues, color='red', label='Fitted')
+plt.title('ARIMA Model Fitting')
+plt.xlabel('Date')
+plt.ylabel('Stock Price')
+plt.legend()
+plt.show()
+execute_result:
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+Cell In[9], line 2
+      1 from statsmodels.tsa.statespace.sarimax import SARIMAX
+----> 2 import matplotlib.pyplot as plt
+      4 # Convert 'Date' column to datetime if not already done
+      5 train_df_preprocessed['Date'] = pd.to_datetime(train_df_preprocessed['Date'])
+
+ModuleNotFoundError: No module named 'matplotlib'
+is_success:
+False
+code:
+from statsmodels.tsa.arima.model import ARIMA
+
+# Ensure the date column is set as the index
+train_df_preprocessed.set_index('Date', inplace=True)
+
+# Fit the ARIMA model
+model = ARIMA(train_df_preprocessed['Close'], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Summary of the model
+print(model_fit.summary())
+execute_result:
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+Cell In[10], line 4
+      1 from statsmodels.tsa.arima.model import ARIMA
+      3 # Ensure the date column is set as the index
+----> 4 train_df_preprocessed.set_index('Date', inplace=True)
+      6 # Fit the ARIMA model
+      7 model = ARIMA(train_df_preprocessed['Close'], order=(5, 1, 0))
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:5873, in DataFrame.set_index(self, keys, drop, append, inplace, verify_integrity)
+   5870                 missing.append(col)
+   5872 if missing:
+-> 5873     raise KeyError(f"None of {missing} are in the columns")
+   5875 if inplace:
+   5876     frame = self
+
+KeyError: "None of ['Date'] are in the columns"
+is_success:
+False
+code:
+from statsmodels.tsa.arima.model import ARIMA
+
+# Assuming 'Close' is the target variable for the ARIMA model
+target_column = 'Close'
+model = ARIMA(train_df_preprocessed[target_column], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Displaying the summary of the model
+print(model_fit.summary())
+execute_result:
+SARIMAX Results                                
+==============================================================================
+Dep. Variable:                  Close   No. Observations:                 6116
+Model:                 ARIMA(5, 1, 0)   Log Likelihood              -38476.094
+Date:                Sun, 27 Apr 2025   AIC                          76964.188
+Time:                        21:58:43   BIC                          77004.499
+Sample:                             0   HQIC                         76978.173
+                               - 6116                                         
+Covariance Type:                  opg                                         
+==============================================================================
+                 coef    std err          z      P>|z|      [0.025      0.975]
+------------------------------------------------------------------------------
+ar.L1         -0.8522      0.011    -76.480      0.000      -0.874      -0.830
+ar.L2         -0.6869      0.014    -48.888      0.000      -0.714      -0.659
+ar.L3         -0.5200      0.015    -35.643      0.000      -0.549      -0.491
+ar.L4         -0.3341      0.014    -23.770      0.000      -0.362      -0.307
+ar.L5         -0.1615      0.012    -14.026      0.000      -0.184      -0.139
+sigma2      1.699e+04    110.527    153.756      0.000    1.68e+04    1.72e+04
+===================================================================================
+Ljung-Box (L1) (Q):                   3.32   Jarque-Bera (JB):             54945.45
+Prob(Q):                              0.07   Prob(JB):                         0.00
+Heteroskedasticity (H):               1.09   Skew:                             3.00
+Prob(H) (two-sided):                  0.05   Kurtosis:                        16.40
+===================================================================================
+
+Warnings:
+[1] Covariance matrix calculated using the outer product of gradients (complex-step).,self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+  self._init_dates(dates, freq)
+is_success:
+True
+code:
+# Calculate the Mean Squared Error (MSE) of the fitted values on the training set
+from sklearn.metrics import mean_squared_error
+
+# Extract the fitted values from the model
+fitted_values = model_fit.fittedvalues
+
+# Calculate MSE
+mse = mean_squared_error(train_df_preprocessed[target_column][1:], fitted_values)
+print(f"Mean Squared Error (MSE): {mse}")
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[12], line 8
+      5 fitted_values = model_fit.fittedvalues
+      7 # Calculate MSE
+----> 8 mse = mean_squared_error(train_df_preprocessed[target_column][1:], fitted_values)
+      9 print(f"Mean Squared Error (MSE): {mse}")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:214, in validate_params.<locals>.decorator.<locals>.wrapper(*args, **kwargs)
+    208 try:
+    209     with config_context(
+    210         skip_parameter_validation=(
+    211             prefer_skip_nested_validation or global_skip_validation
+    212         )
+    213     ):
+--> 214         return func(*args, **kwargs)
+    215 except InvalidParameterError as e:
+    216     # When the function is just a wrapper around an estimator, we allow
+    217     # the function to delegate validation to the estimator, but we replace
+    218     # the name of the estimator by the name of the function in the error
+    219     # message to avoid confusion.
+    220     msg = re.sub(
+    221         r"parameter of \w+ must be",
+    222         f"parameter of {func.__qualname__} must be",
+    223         str(e),
+    224     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:474, in mean_squared_error(y_true, y_pred, sample_weight, multioutput, squared)
+    404 @validate_params(
+    405     {
+    406         "y_true": ["array-like"],
+   (...)
+    415     y_true, y_pred, *, sample_weight=None, multioutput="uniform_average", squared=True
+    416 ):
+    417     """Mean squared error regression loss.
+    418 
+    419     Read more in the :ref:`User Guide <mean_squared_error>`.
+   (...)
+    472     0.825...
+    473     """
+--> 474     y_type, y_true, y_pred, multioutput = _check_reg_targets(
+    475         y_true, y_pred, multioutput
+    476     )
+    477     check_consistent_length(y_true, y_pred, sample_weight)
+    478     output_errors = np.average((y_true - y_pred) ** 2, axis=0, weights=sample_weight)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:99, in _check_reg_targets(y_true, y_pred, multioutput, dtype)
+     65 def _check_reg_targets(y_true, y_pred, multioutput, dtype="numeric"):
+     66     """Check that y_true and y_pred belong to the same regression task.
+     67 
+     68     Parameters
+   (...)
+     97         correct keyword.
+     98     """
+---> 99     check_consistent_length(y_true, y_pred)
+    100     y_true = check_array(y_true, ensure_2d=False, dtype=dtype)
+    101     y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\validation.py:407, in check_consistent_length(*arrays)
+    405 uniques = np.unique(lengths)
+    406 if len(uniques) > 1:
+--> 407     raise ValueError(
+    408         "Found input variables with inconsistent numbers of samples: %r"
+    409         % [int(l) for l in lengths]
+    410     )
+
+ValueError: Found input variables with inconsistent numbers of samples: [6115, 6116]
+is_success:
+False
+code:
+from sklearn.metrics import mean_squared_error
+
+# Extracting the true values and the fitted values
+true_values = train_df_preprocessed[target_column]
+fitted_values = model_fit.fittedvalues
+
+# Ensuring the lengths of true and predicted values match
+mse = mean_squared_error(true_values[len(fitted_values):], fitted_values)
+print(f"Mean Squared Error (MSE): {mse}")
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[13], line 8
+      5 fitted_values = model_fit.fittedvalues
+      7 # Ensuring the lengths of true and predicted values match
+----> 8 mse = mean_squared_error(true_values[len(fitted_values):], fitted_values)
+      9 print(f"Mean Squared Error (MSE): {mse}")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:214, in validate_params.<locals>.decorator.<locals>.wrapper(*args, **kwargs)
+    208 try:
+    209     with config_context(
+    210         skip_parameter_validation=(
+    211             prefer_skip_nested_validation or global_skip_validation
+    212         )
+    213     ):
+--> 214         return func(*args, **kwargs)
+    215 except InvalidParameterError as e:
+    216     # When the function is just a wrapper around an estimator, we allow
+    217     # the function to delegate validation to the estimator, but we replace
+    218     # the name of the estimator by the name of the function in the error
+    219     # message to avoid confusion.
+    220     msg = re.sub(
+    221         r"parameter of \w+ must be",
+    222         f"parameter of {func.__qualname__} must be",
+    223         str(e),
+    224     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:474, in mean_squared_error(y_true, y_pred, sample_weight, multioutput, squared)
+    404 @validate_params(
+    405     {
+    406         "y_true": ["array-like"],
+   (...)
+    415     y_true, y_pred, *, sample_weight=None, multioutput="uniform_average", squared=True
+    416 ):
+    417     """Mean squared error regression loss.
+    418 
+    419     Read more in the :ref:`User Guide <mean_squared_error>`.
+   (...)
+    472     0.825...
+    473     """
+--> 474     y_type, y_true, y_pred, multioutput = _check_reg_targets(
+    475         y_true, y_pred, multioutput
+    476     )
+    477     check_consistent_length(y_true, y_pred, sample_weight)
+    478     output_errors = np.average((y_true - y_pred) ** 2, axis=0, weights=sample_weight)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:99, in _check_reg_targets(y_true, y_pred, multioutput, dtype)
+     65 def _check_reg_targets(y_true, y_pred, multioutput, dtype="numeric"):
+     66     """Check that y_true and y_pred belong to the same regression task.
+     67 
+     68     Parameters
+   (...)
+     97         correct keyword.
+     98     """
+---> 99     check_consistent_length(y_true, y_pred)
+    100     y_true = check_array(y_true, ensure_2d=False, dtype=dtype)
+    101     y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\validation.py:407, in check_consistent_length(*arrays)
+    405 uniques = np.unique(lengths)
+    406 if len(uniques) > 1:
+--> 407     raise ValueError(
+    408         "Found input variables with inconsistent numbers of samples: %r"
+    409         % [int(l) for l in lengths]
+    410     )
+
+ValueError: Found input variables with inconsistent numbers of samples: [0, 6116]
+is_success:
+False
+code:
+# Calculate the Mean Squared Error (MSE) of the fitted values on the training set
+from sklearn.metrics import mean_squared_error
+
+# Extract the fitted values from the model
+fitted_values = model_fit.fittedvalues
+
+# Ensure the lengths of the true and predicted values match
+true_values = train_df_preprocessed[target_column][len(fitted_values):]
+
+# Calculate MSE
+mse = mean_squared_error(true_values, fitted_values)
+print(f"Mean Squared Error (MSE): {mse}")
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[14], line 11
+      8 true_values = train_df_preprocessed[target_column][len(fitted_values):]
+     10 # Calculate MSE
+---> 11 mse = mean_squared_error(true_values, fitted_values)
+     12 print(f"Mean Squared Error (MSE): {mse}")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:214, in validate_params.<locals>.decorator.<locals>.wrapper(*args, **kwargs)
+    208 try:
+    209     with config_context(
+    210         skip_parameter_validation=(
+    211             prefer_skip_nested_validation or global_skip_validation
+    212         )
+    213     ):
+--> 214         return func(*args, **kwargs)
+    215 except InvalidParameterError as e:
+    216     # When the function is just a wrapper around an estimator, we allow
+    217     # the function to delegate validation to the estimator, but we replace
+    218     # the name of the estimator by the name of the function in the error
+    219     # message to avoid confusion.
+    220     msg = re.sub(
+    221         r"parameter of \w+ must be",
+    222         f"parameter of {func.__qualname__} must be",
+    223         str(e),
+    224     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:474, in mean_squared_error(y_true, y_pred, sample_weight, multioutput, squared)
+    404 @validate_params(
+    405     {
+    406         "y_true": ["array-like"],
+   (...)
+    415     y_true, y_pred, *, sample_weight=None, multioutput="uniform_average", squared=True
+    416 ):
+    417     """Mean squared error regression loss.
+    418 
+    419     Read more in the :ref:`User Guide <mean_squared_error>`.
+   (...)
+    472     0.825...
+    473     """
+--> 474     y_type, y_true, y_pred, multioutput = _check_reg_targets(
+    475         y_true, y_pred, multioutput
+    476     )
+    477     check_consistent_length(y_true, y_pred, sample_weight)
+    478     output_errors = np.average((y_true - y_pred) ** 2, axis=0, weights=sample_weight)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:99, in _check_reg_targets(y_true, y_pred, multioutput, dtype)
+     65 def _check_reg_targets(y_true, y_pred, multioutput, dtype="numeric"):
+     66     """Check that y_true and y_pred belong to the same regression task.
+     67 
+     68     Parameters
+   (...)
+     97         correct keyword.
+     98     """
+---> 99     check_consistent_length(y_true, y_pred)
+    100     y_true = check_array(y_true, ensure_2d=False, dtype=dtype)
+    101     y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\validation.py:407, in check_consistent_length(*arrays)
+    405 uniques = np.unique(lengths)
+    406 if len(uniques) > 1:
+--> 407     raise ValueError(
+    408         "Found input variables with inconsistent numbers of samples: %r"
+    409         % [int(l) for l in lengths]
+    410     )
+
+ValueError: Found input variables with inconsistent numbers of samples: [0, 6116]
+is_success:
+False
+code:
+from sklearn.metrics import mean_squared_error
+
+# Extract the fitted values from the model
+fitted_values = model_fit.fittedvalues
+
+# Ensure the lengths of the true and predicted values match
+true_values = train_df_preprocessed[target_column][len(fitted_values):]
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(true_values, fitted_values)
+print(f"Mean Squared Error (MSE): {mse}")
+execute_result:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[15], line 10
+      7 true_values = train_df_preprocessed[target_column][len(fitted_values):]
+      9 # Calculate the Mean Squared Error (MSE)
+---> 10 mse = mean_squared_error(true_values, fitted_values)
+     11 print(f"Mean Squared Error (MSE): {mse}")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_param_validation.py:214, in validate_params.<locals>.decorator.<locals>.wrapper(*args, **kwargs)
+    208 try:
+    209     with config_context(
+    210         skip_parameter_validation=(
+    211             prefer_skip_nested_validation or global_skip_validation
+    212         )
+    213     ):
+--> 214         return func(*args, **kwargs)
+    215 except InvalidParameterError as e:
+    216     # When the function is just a wrapper around an estimator, we allow
+    217     # the function to delegate validation to the estimator, but we replace
+    218     # the name of the estimator by the name of the function in the error
+    219     # message to avoid confusion.
+    220     msg = re.sub(
+    221         r"parameter of \w+ must be",
+    222         f"parameter of {func.__qualname__} must be",
+    223         str(e),
+    224     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:474, in mean_squared_error(y_true, y_pred, sample_weight, multioutput, squared)
+    404 @validate_params(
+    405     {
+    406         "y_true": ["array-like"],
+   (...)
+    415     y_true, y_pred, *, sample_weight=None, multioutput="uniform_average", squared=True
+    416 ):
+    417     """Mean squared error regression loss.
+    418 
+    419     Read more in the :ref:`User Guide <mean_squared_error>`.
+   (...)
+    472     0.825...
+    473     """
+--> 474     y_type, y_true, y_pred, multioutput = _check_reg_targets(
+    475         y_true, y_pred, multioutput
+    476     )
+    477     check_consistent_length(y_true, y_pred, sample_weight)
+    478     output_errors = np.average((y_true - y_pred) ** 2, axis=0, weights=sample_weight)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\metrics\_regression.py:99, in _check_reg_targets(y_true, y_pred, multioutput, dtype)
+     65 def _check_reg_targets(y_true, y_pred, multioutput, dtype="numeric"):
+     66     """Check that y_true and y_pred belong to the same regression task.
+     67 
+     68     Parameters
+   (...)
+     97         correct keyword.
+     98     """
+---> 99     check_consistent_length(y_true, y_pred)
+    100     y_true = check_array(y_true, ensure_2d=False, dtype=dtype)
+    101     y_pred = check_array(y_pred, ensure_2d=False, dtype=dtype)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\validation.py:407, in check_consistent_length(*arrays)
+    405 uniques = np.unique(lengths)
+    406 if len(uniques) > 1:
+--> 407     raise ValueError(
+    408         "Found input variables with inconsistent numbers of samples: %r"
+    409         % [int(l) for l in lengths]
+    410     )
+
+ValueError: Found input variables with inconsistent numbers of samples: [0, 6116]
+is_success:
+False

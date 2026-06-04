@@ -1,0 +1,450 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\secondary_mushroom_train.csv')
+test_df = pd.read_csv('E:\\csv\\secondary_mushroom_test.csv')
+
+# Copy the DataFrames to avoid modifying the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical columns (excluding the label column)
+categorical_columns = [col for col in train_df_copy.columns if train_df_copy[col].dtype == 'object' and col != 'label']
+
+# Apply label encoding to categorical columns
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+for col in categorical_columns:
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Display the first few rows of the preprocessed datasets
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   cap_diameter cap_shape cap_surface  ... habitat season class
+0          2.47         x           y  ...       g      u     e
+1          4.64         c           i  ...       d      u     p
+2          7.69         x           t  ...       d      w     p
+3          6.91         x           d  ...       d      a     p
+4         16.40         x           t  ...       d      a     e
+
+[5 rows x 21 columns]
+
+Test DataFrame:
+   cap_diameter cap_shape cap_surface  ... habitat season class
+0          1.32         c           g  ...       l      a     e
+1          4.41         x           h  ...       d      w     p
+2          9.23         o         NaN  ...       d      a     e
+3          3.16         f           w  ...       d      u     p
+4          3.71         x           h  ...       d      a     e
+
+[5 rows x 21 columns]
+
+Data types in Train DataFrame:
+cap_diameter            float64
+cap_shape                object
+cap_surface              object
+cap_color                object
+does_bruise_or_bleed     object
+gill_attachment          object
+gill_spacing             object
+gill_color               object
+stem_height             float64
+stem_width              float64
+stem_root                object
+stem_surface             object
+stem_color               object
+veil_type                object
+veil_color               object
+has_ring                 object
+ring_type                object
+spore_print_color        object
+habitat                  object
+season                   object
+class                    object
+dtype: object
+
+Data types in Test DataFrame:
+cap_diameter            float64
+cap_shape                object
+cap_surface              object
+cap_color                object
+does_bruise_or_bleed     object
+gill_attachment          object
+gill_spacing             object
+gill_color               object
+stem_height             float64
+stem_width              float64
+stem_root                object
+stem_surface             object
+stem_color               object
+veil_type                object
+veil_color               object
+has_ring                 object
+ring_type                object
+spore_print_color        object
+habitat                  object
+season                   object
+class                    object
+dtype: object
+
+Preprocessed Train DataFrame:
+   cap_diameter  cap_shape  cap_surface  ...  habitat  season  class
+0          2.47          6           10  ...        1       2      0
+1          4.64          1            4  ...        0       2      1
+2          7.69          6            8  ...        0       3      1
+3          6.91          6            0  ...        0       0      1
+4         16.40          6            8  ...        0       0      0
+
+[5 rows x 21 columns]
+
+Preprocessed Test DataFrame:
+   cap_diameter  cap_shape  cap_surface  ...  habitat  season  class
+0          1.32          1            2  ...        3       0      0
+1          4.41          6            3  ...        0       3      1
+2          9.23          3           11  ...        0       0      0
+3          3.16          2            9  ...        0       2      1
+4          3.71          6            3  ...        0       0      0
+
+[5 rows x 21 columns]
+is_success:
+True
+code:
+# Check for missing values in the preprocessed datasets
+print("Missing values in Train DataFrame:")
+print(train_df_copy.isnull().sum())
+print("\nMissing values in Test DataFrame:")
+print(test_df_copy.isnull().sum())
+
+# Fill missing values with the mean of the respective columns
+numeric_columns = ['cap_diameter', 'stem_height', 'stem_width']
+
+# For numeric columns
+for col in numeric_columns:
+    train_df_copy[col].fillna(train_df_copy[col].mean(), inplace=True)
+    test_df_copy[col].fillna(test_df_copy[col].mean(), inplace=True)
+
+# For categorical columns, we can fill with the most frequent value or a constant
+categorical_columns = [col for col in train_df_copy.columns if col not in numeric_columns and col != 'class']
+for col in categorical_columns:
+    train_df_copy[col].fillna(train_df_copy[col].mode()[0], inplace=True)
+    test_df_copy[col].fillna(test_df_copy[col].mode()[0], inplace=True)
+
+# Verify that there are no more missing values
+print("\nAfter filling missing values:")
+print("Missing values in Train DataFrame:")
+print(train_df_copy.isnull().sum())
+print("\nMissing values in Test DataFrame:")
+print(test_df_copy.isnull().sum())
+execute_result:
+Missing values in Train DataFrame:
+cap_diameter            0
+cap_shape               0
+cap_surface             0
+cap_color               0
+does_bruise_or_bleed    0
+gill_attachment         0
+gill_spacing            0
+gill_color              0
+stem_height             0
+stem_width              0
+stem_root               0
+stem_surface            0
+stem_color              0
+veil_type               0
+veil_color              0
+has_ring                0
+ring_type               0
+spore_print_color       0
+habitat                 0
+season                  0
+class                   0
+dtype: int64
+
+Missing values in Test DataFrame:
+cap_diameter            0
+cap_shape               0
+cap_surface             0
+cap_color               0
+does_bruise_or_bleed    0
+gill_attachment         0
+gill_spacing            0
+gill_color              0
+stem_height             0
+stem_width              0
+stem_root               0
+stem_surface            0
+stem_color              0
+veil_type               0
+veil_color              0
+has_ring                0
+ring_type               0
+spore_print_color       0
+habitat                 0
+season                  0
+class                   0
+dtype: int64
+
+After filling missing values:
+Missing values in Train DataFrame:
+cap_diameter            0
+cap_shape               0
+cap_surface             0
+cap_color               0
+does_bruise_or_bleed    0
+gill_attachment         0
+gill_spacing            0
+gill_color              0
+stem_height             0
+stem_width              0
+stem_root               0
+stem_surface            0
+stem_color              0
+veil_type               0
+veil_color              0
+has_ring                0
+ring_type               0
+spore_print_color       0
+habitat                 0
+season                  0
+class                   0
+dtype: int64
+
+Missing values in Test DataFrame:
+cap_diameter            0
+cap_shape               0
+cap_surface             0
+cap_color               0
+does_bruise_or_bleed    0
+gill_attachment         0
+gill_spacing            0
+gill_color              0
+stem_height             0
+stem_width              0
+stem_root               0
+stem_surface            0
+stem_color              0
+veil_type               0
+veil_color              0
+has_ring                0
+ring_type               0
+spore_print_color       0
+habitat                 0
+season                  0
+class                   0
+dtype: int64
+is_success:
+True
+code:
+# Since the categorical columns have already been encoded, we will focus on ensuring that the numeric columns are appropriately handled.
+# We will also ensure that there are no missing values in the numeric columns by filling them with the mean of the respective columns.
+
+# Copy the DataFrames to avoid modifying the original ones
+train_df_processed = train_df_copy.copy()
+test_df_processed = test_df_copy.copy()
+
+# Define the numeric columns
+numeric_columns = ['cap_diameter', 'stem_height', 'stem_width']
+
+# Fill missing values in numeric columns with the mean of the respective columns
+for col in numeric_columns:
+    train_df_processed[col].fillna(train_df_processed[col].mean(), inplace=True)
+    test_df_processed[col].fillna(test_df_processed[col].mean(), inplace=True)
+
+# Verify that there are no missing values in the numeric columns
+print("Missing values in numeric columns of Train DataFrame:")
+print(train_df_processed[numeric_columns].isnull().sum())
+print("\nMissing values in numeric columns of Test DataFrame:")
+print(test_df_processed[numeric_columns].isnull().sum())
+execute_result:
+Missing values in numeric columns of Train DataFrame:
+cap_diameter    0
+stem_height     0
+stem_width      0
+dtype: int64
+
+Missing values in numeric columns of Test DataFrame:
+cap_diameter    0
+stem_height     0
+stem_width      0
+dtype: int64
+is_success:
+True
+code:
+# Splitting the preprocessed training and test data into features (X) and target (y)
+X_train = train_df_processed.drop(columns=['class'])
+y_train = train_df_processed['class']
+
+X_test = test_df_processed.drop(columns=['class'])
+y_test = test_df_processed['class']
+
+# Displaying the first few rows of the split datasets
+print("Features of Train DataFrame:")
+print(X_train.head())
+print("\nTarget of Train DataFrame:")
+print(y_train.head())
+print("\nFeatures of Test DataFrame:")
+print(X_test.head())
+print("\nTarget of Test DataFrame:")
+print(y_test.head())
+execute_result:
+Features of Train DataFrame:
+   cap_diameter  cap_shape  cap_surface  ...  spore_print_color  habitat  season
+0          2.47          6           10  ...                  7        1       2
+1          4.64          1            4  ...                  7        0       2
+2          7.69          6            8  ...                  7        0       3
+3          6.91          6            0  ...                  7        0       0
+4         16.40          6            8  ...                  6        0       0
+
+[5 rows x 20 columns]
+
+Target of Train DataFrame:
+0    0
+1    1
+2    1
+3    1
+4    0
+Name: class, dtype: int32
+
+Features of Test DataFrame:
+   cap_diameter  cap_shape  cap_surface  ...  spore_print_color  habitat  season
+0          1.32          1            2  ...                  7        3       0
+1          4.41          6            3  ...                  7        0       3
+2          9.23          3           11  ...                  7        0       0
+3          3.16          2            9  ...                  7        0       2
+4          3.71          6            3  ...                  1        0       0
+
+[5 rows x 20 columns]
+
+Target of Test DataFrame:
+0    0
+1    1
+2    0
+3    1
+4    0
+Name: class, dtype: int32
+is_success:
+True
+code:
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Initialize the AdaBoost classifier with 30 estimators and a learning rate of 0.01
+ada_clf = AdaBoostClassifier(n_estimators=30, learning_rate=0.01, random_state=42)
+
+# Train the model
+ada_clf.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = ada_clf.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+print(f"Accuracy: {accuracy}")
+print("Classification Report:")
+print(report)
+execute_result:
+Accuracy: 0.6269035532994924
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.56      0.69      0.62      5374
+           1       0.70      0.58      0.63      6840
+
+    accuracy                           0.63     12214
+   macro avg       0.63      0.63      0.63     12214
+weighted avg       0.64      0.63      0.63     12214
+is_success:
+True
+code:
+# Splitting the preprocessed test data into features (X_test) and target (y_test)
+X_test = test_df_processed.drop(columns=['class'])
+y_test = test_df_processed['class']
+
+# Displaying the first few rows of X_test and y_test
+print("Features of Test DataFrame:")
+print(X_test.head())
+print("\nTarget of Test DataFrame:")
+print(y_test.head())
+execute_result:
+Features of Test DataFrame:
+   cap_diameter  cap_shape  cap_surface  ...  spore_print_color  habitat  season
+0          1.32          1            2  ...                  7        3       0
+1          4.41          6            3  ...                  7        0       3
+2          9.23          3           11  ...                  7        0       0
+3          3.16          2            9  ...                  7        0       2
+4          3.71          6            3  ...                  1        0       0
+
+[5 rows x 20 columns]
+
+Target of Test DataFrame:
+0    0
+1    1
+2    0
+3    1
+4    0
+Name: class, dtype: int32
+is_success:
+True
+code:
+# Predicting the target for the test set using the trained AdaBoost classifier
+y_pred_test = ada_clf.predict(X_test)
+
+# Printing the first few predictions
+print("Predictions for the Test Set:")
+print(y_pred_test[:5])
+execute_result:
+Predictions for the Test Set:
+[1 1 0 1 1]
+is_success:
+True
+code:
+from sklearn.metrics import f1_score
+
+# Predictions and true labels from the previous task
+y_pred_test = ada_clf.predict(X_test)
+y_true_test = y_test
+
+# Calculate the F1 score
+f1 = f1_score(y_true_test, y_pred_test, average='weighted')
+print(f"F1 Score: {f1}")
+execute_result:
+F1 Score: 0.6275816077327813
+is_success:
+True
+code:
+import pandas as pd
+
+# Assuming y_pred_test contains the predictions from the model
+# Create a DataFrame with the predictions
+predictions_df = pd.DataFrame({
+    'id': test_df.index,  # Assuming the index can be used as an identifier
+    'prediction': y_pred_test
+})
+
+# Save the predictions to a CSV file
+predictions_df.to_csv('mushroom_predictions.csv', index=False)
+execute_result:
+
+is_success:
+True

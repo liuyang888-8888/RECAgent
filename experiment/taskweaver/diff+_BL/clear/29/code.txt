@@ -1,0 +1,65 @@
+import pandas as pd
+
+train_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\nvidia_share_price_train.csv'
+test_file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\nvidia_share_price_test.csv'
+
+# Load the datasets
+train_data = pd.read_csv(train_file_path)
+test_data = pd.read_csv(test_file_path)
+
+# Display the first few rows of each dataset
+train_data.head(), test_data.head()
+
+# Result variables
+train_data, test_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(            Date        Open       Close        High         Low
+ 0     2022-01-14  263.000000  269.420013  271.970001  262.100006
+ 1     2018-07-19   62.735001   63.007500   63.347500   62.582500
+ ...          ...         ...         ...         ...         ...
+ 6114  2021-06-07  175.712494  176.190002  178.125000  171.927505
+ 6115  2003-06-09    2.133333    2.120833    2.188333    2.088333
+ 
+ [6116 rows x 5 columns],
+             Date        Open       Close        High         Low
+ 0     2022-01-14  263.000000  269.420013  271.970001  262.100006
+ 1     2018-07-19   62.735001   63.007500   63.347500   62.582500
+ ...          ...         ...         ...         ...         ...
+ 6114  2021-06-07  175.712494  176.190002  178.125000  171.927505
+ 6115  2003-06-09    2.133333    2.120833    2.188333    2.088333
+ 
+ [6116 rows x 5 columns])from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Ensure the 'Date' column is in datetime format
+train_data['Date'] = pd.to_datetime(train_data['Date'])
+test_data['Date'] = pd.to_datetime(test_data['Date'])
+
+# Set 'Date' as the index
+train_data.set_index('Date', inplace=True)
+test_data.set_index('Date', inplace=True)
+
+# Fit the ARIMA model
+model = ARIMA(train_data['High'], order=(5, 1, 0))
+model_fit = model.fit()
+
+# Forecast on the training set
+train_forecast = model_fit.predict(start=train_data.index[0], end=train_data.index[-1])
+
+# Calculate MSE on the training set
+train_mse = mean_squared_error(train_data['High'], train_forecast)
+
+# Forecast on the test set
+test_forecast = model_fit.forecast(steps=len(test_data))
+
+# Calculate MSE on the test set
+test_mse = mean_squared_error(test_data['High'], test_forecast)
+
+# Result variables
+train_mse, test_mse
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(17735.296595046453, 16441.59706762816)

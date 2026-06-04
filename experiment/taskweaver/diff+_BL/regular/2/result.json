@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 2,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "cirrhosis_patient",
+        "task_description": "请你利用 17 个临床特征和肝硬化患者的生存状态的表格数据。其中存活状态包括 0 = D （死亡）、1 = C （删失）、2 = CL （因肝移植而删除），构建一个支持向量机算法的分类模型。"
+    },
+    "result": {
+        "run_status": "finished",
+        "time": 179.42112350463867,
+        "interact_count": 6,
+        "prompt_tokens": 24788,
+        "completion_tokens": 2958,
+        "RCR": 5
+    }
+}

@@ -1,0 +1,1427 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Identify categorical columns
+ categorical_columns = train_data.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data.drop(columns=['class'])
+y_train = train_data['class']
+X_test = test_data.drop(columns=['class'])
+y_test = test_data['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Combine the encoded features with the target variable
+train_data_preprocessed = pd.concat([X_train_encoded_df, y_train], axis=1)
+test_data_preprocessed = pd.concat([X_test_encoded_df, y_test], axis=1)
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+  Cell In[1], line 11
+    categorical_columns = train_data.select_dtypes(include=['object']).columns
+    ^
+IndentationError: unexpected indent
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Identify categorical columns
+categorical_columns = train_data.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data.drop(columns=['class'])
+y_train = train_data['class']
+X_test = test_data.drop(columns=['class'])
+y_test = test_data['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Combine the encoded features with the target variable
+train_data_preprocessed = pd.concat([X_train_encoded_df, y_train], axis=1)
+test_data_preprocessed = pd.concat([X_test_encoded_df, y_test], axis=1)
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[2], line 25
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\c
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names
+print(train_data.columns)
+print(test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data.drop(columns=['class']) if 'class' in train_data.columns else train_data
+cy_train = train_data['class'] if 'class' in train_data.columns else None
+X_test = test_data.drop(columns=['class']) if 'class' in test_data.columns else test_data
+cy_test = test_data['class'] if 'class' in test_data.columns else None
+
+if cy_train is not None and cy_test is not None:
+    X_train_encoded = preprocessor.fit_transform(X_train)
+    X_test_encoded = preprocessor.transform(X_test)
+
+    # Convert the encoded data back to DataFrames
+    X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+    X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+    # Combine the encoded features with the target variable
+    train_data_preprocessed = pd.concat([X_train_encoded_df, cy_train], axis=1)
+    test_data_preprocessed = pd.concat([X_test_encoded_df, cy_test], axis=1)
+else:
+    train_data_preprocessed = None
+    test_data_preprocessed = None
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, cy_train, cy_test, train_data_preprocessed, test_data_preprocessed
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[3], line 30
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\c
+Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names
+print(train_data.columns)
+print(test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data.drop(columns=['class'])
+y_train = train_data['class']
+X_test = test_data.drop(columns=['class'])
+y_test = test_data['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Combine the encoded features with the target variable
+train_data_preprocessed = pd.concat([X_train_encoded_df, y_train], axis=1)
+test_data_preprocessed = pd.concat([X_test_encoded_df, y_test], axis=1)
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test, train_data_preprocessed, test_data_preprocessed
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[4], line 29
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\c
+Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names and formats
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Display the first few rows of the datasets to check the format
+print("Training data head:\n", train_data.head())
+print("Testing data head:\n", test_data.head())
+
+# Result variables
+train_data, test_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(       cap_diameter cap_shape cap_surface cap_color does_bruise_or_bleed gill_attachment gill_spacing gill_color  stem_height  stem_width stem_root stem_surface stem_color veil_type veil_color has_ring ring_type spore_print_color habitat season class
+ 0              2.47         x           y         w                    f               e            c          p         3.53       10.76       NaN          NaN          w       NaN          w        t         e               NaN       g      u     e
+ 1              4.64         c           i         y                    f             NaN            c          r         6.43        7.25       NaN          NaN          w       NaN        NaN        f         f               NaN       d      u     p
+ ...             ...       ...         ...       ...                  ...             ...          ...        ...          ...         ...       ...          ...        ...       ...        ...      ...       ...               ...     ...    ...   ...
+ 48853          6.78         x           s         n                    t               s            d          r         6.43       16.30         r            y          w       NaN        NaN        f         f               NaN       d      u     p
+ 48854          7.12         o           t         r                    f             NaN            c          y         1.61       14.93       NaN          NaN          n       NaN        NaN        f         f               NaN       d      a     p
+ 
+ [48855 rows x 21 columns],
+        cap_diameter cap_shape cap_surface cap_color does_bruise_or_bleed gill_attachment gill_spacing gill_color  stem_height  stem_width stem_root stem_surface stem_color veil_type veil_color has_ring ring_type spore_print_color habitat season class
+ 0              1.32         c           g         n                    f               a          NaN          g         4.41        1.28       NaN          NaN          g       NaN        NaN        f         f               NaN       l      a     e
+ 1              4.41         x           h         o                    f               a            c          n         4.18        6.21       NaN            y          o       NaN        NaN        t         z               NaN       d      w     p
+ ...             ...       ...         ...       ...                  ...             ...          ...        ...          ...         ...       ...          ...        ...       ...        ...      ...       ...               ...     ...    ...   ...
+ 12212         10.95         x           e         y                    t               p          NaN          e         8.90       23.36       NaN          NaN          u       NaN        NaN        f         f               NaN       d      a     p
+ 12213          8.56         x           d         w                    f               s            c          w         7.08       33.01       NaN          NaN          w       NaN        NaN        f         f               NaN       d      s     e
+ 
+ [12214 rows x 21 columns])import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[6], line 31
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\c
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[7], line 35
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\c
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+if 'class' in train_data_filled.columns and 'class' in test_data_filled.columns:
+    X_train = train_data_filled.drop(columns=['class'])
+    y_train = train_data_filled['class']
+    X_test = test_data_filled.drop(columns=['class'])
+    y_test = test_data_filled['class']
+else:
+    raise ValueError("The 'class' column is missing in the datasets.")
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[8], line 38
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\c
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Ensure the 'class' column is present
+if 'class' not in train_data_filled.columns or 'class' not in test_data_filled.columns:
+    raise ValueError("The 'class' column is missing in the datasets.")
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[9], line 39
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\c
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names and formats
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[10], line 35
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names and formats
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Ensure the 'class' column is present
+if 'class' not in train_data.columns or 'class' not in test_data.columns:
+    raise ValueError("The 'class' column is missing in the datasets.")
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[11], line 39
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names and formats
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Ensure the 'class' column is present
+if 'class' not in train_data.columns:
+    raise ValueError("The 'class' column is missing in the training dataset.")
+if 'class' not in test_data.columns:
+    raise ValueError("The 'class' column is missing in the testing dataset.")
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[12], line 41
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names and formats
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Print the first few rows of the datasets to inspect the data
+print("Training data head:\n", train_data.head())
+print("Testing data head:\n", test_data.head())
+
+# Ensure the 'class' column is present
+if 'class' not in train_data.columns:
+    raise ValueError("The 'class' column is missing in the training dataset.")
+if 'class' not in test_data.columns:
+    raise ValueError("The 'class' column is missing in the testing dataset.")
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[13], line 45
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Training data head:
+    cap_diameter cap_shape cap_surface cap_color does_bruise_or_bleed gill_attachment gill_spacing gill_color  stem_height  stem_width stem_root stem_surface stem_color veil_type veil_color has_ring ring_type spore_print_color habitat season class
+0          2.47         x           y         w                    f               e            c          p         3.53       10.76       NaN          NaN          w       NaN          w        t         e               NaN       g      u     e
+1          4.64         c           i         y                    f             NaN            c          r         6.43        7.25       NaN          NaN          w       NaN        NaN        f         f       
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names and formats
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Print the first few rows of the datasets to inspect the data
+print("Training data head:\n", train_data.head())
+print("Testing data head:\n", test_data.head())
+
+# Ensure the 'class' column is present
+if 'class' not in train_data.columns:
+    raise ValueError("The 'class' column is missing in the training dataset.")
+if 'class' not in test_data.columns:
+    raise ValueError("The 'class' column is missing in the testing dataset.")
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[14], line 47
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Training data head:
+    cap_diameter cap_shape cap_surface cap_color does_bruise_or_bleed gill_attachment gill_spacing gill_color  stem_height  stem_width stem_root stem_surface stem_color veil_type veil_color has_ring ring_type spore_print_color habitat season class
+0          2.47         x           y         w                    f               e            c          p         3.53       10.76       NaN          NaN          w       NaN          w        t         e               NaN       g      u     e
+1          4.64         c           i         y                    f             NaN            c          r         6.43        7.25       NaN          NaN          w       NaN        NaN        f         f       
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+
+# Load the datasets
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\secondary_mushroom_test.csv')
+
+# Check the column names and formats
+print("Training data columns:", train_data.columns)
+print("Testing data columns:", test_data.columns)
+
+# Print the first few rows of the datasets to inspect the data
+print("Training data head:\n", train_data.head())
+print("Testing data head:\n", test_data.head())
+
+# Ensure the 'class' column is present
+if 'class' not in train_data.columns:
+    raise ValueError("The 'class' column is missing in the training dataset.")
+if 'class' not in test_data.columns:
+    raise ValueError("The 'class' column is missing in the testing dataset.")
+
+# Fill NaN values
+imputer = SimpleImputer(strategy='most_frequent')
+train_data_filled = pd.DataFrame(imputer.fit_transform(train_data), columns=train_data.columns)
+test_data_filled = pd.DataFrame(imputer.transform(test_data), columns=test_data.columns)
+
+# Identify categorical columns
+categorical_columns = train_data_filled.select_dtypes(include=['object']).columns
+
+# Define the transformer for one-hot encoding
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+preprocessor = ColumnTransformer(
+    transformers=[('cat', categorical_transformer, categorical_columns)]
+)
+
+# Preprocess the training and testing data
+X_train = train_data_filled.drop(columns=['class'])
+y_train = train_data_filled['class']
+X_test = test_data_filled.drop(columns=['class'])
+y_test = test_data_filled['class']
+
+X_train_encoded = preprocessor.fit_transform(X_train)
+X_test_encoded = preprocessor.transform(X_test)
+
+# Convert the encoded data back to DataFrames
+X_train_encoded_df = pd.DataFrame(X_train_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+X_test_encoded_df = pd.DataFrame(X_test_encoded.toarray(), columns=preprocessor.get_feature_names_out())
+
+# Result variables
+X_train_encoded_df, X_test_encoded_df, y_train, y_test
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_indexing.py:364 in _get_column_indices
+    col_idx = all_columns.get_loc(col)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'class'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[15], line 45
+    X_train_encoded = preprocessor.fit_transform(X_train)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\utils\_set_output.py:319 in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\base.py:1389 in wrapper
+    return fit_method(estimator, *args, **kwargs)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\sklearn\
+Training data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Testing data columns: Index(['cap_diameter', 'cap_shape', 'cap_surface', 'cap_color',
+       'does_bruise_or_bleed', 'gill_attachment', 'gill_spacing', 'gill_color',
+       'stem_height', 'stem_width', 'stem_root', 'stem_surface', 'stem_color',
+       'veil_type', 'veil_color', 'has_ring', 'ring_type', 'spore_print_color',
+       'habitat', 'season', 'class'],
+      dtype='object')
+Training data head:
+    cap_diameter cap_shape cap_surface cap_color does_bruise_or_bleed gill_attachment gill_spacing gill_color  stem_height  stem_width stem_root stem_surface stem_color veil_type veil_color has_ring ring_type spore_print_color habitat season class
+0          2.47         x           y         w                    f               e            c          p         3.53       10.76       NaN          NaN          w       NaN          w        t         e               NaN       g      u     e
+1          4.64         c           i         y                    f             NaN            c          r         6.43        7.25       NaN          NaN          w       NaN        NaN        f         f       

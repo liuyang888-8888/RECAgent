@@ -1,0 +1,1165 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\student_performance_train.csv')
+test_df = pd.read_csv('E:\\csv\\student_performance_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Training Data:")
+print(train_df_copy.head())
+print("\nTesting Data:")
+print(test_df_copy.head())
+
+# Check data types of each column
+print("\nData Types in Training Data:")
+print(train_df_copy.dtypes)
+print("\nData Types in Testing Data:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+execute_result:
+Training Data:
+  school sex  age address famsize Pstatus  ...  Walc  health absences  G1  G2  G3
+0     GP   F   18       U     GT3       T  ...     2       2        0  18  18  18
+1     GP   M   16       U     GT3       T  ...     5       5        4  12  11  12
+2     GP   M   18       R     GT3       T  ...     1       3        2  10  11  12
+3     GP   M   17       R     GT3       T  ...     4       5        0  12  12  13
+4     MS   F   17       R     GT3       T  ...     2       4        3  10  11  10
+
+[5 rows x 33 columns]
+
+Testing Data:
+  school sex  age address famsize Pstatus  ...  Walc  health absences  G1  G2  G3
+0     MS   M   18       U     GT3       T  ...     4       2        4  17  18  19
+1     GP   F   16       U     GT3       A  ...     2       4        2  11  11  12
+2     MS   F   18       U     GT3       T  ...     2       1        0  18  18  18
+3     MS   M   16       R     LE3       A  ...     3       2        5  10  11  11
+4     GP   F   15       R     GT3       T  ...     4       5        2  13  11  11
+
+[5 rows x 33 columns]
+
+Data Types in Training Data:
+school        object
+sex           object
+age            int64
+address       object
+famsize       object
+Pstatus       object
+Medu           int64
+Fedu           int64
+Mjob          object
+Fjob          object
+reason        object
+guardian      object
+traveltime     int64
+studytime      int64
+failures       int64
+schoolsup     object
+famsup        object
+paid          object
+activities    object
+nursery       object
+higher        object
+internet      object
+romantic      object
+famrel         int64
+freetime       int64
+goout          int64
+Dalc           int64
+Walc           int64
+health         int64
+absences       int64
+G1             int64
+G2             int64
+G3             int64
+dtype: object
+
+Data Types in Testing Data:
+school        object
+sex           object
+age            int64
+address       object
+famsize       object
+Pstatus       object
+Medu           int64
+Fedu           int64
+Mjob          object
+Fjob          object
+reason        object
+guardian      object
+traveltime     int64
+studytime      int64
+failures       int64
+schoolsup     object
+famsup        object
+paid          object
+activities    object
+nursery       object
+higher        object
+internet      object
+romantic      object
+famrel         int64
+freetime       int64
+goout          int64
+Dalc           int64
+Walc           int64
+health         int64
+absences       int64
+G1             int64
+G2             int64
+G3             int64
+dtype: object
+
+Categorical Columns:
+Index(['school', 'sex', 'address', 'famsize', 'Pstatus', 'Mjob', 'Fjob',
+       'reason', 'guardian', 'schoolsup', 'famsup', 'paid', 'activities',
+       'nursery', 'higher', 'internet', 'romantic'],
+      dtype='object')
+
+Numerical Columns:
+Index(['age', 'Medu', 'Fedu', 'traveltime', 'studytime', 'failures', 'famrel',
+       'freetime', 'goout', 'Dalc', 'Walc', 'health', 'absences', 'G1', 'G2',
+       'G3'],
+      dtype='object')
+is_success:
+True
+code:
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+import numpy as np
+
+# Handling missing values
+def handle_missing_values(df):
+    df.fillna(df.median(), inplace=True)  # Fill numerical missing values with median
+    df.fillna(df.mode().iloc[0], inplace=True)  # Fill categorical missing values with mode
+    return df
+
+# Encoding categorical variables
+def encode_categorical_variables(df, categorical_columns):
+    le = LabelEncoder()
+    for col in categorical_columns:
+        df[col] = le.fit_transform(df[col])
+    return df
+
+# Scaling numerical features
+def scale_numerical_features(df, numerical_columns):
+    scaler = StandardScaler()
+    df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
+    return df
+
+# Apply preprocessing to both training and testing datasets
+train_df_preprocessed = train_df_copy.copy()
+test_df_preprocessed = test_df_copy.copy()
+
+# Handle missing values
+train_df_preprocessed = handle_missing_values(train_df_preprocessed)
+test_df_preprocessed = handle_missing_values(test_df_preprocessed)
+
+# Encode categorical variables
+train_df_preprocessed = encode_categorical_variables(train_df_preprocessed, categorical_columns)
+test_df_preprocessed = encode_categorical_variables(test_df_preprocessed, categorical_columns)
+
+# Scale numerical features
+# Exclude the label columns (G1, G2, G3) from scaling
+label_columns = ['G1', 'G2', 'G3']
+numerical_columns_to_scale = [col for col in numerical_columns if col not in label_columns]
+train_df_preprocessed = scale_numerical_features(train_df_preprocessed, numerical_columns_to_scale)
+test_df_preprocessed = scale_numerical_features(test_df_preprocessed, numerical_columns_to_scale)
+
+# Display the first few rows of the preprocessed datasets
+print("Preprocessed Training Data:")
+print(train_df_preprocessed.head())
+print("\nPreprocessed Testing Data:")
+print(test_df_preprocessed.head())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[3], line 28
+     25 test_df_preprocessed = test_df_copy.copy()
+     27 # Handle missing values
+---> 28 train_df_preprocessed = handle_missing_values(train_df_preprocessed)
+     29 test_df_preprocessed = handle_missing_values(test_df_preprocessed)
+     31 # Encode categorical variables
+
+Cell In[3], line 6, in handle_missing_values(df)
+      5 def handle_missing_values(df):
+----> 6     df.fillna(df.median(), inplace=True)  # Fill numerical missing values with median
+      7     df.fillna(df.mode().iloc[0], inplace=True)  # Fill categorical missing values with mode
+      8     return df
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11351, in DataFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11343 @doc(make_doc("median", ndim=2))
+  11344 def median(
+  11345     self,
+   (...)
+  11349     **kwargs,
+  11350 ):
+> 11351     result = super().median(axis, skipna, numeric_only, **kwargs)
+  11352     if isinstance(result, Series):
+  11353         result = result.__finalize__(self, method="median")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11989, in NDFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11982 def median(
+  11983     self,
+  11984     axis: Axis | None = 0,
+   (...)
+  11987     **kwargs,
+  11988 ) -> Series | float:
+> 11989     return self._stat_function(
+  11990         "median", nanops.nanmedian, axis, skipna, numeric_only, **kwargs
+  11991     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11935, in NDFrame._stat_function(self, name, func, axis, skipna, numeric_only, **kwargs)
+  11931 nv.validate_func(name, (), kwargs)
+  11933 validate_bool_kwarg(skipna, "skipna", none_allowed=False)
+> 11935 return self._reduce(
+  11936     func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  11937 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11207, in DataFrame._reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+  11203     df = df.T
+  11205 # After possibly _get_data and transposing, we are now in the
+  11206 #  simple case where we can use BlockManager.reduce
+> 11207 res = df._mgr.reduce(blk_func)
+  11208 out = df._constructor_from_mgr(res, axes=res.axes).iloc[0]
+  11209 if out_dtype is not None and out.dtype != "boolean":
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\managers.py:1459, in BlockManager.reduce(self, func)
+   1457 res_blocks: list[Block] = []
+   1458 for blk in self.blocks:
+-> 1459     nbs = blk.reduce(func)
+   1460     res_blocks.extend(nbs)
+   1462 index = Index([None])  # placeholder
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\blocks.py:377, in Block.reduce(self, func)
+    371 @final
+    372 def reduce(self, func) -> list[Block]:
+    373     # We will apply the function and reshape the result into a single-row
+    374     #  Block with the same mgr_locs; squeezing will be done at a higher level
+    375     assert self.ndim == 2
+--> 377     result = func(self.values)
+    379     if self.values.ndim == 1:
+    380         res_values = result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11139, in DataFrame._reduce.<locals>.blk_func(values, axis)
+  11137         return np.array([result])
+  11138 else:
+> 11139     return op(values, axis=axis, skipna=skipna, **kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:147, in bottleneck_switch.__call__.<locals>.f(values, axis, skipna, **kwds)
+    145         result = alt(values, axis=axis, skipna=skipna, **kwds)
+    146 else:
+--> 147     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    149 return result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:783, in nanmedian(values, axis, skipna, mask)
+    781     inferred = lib.infer_dtype(values)
+    782     if inferred in ["string", "mixed"]:
+--> 783         raise TypeError(f"Cannot convert {values} to numeric")
+    784 try:
+    785     values = values.astype("f8")
+
+TypeError: Cannot convert [['GP' 'GP' 'GP' ... 'GP' 'MS' 'GP']
+ ['F' 'M' 'M' ... 'M' 'F' 'M']
+ ['U' 'U' 'R' ... 'U' 'R' 'U']
+ ...
+ ['yes' 'yes' 'yes' ... 'yes' 'yes' 'yes']
+ ['yes' 'yes' 'no' ... 'yes' 'yes' 'yes']
+ ['no' 'yes' 'no' ... 'no' 'no' 'no']] to numeric
+is_success:
+False
+code:
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Define preprocessing for categorical data (get dummies)
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+
+# Define preprocessing for numerical data (standardize)
+numerical_transformer = StandardScaler()
+
+# Bundle preprocessing for numerical and categorical data
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_columns),
+        ('cat', categorical_transformer, categorical_columns)])
+
+# Preprocess training and testing data
+train_df_processed = preprocessor.fit_transform(train_df_copy)
+test_df_processed = preprocessor.transform(test_df_copy)
+
+# Convert processed data back to DataFrame
+train_df_processed = pd.DataFrame(train_df_processed, columns=preprocessor.get_feature_names_out())
+test_df_processed = pd.DataFrame(test_df_processed, columns=preprocessor.get_feature_names_out())
+
+# Display the first few rows of the processed datasets
+print("Processed Training Data:")
+print(train_df_processed.head())
+print("\nProcessed Testing Data:")
+print(test_df_processed.head())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[4], line 7
+      4 import numpy as np
+      6 # Handling missing values
+----> 7 train_df_copy.fillna(train_df_copy.median(), inplace=True)
+      8 test_df_copy.fillna(test_df_copy.median(), inplace=True)
+     10 # Define preprocessing for categorical data (get dummies)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11351, in DataFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11343 @doc(make_doc("median", ndim=2))
+  11344 def median(
+  11345     self,
+   (...)
+  11349     **kwargs,
+  11350 ):
+> 11351     result = super().median(axis, skipna, numeric_only, **kwargs)
+  11352     if isinstance(result, Series):
+  11353         result = result.__finalize__(self, method="median")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11989, in NDFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11982 def median(
+  11983     self,
+  11984     axis: Axis | None = 0,
+   (...)
+  11987     **kwargs,
+  11988 ) -> Series | float:
+> 11989     return self._stat_function(
+  11990         "median", nanops.nanmedian, axis, skipna, numeric_only, **kwargs
+  11991     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11935, in NDFrame._stat_function(self, name, func, axis, skipna, numeric_only, **kwargs)
+  11931 nv.validate_func(name, (), kwargs)
+  11933 validate_bool_kwarg(skipna, "skipna", none_allowed=False)
+> 11935 return self._reduce(
+  11936     func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  11937 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11207, in DataFrame._reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+  11203     df = df.T
+  11205 # After possibly _get_data and transposing, we are now in the
+  11206 #  simple case where we can use BlockManager.reduce
+> 11207 res = df._mgr.reduce(blk_func)
+  11208 out = df._constructor_from_mgr(res, axes=res.axes).iloc[0]
+  11209 if out_dtype is not None and out.dtype != "boolean":
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\managers.py:1459, in BlockManager.reduce(self, func)
+   1457 res_blocks: list[Block] = []
+   1458 for blk in self.blocks:
+-> 1459     nbs = blk.reduce(func)
+   1460     res_blocks.extend(nbs)
+   1462 index = Index([None])  # placeholder
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\blocks.py:377, in Block.reduce(self, func)
+    371 @final
+    372 def reduce(self, func) -> list[Block]:
+    373     # We will apply the function and reshape the result into a single-row
+    374     #  Block with the same mgr_locs; squeezing will be done at a higher level
+    375     assert self.ndim == 2
+--> 377     result = func(self.values)
+    379     if self.values.ndim == 1:
+    380         res_values = result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11139, in DataFrame._reduce.<locals>.blk_func(values, axis)
+  11137         return np.array([result])
+  11138 else:
+> 11139     return op(values, axis=axis, skipna=skipna, **kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:147, in bottleneck_switch.__call__.<locals>.f(values, axis, skipna, **kwds)
+    145         result = alt(values, axis=axis, skipna=skipna, **kwds)
+    146 else:
+--> 147     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    149 return result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:783, in nanmedian(values, axis, skipna, mask)
+    781     inferred = lib.infer_dtype(values)
+    782     if inferred in ["string", "mixed"]:
+--> 783         raise TypeError(f"Cannot convert {values} to numeric")
+    784 try:
+    785     values = values.astype("f8")
+
+TypeError: Cannot convert [['GP' 'GP' 'GP' ... 'GP' 'MS' 'GP']
+ ['F' 'M' 'M' ... 'M' 'F' 'M']
+ ['U' 'U' 'R' ... 'U' 'R' 'U']
+ ...
+ ['yes' 'yes' 'yes' ... 'yes' 'yes' 'yes']
+ ['yes' 'yes' 'no' ... 'yes' 'yes' 'yes']
+ ['no' 'yes' 'no' ... 'no' 'no' 'no']] to numeric
+is_success:
+False
+code:
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Define preprocessing for numerical data (scale them)
+numerical_transformer = StandardScaler()
+
+# Define preprocessing for categorical data (one-hot encode them)
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+
+# Bundle preprocessing for numerical and categorical data
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_columns),
+        ('cat', categorical_transformer, categorical_columns)
+    ])
+
+# Preprocess training and testing data
+train_df_processed = preprocessor.fit_transform(train_df_copy)
+test_df_processed = preprocessor.transform(test_df_copy)
+
+# Convert processed data back to DataFrame
+train_df_processed = pd.DataFrame(train_df_processed, columns=preprocessor.get_feature_names_out())
+test_df_processed = pd.DataFrame(test_df_processed, columns=preprocessor.get_feature_names_out())
+
+# Display the first few rows of the processed datasets
+print("Processed Training Data:")
+print(train_df_processed.head())
+print("\nProcessed Testing Data:")
+print(test_df_processed.head())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[5], line 7
+      4 import numpy as np
+      6 # Handling missing values
+----> 7 train_df_copy.fillna(train_df_copy.median(), inplace=True)
+      8 test_df_copy.fillna(test_df_copy.median(), inplace=True)
+     10 # Define preprocessing for numerical data (scale them)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11351, in DataFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11343 @doc(make_doc("median", ndim=2))
+  11344 def median(
+  11345     self,
+   (...)
+  11349     **kwargs,
+  11350 ):
+> 11351     result = super().median(axis, skipna, numeric_only, **kwargs)
+  11352     if isinstance(result, Series):
+  11353         result = result.__finalize__(self, method="median")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11989, in NDFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11982 def median(
+  11983     self,
+  11984     axis: Axis | None = 0,
+   (...)
+  11987     **kwargs,
+  11988 ) -> Series | float:
+> 11989     return self._stat_function(
+  11990         "median", nanops.nanmedian, axis, skipna, numeric_only, **kwargs
+  11991     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11935, in NDFrame._stat_function(self, name, func, axis, skipna, numeric_only, **kwargs)
+  11931 nv.validate_func(name, (), kwargs)
+  11933 validate_bool_kwarg(skipna, "skipna", none_allowed=False)
+> 11935 return self._reduce(
+  11936     func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  11937 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11207, in DataFrame._reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+  11203     df = df.T
+  11205 # After possibly _get_data and transposing, we are now in the
+  11206 #  simple case where we can use BlockManager.reduce
+> 11207 res = df._mgr.reduce(blk_func)
+  11208 out = df._constructor_from_mgr(res, axes=res.axes).iloc[0]
+  11209 if out_dtype is not None and out.dtype != "boolean":
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\managers.py:1459, in BlockManager.reduce(self, func)
+   1457 res_blocks: list[Block] = []
+   1458 for blk in self.blocks:
+-> 1459     nbs = blk.reduce(func)
+   1460     res_blocks.extend(nbs)
+   1462 index = Index([None])  # placeholder
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\blocks.py:377, in Block.reduce(self, func)
+    371 @final
+    372 def reduce(self, func) -> list[Block]:
+    373     # We will apply the function and reshape the result into a single-row
+    374     #  Block with the same mgr_locs; squeezing will be done at a higher level
+    375     assert self.ndim == 2
+--> 377     result = func(self.values)
+    379     if self.values.ndim == 1:
+    380         res_values = result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11139, in DataFrame._reduce.<locals>.blk_func(values, axis)
+  11137         return np.array([result])
+  11138 else:
+> 11139     return op(values, axis=axis, skipna=skipna, **kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:147, in bottleneck_switch.__call__.<locals>.f(values, axis, skipna, **kwds)
+    145         result = alt(values, axis=axis, skipna=skipna, **kwds)
+    146 else:
+--> 147     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    149 return result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:783, in nanmedian(values, axis, skipna, mask)
+    781     inferred = lib.infer_dtype(values)
+    782     if inferred in ["string", "mixed"]:
+--> 783         raise TypeError(f"Cannot convert {values} to numeric")
+    784 try:
+    785     values = values.astype("f8")
+
+TypeError: Cannot convert [['GP' 'GP' 'GP' ... 'GP' 'MS' 'GP']
+ ['F' 'M' 'M' ... 'M' 'F' 'M']
+ ['U' 'U' 'R' ... 'U' 'R' 'U']
+ ...
+ ['yes' 'yes' 'yes' ... 'yes' 'yes' 'yes']
+ ['yes' 'yes' 'no' ... 'yes' 'yes' 'yes']
+ ['no' 'yes' 'no' ... 'no' 'no' 'no']] to numeric
+is_success:
+False
+code:
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+# Handling missing values
+def handle_missing_values(df):
+    # Fill missing values with the median for numerical columns
+    for col in numerical_columns:
+        df[col].fillna(df[col].median(), inplace=True)
+    
+    # Fill missing values with the mode for categorical columns
+    for col in categorical_columns:
+        df[col].fillna(df[col].mode()[0], inplace=True)
+    return df
+
+# Apply function to both training and testing datasets
+train_df_copy = handle_missing_values(train_df_copy)
+test_df_copy = handle_missing_values(test_df_copy)
+
+# Encoding categorical variables
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numerical_columns),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_columns)
+    ])
+
+# Create a pipeline that first preprocesses the data and then fits a model
+pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
+
+# Fit the pipeline on the training data
+pipeline.fit(train_df_copy.drop(columns=['G3']))
+
+# Transform both training and testing datasets
+X_train = pipeline.transform(train_df_copy.drop(columns=['G3']))
+X_test = pipeline.transform(test_df_copy.drop(columns=['G3']))
+
+# The target variable
+y_train = train_df_copy['G3']
+y_test = test_df_copy['G3']
+
+# Display the transformed data
+print("Transformed Training Data (first 5 rows):")
+print(X_train[:5])
+print("\nTransformed Testing Data (first 5 rows):")
+print(X_test[:5])
+execute_result:
+le pandas\_libs\hashtable_class_helper.pxi:7080, in pandas._libs.hashtable.PyObjectHashTable.get_item()
+
+File pandas\_libs\hashtable_class_helper.pxi:7088, in pandas._libs.hashtable.PyObjectHashTable.get_item()
+
+KeyError: 'G3'
+
+The above exception was the direct cause of the following exception:
+
+KeyError                                  Traceback (most recent call last)
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\__init__.py:447, in _get_column_indices(X, key)
+    446 for col in columns:
+--> 447     col_idx = all_columns.get_loc(col)
+    448     if not isinstance(col_idx, numbers.Integral):
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\indexes\base.py:3797, in Index.get_loc(self, key)
+   3796         raise InvalidIndexError(key)
+-> 3797     raise KeyError(key) from err
+   3798 except TypeError:
+   3799     # If we have a listlike key, _check_indexing_error will raise
+   3800     #  InvalidIndexError. Otherwise we fall through and re-raise
+   3801     #  the TypeError.
+
+KeyError: 'G3'
+
+The above exception was the direct cause of the following exception:
+
+ValueError                                Traceback (most recent call last)
+Cell In[6], line 32
+     29 pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
+     31 # Fit the pipeline on the training data
+---> 32 pipeline.fit(train_df_copy.drop(columns=['G3']))
+     34 # Transform both training and testing datasets
+     35 X_train = pipeline.transform(train_df_copy.drop(columns=['G3']))
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\base.py:1152, in _fit_context.<locals>.decorator.<locals>.wrapper(estimator, *args, **kwargs)
+   1145     estimator._validate_params()
+   1147 with config_context(
+   1148     skip_parameter_validation=(
+   1149         prefer_skip_nested_validation or global_skip_validation
+   1150     )
+   1151 ):
+-> 1152     return fit_method(estimator, *args, **kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\pipeline.py:427, in Pipeline.fit(self, X, y, **fit_params)
+    425     if self._final_estimator != "passthrough":
+    426         fit_params_last_step = fit_params_steps[self.steps[-1][0]]
+--> 427         self._final_estimator.fit(Xt, y, **fit_params_last_step)
+    429 return self
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\compose\_column_transformer.py:717, in ColumnTransformer.fit(self, X, y)
+    699 """Fit all transformers using X.
+    700 
+    701 Parameters
+   (...)
+    713     This estimator.
+    714 """
+    715 # we use fit_transform to make sure to set sparse_output_ (for which we
+    716 # need the transformed data) to have consistent output type in predict
+--> 717 self.fit_transform(X, y=y)
+    718 return self
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\_set_output.py:157, in _wrap_method_output.<locals>.wrapped(self, X, *args, **kwargs)
+    155 @wraps(f)
+    156 def wrapped(self, X, *args, **kwargs):
+--> 157     data_to_wrap = f(self, X, *args, **kwargs)
+    158     if isinstance(data_to_wrap, tuple):
+    159         # only wrap the first output for cross decomposition
+    160         return_tuple = (
+    161             _wrap_data_with_container(method, data_to_wrap[0], X, self),
+    162             *data_to_wrap[1:],
+    163         )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\base.py:1152, in _fit_context.<locals>.decorator.<locals>.wrapper(estimator, *args, **kwargs)
+   1145     estimator._validate_params()
+   1147 with config_context(
+   1148     skip_parameter_validation=(
+   1149         prefer_skip_nested_validation or global_skip_validation
+   1150     )
+   1151 ):
+-> 1152     return fit_method(estimator, *args, **kwargs)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\compose\_column_transformer.py:751, in ColumnTransformer.fit_transform(self, X, y)
+    749 self._check_n_features(X, reset=True)
+    750 self._validate_transformers()
+--> 751 self._validate_column_callables(X)
+    752 self._validate_remainder(X)
+    754 result = self._fit_transform(X, y, _fit_transform_one)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\compose\_column_transformer.py:459, in ColumnTransformer._validate_column_callables(self, X)
+    457         columns = columns(X)
+    458     all_columns.append(columns)
+--> 459     transformer_to_input_indices[name] = _get_column_indices(X, columns)
+    461 self._columns = all_columns
+    462 self._transformer_to_input_indices = transformer_to_input_indices
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\sklearn\utils\__init__.py:455, in _get_column_indices(X, key)
+    452             column_indices.append(col_idx)
+    454     except KeyError as e:
+--> 455         raise ValueError("A given column is not a column of the dataframe") from e
+    457     return column_indices
+    458 else:
+
+ValueError: A given column is not a column of the dataframe
+is_success:
+False
+code:
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encoding categorical variables
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+for column in categorical_columns:
+    train_df_copy[column] = label_encoder.fit_transform(train_df_copy[column])
+    test_df_copy[column] = label_encoder.transform(test_df_copy[column])
+
+# Scaling numerical features
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Displaying the first few rows of the preprocessed datasets
+print("Preprocessed Training Data:")
+print(train_df_copy.head())
+print("\nPreprocessed Testing Data:")
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[7], line 2
+      1 # Handling missing values
+----> 2 train_df_copy.fillna(train_df_copy.median(), inplace=True)
+      3 test_df_copy.fillna(test_df_copy.median(), inplace=True)
+      5 # Encoding categorical variables
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11351, in DataFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11343 @doc(make_doc("median", ndim=2))
+  11344 def median(
+  11345     self,
+   (...)
+  11349     **kwargs,
+  11350 ):
+> 11351     result = super().median(axis, skipna, numeric_only, **kwargs)
+  11352     if isinstance(result, Series):
+  11353         result = result.__finalize__(self, method="median")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11989, in NDFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11982 def median(
+  11983     self,
+  11984     axis: Axis | None = 0,
+   (...)
+  11987     **kwargs,
+  11988 ) -> Series | float:
+> 11989     return self._stat_function(
+  11990         "median", nanops.nanmedian, axis, skipna, numeric_only, **kwargs
+  11991     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11935, in NDFrame._stat_function(self, name, func, axis, skipna, numeric_only, **kwargs)
+  11931 nv.validate_func(name, (), kwargs)
+  11933 validate_bool_kwarg(skipna, "skipna", none_allowed=False)
+> 11935 return self._reduce(
+  11936     func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  11937 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11207, in DataFrame._reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+  11203     df = df.T
+  11205 # After possibly _get_data and transposing, we are now in the
+  11206 #  simple case where we can use BlockManager.reduce
+> 11207 res = df._mgr.reduce(blk_func)
+  11208 out = df._constructor_from_mgr(res, axes=res.axes).iloc[0]
+  11209 if out_dtype is not None and out.dtype != "boolean":
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\managers.py:1459, in BlockManager.reduce(self, func)
+   1457 res_blocks: list[Block] = []
+   1458 for blk in self.blocks:
+-> 1459     nbs = blk.reduce(func)
+   1460     res_blocks.extend(nbs)
+   1462 index = Index([None])  # placeholder
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\blocks.py:377, in Block.reduce(self, func)
+    371 @final
+    372 def reduce(self, func) -> list[Block]:
+    373     # We will apply the function and reshape the result into a single-row
+    374     #  Block with the same mgr_locs; squeezing will be done at a higher level
+    375     assert self.ndim == 2
+--> 377     result = func(self.values)
+    379     if self.values.ndim == 1:
+    380         res_values = result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11139, in DataFrame._reduce.<locals>.blk_func(values, axis)
+  11137         return np.array([result])
+  11138 else:
+> 11139     return op(values, axis=axis, skipna=skipna, **kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:147, in bottleneck_switch.__call__.<locals>.f(values, axis, skipna, **kwds)
+    145         result = alt(values, axis=axis, skipna=skipna, **kwds)
+    146 else:
+--> 147     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    149 return result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:783, in nanmedian(values, axis, skipna, mask)
+    781     inferred = lib.infer_dtype(values)
+    782     if inferred in ["string", "mixed"]:
+--> 783         raise TypeError(f"Cannot convert {values} to numeric")
+    784 try:
+    785     values = values.astype("f8")
+
+TypeError: Cannot convert [['GP' 'GP' 'GP' ... 'GP' 'MS' 'GP']
+ ['F' 'M' 'M' ... 'M' 'F' 'M']
+ ['U' 'U' 'R' ... 'U' 'R' 'U']
+ ...
+ ['yes' 'yes' 'yes' ... 'yes' 'yes' 'yes']
+ ['yes' 'yes' 'no' ... 'yes' 'yes' 'yes']
+ ['no' 'yes' 'no' ... 'no' 'no' 'no']] to numeric
+is_success:
+False
+code:
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encoding categorical variables
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+numerical_transformer = StandardScaler()
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_columns),
+        ('cat', categorical_transformer, categorical_columns)
+    ])
+
+# Apply transformations to the datasets
+train_df_processed = preprocessor.fit_transform(train_df_copy)
+test_df_processed = preprocessor.transform(test_df_copy)
+
+# Convert processed data back to DataFrame
+train_df_processed = pd.DataFrame(train_df_processed, columns=preprocessor.get_feature_names_out())
+test_df_processed = pd.DataFrame(test_df_processed, columns=preprocessor.get_feature_names_out())
+
+# Display the first few rows of the processed datasets
+print("Processed Training Data:")
+print(train_df_processed.head())
+print("\nProcessed Testing Data:")
+print(test_df_processed.head())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[8], line 7
+      4 import numpy as np
+      6 # Handling missing values
+----> 7 train_df_copy.fillna(train_df_copy.median(), inplace=True)
+      8 test_df_copy.fillna(test_df_copy.median(), inplace=True)
+     10 # Encoding categorical variables
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11351, in DataFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11343 @doc(make_doc("median", ndim=2))
+  11344 def median(
+  11345     self,
+   (...)
+  11349     **kwargs,
+  11350 ):
+> 11351     result = super().median(axis, skipna, numeric_only, **kwargs)
+  11352     if isinstance(result, Series):
+  11353         result = result.__finalize__(self, method="median")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11989, in NDFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11982 def median(
+  11983     self,
+  11984     axis: Axis | None = 0,
+   (...)
+  11987     **kwargs,
+  11988 ) -> Series | float:
+> 11989     return self._stat_function(
+  11990         "median", nanops.nanmedian, axis, skipna, numeric_only, **kwargs
+  11991     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11935, in NDFrame._stat_function(self, name, func, axis, skipna, numeric_only, **kwargs)
+  11931 nv.validate_func(name, (), kwargs)
+  11933 validate_bool_kwarg(skipna, "skipna", none_allowed=False)
+> 11935 return self._reduce(
+  11936     func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  11937 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11207, in DataFrame._reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+  11203     df = df.T
+  11205 # After possibly _get_data and transposing, we are now in the
+  11206 #  simple case where we can use BlockManager.reduce
+> 11207 res = df._mgr.reduce(blk_func)
+  11208 out = df._constructor_from_mgr(res, axes=res.axes).iloc[0]
+  11209 if out_dtype is not None and out.dtype != "boolean":
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\managers.py:1459, in BlockManager.reduce(self, func)
+   1457 res_blocks: list[Block] = []
+   1458 for blk in self.blocks:
+-> 1459     nbs = blk.reduce(func)
+   1460     res_blocks.extend(nbs)
+   1462 index = Index([None])  # placeholder
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\blocks.py:377, in Block.reduce(self, func)
+    371 @final
+    372 def reduce(self, func) -> list[Block]:
+    373     # We will apply the function and reshape the result into a single-row
+    374     #  Block with the same mgr_locs; squeezing will be done at a higher level
+    375     assert self.ndim == 2
+--> 377     result = func(self.values)
+    379     if self.values.ndim == 1:
+    380         res_values = result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11139, in DataFrame._reduce.<locals>.blk_func(values, axis)
+  11137         return np.array([result])
+  11138 else:
+> 11139     return op(values, axis=axis, skipna=skipna, **kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:147, in bottleneck_switch.__call__.<locals>.f(values, axis, skipna, **kwds)
+    145         result = alt(values, axis=axis, skipna=skipna, **kwds)
+    146 else:
+--> 147     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    149 return result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:783, in nanmedian(values, axis, skipna, mask)
+    781     inferred = lib.infer_dtype(values)
+    782     if inferred in ["string", "mixed"]:
+--> 783         raise TypeError(f"Cannot convert {values} to numeric")
+    784 try:
+    785     values = values.astype("f8")
+
+TypeError: Cannot convert [['GP' 'GP' 'GP' ... 'GP' 'MS' 'GP']
+ ['F' 'M' 'M' ... 'M' 'F' 'M']
+ ['U' 'U' 'R' ... 'U' 'R' 'U']
+ ...
+ ['yes' 'yes' 'yes' ... 'yes' 'yes' 'yes']
+ ['yes' 'yes' 'no' ... 'yes' 'yes' 'yes']
+ ['no' 'yes' 'no' ... 'no' 'no' 'no']] to numeric
+is_success:
+False
+code:
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encoding categorical variables
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+for column in categorical_columns:
+    train_df_copy[column] = label_encoder.fit_transform(train_df_copy[column])
+    test_df_copy[column] = label_encoder.transform(test_df_copy[column])
+
+# Scaling numerical features
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Displaying the first few rows of the preprocessed datasets
+print("Preprocessed Training Data:")
+print(train_df_copy.head())
+print("\nPreprocessed Testing Data:")
+print(test_df_copy.head())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[9], line 2
+      1 # Handling missing values
+----> 2 train_df_copy.fillna(train_df_copy.median(), inplace=True)
+      3 test_df_copy.fillna(test_df_copy.median(), inplace=True)
+      5 # Encoding categorical variables
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11351, in DataFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11343 @doc(make_doc("median", ndim=2))
+  11344 def median(
+  11345     self,
+   (...)
+  11349     **kwargs,
+  11350 ):
+> 11351     result = super().median(axis, skipna, numeric_only, **kwargs)
+  11352     if isinstance(result, Series):
+  11353         result = result.__finalize__(self, method="median")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11989, in NDFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11982 def median(
+  11983     self,
+  11984     axis: Axis | None = 0,
+   (...)
+  11987     **kwargs,
+  11988 ) -> Series | float:
+> 11989     return self._stat_function(
+  11990         "median", nanops.nanmedian, axis, skipna, numeric_only, **kwargs
+  11991     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11935, in NDFrame._stat_function(self, name, func, axis, skipna, numeric_only, **kwargs)
+  11931 nv.validate_func(name, (), kwargs)
+  11933 validate_bool_kwarg(skipna, "skipna", none_allowed=False)
+> 11935 return self._reduce(
+  11936     func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  11937 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11207, in DataFrame._reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+  11203     df = df.T
+  11205 # After possibly _get_data and transposing, we are now in the
+  11206 #  simple case where we can use BlockManager.reduce
+> 11207 res = df._mgr.reduce(blk_func)
+  11208 out = df._constructor_from_mgr(res, axes=res.axes).iloc[0]
+  11209 if out_dtype is not None and out.dtype != "boolean":
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\managers.py:1459, in BlockManager.reduce(self, func)
+   1457 res_blocks: list[Block] = []
+   1458 for blk in self.blocks:
+-> 1459     nbs = blk.reduce(func)
+   1460     res_blocks.extend(nbs)
+   1462 index = Index([None])  # placeholder
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\blocks.py:377, in Block.reduce(self, func)
+    371 @final
+    372 def reduce(self, func) -> list[Block]:
+    373     # We will apply the function and reshape the result into a single-row
+    374     #  Block with the same mgr_locs; squeezing will be done at a higher level
+    375     assert self.ndim == 2
+--> 377     result = func(self.values)
+    379     if self.values.ndim == 1:
+    380         res_values = result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11139, in DataFrame._reduce.<locals>.blk_func(values, axis)
+  11137         return np.array([result])
+  11138 else:
+> 11139     return op(values, axis=axis, skipna=skipna, **kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:147, in bottleneck_switch.__call__.<locals>.f(values, axis, skipna, **kwds)
+    145         result = alt(values, axis=axis, skipna=skipna, **kwds)
+    146 else:
+--> 147     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    149 return result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:783, in nanmedian(values, axis, skipna, mask)
+    781     inferred = lib.infer_dtype(values)
+    782     if inferred in ["string", "mixed"]:
+--> 783         raise TypeError(f"Cannot convert {values} to numeric")
+    784 try:
+    785     values = values.astype("f8")
+
+TypeError: Cannot convert [['GP' 'GP' 'GP' ... 'GP' 'MS' 'GP']
+ ['F' 'M' 'M' ... 'M' 'F' 'M']
+ ['U' 'U' 'R' ... 'U' 'R' 'U']
+ ...
+ ['yes' 'yes' 'yes' ... 'yes' 'yes' 'yes']
+ ['yes' 'yes' 'no' ... 'yes' 'yes' 'yes']
+ ['no' 'yes' 'no' ... 'no' 'no' 'no']] to numeric
+is_success:
+False
+code:
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+# Handling missing values
+train_df_copy.fillna(train_df_copy.median(), inplace=True)
+test_df_copy.fillna(test_df_copy.median(), inplace=True)
+
+# Encoding categorical variables
+categorical_transformer = OneHotEncoder(handle_unknown='ignore')
+numerical_transformer = StandardScaler()
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_columns),
+        ('cat', categorical_transformer, categorical_columns)
+    ])
+
+# Create a pipeline that applies the preprocessing steps
+pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
+
+# Fit the pipeline on the training data and transform both training and testing data
+X_train_preprocessed = pipeline.fit_transform(train_df_copy.drop(columns=['G3']))
+X_test_preprocessed = pipeline.transform(test_df_copy.drop(columns=['G3']))
+
+# Convert the preprocessed data back to DataFrame for easier inspection
+X_train_preprocessed_df = pd.DataFrame(X_train_preprocessed, columns=pipeline.named_steps['preprocessor'].get_feature_names_out())
+X_test_preprocessed_df = pd.DataFrame(X_test_preprocessed, columns=pipeline.named_steps['preprocessor'].get_feature_names_out())
+
+# Display the first few rows of the preprocessed data
+print("Preprocessed Training Data:")
+print(X_train_preprocessed_df.head())
+print("\nPreprocessed Testing Data:")
+print(X_test_preprocessed_df.head())
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[10], line 7
+      4 import numpy as np
+      6 # Handling missing values
+----> 7 train_df_copy.fillna(train_df_copy.median(), inplace=True)
+      8 test_df_copy.fillna(test_df_copy.median(), inplace=True)
+     10 # Encoding categorical variables
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11351, in DataFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11343 @doc(make_doc("median", ndim=2))
+  11344 def median(
+  11345     self,
+   (...)
+  11349     **kwargs,
+  11350 ):
+> 11351     result = super().median(axis, skipna, numeric_only, **kwargs)
+  11352     if isinstance(result, Series):
+  11353         result = result.__finalize__(self, method="median")
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11989, in NDFrame.median(self, axis, skipna, numeric_only, **kwargs)
+  11982 def median(
+  11983     self,
+  11984     axis: Axis | None = 0,
+   (...)
+  11987     **kwargs,
+  11988 ) -> Series | float:
+> 11989     return self._stat_function(
+  11990         "median", nanops.nanmedian, axis, skipna, numeric_only, **kwargs
+  11991     )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\generic.py:11935, in NDFrame._stat_function(self, name, func, axis, skipna, numeric_only, **kwargs)
+  11931 nv.validate_func(name, (), kwargs)
+  11933 validate_bool_kwarg(skipna, "skipna", none_allowed=False)
+> 11935 return self._reduce(
+  11936     func, name=name, axis=axis, skipna=skipna, numeric_only=numeric_only
+  11937 )
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11207, in DataFrame._reduce(self, op, name, axis, skipna, numeric_only, filter_type, **kwds)
+  11203     df = df.T
+  11205 # After possibly _get_data and transposing, we are now in the
+  11206 #  simple case where we can use BlockManager.reduce
+> 11207 res = df._mgr.reduce(blk_func)
+  11208 out = df._constructor_from_mgr(res, axes=res.axes).iloc[0]
+  11209 if out_dtype is not None and out.dtype != "boolean":
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\managers.py:1459, in BlockManager.reduce(self, func)
+   1457 res_blocks: list[Block] = []
+   1458 for blk in self.blocks:
+-> 1459     nbs = blk.reduce(func)
+   1460     res_blocks.extend(nbs)
+   1462 index = Index([None])  # placeholder
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\internals\blocks.py:377, in Block.reduce(self, func)
+    371 @final
+    372 def reduce(self, func) -> list[Block]:
+    373     # We will apply the function and reshape the result into a single-row
+    374     #  Block with the same mgr_locs; squeezing will be done at a higher level
+    375     assert self.ndim == 2
+--> 377     result = func(self.values)
+    379     if self.values.ndim == 1:
+    380         res_values = result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\frame.py:11139, in DataFrame._reduce.<locals>.blk_func(values, axis)
+  11137         return np.array([result])
+  11138 else:
+> 11139     return op(values, axis=axis, skipna=skipna, **kwds)
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:147, in bottleneck_switch.__call__.<locals>.f(values, axis, skipna, **kwds)
+    145         result = alt(values, axis=axis, skipna=skipna, **kwds)
+    146 else:
+--> 147     result = alt(values, axis=axis, skipna=skipna, **kwds)
+    149 return result
+
+File D:\Dependency\Py_env\data_interpreter\lib\site-packages\pandas\core\nanops.py:783, in nanmedian(values, axis, skipna, mask)
+    781     inferred = lib.infer_dtype(values)
+    782     if inferred in ["string", "mixed"]:
+--> 783         raise TypeError(f"Cannot convert {values} to numeric")
+    784 try:
+    785     values = values.astype("f8")
+
+TypeError: Cannot convert [['GP' 'GP' 'GP' ... 'GP' 'MS' 'GP']
+ ['F' 'M' 'M' ... 'M' 'F' 'M']
+ ['U' 'U' 'R' ... 'U' 'R' 'U']
+ ...
+ ['yes' 'yes' 'yes' ... 'yes' 'yes' 'yes']
+ ['yes' 'yes' 'no' ... 'yes' 'yes' 'yes']
+ ['no' 'yes' 'no' ... 'no' 'no' 'no']] to numeric
+is_success:
+False

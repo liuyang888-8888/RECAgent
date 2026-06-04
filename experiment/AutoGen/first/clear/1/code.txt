@@ -1,0 +1,165 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import OneHotEncoder
+
+# 1. 加载数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 2. 数据预处理
+# 独热编码 Geography 和 Gender
+encoder = OneHotEncoder(sparse=False, drop='first')
+categorical_features = ['Geography', 'Gender']
+
+# 拼接独热编码后的特征
+train_encoded = encoder.fit_transform(train_data[categorical_features])
+test_encoded = encoder.transform(test_data[categorical_features])
+
+train_data_encoded = pd.concat([train_data.drop(categorical_features, axis=1), pd.DataFrame(train_encoded)], axis=1)
+test_data_encoded = pd.concat([test_data.drop(categorical_features, axis=1), pd.DataFrame(test_encoded)], axis=1)
+
+# 分离特征和标签
+X_train = train_data_encoded.drop('Exited', axis=1)
+y_train = train_data_encoded['Exited']
+
+X_test = test_data_encoded.drop('Exited', axis=1)
+y_test = test_data_encoded['Exited']
+
+# 3. 训练随机森林模型
+rf_model = RandomForestClassifier(n_estimators=10, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# 4. 评估模型
+y_pred = rf_model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_74f5fbca72ca8c1bc457de973c19fe7370e3e1bd4095817d29ff97ac999dfcdb.py", line 16, in <module>
+    encoder = OneHotEncoder(sparse=False, drop='first')
+TypeError: OneHotEncoder.__init__() got an unexpected keyword argument 'sparse'
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 1. 加载数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 2. 数据预处理
+# 独热编码 Geography 和 Gender
+train_data = pd.get_dummies(train_data, columns=['Geography', 'Gender'], drop_first=True)
+test_data = pd.get_dummies(test_data, columns=['Geography', 'Gender'], drop_first=True)
+
+# 分离特征和标签
+X_train = train_data.drop('Exited', axis=1)
+y_train = train_data['Exited']
+
+X_test = test_data.drop('Exited', axis=1)
+y_test = test_data['Exited']
+
+# 3. 训练随机森林模型
+rf_model = RandomForestClassifier(n_estimators=10, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# 4. 评估模型
+y_pred = rf_model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_6da09a557b6d158ca3ba6096b509cf7501d041f507208b7d9ed1a9f3e552d180.py", line 27, in <module>
+    rf_model.fit(X_train, y_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\ensemble\_forest.py", line 360, in fit
+    X, y = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2961, in validate_data
+    X, y = check_X_y(X, y, **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1370, in check_X_y
+    X = check_array(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 973, in check_array
+    array = array.astype(new_dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 6643, in astype
+    new_data = self._mgr.astype(dtype=dtype, copy=copy, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\managers.py", line 430, in astype
+    return self.apply(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\managers.py", line 363, in apply
+    applied = getattr(b, f)(**kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\internals\blocks.py", line 758, in astype
+    new_values = astype_array_safe(values, dtype, copy=copy, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\dtypes\astype.py", line 237, in astype_array_safe
+    new_values = astype_array(values, dtype, copy=copy)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\dtypes\astype.py", line 182, in astype_array
+    values = _astype_nansafe(values, dtype, copy=copy)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\dtypes\astype.py", line 133, in _astype_nansafe
+    return arr.astype(dtype, copy=True)
+ValueError: could not convert string to float: 'Okwudiliolisa'
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
+
+# 1. 加载数据
+train_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_train.csv'
+test_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\bank_customer_churn_test.csv'
+
+train_data = pd.read_csv(train_path)
+test_data = pd.read_csv(test_path)
+
+# 2. 数据预处理
+# 独热编码 Geography 和 Gender
+train_data = pd.get_dummies(train_data, columns=['Geography', 'Gender'], drop_first=True)
+test_data = pd.get_dummies(test_data, columns=['Geography', 'Gender'], drop_first=True)
+
+# 检查并转换非数值列
+for col in train_data.columns:
+    if train_data[col].dtype == 'object':
+        train_data[col] = pd.to_numeric(train_data[col], errors='coerce')
+        test_data[col] = pd.to_numeric(test_data[col], errors='coerce')
+
+# 填充缺失值
+train_data.fillna(0, inplace=True)
+test_data.fillna(0, inplace=True)
+
+# 分离特征和标签
+X_train = train_data.drop('Exited', axis=1)
+y_train = train_data['Exited']
+
+X_test = test_data.drop('Exited', axis=1)
+y_test = test_data['Exited']
+
+# 3. 训练随机森林模型
+rf_model = RandomForestClassifier(n_estimators=10, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# 4. 评估模型
+y_pred = rf_model.predict(X_test)
+f1 = f1_score(y_test, y_pred, average='weighted')
+
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+加权平均 F1 分数: 0.8428330831687866

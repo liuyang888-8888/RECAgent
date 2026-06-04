@@ -1,0 +1,854 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim):
+        super(LSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
+
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i + seq_length]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+def train_model(X_train, seq_length=10, epochs=100, batch_size=32, learning_rate=0.001):
+    X_train, y_train = create_sequences(X_train.values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    dataset = TensorDataset(X_train, y_train)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+    input_dim = 1
+    hidden_dim = 50
+    num_layers = 2
+    output_dim = 1
+
+    model = LSTMModel(input_dim, hidden_dim, num_layers, output_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    for epoch in range(epochs):
+        for batch_X, batch_y in dataloader:
+            batch_X = batch_X.unsqueeze(-1)
+            outputs = model(batch_X)
+            loss = criterion(outputs, batch_y.unsqueeze(-1))
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+
+    return model
+
+def predict(model, forecast_steps, seq_length=10):
+    model.eval()
+    with torch.no_grad():
+        last_seq = data_df["Sales"].values[-seq_length:]
+        last_seq = torch.tensor(last_seq, dtype=torch.float32).to(device).unsqueeze(0).unsqueeze(-1)
+        forecast = []
+
+        for _ in range(forecast_steps):
+            output = model(last_seq)
+            forecast.append(output.item())
+            last_seq = torch.cat((last_seq[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+
+    return np.array(forecast)
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df["Sales"])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Sales"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 112, in <module>
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Sales"])
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1928, in __getattr__
+    raise AttributeError(
+AttributeError: 'LSTMModel' object has no attribute 'fittedvalues'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim):
+        super(LSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
+
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i + seq_length]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+def train_model(X_train, seq_length=10, epochs=100, batch_size=32, learning_rate=0.001):
+    X_train, y_train = create_sequences(X_train.values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    dataset = TensorDataset(X_train, y_train)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+    input_dim = 1
+    hidden_dim = 50
+    num_layers = 2
+    output_dim = 1
+
+    model = LSTMModel(input_dim, hidden_dim, num_layers, output_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    for epoch in range(epochs):
+        for batch_X, batch_y in dataloader:
+            batch_X = batch_X.unsqueeze(-1)
+            outputs = model(batch_X)
+            loss = criterion(outputs, batch_y.unsqueeze(-1))
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+
+    return model
+
+def predict(model, forecast_steps, seq_length=10):
+    model.eval()
+    with torch.no_grad():
+        last_seq = data_df["Sales"].values[-seq_length:]
+        last_seq = torch.tensor(last_seq, dtype=torch.float32).to(device).unsqueeze(0).unsqueeze(-1)
+        forecast = []
+
+        for _ in range(forecast_steps):
+            output = model(last_seq)
+            forecast.append(output.item())
+            last_seq = torch.cat((last_seq[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+
+    return np.array(forecast)
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    seq_length = 10
+    model = train_model(data_df["Sales"], seq_length=seq_length)
+
+    # 计算训练集上的拟合值
+    X_train, _ = create_sequences(data_df["Sales"].values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device).unsqueeze(-1)
+    model.eval()
+    with torch.no_grad():
+        fitted_values = model(X_train).squeeze().cpu().numpy()
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(fitted_values, data_df["Sales"].values[seq_length:])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 126, in <module>
+    y_submission = predict(model, forecast_steps=forecast_steps)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 95, in predict
+    last_seq = torch.cat((last_seq[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+RuntimeError: Tensors must have same number of dimensions: got 3 and 4
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim):
+        super(LSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
+
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i + seq_length]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+def train_model(X_train, seq_length=10, epochs=100, batch_size=32, learning_rate=0.001):
+    X_train, y_train = create_sequences(X_train.values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    dataset = TensorDataset(X_train, y_train)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+    input_dim = 1
+    hidden_dim = 50
+    num_layers = 2
+    output_dim = 1
+
+    model = LSTMModel(input_dim, hidden_dim, num_layers, output_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    for epoch in range(epochs):
+        for batch_X, batch_y in dataloader:
+            batch_X = batch_X.unsqueeze(-1)
+            outputs = model(batch_X)
+            loss = criterion(outputs, batch_y.unsqueeze(-1))
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
+
+    return model
+
+def predict(model, forecast_steps, seq_length=10):
+    model.eval()
+    with torch.no_grad():
+        last_seq = data_df["Sales"].values[-seq_length:]
+        last_seq = torch.tensor(last_seq, dtype=torch.float32).to(device).unsqueeze(0).unsqueeze(-1)
+        forecast = []
+
+        for _ in range(forecast_steps):
+            output = model(last_seq)
+            forecast.append(output.item())
+            last_seq = torch.cat((last_seq[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+
+    return np.array(forecast)
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    seq_length = 10
+    model = train_model(data_df["Sales"], seq_length=seq_length)
+
+    # 计算训练集上的拟合值
+    X_train, _ = create_sequences(data_df["Sales"].values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device).unsqueeze(-1)
+    model.eval()
+    with torch.no_grad():
+        fitted_values = model(X_train).squeeze().cpu().numpy()
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(fitted_values, data_df["Sales"].values[seq_length:])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 126, in <module>
+    y_submission = predict(model, forecast_steps=forecast_steps)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 95, in predict
+    last_seq = torch.cat((last_seq[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+RuntimeError: Tensors must have same number of dimensions: got 3 and 4
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers=1):
+        super(LSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
+
+
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i + seq_length]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+
+def train_model(X_train, seq_length=10, epochs=100, batch_size=32, learning_rate=0.001):
+    X_train, y_train = create_sequences(X_train.values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    input_dim = 1
+    hidden_dim = 50
+    output_dim = 1
+
+    model = LSTMModel(input_dim, hidden_dim, output_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    for epoch in range(epochs):
+        model.train()
+        for i in range(0, len(X_train), batch_size):
+            X_batch = X_train[i:i + batch_size]
+            y_batch = y_train[i:i + batch_size]
+
+            outputs = model(X_batch.unsqueeze(-1))
+            loss = criterion(outputs, y_batch.unsqueeze(-1))
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
+
+    return model
+
+
+def predict(model, forecast_steps, seq_length=10):
+    model.eval()
+    with torch.no_grad():
+        last_sequence = data_df["Sales"].values[-seq_length:]
+        last_sequence = torch.tensor(last_sequence, dtype=torch.float32).unsqueeze(0).unsqueeze(-1).to(device)
+        forecast = []
+
+        for _ in range(forecast_steps):
+            output = model(last_sequence)
+            forecast.append(output.item())
+            last_sequence = torch.cat((last_sequence[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+
+    return np.array(forecast)
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df["Sales"])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Sales"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 116, in <module>
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Sales"])
+  File "/remote-home/cs_acmis_lyy/python_env/dsagent/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1928, in __getattr__
+    raise AttributeError(
+AttributeError: 'LSTMModel' object has no attribute 'fittedvalues'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers=1):
+        super(LSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
+
+
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i + seq_length]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+
+def train_model(X_train, seq_length=10, epochs=100, batch_size=32, learning_rate=0.001):
+    X_train, y_train = create_sequences(X_train.values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    input_dim = 1
+    hidden_dim = 50
+    output_dim = 1
+
+    model = LSTMModel(input_dim, hidden_dim, output_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    for epoch in range(epochs):
+        model.train()
+        for i in range(0, len(X_train), batch_size):
+            X_batch = X_train[i:i + batch_size]
+            y_batch = y_train[i:i + batch_size]
+
+            outputs = model(X_batch.unsqueeze(-1))
+            loss = criterion(outputs, y_batch.unsqueeze(-1))
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
+
+    return model
+
+
+def predict(model, forecast_steps, seq_length=10):
+    model.eval()
+    with torch.no_grad():
+        last_sequence = data_df["Sales"].values[-seq_length:]
+        last_sequence = torch.tensor(last_sequence, dtype=torch.float32).unsqueeze(0).unsqueeze(-1).to(device)
+        forecast = []
+
+        for _ in range(forecast_steps):
+            output = model(last_sequence)
+            forecast.append(output.item())
+            last_sequence = torch.cat((last_sequence[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+
+    return np.array(forecast)
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df["Sales"])
+
+    # 生成训练集的预测值
+    seq_length = 10
+    X_train, y_train = create_sequences(data_df["Sales"].values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    model.eval()
+    with torch.no_grad():
+        y_fits = model(X_train.unsqueeze(-1)).squeeze().cpu().numpy()
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(y_fits, y_train.cpu().numpy())
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 132, in <module>
+    y_submission = predict(model, forecast_steps=forecast_steps)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/electricity_sales/train.py", line 98, in predict
+    last_sequence = torch.cat((last_sequence[:, 1:, :], output.unsqueeze(0).unsqueeze(-1)), dim=1)
+RuntimeError: Tensors must have same number of dimensions: got 3 and 4
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+import torch.nn as nn
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers=1):
+        super(LSTMModel, self).__init__()
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim).to(device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out
+
+
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i + seq_length]
+        y = data[i + seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+
+def train_model(X_train, seq_length=10, epochs=100, batch_size=32, learning_rate=0.001):
+    X_train, y_train = create_sequences(X_train.values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    input_dim = 1
+    hidden_dim = 50
+    output_dim = 1
+
+    model = LSTMModel(input_dim, hidden_dim, output_dim).to(device)
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+
+    for epoch in range(epochs):
+        model.train()
+        for i in range(0, len(X_train), batch_size):
+            X_batch = X_train[i:i + batch_size]
+            y_batch = y_train[i:i + batch_size]
+
+            outputs = model(X_batch.unsqueeze(-1))
+            loss = criterion(outputs, y_batch.unsqueeze(-1))
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        if (epoch + 1) % 10 == 0:
+            print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
+
+    return model
+
+
+def predict(model, forecast_steps, seq_length=10):
+    model.eval()
+    with torch.no_grad():
+        last_sequence = data_df["Sales"].values[-seq_length:]
+        last_sequence = torch.tensor(last_sequence, dtype=torch.float32).unsqueeze(0).unsqueeze(-1).to(device)
+        forecast = []
+
+        for _ in range(forecast_steps):
+            output = model(last_sequence)
+            forecast.append(output.item())
+            last_sequence = torch.cat((last_sequence[:, 1:, :], output.unsqueeze(1)), dim=1)
+
+    return np.array(forecast)
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df["Sales"])
+
+    # 生成训练集的预测值
+    seq_length = 10
+    X_train, y_train = create_sequences(data_df["Sales"].values, seq_length)
+    X_train = torch.tensor(X_train, dtype=torch.float32).to(device)
+    y_train = torch.tensor(y_train, dtype=torch.float32).to(device)
+
+    model.eval()
+    with torch.no_grad():
+        y_fits = model(X_train.unsqueeze(-1)).squeeze().cpu().numpy()
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(y_fits, y_train.cpu().numpy())
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Epoch [10/100], Loss: 1240.1317
+Epoch [20/100], Loss: 793.7463
+Epoch [30/100], Loss: 538.8065
+Epoch [40/100], Loss: 370.1803
+Epoch [50/100], Loss: 257.4122
+Epoch [60/100], Loss: 183.1214
+Epoch [70/100], Loss: 135.0766
+Epoch [80/100], Loss: 104.5199
+Epoch [90/100], Loss: 85.3553
+Epoch [100/100], Loss: 73.4882
+final MSE on trained set:  42.7938117980957
+往后 3 步的预测结果:
+[33.72353745 33.72114182 33.721138  ]
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

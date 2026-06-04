@@ -1,0 +1,188 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from statsmodels.tsa.arima.model import ARIMA
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train):
+    # Define and train the ARIMA model with p=1
+    model = ARIMA(X_train, order=(1, 1, 0))
+    model_fit = model.fit()
+    return model_fit
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.get_forecast(steps=forecast_steps)
+    forecast_mean = forecast.predicted_mean
+    return forecast_mean
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # 模型训练
+    model = train_model(data_df["Sales"])
+
+    # 打印模型评估结果
+    mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Sales"])
+    print("final MSE on trained set: ", mse)
+
+    # 提交预测结果
+    # 往后预测 3 步
+    forecast_steps = 3
+    y_submission = predict(model, forecast_steps=forecast_steps)
+    submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+final MSE on trained set:  13.36777320722424
+往后 3 步的预测结果:
+2022-10-01    47.523651
+2022-10-02    48.430170
+2022-10-03    48.842328
+Freq: D, Name: predicted_mean, dtype: float64
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import mean_squared_error
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from statsmodels.tsa.arima.model import ARIMA
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_timeseries(y_fits, y):
+    mse = mean_squared_error(y, y_fits)
+    return mse
+
+
+def train_model(X_train, order):
+    # Define and train the ARIMA model with specified order
+    model = ARIMA(X_train, order=order)
+    model_fit = model.fit()
+    return model_fit
+
+
+def predict(model, forecast_steps):
+    # Predict the model
+    forecast = model.get_forecast(steps=forecast_steps)
+    forecast_mean = forecast.predicted_mean
+    return forecast_mean
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df['Date'] = pd.to_datetime(data_df['Date'])
+    data_df.set_index('Date', inplace=True)
+
+    # 对数据按日期排序
+    data_df.sort_index(inplace=True)
+
+    # Define the ARIMA configurations to test
+    arima_configs = [(1, 0, 0), (1, 1, 1), (1, 2, 0)]
+
+    for config in arima_configs:
+        print(f"Training and evaluating ARIMA model with order {config}")
+        
+        # 模型训练
+        model = train_model(data_df["Sales"], order=config)
+
+        # 打印模型评估结果
+        mse = compute_metrics_for_timeseries(model.fittedvalues, data_df["Sales"])
+        print(f"final MSE on trained set for order {config}: ", mse)
+
+        # 提交预测结果
+        # 往后预测 3 步
+        forecast_steps = 3
+        y_submission = predict(model, forecast_steps=forecast_steps)
+        submit_predictions_for_test_set(forecast_steps, y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Training and evaluating ARIMA model with order (1, 0, 0)
+final MSE on trained set for order (1, 0, 0):  12.908544293052772
+往后 3 步的预测结果:
+2022-10-01    43.707659
+2022-10-02    42.178151
+2022-10-03    40.894288
+Freq: D, Name: predicted_mean, dtype: float64
+Training and evaluating ARIMA model with order (1, 1, 1)
+final MSE on trained set for order (1, 1, 1):  12.532803143172913
+往后 3 步的预测结果:
+2022-10-01    47.699089
+2022-10-02    48.246487
+2022-10-03    48.384618
+Freq: D, Name: predicted_mean, dtype: float64
+Training and evaluating ARIMA model with order (1, 2, 0)
+final MSE on trained set for order (1, 2, 0):  17.815593390629957
+往后 3 步的预测结果:
+2022-10-01    50.089294
+2022-10-02    54.663920
+2022-10-03    59.239863
+Freq: D, Name: predicted_mean, dtype: float64
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

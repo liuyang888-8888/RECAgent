@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 49.60756516456604,
+        "interact_count": 9,
+        "prompt_tokens": 8295,
+        "completion_tokens": 1371,
+        "RCR": 5
+    },
+    "task": {
+        "id": 15,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "crab_age",
+        "task_description": "请使用包含了螃蟹的性别、重量，直径，高度和外壳及内脏重量还有年龄的数据，构建一个决策树模型预测螃蟹年龄。"
+    }
+}

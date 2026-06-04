@@ -1,0 +1,234 @@
+
+生成的代码：
+import pandas as pd
+from sklearn.svm import SVC
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import StandardScaler
+
+# 读取数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_test.csv')
+
+# 查看数据的前几行
+print(train_data.head())
+print(test_data.head())
+
+# 分离特征和标签
+X_train = train_data.drop(columns=['status'])
+y_train = train_data['status']
+
+X_test = test_data.drop(columns=['status'])
+y_test = test_data['status']
+
+# 标准化特征
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 构建 SVM 模型
+svm_model = SVC(kernel='linear', probability=True)
+svm_model.fit(X_train_scaled, y_train)
+
+# 预测
+y_pred = svm_model.predict(X_test_scaled)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_03fa0d48a820fbccffb2429b7d1ccb58b115d2fa4d7c929a97c5f7c5eede6c1b.py", line 15, in <module>
+    X_train = train_data.drop(columns=['status'])
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\frame.py", line 5581, in drop
+    return super().drop(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4788, in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 4830, in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\indexes\base.py", line 7070, in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+KeyError: "['status'] not found in axis"
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   1    2574          Placebo  19237  ...     361.0        11.0   3.0      C
+1   2    3428          Placebo  13727  ...     199.0        11.7   4.0      D
+2   3    2576          Placebo  18460  ...     269.0        10.7   3.0      C
+3   4     788          Placebo  16658  ...     298.0        10.6   4.0      C
+4   5     703  D-penicillamine  19270  ...     213.0        11.5   3.0      D
+
+[5 rows x 20 columns]
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   0     999  D-penicillamine  21532  ...     394.0         9.7   3.0      D
+1   8    2050  D-penicillamine  20684  ...     269.0         9.8   2.0      C
+2  14     904  D-penicillamine  22388  ...     156.0        10.0   3.0      D
+3  17    1592  D-penicillamine  14872  ...     328.0        11.2   2.0      C
+4  19    3358          Placebo  17031  ...     153.0        11.0   3.0      C
+
+[5 rows x 20 columns]
+
+生成的代码：
+import pandas as pd
+
+# 读取数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_test.csv')
+
+# 打印列名
+print("训练集列名:", train_data.columns)
+print("测试集列名:", test_data.columns)
+
+
+执行结果：
+训练集列名: Index(['id', 'N_Days', 'Drug', 'Age', 'Sex', 'Ascites', 'Hepatomegaly',
+       'Spiders', 'Edema', 'Bilirubin', 'Cholesterol', 'Albumin', 'Copper',
+       'Alk_Phos', 'SGOT', 'Tryglicerides', 'Platelets', 'Prothrombin',
+       'Stage', 'Status'],
+      dtype='object')
+测试集列名: Index(['id', 'N_Days', 'Drug', 'Age', 'Sex', 'Ascites', 'Hepatomegaly',
+       'Spiders', 'Edema', 'Bilirubin', 'Cholesterol', 'Albumin', 'Copper',
+       'Alk_Phos', 'SGOT', 'Tryglicerides', 'Platelets', 'Prothrombin',
+       'Stage', 'Status'],
+      dtype='object')
+
+生成的代码：
+import pandas as pd
+from sklearn.svm import SVC
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import StandardScaler
+
+# 读取数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_test.csv')
+
+# 查看数据的前几行
+print(train_data.head())
+print(test_data.head())
+
+# 分离特征和标签
+X_train = train_data.drop(columns=['Status'])
+y_train = train_data['Status']
+
+X_test = test_data.drop(columns=['Status'])
+y_test = test_data['Status']
+
+# 标准化特征
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 构建 SVM 模型
+svm_model = SVC(kernel='linear', probability=True)
+svm_model.fit(X_train_scaled, y_train)
+
+# 预测
+y_pred = svm_model.predict(X_test_scaled)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+Traceback (most recent call last):
+  File "E:\Postgraduate\Code\CompareExperimrnt\AutoGen\coding\tmp_code_38e0125e7a530e62c3fd912382a4ffc94e08e9520ad762cfb0b31d93c803677b.py", line 23, in <module>
+    X_train_scaled = scaler.fit_transform(X_train)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_set_output.py", line 319, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 918, in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\preprocessing\_data.py", line 894, in fit
+    return self.partial_fit(X, y, sample_weight)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\base.py", line 1389, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\preprocessing\_data.py", line 930, in partial_fit
+    X = validate_data(
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 2944, in validate_data
+    out = check_array(X, input_name="X", **check_params)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\validation.py", line 1055, in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\sklearn\utils\_array_api.py", line 839, in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+  File "D:\Dependency\Py_env\autogen\lib\site-packages\pandas\core\generic.py", line 2153, in __array__
+    arr = np.asarray(values, dtype=dtype)
+ValueError: could not convert string to float: 'Placebo'
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   1    2574          Placebo  19237  ...     361.0        11.0   3.0      C
+1   2    3428          Placebo  13727  ...     199.0        11.7   4.0      D
+2   3    2576          Placebo  18460  ...     269.0        10.7   3.0      C
+3   4     788          Placebo  16658  ...     298.0        10.6   4.0      C
+4   5     703  D-penicillamine  19270  ...     213.0        11.5   3.0      D
+
+[5 rows x 20 columns]
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   0     999  D-penicillamine  21532  ...     394.0         9.7   3.0      D
+1   8    2050  D-penicillamine  20684  ...     269.0         9.8   2.0      C
+2  14     904  D-penicillamine  22388  ...     156.0        10.0   3.0      D
+3  17    1592  D-penicillamine  14872  ...     328.0        11.2   2.0      C
+4  19    3358          Placebo  17031  ...     153.0        11.0   3.0      C
+
+[5 rows x 20 columns]
+
+生成的代码：
+import pandas as pd
+from sklearn.svm import SVC
+from sklearn.metrics import f1_score
+from sklearn.preprocessing import StandardScaler
+
+# 读取数据
+train_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_train.csv')
+test_data = pd.read_csv(r'E:\Postgraduate\Code\SunnylnAgent\data\csv\cirrhosis_patient_test.csv')
+
+# 查看数据的前几行
+print(train_data.head())
+print(test_data.head())
+
+# 分离特征和标签
+X_train = train_data.drop(columns=['Status'])
+y_train = train_data['Status']
+
+X_test = test_data.drop(columns=['Status'])
+y_test = test_data['Status']
+
+# 对分类变量进行独热编码
+X_train_encoded = pd.get_dummies(X_train, drop_first=True)
+X_test_encoded = pd.get_dummies(X_test, drop_first=True)
+
+# 确保训练集和测试集的列一致
+X_test_encoded = X_test_encoded.reindex(columns=X_train_encoded.columns, fill_value=0)
+
+# 标准化特征
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train_encoded)
+X_test_scaled = scaler.transform(X_test_encoded)
+
+# 构建 SVM 模型
+svm_model = SVC(kernel='linear', probability=True)
+svm_model.fit(X_train_scaled, y_train)
+
+# 预测
+y_pred = svm_model.predict(X_test_scaled)
+
+# 计算 F1 分数
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f'加权平均 F1 分数: {f1}')
+
+
+执行结果：
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   1    2574          Placebo  19237  ...     361.0        11.0   3.0      C
+1   2    3428          Placebo  13727  ...     199.0        11.7   4.0      D
+2   3    2576          Placebo  18460  ...     269.0        10.7   3.0      C
+3   4     788          Placebo  16658  ...     298.0        10.6   4.0      C
+4   5     703  D-penicillamine  19270  ...     213.0        11.5   3.0      D
+
+[5 rows x 20 columns]
+   id  N_Days             Drug    Age  ... Platelets Prothrombin Stage Status
+0   0     999  D-penicillamine  21532  ...     394.0         9.7   3.0      D
+1   8    2050  D-penicillamine  20684  ...     269.0         9.8   2.0      C
+2  14     904  D-penicillamine  22388  ...     156.0        10.0   3.0      D
+3  17    1592  D-penicillamine  14872  ...     328.0        11.2   2.0      C
+4  19    3358          Placebo  17031  ...     153.0        11.0   3.0      C
+
+[5 rows x 20 columns]
+加权平均 F1 分数: 0.7774345533061217

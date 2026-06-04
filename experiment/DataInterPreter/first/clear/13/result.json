@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 81.90460109710693,
+        "interact_count": 16,
+        "prompt_tokens": 29974,
+        "completion_tokens": 2303,
+        "RCR": 5
+    },
+    "task": {
+        "id": 13,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "secondary_mushroom",
+        "task_description": "我需要一个AdaBoost分类模型，学习器数量设置为30，学习率0.01，可以是根据蘑菇特征（如形状、颜色、气味等）的表格数据预测蘑菇是否可食用。加载完数据集之后需要进行空值填充，使用平均值的填充方式，最后在测试集上进行预测，保存预测结果。"
+    }
+}

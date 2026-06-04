@@ -1,0 +1,732 @@
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from submission import submit_predictions_for_test_set
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+
+def train_model(X_train, y_train, X_valid, y_valid):
+    model = LogisticRegression(random_state=SEED)
+    model.fit(X_train, y_train)
+    return model
+
+
+def predict(model, X):
+    y_pred = model.predict(X)
+    return y_pred
+
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['Attrition'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['Attrition'], axis=1)
+    y = data_df['Attrition'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 定义并训练模型
+    model = train_model(X_train, y_train, X_valid, y_valid)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(model, X_valid)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    print("Final F1 Score on validation set: ", f1)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['Attrition'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['Attrition'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(model, X_submission)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Final F1 Score on validation set:  0.7837037037037038
+final F1 Score on test set:  0.808158932362754
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+import optuna
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+def train_model(X_train, y_train, X_valid, y_valid, params):
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_valid_scaled = scaler.transform(X_valid)
+    
+    model = LogisticRegression(random_state=SEED, **params)
+    model.fit(X_train_scaled, y_train)
+    return model, scaler
+
+def predict(model, X, scaler):
+    X_scaled = scaler.transform(X)
+    y_pred = model.predict(X_scaled)
+    return y_pred
+
+def objective(trial):
+    params = {
+        'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+        'solver': trial.suggest_categorical('solver', ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']),
+    }
+    
+    model, scaler = train_model(X_train, y_train, X_valid, y_valid, params)
+    y_valid_pred = predict(model, X_valid, scaler)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    return f1
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['Attrition'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['Attrition'], axis=1)
+    y = data_df['Attrition'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 使用 Optuna 进行超参数优化
+    study = optuna.create_study(direction='maximize')
+    study.optimize(objective, n_trials=100)
+
+    # 获取最佳超参数
+    best_params = study.best_params
+
+    # 使用最佳超参数重新训练模型
+    best_model, scaler = train_model(X_train, y_train, X_valid, y_valid, best_params)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(best_model, X_valid, scaler)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    print("Final F1 Score on validation set: ", f1)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['Attrition'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['Attrition'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(best_model, X_submission, scaler)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py", line 15, in <module>
+    import optuna
+ModuleNotFoundError: No module named 'optuna'
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+
+# Install Optuna if not already installed
+!pip install optuna
+
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+import optuna
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+def train_model(X_train, y_train, X_valid, y_valid, params):
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_valid_scaled = scaler.transform(X_valid)
+    
+    model = LogisticRegression(random_state=SEED, **params)
+    model.fit(X_train_scaled, y_train)
+    return model, scaler
+
+def predict(model, X, scaler):
+    X_scaled = scaler.transform(X)
+    y_pred = model.predict(X_scaled)
+    return y_pred
+
+def objective(trial):
+    params = {
+        'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+        'solver': trial.suggest_categorical('solver', ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']),
+    }
+    
+    model, scaler = train_model(X_train, y_train, X_valid, y_valid, params)
+    y_valid_pred = predict(model, X_valid, scaler)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    return f1
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['Attrition'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['Attrition'], axis=1)
+    y = data_df['Attrition'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 使用 Optuna 进行超参数优化
+    study = optuna.create_study(direction='maximize')
+    study.optimize(objective, n_trials=100)
+
+    # 获取最佳超参数
+    best_params = study.best_params
+
+    # 使用最佳超参数重新训练模型
+    best_model, scaler = train_model(X_train, y_train, X_valid, y_valid, best_params)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(best_model, X_valid, scaler)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    print("Final F1 Score on validation set: ", f1)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['Attrition'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['Attrition'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(best_model, X_submission, scaler)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py", line 9
+    !pip install optuna
+    ^
+SyntaxError: invalid syntax
+
+==================================================:
+===================生成的代码========================:
+# coding=utf-8
+# -----道阻且长 行则将至-------
+# -----   liuyangyang   -----
+# ---  691255995@qq.com  ----
+# 日 期： 
+# 时 间：
+
+import sys
+import subprocess
+
+# Check if Optuna is installed and install it if necessary
+try:
+    import optuna
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "optuna"])
+    import optuna
+
+import pandas as pd
+from sklearn.metrics import f1_score
+import numpy as np
+import random
+import torch
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+SEED = 42
+
+random.seed(SEED)
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+
+device = torch.device("cpu")
+
+def compute_metrics_for_classification(y_test, y_test_pred):
+    f1 = f1_score(y_test, y_test_pred, average='weighted')
+    return f1
+
+def train_model(X_train, y_train, X_valid, y_valid, params):
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_valid_scaled = scaler.transform(X_valid)
+    
+    model = LogisticRegression(random_state=SEED, **params)
+    model.fit(X_train_scaled, y_train)
+    return model, scaler
+
+def predict(model, X, scaler):
+    X_scaled = scaler.transform(X)
+    y_pred = model.predict(X_scaled)
+    return y_pred
+
+def objective(trial):
+    params = {
+        'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+        'solver': trial.suggest_categorical('solver', ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga']),
+    }
+    
+    model, scaler = train_model(X_train, y_train, X_valid, y_valid, params)
+    y_valid_pred = predict(model, X_valid, scaler)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    return f1
+
+if __name__ == '__main__':
+
+    data_df = pd.read_csv('train.csv')
+    data_df = data_df.dropna(subset=['Attrition'])
+    for col in data_df.columns:
+        if pd.api.types.is_object_dtype(data_df[col]):
+            le = LabelEncoder()
+            data_df[col] = le.fit_transform(data_df[col])
+
+    # 处理数据并存储到 numpy 数组中
+    X = data_df.drop(['Attrition'], axis=1)
+    y = data_df['Attrition'].to_numpy()
+
+    # 创建训练集和验证集的划分
+    X_train, X_valid, y_train, y_valid = train_test_split(
+        X, y, test_size=0.10, random_state=SEED)
+
+    # 使用 Optuna 进行超参数优化
+    study = optuna.create_study(direction='maximize')
+    study.optimize(objective, n_trials=100)
+
+    # 获取最佳超参数
+    best_params = study.best_params
+
+    # 使用最佳超参数重新训练模型
+    best_model, scaler = train_model(X_train, y_train, X_valid, y_valid, best_params)
+
+    # 在验证集上评估模型并打印结果
+    y_valid_pred = predict(best_model, X_valid, scaler)
+    f1 = compute_metrics_for_classification(y_valid, y_valid_pred)
+    print("Final F1 Score on validation set: ", f1)
+
+    # 提交测试集的预测结果
+    submission_df = pd.read_csv('test.csv')
+    submission_df = submission_df.dropna(subset=['Attrition'])
+    for col in submission_df.columns:
+        if pd.api.types.is_object_dtype(submission_df[col]):
+            le = LabelEncoder()
+            submission_df[col] = le.fit_transform(submission_df[col])
+    submission_df = submission_df.drop(['Attrition'], axis=1)
+    X_submission = submission_df
+    y_submission = predict(best_model, X_submission, scaler)
+    submit_predictions_for_test_set(y_submission)
+==================================================:
+===================执行结果========================:
+The script has been executed. Here is the output:
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[I 2025-05-08 15:31:51,093] A new study created in memory with name: no-name-f0d7fc1c-498e-4eb3-8cb7-58bbc49632bd
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,110] Trial 0 finished with value: 0.8213454270597127 and parameters: {'C': 1947.517430701795, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,181] Trial 1 finished with value: 0.8213454270597127 and parameters: {'C': 86.09226848077316, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,194] Trial 2 finished with value: 0.8213454270597127 and parameters: {'C': 0.08803831362977534, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,204] Trial 3 finished with value: 0.7837037037037038 and parameters: {'C': 0.0027443932654843276, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,234] Trial 4 finished with value: 0.8213454270597127 and parameters: {'C': 24.452609603475423, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,245] Trial 5 finished with value: 0.8213454270597127 and parameters: {'C': 1.963894573570712, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,273] Trial 6 finished with value: 0.8213454270597127 and parameters: {'C': 3361.431610716406, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,283] Trial 7 finished with value: 0.8213454270597127 and parameters: {'C': 65.97294315530284, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,298] Trial 8 finished with value: 0.8213454270597127 and parameters: {'C': 352.28276248296174, 'solver': 'liblinear'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,308] Trial 9 finished with value: 0.8213454270597127 and parameters: {'C': 2.3201707580677704, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,369] Trial 10 finished with value: 0.8213454270597127 and parameters: {'C': 6217.148466498388, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,428] Trial 11 finished with value: 0.8213454270597127 and parameters: {'C': 269.7729947842773, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,447] Trial 12 finished with value: 0.7837037037037038 and parameters: {'C': 0.00011235553536092724, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,464] Trial 13 finished with value: 0.8213454270597127 and parameters: {'C': 1425.8967902805887, 'solver': 'liblinear'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,522] Trial 14 finished with value: 0.8213454270597127 and parameters: {'C': 19.477189348831754, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,535] Trial 15 finished with value: 0.8213454270597127 and parameters: {'C': 0.0960903931470156, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,551] Trial 16 finished with value: 0.8213454270597127 and parameters: {'C': 399.6076127236098, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,610] Trial 17 finished with value: 0.8213454270597127 and parameters: {'C': 7720.26886304375, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,628] Trial 18 finished with value: 0.8213454270597127 and parameters: {'C': 7.654627567357179, 'solver': 'liblinear'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,641] Trial 19 finished with value: 0.8213454270597127 and parameters: {'C': 0.14210113301830443, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,669] Trial 20 finished with value: 0.8213454270597127 and parameters: {'C': 99.98048508013177, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,682] Trial 21 finished with value: 0.8213454270597127 and parameters: {'C': 0.10876591474996301, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,696] Trial 22 finished with value: 0.8009604555789295 and parameters: {'C': 0.010406385396933528, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,710] Trial 23 finished with value: 0.8213454270597127 and parameters: {'C': 0.45650676158826853, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,723] Trial 24 finished with value: 0.8009604555789295 and parameters: {'C': 0.011609724524509516, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,776] Trial 25 finished with value: 0.8213454270597127 and parameters: {'C': 0.6625168583890085, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,790] Trial 26 finished with value: 0.8213454270597127 and parameters: {'C': 1025.1188507134673, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,803] Trial 27 finished with value: 0.8213454270597127 and parameters: {'C': 5.289631359420335, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,816] Trial 28 finished with value: 0.7837037037037038 and parameters: {'C': 0.000875194425405866, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,838] Trial 29 finished with value: 0.8169599217986314 and parameters: {'C': 0.02033410402242735, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,850] Trial 30 finished with value: 0.7837037037037038 and parameters: {'C': 0.0015964705470671273, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,879] Trial 31 finished with value: 0.8213454270597127 and parameters: {'C': 33.83599017780042, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,907] Trial 32 finished with value: 0.8213454270597127 and parameters: {'C': 14.338235570189102, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,936] Trial 33 finished with value: 0.8213454270597127 and parameters: {'C': 91.27649802323648, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,966] Trial 34 finished with value: 0.8213454270597127 and parameters: {'C': 1957.705457070973, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:51,994] Trial 35 finished with value: 0.8213454270597127 and parameters: {'C': 2.2171576547522163, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,008] Trial 36 finished with value: 0.8213454270597127 and parameters: {'C': 659.6249707663409, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,026] Trial 37 finished with value: 0.8213454270597127 and parameters: {'C': 147.56711218290516, 'solver': 'liblinear'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,054] Trial 38 finished with value: 0.8213454270597127 and parameters: {'C': 3478.0800386900696, 'solver': 'sag'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,114] Trial 39 finished with value: 0.8213454270597127 and parameters: {'C': 46.773693910034865, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,127] Trial 40 finished with value: 0.8213454270597127 and parameters: {'C': 5.050099959337009, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,141] Trial 41 finished with value: 0.8213454270597127 and parameters: {'C': 2.129873787808872, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,154] Trial 42 finished with value: 0.8213454270597127 and parameters: {'C': 0.4229042836677905, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,168] Trial 43 finished with value: 0.8213454270597127 and parameters: {'C': 1.1580205846008889, 'solver': 'lbfgs'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,230] Trial 44 finished with value: 0.8213454270597127 and parameters: {'C': 200.99409936738422, 'solver': 'saga'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,248] Trial 45 finished with value: 0.8213454270597127 and parameters: {'C': 13.396510300760983, 'solver': 'liblinear'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,263] Trial 46 finished with value: 0.8213454270597127 and parameters: {'C': 41.584286724950466, 'solver': 'newton-cg'}. Best is trial 0 with value: 0.8213454270597127.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,277] Trial 47 finished with value: 0.8265582655826559 and parameters: {'C': 0.05202676329246488, 'solver': 'lbfgs'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,290] Trial 48 finished with value: 0.8169599217986314 and parameters: {'C': 0.04037948775053019, 'solver': 'lbfgs'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,316] Trial 49 finished with value: 0.8169599217986314 and parameters: {'C': 0.032842601134503185, 'solver': 'saga'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,329] Trial 50 finished with value: 0.8213454270597127 and parameters: {'C': 0.16213282232040638, 'solver': 'lbfgs'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,343] Trial 51 finished with value: 0.8213454270597127 and parameters: {'C': 0.3139646989154767, 'solver': 'lbfgs'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,355] Trial 52 finished with value: 0.7837037037037038 and parameters: {'C': 0.0033329730735485157, 'solver': 'lbfgs'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,374] Trial 53 finished with value: 0.8213454270597127 and parameters: {'C': 439.7575776470061, 'solver': 'newton-cg'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,387] Trial 54 finished with value: 0.8213454270597127 and parameters: {'C': 1.2045695577799682, 'solver': 'lbfgs'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,405] Trial 55 finished with value: 0.8213454270597127 and parameters: {'C': 9687.35673985147, 'solver': 'liblinear'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,437] Trial 56 finished with value: 0.8213454270597127 and parameters: {'C': 0.07654222327344079, 'solver': 'saga'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,451] Trial 57 finished with value: 0.8213454270597127 and parameters: {'C': 0.20621680654770014, 'solver': 'newton-cg'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,480] Trial 58 finished with value: 0.8213454270597127 and parameters: {'C': 3843.117653044222, 'solver': 'sag'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,494] Trial 59 finished with value: 0.8213454270597127 and parameters: {'C': 7.95966781199474, 'solver': 'lbfgs'}. Best is trial 47 with value: 0.8265582655826559.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,507] Trial 60 finished with value: 0.8318697151649097 and parameters: {'C': 0.045222662946572435, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,521] Trial 61 finished with value: 0.8213454270597127 and parameters: {'C': 0.06640991988824993, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,535] Trial 62 finished with value: 0.7837037037037038 and parameters: {'C': 0.006308496433648704, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,548] Trial 63 finished with value: 0.8169599217986314 and parameters: {'C': 0.038323949749038896, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,563] Trial 64 finished with value: 0.8213454270597127 and parameters: {'C': 3.9719502383083145, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,586] Trial 65 finished with value: 0.8169599217986314 and parameters: {'C': 0.018265153983940723, 'solver': 'saga'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,615] Trial 66 finished with value: 0.8213454270597127 and parameters: {'C': 0.7304436657493182, 'solver': 'sag'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,629] Trial 67 finished with value: 0.8213454270597127 and parameters: {'C': 18.927044354844657, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,643] Trial 68 finished with value: 0.8213454270597127 and parameters: {'C': 0.25928927973883487, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,655] Trial 69 finished with value: 0.7837037037037038 and parameters: {'C': 0.00038269306929751014, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,684] Trial 70 finished with value: 0.8213454270597127 and parameters: {'C': 1553.7949008532412, 'solver': 'sag'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,714] Trial 71 finished with value: 0.8213454270597127 and parameters: {'C': 972.1667534057605, 'solver': 'sag'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,743] Trial 72 finished with value: 0.8213454270597127 and parameters: {'C': 4613.192043831093, 'solver': 'sag'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,772] Trial 73 finished with value: 0.8213454270597127 and parameters: {'C': 71.88861831038432, 'solver': 'sag'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,832] Trial 74 finished with value: 0.8213454270597127 and parameters: {'C': 2393.3065455588967, 'solver': 'saga'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,850] Trial 75 finished with value: 0.8213454270597127 and parameters: {'C': 366.93620234649217, 'solver': 'liblinear'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,883] Trial 76 finished with value: 0.8213454270597127 and parameters: {'C': 220.13433651083866, 'solver': 'sag'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,897] Trial 77 finished with value: 0.8009604555789295 and parameters: {'C': 0.006932303967705451, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,911] Trial 78 finished with value: 0.8213454270597127 and parameters: {'C': 827.8331332378059, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,924] Trial 79 finished with value: 0.8213454270597127 and parameters: {'C': 0.10995497464040487, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:52,983] Trial 80 finished with value: 0.8213454270597127 and parameters: {'C': 28.39698458110751, 'solver': 'saga'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,000] Trial 81 finished with value: 0.8213454270597127 and parameters: {'C': 126.23296682282978, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,014] Trial 82 finished with value: 0.8213454270597127 and parameters: {'C': 9.94684227733262, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,027] Trial 83 finished with value: 0.8213454270597127 and parameters: {'C': 501.01996053953366, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,041] Trial 84 finished with value: 0.8213454270597127 and parameters: {'C': 72.33849566596363, 'solver': 'lbfgs'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,070] Trial 85 finished with value: 0.8213454270597127 and parameters: {'C': 3.7888263794908212, 'solver': 'sag'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,084] Trial 86 finished with value: 0.8265582655826559 and parameters: {'C': 0.05719526015770194, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,098] Trial 87 finished with value: 0.8009604555789295 and parameters: {'C': 0.013837460590140852, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,112] Trial 88 finished with value: 0.8265582655826559 and parameters: {'C': 0.050350664357039734, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,129] Trial 89 finished with value: 0.8265582655826559 and parameters: {'C': 0.053368686949957486, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,143] Trial 90 finished with value: 0.8169599217986314 and parameters: {'C': 0.025884072891999333, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,157] Trial 91 finished with value: 0.8213454270597127 and parameters: {'C': 0.11942010368229332, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,171] Trial 92 finished with value: 0.8213454270597127 and parameters: {'C': 0.07487575084074988, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,185] Trial 93 finished with value: 0.8318697151649097 and parameters: {'C': 0.04811528822659667, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,200] Trial 94 finished with value: 0.8265582655826559 and parameters: {'C': 0.05132858972320876, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,213] Trial 95 finished with value: 0.8265582655826559 and parameters: {'C': 0.049419116914501765, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,227] Trial 96 finished with value: 0.8169599217986314 and parameters: {'C': 0.03997072450151614, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,241] Trial 97 finished with value: 0.8265582655826559 and parameters: {'C': 0.053373298476571684, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,255] Trial 98 finished with value: 0.8265582655826559 and parameters: {'C': 0.05539064791271228, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py:55: FutureWarning: suggest_loguniform has been deprecated in v3.0.0. This feature will be removed in v6.0.0. See https://github.com/optuna/optuna/releases/tag/v3.0.0. Use suggest_float(..., log=True) instead.
+  'C': trial.suggest_loguniform('C', 1e-4, 1e4),
+[I 2025-05-08 15:31:53,274] Trial 99 finished with value: 0.8265582655826559 and parameters: {'C': 0.05509765498412753, 'solver': 'newton-cg'}. Best is trial 60 with value: 0.8318697151649097.
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/workspace/20250508-150602/employee_attrition/train.py", line 106, in <module>
+    submit_predictions_for_test_set(y_submission)
+NameError: name 'submit_predictions_for_test_set' is not defined
+
+==================================================:
+===================任务执行结束========================:
+异常类型: ValueError
+异常消息: too many values to unpack (expected 2)
+堆栈跟踪信息:
+Traceback (most recent call last):
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 111, in <module>
+    run(getattr(sys.modules[__name__], args.agent_type), args)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/runner.py", line 40, in run
+    final_message = agent.run(env)
+  File "/remote-home/cs_acmis_lyy/Code/DS-Agent-main/development/MLAgentBench/agents/dsagent.py", line 52, in run
+    execution_log, diff = env.execute(Action(action, action_input))
+ValueError: too many values to unpack (expected 2)
+==================================================

@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 104.07553958892822,
+        "interact_count": 15,
+        "prompt_tokens": 45260,
+        "completion_tokens": 2327,
+        "RCR": 4
+    },
+    "task": {
+        "id": 8,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "smoker_status_bio_signals",
+        "task_description": "根据生物信号等特征，构建一个决策树分类模型，用于预测一个人是否是抽烟者。该任务属于二分类问题，预测其是否是一个烟民。你需要先加载数据集，然后使用数据抽样组件对数据集进行一个抽样用于评估，，保存评估结果。"
+    }
+}

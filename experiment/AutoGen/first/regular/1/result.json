@@ -1,0 +1,17 @@
+{
+    "task": {
+        "id": 1,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "bank_customer_churn",
+        "task_description": "请你根据欧洲银行的 10,000 名客户的账户信息，包括有关其信用评分、余额、产品以及他们是否流失的详细信息。，训练一个随机森林模型，可以根据客户的信息预测其是否会流失的概率。"
+    },
+    "result": {
+        "run_status": "fail",
+        "time": 91.45253348350525,
+        "interact_count": 5,
+        "prompt_tokens": 2617016,
+        "completion_tokens": 441,
+        "RCR": 5
+    }
+}

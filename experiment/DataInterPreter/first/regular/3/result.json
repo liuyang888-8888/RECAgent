@@ -1,0 +1,17 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 100.08970189094543,
+        "interact_count": 11,
+        "prompt_tokens": 12974,
+        "completion_tokens": 2130,
+        "RCR": 4
+    },
+    "task": {
+        "id": 3,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "crime_category",
+        "task_description": "我想根据旧金山所有社区的近 12 年的犯罪报告相关数据，构建一个可以预测犯罪类别的逻辑回归模型。"
+    }
+}

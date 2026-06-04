@@ -1,0 +1,18 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 78.6755621433258,
+        "interact_count": 12,
+        "prompt_tokens": 28893,
+        "completion_tokens": 2076,
+        "metrics": 0.0924,
+        "RCR": 5
+    },
+    "task": {
+        "id": 16,
+        "task_type": "machine learning",
+        "machine_learning_type": "regression",
+        "data_source": "media_campaign_cost",
+        "task_description": "基于 media_campaign_cost 数据集，构建一个回归模型，用于预测 Food Mart 媒体活动的成本。该任务属于回归问题，目标是根据输入特征（如广告渠道、活动时长、目标受众等）预测媒体活动的成本。"
+    }
+}

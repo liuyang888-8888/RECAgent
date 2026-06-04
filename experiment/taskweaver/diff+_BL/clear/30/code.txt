@@ -1,0 +1,145 @@
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Assuming the index is the date and the target variable is 'Close'
+train_series = train_df.set_index('Date')['Close']
+test_series = test_df.set_index('Date')['Close']
+
+# Build and fit the ARIMA model
+model = ARIMA(train_series, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Forecast on the test set
+forecast = model_fit.forecast(steps=len(test_series))
+
+# Calculate MSE on the training set
+train_predictions = model_fit.fittedvalues
+train_mse = mean_squared_error(train_series, train_predictions)
+
+train_mse, forecast
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[1], line 13
+    train_series = train_df.set_index('Date')['Close']
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:6122 in set_index
+    raise KeyError(f"None of {missing} are in the columns")
+
+KeyError: "None of ['Date'] are in the columns"
+
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Check the column names
+print(train_df.columns)
+print(test_df.columns)
+
+# Assuming the index is the date and the target variable is 'Close'
+train_series = train_df.set_index(train_df.columns[0])['Close']
+test_series = test_df.set_index(test_df.columns[0])['Close']
+
+# Build and fit the ARIMA model
+model = ARIMA(train_series, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Forecast on the test set
+forecast = model_fit.forecast(steps=len(test_series))
+
+# Calculate MSE on the training set
+train_predictions = model_fit.fittedvalues
+train_mse = mean_squared_error(train_series, train_predictions)
+
+train_mse, forecast
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3805 in get_loc
+    return self._engine.get_loc(casted_key)
+
+  File index.pyx:167 in pandas._libs.index.IndexEngine.get_loc
+
+  File index.pyx:196 in pandas._libs.index.IndexEngine.get_loc
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7081 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+  File pandas\\_libs\\hashtable_class_helper.pxi:7089 in pandas._libs.hashtable.PyObjectHashTable.get_item
+
+KeyError: 'Close'
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+
+  Cell In[2], line 17
+    train_series = train_df.set_index(train_df.columns[0])['Close']
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\frame.py:4102 in __getitem__
+    indexer = self.columns.get_loc(key)
+
+  File D:\Dependency\Py_env\taskweaver\Lib\site-packages\pandas\core\indexes\base.py:3812 in get_loc
+    raise KeyError(key) from err
+
+KeyError: 'Close'
+
+Index(['date', 'SP500'], dtype='object')
+Index(['date', 'SP500'], dtype='object')
+
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Load the datasets
+train_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_train.csv'
+test_data_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\sp500_index_test.csv'
+
+train_df = pd.read_csv(train_data_path)
+test_df = pd.read_csv(test_data_path)
+
+# Assuming the index is the date and the target variable is 'SP500'
+train_series = train_df.set_index('date')['SP500']
+test_series = test_df.set_index('date')['SP500']
+
+# Build and fit the ARIMA model
+model = ARIMA(train_series, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Forecast on the test set
+forecast = model_fit.forecast(steps=len(test_series))
+
+# Calculate MSE on the training set
+train_predictions = model_fit.fittedvalues
+train_mse = mean_squared_error(train_series, train_predictions)
+
+train_mse, forecast
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(1041721.0258359485,
+ 2518    3075.828636
+ 2519    2913.272486
+            ...     
+ 5034    2850.342142
+ 5035    2850.342142
+ Name: predicted_mean, Length: 2518, dtype: float64)

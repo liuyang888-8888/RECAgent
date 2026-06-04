@@ -1,0 +1,18 @@
+{
+    "result": {
+        "run_status": "success",
+        "time": 75.54307293891907,
+        "interact_count": 7,
+        "prompt_tokens": 12226,
+        "completion_tokens": 1391,
+        "metrics": 0.8218111028673516,
+        "RCR": 5
+    },
+    "task": {
+        "id": 2,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "cirrhosis_patient",
+        "task_description": "请使用 cirrhosis_patient 数据，利用 17 个临床特征预测肝硬化患者的生存状态。存活状态包括 0 = D （死亡）、1 = C （删失）、2 = CL （因肝移植而删除），构建一个分类模型。"
+    }
+}

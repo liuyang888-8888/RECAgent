@@ -1,0 +1,532 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\abalone_train.csv')
+test_df = pd.read_csv('E:\\csv\\abalone_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    label_encoder = LabelEncoder()
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Apply appropriate preprocessing for numerical columns
+for col in numerical_columns:
+    if col != 'label':  # Ensure we do not preprocess the label column
+        # Apply standard scaling for numerical columns
+        scaler = StandardScaler()
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Display the preprocessed data
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   id sex  length  diameter  ...  whole_weight1  whole_weight2  shell_weight  rings
+0   0   F   0.550     0.430  ...         0.3285         0.1465        0.2400     11
+1   1   F   0.630     0.490  ...         0.4580         0.2765        0.3200     11
+2   2   I   0.160     0.110  ...         0.0055         0.0030        0.0050      6
+3   3   M   0.595     0.475  ...         0.3755         0.2055        0.2500     10
+4   4   I   0.555     0.425  ...         0.3695         0.1600        0.1975      9
+
+[5 rows x 10 columns]
+
+Test DataFrame:
+   id sex  length  diameter  ...  whole_weight1  whole_weight2  shell_weight  rings
+0   8   I   0.205      0.15  ...         0.0145         0.0105        0.0100      4
+1  34   I   0.580      0.45  ...         0.3875         0.1615        0.2750     10
+2  39   I   0.360      0.27  ...         0.0800         0.0415        0.0650      6
+3  75   M   0.655      0.52  ...         0.7365         0.3075        0.3925     11
+4  87   I   0.295      0.22  ...         0.0565         0.0130        0.0350      6
+
+[5 rows x 10 columns]
+
+Data types in Train DataFrame:
+id                 int64
+sex               object
+length           float64
+diameter         float64
+height           float64
+whole_weight     float64
+whole_weight1    float64
+whole_weight2    float64
+shell_weight     float64
+rings              int64
+dtype: object
+
+Data types in Test DataFrame:
+id                 int64
+sex               object
+length           float64
+diameter         float64
+height           float64
+whole_weight     float64
+whole_weight1    float64
+whole_weight2    float64
+shell_weight     float64
+rings              int64
+dtype: object
+
+Categorical Columns: Index(['sex'], dtype='object')
+Numerical Columns: Index(['id', 'length', 'diameter', 'height', 'whole_weight', 'whole_weight1',
+       'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object'),---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[1], line 34
+     31 # Apply appropriate preprocessing for categorical columns
+     32 for col in categorical_columns:
+     33     # Use label encoding for categorical columns
+---> 34     label_encoder = LabelEncoder()
+     35     train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+     36     test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+NameError: name 'LabelEncoder' is not defined
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\abalone_train.csv')
+test_df = pd.read_csv('E:\\csv\\abalone_test.csv')
+
+# Copy the DataFrames to ensure we don't modify the original data
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows to understand the data
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check data types and statistics
+print("\nTrain DataFrame Data Types:")
+print(train_df_copy.dtypes)
+print("\nTest DataFrame Data Types:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(exclude=['object']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:", categorical_columns)
+print("Numerical Columns:", numerical_columns)
+
+# Apply appropriate preprocessing for categorical and numerical columns
+from sklearn.preprocessing import LabelEncoder
+
+# Encode categorical columns
+for col in categorical_columns:
+    le = LabelEncoder()
+    train_df_copy[col] = le.fit_transform(train_df_copy[col])
+    test_df_copy[col] = le.transform(test_df_copy[col])
+
+# Scale numerical columns (excluding the label column)
+from sklearn.preprocessing import StandardScaler
+
+# Assuming the last column is the label
+label_column = train_df_copy.columns[-1]
+
+if label_column in numerical_columns:
+    numerical_columns = numerical_columns.drop(label_column)
+
+scaler = StandardScaler()
+train_df_copy[numerical_columns] = scaler.fit_transform(train_df_copy[numerical_columns])
+test_df_copy[numerical_columns] = scaler.transform(test_df_copy[numerical_columns])
+
+# Display the preprocessed data
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   id sex  length  diameter  ...  whole_weight1  whole_weight2  shell_weight  rings
+0   0   F   0.550     0.430  ...         0.3285         0.1465        0.2400     11
+1   1   F   0.630     0.490  ...         0.4580         0.2765        0.3200     11
+2   2   I   0.160     0.110  ...         0.0055         0.0030        0.0050      6
+3   3   M   0.595     0.475  ...         0.3755         0.2055        0.2500     10
+4   4   I   0.555     0.425  ...         0.3695         0.1600        0.1975      9
+
+[5 rows x 10 columns]
+
+Test DataFrame:
+   id sex  length  diameter  ...  whole_weight1  whole_weight2  shell_weight  rings
+0   8   I   0.205      0.15  ...         0.0145         0.0105        0.0100      4
+1  34   I   0.580      0.45  ...         0.3875         0.1615        0.2750     10
+2  39   I   0.360      0.27  ...         0.0800         0.0415        0.0650      6
+3  75   M   0.655      0.52  ...         0.7365         0.3075        0.3925     11
+4  87   I   0.295      0.22  ...         0.0565         0.0130        0.0350      6
+
+[5 rows x 10 columns]
+
+Train DataFrame Data Types:
+id                 int64
+sex               object
+length           float64
+diameter         float64
+height           float64
+whole_weight     float64
+whole_weight1    float64
+whole_weight2    float64
+shell_weight     float64
+rings              int64
+dtype: object
+
+Test DataFrame Data Types:
+id                 int64
+sex               object
+length           float64
+diameter         float64
+height           float64
+whole_weight     float64
+whole_weight1    float64
+whole_weight2    float64
+shell_weight     float64
+rings              int64
+dtype: object
+
+Categorical Columns: Index(['sex'], dtype='object')
+Numerical Columns: Index(['id', 'length', 'diameter', 'height', 'whole_weight', 'whole_weight1',
+       'whole_weight2', 'shell_weight', 'rings'],
+      dtype='object')
+
+Preprocessed Train DataFrame:
+         id  sex    length  ...  whole_weight2  shell_weight  rings
+0 -1.729619    0  0.278451  ...      -0.226889      0.108200     11
+1 -1.729581    0  0.955902  ...       1.063299      0.722954     11
+2 -1.729543    1 -3.024121  ...      -1.651057     -1.697640      6
+3 -1.729505    2  0.659517  ...       0.358658      0.185044     10
+4 -1.729467    1  0.320792  ...      -0.092908     -0.218388      9
+
+[5 rows x 10 columns]
+
+Preprocessed Test DataFrame:
+         id  sex    length  ...  whole_weight2  shell_weight  rings
+0 -1.729314    1 -2.643055  ...      -1.576623     -1.659217      4
+1 -1.728322    1  0.532495  ...      -0.078021      0.377155     10
+2 -1.728132    1 -1.330494  ...      -1.268963     -1.236574      6
+3 -1.726759    2  1.167605  ...       1.370959      1.280075     11
+4 -1.726301    1 -1.880923  ...      -1.551812     -1.467107      6
+
+[5 rows x 10 columns]
+is_success:
+True
+code:
+# Perform data sampling on the training dataset to create a smaller training set.
+# We will use a simple random sampling method to reduce the size of the training set.
+
+# Define the fraction of the original dataset to sample
+sample_fraction = 0.5
+
+# Perform random sampling on the training dataset
+train_sampled_df = train_df_copy.sample(frac=sample_fraction, random_state=42)
+
+# Ensure the same sampling is applied to the test dataset
+test_sampled_df = test_df_copy.sample(frac=sample_fraction, random_state=42)
+
+# Display the sampled datasets
+print("Sampled Train DataFrame:")
+print(train_sampled_df.head())
+print("\nSampled Test DataFrame:")
+print(test_sampled_df.head())
+execute_result:
+Sampled Train DataFrame:
+             id  sex    length  ...  whole_weight2  shell_weight  rings
+57968  1.040636    0  0.490155  ...       0.373545      0.254204      9
+22693 -0.651764    1 -0.864747  ...      -0.757850     -0.967619      7
+10843 -1.213710    2  0.447814  ...       0.120470     -0.037804      9
+32133 -0.196615    1 -0.949428  ...      -0.931529     -0.967619      8
+13375 -1.092686    1 -0.695384  ...      -0.703265     -0.813931      9
+
+[5 rows x 10 columns]
+
+Sampled Test DataFrame:
+             id  sex    length  ...  whole_weight2  shell_weight  rings
+10132  0.182097    2 -0.568362  ...      -0.842209     -0.890775      8
+17886  1.680888    1 -0.780065  ...      -0.852133     -1.021410      8
+12362  0.606275    0  0.659517  ...       0.924356      0.838221     12
+11880  0.514505    2  1.463990  ...       2.646260      1.814143     10
+2157  -1.314634    2  0.871221  ...       0.497601      0.415577      9
+
+[5 rows x 10 columns]
+is_success:
+True
+code:
+# Since the data has already been preprocessed in the finished tasks, we will check for missing values and handle them appropriately.
+# We will also ensure that the label column ('rings') is not altered during this process.
+
+# Copy the sampled dataframes to avoid modifying the original ones
+train_sampled_df_copy = train_sampled_df.copy()
+test_sampled_df_copy = test_sampled_df.copy()
+
+# Check for missing values in the sampled train and test dataframes
+print("Missing values in Sampled Train DataFrame:")
+print(train_sampled_df_copy.isnull().sum())
+print("\nMissing values in Sampled Test DataFrame:")
+print(test_sampled_df_copy.isnull().sum())
+
+# Handle missing values if any (for example, by filling with the mean for numerical columns)
+# Assuming there are no missing values, but if there were, you could use the following code:
+# train_sampled_df_copy.fillna(train_sampled_df_copy.mean(), inplace=True)
+# test_sampled_df_copy.fillna(test_sampled_df_copy.mean(), inplace=True)
+
+# Since 'sex' is already encoded and all other columns are numerical, no further encoding is needed.
+# The label column 'rings' is not altered.
+
+# Display the first few rows of the preprocessed sampled dataframes
+print("\nPreprocessed Sampled Train DataFrame:")
+print(train_sampled_df_copy.head())
+print("\nPreprocessed Sampled Test DataFrame:")
+print(test_sampled_df_copy.head())
+execute_result:
+Missing values in Sampled Train DataFrame:
+id               0
+sex              0
+length           0
+diameter         0
+height           0
+whole_weight     0
+whole_weight1    0
+whole_weight2    0
+shell_weight     0
+rings            0
+dtype: int64
+
+Missing values in Sampled Test DataFrame:
+id               0
+sex              0
+length           0
+diameter         0
+height           0
+whole_weight     0
+whole_weight1    0
+whole_weight2    0
+shell_weight     0
+rings            0
+dtype: int64
+
+Preprocessed Sampled Train DataFrame:
+             id  sex    length  ...  whole_weight2  shell_weight  rings
+57968  1.040636    0  0.490155  ...       0.373545      0.254204      9
+22693 -0.651764    1 -0.864747  ...      -0.757850     -0.967619      7
+10843 -1.213710    2  0.447814  ...       0.120470     -0.037804      9
+32133 -0.196615    1 -0.949428  ...      -0.931529     -0.967619      8
+13375 -1.092686    1 -0.695384  ...      -0.703265     -0.813931      9
+
+[5 rows x 10 columns]
+
+Preprocessed Sampled Test DataFrame:
+             id  sex    length  ...  whole_weight2  shell_weight  rings
+10132  0.182097    2 -0.568362  ...      -0.842209     -0.890775      8
+17886  1.680888    1 -0.780065  ...      -0.852133     -1.021410      8
+12362  0.606275    0  0.659517  ...       0.924356      0.838221     12
+11880  0.514505    2  1.463990  ...       2.646260      1.814143     10
+2157  -1.314634    2  0.871221  ...       0.497601      0.415577      9
+
+[5 rows x 10 columns]
+is_success:
+True
+code:
+import lightgbm as lgb
+
+# Define the feature and target variables
+X_train = train_sampled_df_copy.drop(columns=['rings'])
+y_train = train_sampled_df_copy['rings']
+X_test = test_sampled_df_copy.drop(columns=['rings'])
+y_test = test_sampled_df_copy['rings']
+
+# Initialize the LightGBM dataset
+lgb_train = lgb.Dataset(X_train, y_train)
+lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
+
+# Set parameters for the LightGBM model
+params = {
+    'boosting_type': 'rf',  # Random Forest learner type
+    'num_trees': 20,  # Number of trees
+    'objective': 'regression',  # Regression task
+    'metric': 'rmse',  # Root Mean Squared Error as the evaluation metric
+    'feature_fraction': 0.9,  # Fraction of features to use in each tree
+    'bagging_fraction': 0.8,  # Fraction of observations to use in each tree
+    'bagging_freq': 1,  # Frequency for bagging
+    'verbose': 0  # No verbose output
+}
+
+# Train the model
+gbm = lgb.train(params, lgb_train, valid_sets=[lgb_train, lgb_eval], num_boost_round=20, early_stopping_rounds=5)
+
+# Make predictions
+y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+# Evaluate the model
+from sklearn.metrics import mean_squared_error
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+print(f"RMSE: {rmse}")
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[8], line 26
+     14 params = {
+     15     'boosting_type': 'rf',  # Random Forest learner type
+     16     'num_trees': 20,  # Number of trees
+   (...)
+     22     'verbose': 0  # No verbose output
+     23 }
+     25 # Train the model
+---> 26 gbm = lgb.train(params, lgb_train, valid_sets=[lgb_train, lgb_eval], num_boost_round=20, early_stopping_rounds=5)
+     28 # Make predictions
+     29 y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+TypeError: train() got an unexpected keyword argument 'early_stopping_rounds'
+is_success:
+False
+code:
+import lightgbm as lgb
+
+# Define the feature and target variables
+X_train = train_sampled_df_copy.drop(columns=['rings'])
+y_train = train_sampled_df_copy['rings']
+X_test = test_sampled_df_copy.drop(columns=['rings'])
+y_test = test_sampled_df_copy['rings']
+
+# Set up the LightGBM dataset
+lgb_train = lgb.Dataset(X_train, y_train)
+lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
+
+# Define the parameters for the LightGBM model
+params = {
+    'boosting_type': 'rf',  # Random Forest learner type
+    'num_trees': 20,  # Number of trees
+    'max_depth': -1,
+    'learning_rate': 0.1,
+    'objective': 'regression',  # Regression task
+    'metric': 'rmse',  # Evaluation metric
+    'feature_fraction': 0.9,  # Fraction of features to use in each tree
+    'bagging_fraction': 0.8,  # Fraction of observations to use in each tree
+    'bagging_freq': 1,  # Frequency for bagging
+    'verbose': 0
+}
+
+# Train the LightGBM model
+gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_eval, early_stopping_rounds=5)
+
+# Make predictions
+y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+# Evaluate the model
+from sklearn.metrics import mean_squared_error
+mse = mean_squared_error(y_test, y_pred)
+print(f"Mean Squared Error: {mse}")
+execute_result:
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[9], line 28
+     14 params = {
+     15     'boosting_type': 'rf',  # Random Forest learner type
+     16     'num_trees': 20,  # Number of trees
+   (...)
+     24     'verbose': 0
+     25 }
+     27 # Train the LightGBM model
+---> 28 gbm = lgb.train(params, lgb_train, num_boost_round=20, valid_sets=lgb_eval, early_stopping_rounds=5)
+     30 # Make predictions
+     31 y_pred = gbm.predict(X_test, num_iteration=gbm.best_iteration)
+
+TypeError: train() got an unexpected keyword argument 'early_stopping_rounds'
+is_success:
+False
+code:
+import lightgbm as lgb
+
+# Define the parameters for the LightGBM model
+params = {
+    'boosting_type': 'rf',  # Random Forest learner type
+    'num_trees': 20,  # Number of trees
+    'feature_fraction': 0.6,  # Fraction of features to use in each tree
+    'bagging_fraction': 0.6,  # Fraction of observations to use in each tree
+    'bagging_freq': 1,  # Frequency for bagging
+    'verbose': 0  # No verbose output
+}
+
+# Prepare the data for training
+X_train = train_sampled_df_copy.drop(columns=['rings'])
+y_train = train_sampled_df_copy['rings']
+
+# Create a LightGBM dataset
+lgb_train = lgb.Dataset(X_train, y_train)
+
+# Train the model
+model = lgb.train(params, lgb_train)
+
+# Print the model to confirm it has been trained
+print(model)
+execute_result:
+<lightgbm.basic.Booster object at 0x0000022EB680AEB0>
+is_success:
+True
+code:
+# Predict the target variable (rings) on the preprocessed test dataset
+X_test = test_sampled_df_copy.drop(columns=['rings'])
+y_test_pred = model.predict(X_test)
+
+# Since the 'rings' column represents the age of the abalone, we can assume the predicted values are the ages
+# Convert the predictions to a DataFrame for better readability
+predictions_df = pd.DataFrame({'Predicted_Rings': y_test_pred})
+print(predictions_df.head())
+execute_result:
+Predicted_Rings
+0         8.077463
+1         7.527198
+2        11.278059
+3        11.798966
+4        10.890785
+is_success:
+True
+code:
+from sklearn.metrics import mean_squared_error
+
+# Calculate the Mean Squared Error (MSE)
+mse = mean_squared_error(y_test, y_test_pred)
+print(f"Mean Squared Error: {mse}")
+execute_result:
+Mean Squared Error: 3.960275297680511
+is_success:
+True
+code:
+# Save the prediction results to a CSV file
+predictions_df.to_csv('predictions.csv', index=False)
+execute_result:
+
+is_success:
+True

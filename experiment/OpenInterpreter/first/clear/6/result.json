@@ -1,0 +1,19 @@
+{
+    "task": {
+        "id": 6,
+        "task_type": "machine learning",
+        "machine_learning_type": "classification",
+        "data_source": "kidney_stone",
+        "task_description": "我想要构建一个构建一个决策树分类模型，用于根据尿液分析（如尿液中各种成分的浓度）预测患者是否存在肾结石。该任务属于二分类问题，目标是根据输入特征预测肾结石的存在（是/否）。并对测试集进行预测，保存预测结果。"
+    },
+    "result": {
+        "run_status": "success",
+        "time": 96.48524212837219,
+        "RCR": 5
+    },
+    "token": {
+        "interact_count": 4,
+        "prompt_tokens": 7160,
+        "completion_tokens": 1032
+    }
+}

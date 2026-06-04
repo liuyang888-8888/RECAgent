@@ -1,0 +1,82 @@
+import pandas as pd
+
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\bitcoin_price_train.csv'
+bitcoin_data = pd.read_csv(file_path)
+
+# Display the first few rows of the dataframe
+bitcoin_data.head(), bitcoin_data
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(         Date          Open         Close          High           Low
+ 0  2024-04-21  64992.816406  64926.644531  65723.242188  64277.722656
+ 1  2024-04-20  63851.101562  64994.441406  65442.457031  63172.402344
+ 2  2024-04-19  63510.750000  63843.570312  65481.597656  59651.390625
+ 3  2024-04-18  61275.316406  63512.753906  64125.687500  60833.480469
+ 4  2024-04-17  63831.847656  61276.691406  64486.363281  59768.585938,
+             Date          Open         Close          High           Low
+ 0     2024-04-21  64992.816406  64926.644531  65723.242188  64277.722656
+ 1     2024-04-20  63851.101562  64994.441406  65442.457031  63172.402344
+ ...          ...           ...           ...           ...           ...
+ 3503  2018-04-03   7102.259766   7456.109863   7530.939941   7072.490234
+ 3504  2017-01-24    910.677002    892.687012    924.145020    892.286011
+ 
+ [3505 rows x 5 columns])from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.metrics import mean_squared_error
+
+# Selecting the order of the VAR model based on BIC
+model = VAR(bitcoin_data[["Open", "Close", "High", "Low"]])
+selected_lag = select_order(model.endog, maxlags=10, ic='bic')
+
+# Fitting the VAR model with the selected lag
+var_model = model.fit(maxlags=selected_lag.bic, ic='bic')
+
+# Predicting the values on the training set
+predictions = var_model.fittedvalues
+
+# Calculating the Mean Squared Error (MSE)
+mse = mean_squared_error(bitcoin_data[["Open", "Close", "High", "Low"]].iloc[selected_lag.bic:], predictions)
+
+mse, var_model, predictions
+result os execution:The execution of the generated python code above has failed
+
+During execution, the following messages were logged:
+Traceback (most recent call last):
+
+  Cell In[2], line 7
+    selected_lag = select_order(model.endog, maxlags=10, ic='bic')
+
+TypeError: select_order() got an unexpected keyword argument 'ic'
+
+from statsmodels.tsa.vector_ar.vecm import select_order
+from statsmodels.tsa.vector_ar.var_model import VAR
+from sklearn.metrics import mean_squared_error
+
+# Selecting the order of the VAR model based on BIC
+model = VAR(bitcoin_data[["Open", "Close", "High", "Low"]])
+selected_lag = select_order(model.endog, maxlags=10)
+
+# Fitting the VAR model with the selected lag
+var_model = model.fit(maxlags=selected_lag.bic)
+
+# Predicting the values on the training set
+predictions = var_model.fittedvalues
+
+# Calculating the Mean Squared Error (MSE)
+mse = mean_squared_error(bitcoin_data[["Open", "Close", "High", "Low"]].iloc[selected_lag.bic:], predictions)
+
+mse, var_model, predictions
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(283684450.7254186,
+ <statsmodels.tsa.vector_ar.var_model.VARResultsWrapper at 0x29118da4d50>,
+               Open         Close          High           Low
+ 1     33016.110532  33120.609619  33673.332158  32396.484754
+ 2     31154.315576  31213.751926  31797.145336  30497.610481
+ ...            ...           ...           ...           ...
+ 3503  13161.104168  13166.961107  13479.684715  12819.390986
+ 3504  13182.694092  13178.818317  13505.372814  12824.874213
+ 
+ [3504 rows x 4 columns])

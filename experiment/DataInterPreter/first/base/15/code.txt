@@ -1,0 +1,274 @@
+code:
+import pandas as pd
+
+# Load the datasets
+train_df = pd.read_csv('E:\\csv\\crab_age_train.csv')
+test_df = pd.read_csv('E:\\csv\\crab_age_test.csv')
+
+# Copy the DataFrames to avoid modifying the original datasets
+train_df_copy = train_df.copy()
+test_df_copy = test_df.copy()
+
+# Display the first few rows of the datasets to understand the structure
+print("Train DataFrame:")
+print(train_df_copy.head())
+print("\nTest DataFrame:")
+print(test_df_copy.head())
+
+# Check the data types of each column
+print("\nData types in Train DataFrame:")
+print(train_df_copy.dtypes)
+print("\nData types in Test DataFrame:")
+print(test_df_copy.dtypes)
+
+# Identify categorical and numerical columns
+categorical_columns = train_df_copy.select_dtypes(include=['object']).columns
+numerical_columns = train_df_copy.select_dtypes(include=['int64', 'float64']).columns
+
+# Print the identified columns
+print("\nCategorical Columns:")
+print(categorical_columns)
+print("\nNumerical Columns:")
+print(numerical_columns)
+
+# Apply appropriate preprocessing for categorical columns
+for col in categorical_columns:
+    # Use label encoding for categorical columns
+    label_encoder = LabelEncoder()
+    train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+    test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+# Apply appropriate preprocessing for numerical columns
+for col in numerical_columns:
+    if col != 'label':  # Ensure the label column is not processed
+        # Apply MinMaxScaler for numerical columns
+        scaler = MinMaxScaler()
+        train_df_copy[col] = scaler.fit_transform(train_df_copy[[col]])
+        test_df_copy[col] = scaler.transform(test_df_copy[[col]])
+
+# Display the preprocessed datasets
+print("\nPreprocessed Train DataFrame:")
+print(train_df_copy.head())
+print("\nPreprocessed Test DataFrame:")
+print(test_df_copy.head())
+execute_result:
+Train DataFrame:
+   id Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+0   0   I  1.5250    1.1750  ...       12.728926        6.647958      8.348928    9
+1   1   I  1.1000    0.8250  ...        4.521745        2.324659      3.401940    8
+2   2   M  1.3875    1.1125  ...       11.339800        5.556502      6.662133    9
+3   3   F  1.7000    1.4125  ...       20.354941       10.991839     14.996885   11
+4   5   M  1.5000    1.1750  ...       13.409313        6.789705      7.937860   10
+
+[5 rows x 10 columns]
+
+Test DataFrame:
+   id Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+0   4   I  1.2500    1.0125  ...       11.977664        4.507570      5.953395    8
+1   6   M  1.5750    1.1375  ...       11.935140        7.342521      8.646598   11
+2  12   M  1.3500    1.0250  ...        8.504850        4.635143      6.945627   10
+3  32   F  1.7625    1.3875  ...       23.090668        6.080968     11.297276   13
+4  35   F  1.4250    1.1500  ...       11.793392        5.528153      7.796112   10
+
+[5 rows x 10 columns]
+
+Data types in Train DataFrame:
+id                  int64
+Sex                object
+Length            float64
+Diameter          float64
+Height            float64
+Weight            float64
+Shucked_Weight    float64
+Viscera_Weight    float64
+Shell_Weight      float64
+Age                 int64
+dtype: object
+
+Data types in Test DataFrame:
+id                  int64
+Sex                object
+Length            float64
+Diameter          float64
+Height            float64
+Weight            float64
+Shucked_Weight    float64
+Viscera_Weight    float64
+Shell_Weight      float64
+Age                 int64
+dtype: object
+
+Categorical Columns:
+Index(['Sex'], dtype='object')
+
+Numerical Columns:
+Index(['id', 'Length', 'Diameter', 'Height', 'Weight', 'Shucked_Weight',
+       'Viscera_Weight', 'Shell_Weight', 'Age'],
+      dtype='object'),---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[1], line 36
+     33 # Apply appropriate preprocessing for categorical columns
+     34 for col in categorical_columns:
+     35     # Use label encoding for categorical columns
+---> 36     label_encoder = LabelEncoder()
+     37     train_df_copy[col] = label_encoder.fit_transform(train_df_copy[col])
+     38     test_df_copy[col] = label_encoder.transform(test_df_copy[col])
+
+NameError: name 'LabelEncoder' is not defined
+is_success:
+False
+code:
+import pandas as pd
+
+# Load the training dataset
+train_data_path = r'E:\csv\crab_age_train.csv'
+crab_age_train = pd.read_csv(train_data_path)
+
+# Load the test dataset
+test_data_path = r'E:\csv\crab_age_test.csv'
+crab_age_test = pd.read_csv(test_data_path)
+
+# Display the first few rows of the training and test datasets
+crab_age_train.head(), crab_age_test.head()
+execute_result:
+(   id Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 0   0   I  1.5250    1.1750  ...       12.728926        6.647958      8.348928    9
+ 1   1   I  1.1000    0.8250  ...        4.521745        2.324659      3.401940    8
+ 2   2   M  1.3875    1.1125  ...       11.339800        5.556502      6.662133    9
+ 3   3   F  1.7000    1.4125  ...       20.354941       10.991839     14.996885   11
+ 4   5   M  1.5000    1.1750  ...       13.409313        6.789705      7.937860   10
+ 
+ [5 rows x 10 columns],
+    id Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 0   4   I  1.2500    1.0125  ...       11.977664        4.507570      5.953395    8
+ 1   6   M  1.5750    1.1375  ...       11.935140        7.342521      8.646598   11
+ 2  12   M  1.3500    1.0250  ...        8.504850        4.635143      6.945627   10
+ 3  32   F  1.7625    1.3875  ...       23.090668        6.080968     11.297276   13
+ 4  35   F  1.4250    1.1500  ...       11.793392        5.528153      7.796112   10
+ 
+ [5 rows x 10 columns])
+is_success:
+True
+code:
+# Copy the datasets to avoid modifying the original data
+crab_age_train_copy = crab_age_train.copy()
+crab_age_test_copy = crab_age_test.copy()
+
+# Check for missing values in both training and test datasets
+missing_values_train = crab_age_train_copy.isnull().sum()
+missing_values_test = crab_age_test_copy.isnull().sum()
+
+# Encode categorical variable 'Sex' using label encoding
+from sklearn.preprocessing import LabelEncoder
+label_encoder = LabelEncoder()
+
+crab_age_train_copy['Sex'] = label_encoder.fit_transform(crab_age_train_copy['Sex'])
+crab_age_test_copy['Sex'] = label_encoder.transform(crab_age_test_copy['Sex'])
+
+# Display the results of missing value check and the first few rows of the encoded datasets
+missing_values_train, missing_values_test, crab_age_train_copy.head(), crab_age_test_copy.head()
+execute_result:
+(id                0
+ Sex               0
+ Length            0
+ Diameter          0
+ Height            0
+ Weight            0
+ Shucked_Weight    0
+ Viscera_Weight    0
+ Shell_Weight      0
+ Age               0
+ dtype: int64,
+ id                0
+ Sex               0
+ Length            0
+ Diameter          0
+ Height            0
+ Weight            0
+ Shucked_Weight    0
+ Viscera_Weight    0
+ Shell_Weight      0
+ Age               0
+ dtype: int64,
+    id  Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 0   0    1  1.5250    1.1750  ...       12.728926        6.647958      8.348928    9
+ 1   1    1  1.1000    0.8250  ...        4.521745        2.324659      3.401940    8
+ 2   2    2  1.3875    1.1125  ...       11.339800        5.556502      6.662133    9
+ 3   3    0  1.7000    1.4125  ...       20.354941       10.991839     14.996885   11
+ 4   5    2  1.5000    1.1750  ...       13.409313        6.789705      7.937860   10
+ 
+ [5 rows x 10 columns],
+    id  Sex  Length  Diameter  ...  Shucked_Weight  Viscera_Weight  Shell_Weight  Age
+ 0   4    1  1.2500    1.0125  ...       11.977664        4.507570      5.953395    8
+ 1   6    2  1.5750    1.1375  ...       11.935140        7.342521      8.646598   11
+ 2  12    2  1.3500    1.0250  ...        8.504850        4.635143      6.945627   10
+ 3  32    0  1.7625    1.3875  ...       23.090668        6.080968     11.297276   13
+ 4  35    0  1.4250    1.1500  ...       11.793392        5.528153      7.796112   10
+ 
+ [5 rows x 10 columns])
+is_success:
+True
+code:
+# Split the preprocessed data into features (X) and target variable (y)
+X_train = crab_age_train_copy.drop(columns=['Age'])
+y_train = crab_age_train_copy['Age']
+X_test = crab_age_test_copy.drop(columns=['Age'])
+y_test = crab_age_test_copy['Age']
+
+# Display the first few rows of X_train and y_train to verify
+X_train.head(), y_train.head()
+execute_result:
+(   id  Sex  Length  ...  Shucked_Weight  Viscera_Weight  Shell_Weight
+ 0   0    1  1.5250  ...       12.728926        6.647958      8.348928
+ 1   1    1  1.1000  ...        4.521745        2.324659      3.401940
+ 2   2    2  1.3875  ...       11.339800        5.556502      6.662133
+ 3   3    0  1.7000  ...       20.354941       10.991839     14.996885
+ 4   5    2  1.5000  ...       13.409313        6.789705      7.937860
+ 
+ [5 rows x 9 columns],
+ 0     9
+ 1     8
+ 2     9
+ 3    11
+ 4    10
+ Name: Age, dtype: int64)
+is_success:
+True
+code:
+from xgboost import XGBRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Initialize the XGBoost regressor with some hyperparameters
+xgb_model = XGBRegressor(n_estimators=1000, max_depth=7, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8, random_state=42)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Predict on the training set to evaluate the model
+y_train_pred = xgb_model.predict(X_train)
+
+# Evaluate the model on the training set
+mse_train = mean_squared_error(y_train, y_train_pred)
+r2_train = r2_score(y_train, y_train_pred)
+
+# Predict on the test set
+y_test_pred = xgb_model.predict(X_test)
+
+# Evaluate the model on the test set
+mse_test = mean_squared_error(y_test, y_test_pred)
+r2_test = r2_score(y_test, y_test_pred)
+
+mse_train, r2_train, mse_test, r2_test
+execute_result:
+(2.0935981961476293, 0.7917686139101077, 4.264380663421921, 0.5815775219963939)
+is_success:
+True
+code:
+# Since the model has already been trained and the test data processed, we can directly evaluate the model on the test data.
+# The evaluation metrics have already been calculated in the previous step, so we just need to print them out.
+
+mse_test, r2_test
+execute_result:
+(4.264380663421921, 0.5815775219963939)
+is_success:
+True

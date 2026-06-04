@@ -1,0 +1,50 @@
+import pandas as pd
+
+file_path = 'E:\\Postgraduate\\Code\\SunnylnAgent\\data\\csv\\nvidia_share_price_train.csv'
+nvidia_data = pd.read_csv(file_path)
+
+# Display the first few rows of the dataset
+nvidia_data.head(), nvidia_data.columns
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(         Date        Open       Close        High         Low
+ 0  2022-01-14  263.000000  269.420013  271.970001  262.100006
+ 1  2018-07-19   62.735001   63.007500   63.347500   62.582500
+ 2  2013-12-31    4.000000    4.005000    4.025000    3.975000
+ 3  2011-03-18    4.535000    4.405000    4.550000    4.400000
+ 4  2024-04-15  890.979980  860.010010  906.130005  859.289978,
+ Index(['Date', 'Open', 'Close', 'High', 'Low'], dtype='object'))from statsmodels.tsa.arima.model import ARIMA
+from sklearn.metrics import mean_squared_error
+
+# Ensure the 'Date' column is in datetime format
+nvidia_data['Date'] = pd.to_datetime(nvidia_data['Date'])
+
+# Set 'Date' as the index
+nvidia_data.set_index('Date', inplace=True)
+
+# Select the 'Close' column for the ARIMA model
+nvidia_close = nvidia_data['Close']
+
+# Fit the ARIMA model
+model = ARIMA(nvidia_close, order=(5, 1, 0))
+model_fit = model.fit()
+
+# Make predictions
+predictions = model_fit.predict(start=len(nvidia_close), end=len(nvidia_close)+len(nvidia_close)-1, dynamic=False)
+
+# Calculate MSE
+mse = mean_squared_error(nvidia_close, predictions)
+
+mse, predictions, model_fit
+result os execution:The execution of the generated python code above has succeeded
+
+The result of above Python code after execution is:
+(15891.79262061883,
+ 6116     76.405202
+ 6117     88.394169
+            ...    
+ 12230    87.819877
+ 12231    87.819877
+ Name: predicted_mean, Length: 6116, dtype: float64,
+ <statsmodels.tsa.arima.model.ARIMAResultsWrapper at 0x231cfeb33d0>)

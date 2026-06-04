@@ -1,0 +1,62 @@
+
+生成的代码：
+import pandas as pd
+import numpy as np
+from sklearn.cluster import MeanShift, estimate_bandwidth
+from sklearn.metrics import silhouette_score
+from sklearn.preprocessing import StandardScaler
+
+# 1. 加载数据
+data_path = r'E:\Postgraduate\Code\SunnylnAgent\data\csv\obesity_cvd_risk_train.csv'
+data = pd.read_csv(data_path)
+
+# 2. 数据预处理
+# 检查缺失值
+print("Missing values:\n", data.isnull().sum())
+
+# 假设没有缺失值，如果有缺失值需要进行处理
+# data = data.dropna()  # 删除缺失值
+# data = data.fillna(data.mean())  # 用均值填充缺失值
+
+# 选择特征
+# 假设我们选择所有数值特征进行聚类
+features = data.select_dtypes(include=[np.number])
+
+# 标准化特征
+scaler = StandardScaler()
+features_scaled = scaler.fit_transform(features)
+
+# 3. 训练 Mean Shift 聚类模型
+# 估计带宽
+bandwidth = estimate_bandwidth(features_scaled, quantile=0.2)
+mean_shift = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+mean_shift.fit(features_scaled)
+
+# 4. 计算轮廓系数
+labels = mean_shift.labels_
+silhouette_avg = silhouette_score(features_scaled, labels)
+print("Silhouette Coefficient: ", silhouette_avg)
+
+
+执行结果：
+Missing values:
+ id                                0
+Gender                            0
+Age                               0
+Height                            0
+Weight                            0
+family_history_with_overweight    0
+FAVC                              0
+FCVC                              0
+NCP                               0
+CAEC                              0
+SMOKE                             0
+CH2O                              0
+SCC                               0
+FAF                               0
+TUE                               0
+CALC                              0
+MTRANS                            0
+NObeyesdad                        0
+dtype: int64
+Silhouette Coefficient:  0.16092204323719375
